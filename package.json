@@ -1,0 +1,24 @@
+{
+  "name": "pharos-images",
+  "version": "0.0.1",
+  "description": "This is the work-in-progress, open source, image database which will be used by the PHAROS art history photo archive consortium.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jeresig/pharos-images.git"
+  },
+  "author": "John Resig <jeresig@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jeresig/pharos-images/issues"
+  },
+  "homepage": "https://github.com/jeresig/pharos-images",
+  "dependencies": {
+    "csv-streamify": "^2.0.0",
+    "marcjs": "^0.1.10",
+    "yearrange": "0.0.4"
+  }
+}
