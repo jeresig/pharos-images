@@ -18,6 +18,7 @@
   "homepage": "https://github.com/jeresig/pharos-images",
   "dependencies": {
     "csv-streamify": "^2.0.0",
+    "jsonld": "^0.3.22",
     "marcjs": "^0.1.10",
     "yearrange": "0.0.4"
   }
