@@ -6,18 +6,18 @@ var nquads = fs.readFileSync(process.argv[2], "utf8");
 
 var cidocPrefix = "http://erlangen-crm.org/current/";
 
-jsonld.fromRDF(nquads, {format: "application/nquads"}, function(err, records) {
-    var record = records[1];
+var processRecord = function(record) {
+    var baseRecord = record["@graph"][0];
+    var rootID = baseRecord["@id"];
     var map = {};
 
     record["@graph"].forEach(function(item) {
         map[item["@id"]] = item;
     });
 
-    var linkUpRecord = function(baseRecord) {
+    var linkUpRecord = function(baseRecord, rootID) {
         delete baseRecord["@id"];
 
-        //console.log(baseRecord)
         for (var key in baseRecord) {
             var val = baseRecord[key];
 
@@ -34,8 +34,7 @@ jsonld.fromRDF(nquads, {format: "application/nquads"}, function(err, records) {
                             return obj["@value"];
 
                         } else if (obj["@id"] in map && map[obj["@id"]] !== obj) {
-                            console.log("linking", obj["@id"])
-                            if (obj["@id"] !== "http://collection.britishmuseum.org/id/object/JCF345") {
+                            if (obj["@id"] !== rootID) {
                                 return map[obj["@id"]];
                             }
                         }
@@ -56,11 +55,13 @@ jsonld.fromRDF(nquads, {format: "application/nquads"}, function(err, records) {
     };
 
     for (var itemName in map) {
-        linkUpRecord(map[itemName]);
+        linkUpRecord(map[itemName], rootID);
     }
 
-    var baseRecord = record["@graph"][0];
+    return baseRecord;
+}
 
-    //console.log(records.length)
-    console.log(JSON.stringify(baseRecord, null, "    "));
+jsonld.fromRDF(nquads, {format: "application/nquads"}, function(err, records) {
+    var results = records.slice(1).map(processRecord);
+    console.log(JSON.stringify(results));
 });
