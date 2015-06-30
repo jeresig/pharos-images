@@ -45,9 +45,9 @@ var processRecord = function(record) {
                     return obj;
                 });
 
-                if (baseRecord[key].length === 1) {
-                    baseRecord[key] = baseRecord[key][0];
-                }
+                //if (baseRecord[key].length === 1) {
+                //    baseRecord[key] = baseRecord[key][0];
+                //}
             }
         }
 
@@ -63,5 +63,5 @@ var processRecord = function(record) {
 
 jsonld.fromRDF(nquads, {format: "application/nquads"}, function(err, records) {
     var results = records.slice(1).map(processRecord);
-    console.log(JSON.stringify(results));
+    console.log(JSON.stringify(results, null, "     "));
 });
