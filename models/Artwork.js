@@ -10,6 +10,9 @@ var ArtworkSchema = new mongoose.Schema({
             }
         }
     ],
+    "P70i_is_documented_in": {
+        "P3_has_note": String
+    },
     "P108i_was_produced_by": {
         "@type": String,
         "P9_consists_of": [
@@ -37,9 +40,14 @@ var ArtworkSchema = new mongoose.Schema({
             }
         ]
     },
-    "P70i_is_documented_in": {
-        "P3_has_note": String
-    }
+    "P128_carries": [
+        {
+            "@type": String,
+            "P129_is_about": {
+                "@id": String
+            }
+        }
+    ]
 });
 
 mongoose.model("Artwork", ArtworkSchema)
