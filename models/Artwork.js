@@ -50,4 +50,4 @@ var ArtworkSchema = new mongoose.Schema({
     ]
 });
 
-mongoose.model("Artwork", ArtworkSchema)
+mongoose.model("Artwork", ArtworkSchema);
