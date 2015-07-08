@@ -5,9 +5,9 @@ module.exports = function(lib) {
         return lib.db.model("Artist");
     } catch(e) {}
 
-    var Name = require("./name")(lib);
-    var YearRange = require("./yearrange")(lib);
-    var Bio = require("./bio")(lib);
+    var Name = require("./Name")(lib);
+    var YearRange = require("./YearRange")(lib);
+    var Bio = require("./Bio")(lib);
 
     var ArtistSchema = new lib.db.schema({
         // The date that this item was created
