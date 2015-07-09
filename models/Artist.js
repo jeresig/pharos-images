@@ -2,14 +2,14 @@ var mongoose = require("mongoose");
 
 module.exports = function(lib) {
     try {
-        return lib.db.model("Artist");
+        return mongoose.model("Artist");
     } catch(e) {}
 
     var Name = require("./Name")(lib);
     var YearRange = require("./YearRange")(lib);
     var Bio = require("./Bio")(lib);
 
-    var ArtistSchema = new lib.db.schema({
+    var ArtistSchema = new mongoose.schema({
         // The date that this item was created
         created: {type: Date, "default": Date.now},
 

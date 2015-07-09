@@ -2,7 +2,7 @@ var mongoose = require("mongoose");
 
 module.exports = function(lib) {
     try {
-        return lib.db.model("Bio");
+        return mongoose.model("Bio");
     } catch(e) {}
 
     var Name = require("./Name")(lib);
@@ -10,7 +10,7 @@ module.exports = function(lib) {
 
     var ObjectId = lib.db.schema.Types.ObjectId;
 
-    var BioSchema = new lib.db.schema({
+    var BioSchema = new mongoose.schema({
         // UUID of the image (Format: SOURCE/IMAGEMD5)
         _id: String,
 

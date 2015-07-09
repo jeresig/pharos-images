@@ -1,5 +1,7 @@
+var mongoose = require("mongoose");
+
 module.exports = function(lib) {
-    var NameSchema = new lib.db.schema({
+    var NameSchema = new mongoose.schema({
         // The original string from which the rest of the values were derived
         original: String,
 

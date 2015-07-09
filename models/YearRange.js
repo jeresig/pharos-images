@@ -1,5 +1,7 @@
+var mongoose = require("mongoose");
+
 module.exports = function(lib) {
-    var YearRangeSchema = new lib.db.schema({
+    var YearRangeSchema = new mongoose.schema({
         original: String,
         circa: Boolean,
         start: {type: Number, es_indexed: true},
