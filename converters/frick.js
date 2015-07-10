@@ -20,12 +20,35 @@ process.stdin
             return;
         }
 
+        /*
+         * ID (WORK ID)
+         * Title (TITLE)
+         * Date (WORK DATE)
+         * Category (FRICK CLASSIFICATION)
+         * Material (MATERIAL)
+         * Artist (CREATOR)
+         * Artist Dates (CREATOR DATES)
+         * Artist School (SCHOOL)
+         * ??? (VARIANT ARTIST)
+         * Dimensions (MEASUREMENTS)
+         * Collection (COLLECTION)
+         * Collection Location (COLLECTION CITY)
+         * Sources (SOURCES)
+         */
+
+        /*
+         * Image ID (BIBLIOGRAPHIC RECORD NUMBER)
+         * PATH
+         */
+
+        console.log(data)
+
         var dateType = date.replace(/\d/g, "*")
             .replace(/\.+$/, "").toLowerCase();
 
         if (!(dateType in dateTypes)) {
             dateTypes[dateType] = date;
-            console.log(dateType + "\t" + date);
+            //console.log(dateType + "\t" + date);
         }
 
         if (!(date in dates)) {
@@ -44,7 +67,7 @@ process.stdin
     .on("close", function() {
         Object.keys(dates).forEach(function(date) {
             if (dates[date] === 0) {
-                console.log(date);
+                //console.log(date);
             }
         });
     });
