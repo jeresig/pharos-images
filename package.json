@@ -19,6 +19,7 @@
   "dependencies": {
     "csv-streamify": "^2.0.0",
     "jsonld": "^0.3.22",
+    "libxmljs": "^0.14.2",
     "marcjs": "^0.1.10",
     "yearrange": "0.0.4"
   }
