@@ -75,6 +75,40 @@ var searchByProps = function(row, propMap) {
     return results;
 };
 
+var cluster = function(rows, id, toCluster) {
+    var map = {};
+
+    return rows.map(function(row) {
+        if (row[id] in map) {
+            var base = map[row[id]];
+
+            toCluster.forEach(function(clustered) {
+                if (Array.isArray(row[clustered])) {
+                    base[clustered] = base[clustered].concat(
+                        row[clustered]);
+                } else {
+                    base[clustered].push(row[clustered]);
+                }
+            });
+
+        } else {
+            map[row[id]] = row;
+
+            toCluster.forEach(function(clustered) {
+                if (!Array.isArray(row[clustered])) {
+                    row[clustered] = [row[clustered]];
+                }
+            });
+
+            return row;
+        }
+    }).filter(function(row) {
+        return !!row;
+    });
+};
+
+var results = [];
+
 process.stdin
     .pipe(csv({
         objectMode: true,
@@ -84,9 +118,11 @@ process.stdin
     .on("data", function(data) {
         var result = searchByProps(data, propMap);
         if (result.id) {
-            console.log(result);
+            results.push(result);
         }
     })
-    .on("close", function() {
+    .on("end", function() {
+        var filtered = cluster(results, "id", ["images"]);
+        console.log(filtered);
         console.log("DONE");
     });
