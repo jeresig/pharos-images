@@ -24,12 +24,12 @@ var yr = require("yearrange");
 var propMap = {
     id: "WORK ID",
     title: "TITLE",
-    date: ["WORK DATE", function(date) {
-        return yr.parse(date);
+    date: ["WORK DATE", function(date, data) {
+        return yr.parse(date || data["CREATOR DATES"]);
     }],
     categories: "FRICK CLASSIFICATION",
-    material: "MATERIAL",
-    // object type?
+    objectType: "MATERIAL",
+    // material?
     artist: {
         name: "CREATOR",
         dates: ["CREATOR DATES", function(date) {
@@ -65,7 +65,7 @@ var searchByProps = function(row, propMap) {
 
         } else if (Array.isArray(searchValue)) {
             var value = row[searchValue[0]];
-            results[propName] = searchValue[1](value);
+            results[propName] = searchValue[1](value, row);
 
         } else if (typeof searchValue === "object") {
             results[propName] = searchByProps(row, searchValue);
@@ -123,6 +123,8 @@ process.stdin
     })
     .on("end", function() {
         var filtered = cluster(results, "id", ["images"]);
-        console.log(filtered);
-        console.log("DONE");
+        filtered.forEach(function(result) {
+            console.log(result);
+        });
+        console.log("DONE:", filtered.length);
     });
