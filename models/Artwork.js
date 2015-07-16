@@ -1,53 +1,57 @@
 var mongoose = require("mongoose");
 
-var ArtworkSchema = new mongoose.Schema({
-    "P43_has_dimension": [
-        {
-            "@type": String,
-            "P90_has_value": String,
-            "P91_has_unit": {
-                "@id": String
-            }
-        }
-    ],
-    "P70i_is_documented_in": {
-        "P3_has_note": String
-    },
-    "P108i_was_produced_by": {
-        "@type": String,
-        "P9_consists_of": [
-            {
-                "@type": String,
-                "P2_has_type": {
-                    "@id": String
-                },
-                "P7_took_place_at": {
-                    "@id": String
-                },
-                "P14_carried_out_by": {
-                    "@id": String
-                },
-                "P32_used_general_technique": {
-                    "@id": String
-                },
-                "P4_has_time-span": {
-                    "@type": String,
-                    "http://www.w3.org/2000/01/rdf-schema#label": String,
-                    "P82b_end_of_the_end": String,
-                    "P82a_begin_of_the_begin": String,
-                    "P3_has_note": String
-                }
-            }
-        ]
-    },
-    "P128_carries": [
-        {
-            "@type": String,
-            "P129_is_about": {
-                "@id": String
-            }
-        }
-    ]
-});
+module.exports = function(lib) {
+    try {
+        return mongoose.model("Artist");
+    } catch(e) {}
 
-mongoose.model("Artwork", ArtworkSchema);
+    var Name = require("./Name")(lib);
+    var YearRange = require("./YearRange")(lib);
+    var Dimension = require("./Dimension")(lib);
+    var Artist = require("./Artist")(lib);
+
+    var ArtworkSchema = new mongoose.Schema({
+        // UUID of the image (Format: SOURCE/IMAGEMD5)
+        _id: String,
+
+        // The date that this item was created
+        created: {type: Date, "default": Date.now},
+
+        // The date that this item was updated
+        modified: Date,
+
+        // The source of the image.
+        source: {type: String, ref: "Source"},
+
+        // The language of the page from where the data is being extracted. This
+        // will influence how extracted text is handled.
+        lang: String,
+
+        // The title of the print.
+        title: String,
+
+        // A list of artist names extracted from the page.
+        artists: [Name],
+
+        // The size of the print (e.g. 100mm x 200mm)
+        dimensions: [Dimensions],
+
+        // Date when the print was created (typically a rough year, or range).
+        dateCreateds: [YearRange]
+    });
+
+    ArtworkSchema.virtual("dateCreated")
+        .get(function() {
+            return this.dateCreateds[0];
+        })
+        .set(function(date) {
+            if (this.dateCreateds[0]) {
+                this.dateCreateds[0].remove();
+            }
+            if (date && typeof date !== "string") {
+                this.dateCreateds.push(date);
+            }
+        });
+
+    mongoose.model("Artwork", ArtworkSchema);
+};
