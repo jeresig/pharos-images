@@ -37,7 +37,16 @@ module.exports = function(lib) {
         dimensions: [Dimensions],
 
         // Date when the print was created (typically a rough year, or range).
-        dateCreateds: [YearRange]
+        dateCreateds: [YearRange],
+
+        objectType: String,
+        medium: String,
+
+        collection: {
+            country: String,
+            city: String,
+            name: String
+        }
     });
 
     ArtworkSchema.virtual("dateCreated")
