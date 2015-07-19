@@ -2,7 +2,7 @@ var mongoose = require("mongoose");
 
 module.exports = function(lib) {
     try {
-        return mongoose.model("Artist");
+        return mongoose.model("ExtractedArtist");
     } catch(e) {}
 
     var Name = require("./Name")(lib);
@@ -10,7 +10,7 @@ module.exports = function(lib) {
     var Dimension = require("./Dimension")(lib);
     var Artist = require("./Artist")(lib);
 
-    var ArtworkSchema = new mongoose.Schema({
+    var ExtractedArtworkSchema = new mongoose.Schema({
         // UUID of the image (Format: SOURCE/IMAGEMD5)
         _id: String,
 
@@ -49,7 +49,7 @@ module.exports = function(lib) {
         }
     });
 
-    ArtworkSchema.virtual("dateCreated")
+    ExtractedArtworkSchema.virtual("dateCreated")
         .get(function() {
             return this.dateCreateds[0];
         })
@@ -62,5 +62,5 @@ module.exports = function(lib) {
             }
         });
 
-    mongoose.model("Artwork", ArtworkSchema);
+    mongoose.model("ExtractedArtwork", ExtractedArtworkSchema);
 };
