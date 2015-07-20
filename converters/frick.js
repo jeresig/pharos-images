@@ -30,13 +30,13 @@ var ExtractedArtwork = mongoose.model("ExtractedArtwork");
 var propMap = {
     id: "WORK ID",
     title: "TITLE",
-    date: ["WORK DATE", function(date, data) {
+    dateCreateds: ["WORK DATE", function(date, data) {
         return yr.parse(date || data["CREATOR DATES"]);
     }],
     categories: "FRICK CLASSIFICATION",
     objectType: "MATERIAL",
     // material?
-    artist: {
+    artists: {
         name: "CREATOR",
         dates: ["CREATOR DATES", function(date) {
             return yr.parse(date);
@@ -45,7 +45,7 @@ var propMap = {
     },
     // VARIANT ARTIST ???
     dimensions: "MEASUREMENTS",
-    collection: {
+    collections: {
         location: "COLLECTION CITY",
         name: "COLLECTION"
     },
@@ -133,7 +133,7 @@ process.stdin
             result._id = "frick/" + result.id;
             result.lang = "en";
             result.source = "frick";
-            result.artists = [result.artist];
+            //result.artists = [result.artist];
             var model = new ExtractedArtwork(result);
             console.log(model);
             return model;
