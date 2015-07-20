@@ -2,7 +2,7 @@ var mongoose = require("mongoose");
 
 module.exports = function(lib) {
     try {
-        return mongoose.model("ExtractedArtist");
+        return mongoose.model("ExtractedArtwork");
     } catch(e) {}
 
     var Name = require("./Name")(lib);
@@ -14,6 +14,9 @@ module.exports = function(lib) {
     var ExtractedArtworkSchema = new mongoose.Schema({
         // UUID of the image (Format: SOURCE/IMAGEMD5)
         _id: String,
+
+        // Collection ID
+        id: String,
 
         // The date that this item was created
         created: {type: Date, "default": Date.now},
@@ -44,6 +47,12 @@ module.exports = function(lib) {
         medium: String,
 
         collections: [Collection]
+        /*
+        images: [{
+            id: String,
+            fileName: String
+        }]
+        */
     });
 
     ExtractedArtworkSchema.virtual("dateCreated")
@@ -58,6 +67,34 @@ module.exports = function(lib) {
                 this.dateCreateds.push(date);
             }
         });
+
+    ExtractedArtworkSchema.virtual("dimension")
+        .get(function() {
+            return this.dimensions[0];
+        })
+        .set(function(dimension) {
+            if (this.dimensions[0]) {
+                this.dimensions[0].remove();
+            }
+            if (dimension && typeof dimension !== "string") {
+                this.dimensions.push(dimension);
+            }
+        });
+
+    /*
+    ExtractedArtworkSchema.virtual("collection")
+        .get(function() {
+            return this.collections[0];
+        })
+        .set(function(collection) {
+            if (this.collections[0]) {
+                this.collections[0].remove();
+            }
+            if (collection && typeof collection !== "string") {
+                this.collections.push(collection);
+            }
+        });
+    */
 
     mongoose.model("ExtractedArtwork", ExtractedArtworkSchema);
 };

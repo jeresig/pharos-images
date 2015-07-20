@@ -1,7 +1,10 @@
 var csv = require("csv-streamify");
 var yr = require("yearrange");
+var mongoose = require("mongoose");
 
-var ExtractedArtwork = require("../models/ExtractedArtwork.js")();
+require("../models/ExtractedArtwork.js")();
+
+var ExtractedArtwork = mongoose.model("ExtractedArtwork");
 
 /*
  * ID (WORK ID)
@@ -126,8 +129,14 @@ process.stdin
     })
     .on("end", function() {
         var filtered = cluster(results, "id", ["images"]);
-        filtered.forEach(function(result) {
-            console.log(result);
+        var models = filtered.map(function(result) {
+            result._id = "frick/" + result.id;
+            result.lang = "en";
+            result.source = "frick";
+            result.artists = [result.artist];
+            var model = new ExtractedArtwork(result);
+            console.log(model);
+            return model;
         });
         console.log("DONE:", filtered.length);
     });
