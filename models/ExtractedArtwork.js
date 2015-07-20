@@ -8,6 +8,7 @@ module.exports = function(lib) {
     var Name = require("./Name")(lib);
     var YearRange = require("./YearRange")(lib);
     var Dimension = require("./Dimension")(lib);
+    var Collection = require("./Collection")(lib);
     var Artist = require("./Artist")(lib);
 
     var ExtractedArtworkSchema = new mongoose.Schema({
@@ -34,7 +35,7 @@ module.exports = function(lib) {
         artists: [Name],
 
         // The size of the print (e.g. 100mm x 200mm)
-        dimensions: [Dimensions],
+        dimensions: [Dimension],
 
         // Date when the print was created (typically a rough year, or range).
         dateCreateds: [YearRange],
@@ -42,11 +43,7 @@ module.exports = function(lib) {
         objectType: String,
         medium: String,
 
-        collection: {
-            country: String,
-            city: String,
-            name: String
-        }
+        collections: [Collection]
     });
 
     ExtractedArtworkSchema.virtual("dateCreated")

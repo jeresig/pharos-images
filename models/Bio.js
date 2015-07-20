@@ -8,9 +8,9 @@ module.exports = function(lib) {
     var Name = require("./Name")(lib);
     var YearRange = require("./YearRange")(lib);
 
-    var ObjectId = lib.db.schema.Types.ObjectId;
+    var ObjectId = mongoose.Schema.Types.ObjectId;
 
-    var BioSchema = new mongoose.schema({
+    var BioSchema = new mongoose.Schema({
         // UUID of the image (Format: SOURCE/IMAGEMD5)
         _id: String,
 

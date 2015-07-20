@@ -1,5 +1,8 @@
 var csv = require("csv-streamify");
 var yr = require("yearrange");
+
+var ExtractedArtwork = require("../models/ExtractedArtwork.js")();
+
 /*
  * ID (WORK ID)
  * Title (TITLE)

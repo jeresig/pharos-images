@@ -9,7 +9,7 @@ module.exports = function(lib) {
     var YearRange = require("./YearRange")(lib);
     var Bio = require("./Bio")(lib);
 
-    var ArtistSchema = new mongoose.schema({
+    var ArtistSchema = new mongoose.Schema({
         // The date that this item was created
         created: {type: Date, "default": Date.now},
 

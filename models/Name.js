@@ -1,7 +1,7 @@
 var mongoose = require("mongoose");
 
 module.exports = function(lib) {
-    var NameSchema = new mongoose.schema({
+    var NameSchema = new mongoose.Schema({
         // The original string from which the rest of the values were derived
         original: String,
 
@@ -9,7 +9,7 @@ module.exports = function(lib) {
         locale: String,
 
         // Any sort of name parsing options
-        settings: lib.db.schema.Types.Mixed,
+        settings: mongoose.Schema.Types.Mixed,
 
         // The English form of the full artist's name
         name: {type: String, es_indexed: true},
