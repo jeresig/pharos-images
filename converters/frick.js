@@ -1,5 +1,6 @@
 var csv = require("csv-streamify");
 var yr = require("yearrange");
+var pd = require("parse-dimensions");
 var mongoose = require("mongoose");
 
 require("../models/ExtractedArtwork.js")();
@@ -44,7 +45,13 @@ var propMap = {
         school: "SCHOOL"
     },
     // VARIANT ARTIST ???
-    dimensions: "MEASUREMENTS",
+    dimensions: ["MEASUREMENTS", function(dimension) {
+        if (dimension) {
+            return pd.parseDimensions(dimension);
+        } else {
+            return [];
+        }
+    }],
     collections: {
         location: "COLLECTION CITY",
         name: "COLLECTION"

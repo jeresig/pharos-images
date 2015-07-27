@@ -5,7 +5,9 @@ module.exports = function(lib) {
         original: String,
         width: Number,
         height: Number,
-        depth: Number
+        depth: Number,
+        label: String,
+        unit: String
     });
 
     return DimensionSchema;
