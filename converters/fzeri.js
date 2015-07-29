@@ -17,6 +17,12 @@
  * ID (FOTO/@sercdf)
  * Image Path (FOTO)
  */
+var mongoose = require("mongoose");
+
+require("../models/ExtractedArtwork.js")();
+
+var ExtractedArtwork = mongoose.model("ExtractedArtwork");
+
 var fs = require("fs");
 var libxmljs = require("libxmljs");
 
@@ -27,7 +33,7 @@ var xmlDoc = libxmljs.parseXml(fs.readFileSync(file, "utf8"));
 var propMap = {
     id: "SERCD",
     title: "SGTI",
-    date: {
+    dateCreateds: {
         label: "DTZG",
         from: "DTSI",
         to: "DTSF",
@@ -41,7 +47,7 @@ var propMap = {
         width: "MISL",
         unit: "MISU"
     },
-    collection: {
+    collections: {
         name: "LDCN",
         country: "PVCS",
         city: "PVCC"
@@ -96,7 +102,10 @@ var searchByProps = function(root, propMap) {
 };
 
 xmlDoc.find("//SCHEDA").forEach(function(node) {
-    var data = searchByProps(node, propMap);
-
-    console.log(data);
+    var result = searchByProps(node, propMap);
+    result._id = "fzeri/" + result.id;
+    result.lang = "en";
+    result.source = "fzeri";
+    var model = new ExtractedArtwork(result);
+    console.log(model);
 });
