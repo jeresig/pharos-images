@@ -29,6 +29,9 @@ module.exports = function(lib) {
         // A number representing the generation of the artist
         generation: Number,
 
+        // A pseudonym for the person
+        pseudonym: String,
+
         // Is the artist unknown/unattributed
         unknown: Boolean,
 

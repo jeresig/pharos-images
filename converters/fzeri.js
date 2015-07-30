@@ -35,10 +35,9 @@ var propMap = {
     title: "SGTI",
     dateCreateds: {
         label: "DTZG",
-        from: "DTSI",
-        to: "DTSF",
-        fromCirca: "DTSV",
-        toCirca: "DTSL"
+        start: "DTSI",
+        end: "DTSF",
+        circa: "DTSV" // "DTSL"
     },
     medium: "MTC",
     objectType: "OGTT",
