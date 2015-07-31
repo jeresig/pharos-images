@@ -2,7 +2,8 @@ var fs = require("fs");
 
 var marc = require("marcjs");
 
-var reader = new marc.MarcxmlReader(process.stdin);
+var stream = fs.createReadStream(process.argv[2]);
+var reader = new marc.getReader(stream, "iso2709");
 
 reader.on("data", function(record) {
     console.log(record);
@@ -10,5 +11,5 @@ reader.on("data", function(record) {
 
 reader.on("end", function() {
     console.log("DONE");
-    process.exit(0);
+    //process.exit(0);
 });
