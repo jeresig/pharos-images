@@ -18,7 +18,25 @@ var stream = fs.createReadStream(process.argv[2]);
 var reader = new marc.getReader(stream, "iso2709");
 
 reader.on("data", function(record) {
-    console.log(JSON.stringify(record.toMiJ(), null, "    "));
+    //console.log(JSON.stringify(, null, "    "));
+    record = record.toMiJ();
+
+    var result = {};
+
+    record.fields.forEach(function(item) {
+        for (var id in item) {
+            for (var name in propMap) {
+                var lookup = propMap[name];
+                var lookupNum = lookup[0];
+
+                if (id === lookupNum) {
+                    //result[name] = 
+                    console.log("match", id, item[id]);
+                    return;
+                }
+            }
+        }
+    });
 });
 
 reader.on("end", function() {
