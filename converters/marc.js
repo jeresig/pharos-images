@@ -28,15 +28,37 @@ reader.on("data", function(record) {
             for (var name in propMap) {
                 var lookup = propMap[name];
                 var lookupNum = lookup[0];
+                var lookupFields = lookup.slice(1);
 
                 if (id === lookupNum) {
-                    //result[name] = 
-                    console.log("match", id, item[id]);
+                    if (item[id].subfields) {
+                        var matches = [];
+                        var subfields = item[id].subfields;
+
+                        subfields.forEach(function(subfield) {
+                            lookupFields.forEach(function(name) {
+                                if (name in subfield) {
+                                    matches.push(subfield[name]);
+                                }
+                            });
+                        });
+
+                        if (result[name]) {
+                            result[name] = result[name].concat(matches);
+                        } else {
+                            result[name] = matches;
+                        }
+                    } else {
+                        result[name] = item[id];
+                    }
+
                     return;
                 }
             }
         }
     });
+
+    console.log(result);
 });
 
 reader.on("end", function() {
