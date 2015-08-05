@@ -1,5 +1,6 @@
 var fs = require("fs");
 
+var yr = require("yearrange");
 var marc = require("marcjs");
 
 var propMap = {
@@ -18,8 +19,8 @@ var stream = fs.createReadStream(process.argv[2]);
 var reader = new marc.getReader(stream, "iso2709");
 
 reader.on("data", function(record) {
-    //console.log(JSON.stringify(, null, "    "));
     record = record.toMiJ();
+    //console.log(JSON.stringify(record, null, "    "));
 
     var result = {};
 
@@ -51,8 +52,6 @@ reader.on("data", function(record) {
                     } else {
                         result[name] = item[id];
                     }
-
-                    return;
                 }
             }
         }
