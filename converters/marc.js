@@ -1,6 +1,7 @@
 var fs = require("fs");
 
 var yr = require("yearrange");
+var pd = require("parse-dimensions");
 var marc = require("marcjs");
 
 var propMap = {
@@ -26,7 +27,9 @@ var propMap = {
     }],
     material: ["300", ["a"]],
     artists: ["100", ["a", "d"]],
-    dimensions: ["300", ["c"]],
+    dimensions: ["300", ["c"], function(results) {
+        return results[0] ? pd.parseDimensions(results[0]) : undefined;
+    }],
     collections: ["710", ["a"]],
     images: ["856", ["u"]]
 };
@@ -62,6 +65,14 @@ reader.on("data", function(record) {
 
                         if (lookup[2]) {
                             matches = lookup[2](matches);
+                        }
+
+                        if (Array.isArray(matches) && matches.length === 1) {
+                            matches = matches[0];
+                        }
+
+                        if (!matches) {
+                            break;
                         }
 
                         if (result[name]) {
