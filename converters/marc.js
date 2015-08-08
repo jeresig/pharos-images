@@ -3,6 +3,11 @@ var fs = require("fs");
 var yr = require("yearrange");
 var pd = require("parse-dimensions");
 var marc = require("marcjs");
+var mongoose = require("mongoose");
+
+require("../models/ExtractedArtwork.js")();
+
+var ExtractedArtwork = mongoose.model("ExtractedArtwork");
 
 var propMap = {
     id: ["001"],
@@ -26,11 +31,29 @@ var propMap = {
         return data;
     }],
     material: ["300", ["a"]],
-    artists: ["100", ["a", "d"]],
+    artists: ["100", ["a", "d"], function(results) {
+        var data = {
+            name: results[0]
+        };
+
+        if (results[1]) {
+            data.dates = yr.parse(results[1]);
+        }
+
+        return data;
+    }],
     dimensions: ["300", ["c"], function(results) {
         return results[0] ? pd.parseDimensions(results[0]) : undefined;
     }],
-    collections: ["710", ["a"]],
+    collections: ["710", ["a"], function(results) {
+        if (!results[0]) {
+            return;
+        }
+
+        return {
+            name: results[0]
+        };
+    }],
     images: ["856", ["u"]]
 };
 
@@ -92,7 +115,8 @@ reader.on("data", function(record) {
         }
     });
 
-    console.log(result);
+    var model = new ExtractedArtwork(result);
+    console.log(model);
 });
 
 reader.on("end", function() {
