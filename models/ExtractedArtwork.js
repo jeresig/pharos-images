@@ -46,7 +46,9 @@ module.exports = function(lib) {
         objectType: String,
         medium: String,
 
-        collections: [Collection]
+        collections: [Collection],
+
+        categories: [String]
         /*
         images: [{
             id: String,

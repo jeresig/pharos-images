@@ -16,19 +16,9 @@ var propMap = {
         return yr.parse(results[0]);
     }],
     categories: ["650", ["a", "y", "z"], function(results) {
-        var data = {
-            name: results[0]
-        };
-
-        if (results[1]) {
-            data.place = results[1];
-        }
-
-        if (results[2]) {
-            data.date = results[2];
-        }
-
-        return data;
+        return results.filter(function(name) {
+            return !!name;
+        }).join(", ");
     }],
     material: ["300", ["a"]],
     artists: ["100", ["a", "d"], function(results) {
