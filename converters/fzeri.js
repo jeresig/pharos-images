@@ -103,7 +103,7 @@ var searchByProps = function(root, propMap) {
 xmlDoc.find("//SCHEDA").forEach(function(node) {
     var result = searchByProps(node, propMap);
     result._id = "fzeri/" + result.id;
-    result.lang = "en";
+    result.lang = "it";
     result.source = "fzeri";
     var model = new ExtractedArtwork(result);
     console.log(model);

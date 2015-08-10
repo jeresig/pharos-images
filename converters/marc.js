@@ -51,8 +51,9 @@ var stream = fs.createReadStream(process.argv[2]);
 var reader = new marc.getReader(stream, "iso2709");
 
 reader.on("data", function(record) {
+    this.pause();
+
     record = record.toMiJ();
-    //console.log(JSON.stringify(record, null, "    "));
 
     var result = {};
 
@@ -105,8 +106,16 @@ reader.on("data", function(record) {
         }
     });
 
+    result._id = "nga/" + result.id;
+    result.lang = "en";
+    result.source = "nga";
+
     var model = new ExtractedArtwork(result);
-    console.log(model);
+
+    model.save(function() {
+        console.log(model);
+        this.resume();
+    }.bind(this));
 });
 
 reader.on("end", function() {
