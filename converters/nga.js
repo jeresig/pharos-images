@@ -5,6 +5,9 @@ var pd = require("parse-dimensions");
 var marc = require("marcjs");
 var mongoose = require("mongoose");
 
+// Load in configuration options
+require("dotenv").load();
+
 require("../models/ExtractedArtwork.js")();
 
 var ExtractedArtwork = mongoose.model("ExtractedArtwork");
@@ -47,10 +50,7 @@ var propMap = {
     images: ["856", ["u"]]
 };
 
-var stream = fs.createReadStream(process.argv[2]);
-var reader = new marc.getReader(stream, "iso2709");
-
-reader.on("data", function(record) {
+var parseRecord = function(record) {
     this.pause();
 
     record = record.toMiJ();
@@ -116,9 +116,22 @@ reader.on("data", function(record) {
         console.log(model);
         this.resume();
     }.bind(this));
+};
+
+mongoose.connect(process.env.MONGODB_URL);
+
+mongoose.connection.on("error", function(err) {
+    console.error("Connection Error:", err)
 });
 
-reader.on("end", function() {
-    console.log("DONE");
-    //process.exit(0);
+mongoose.connection.once("open", function() {
+    var stream = fs.createReadStream(process.argv[2]);
+    var reader = new marc.getReader(stream, "iso2709");
+
+    reader.on("data", parseRecord);
+
+    reader.on("end", function() {
+        console.log("DONE");
+        //process.exit(0);
+    });
 });
