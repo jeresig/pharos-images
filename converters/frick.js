@@ -2,6 +2,10 @@ var csv = require("csv-streamify");
 var yr = require("yearrange");
 var pd = require("parse-dimensions");
 var mongoose = require("mongoose");
+var async = require("async");
+
+// Load in configuration options
+require("dotenv").load();
 
 require("../models/ExtractedArtwork.js")();
 
@@ -120,6 +124,29 @@ var cluster = function(rows, id, toCluster) {
     });
 };
 
+var loadData = function(results) {
+    mongoose.connect(process.env.MONGODB_URL);
+
+    mongoose.connection.on("error", function(err) {
+        console.error("Connection Error:", err)
+    });
+
+    mongoose.connection.once("open", function() {
+        var filtered = cluster(results, "id", ["images"]);
+
+        async.eachLimit(filtered, 4, function(result, callback) {
+            result._id = "frick/" + result.id;
+            result.lang = "en";
+            result.source = "frick";
+            var model = new ExtractedArtwork(result);
+            console.log(model);
+            model.save(callback);
+        }, function() {
+            console.log("DONE:", filtered.length);
+        });
+    });
+};
+
 var results = [];
 
 process.stdin
@@ -135,15 +162,5 @@ process.stdin
         }
     })
     .on("end", function() {
-        var filtered = cluster(results, "id", ["images"]);
-        var models = filtered.map(function(result) {
-            result._id = "frick/" + result.id;
-            result.lang = "en";
-            result.source = "frick";
-            //result.artists = [result.artist];
-            var model = new ExtractedArtwork(result);
-            console.log(model);
-            return model;
-        });
-        console.log("DONE:", filtered.length);
+        loadData(results);
     });
