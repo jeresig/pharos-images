@@ -1,3 +1,15 @@
+var fs = require("fs");
+var libxmljs = require("libxmljs");
+var mongoose = require("mongoose");
+var async = require("async");
+
+// Load in configuration options
+require("dotenv").load();
+
+require("../models/ExtractedArtwork.js")();
+
+var ExtractedArtwork = mongoose.model("ExtractedArtwork");
+
 /*
  * ID (SERCD)
  * Title/Subject (SGTI)
@@ -17,17 +29,8 @@
  * ID (FOTO/@sercdf)
  * Image Path (FOTO)
  */
-var mongoose = require("mongoose");
-
-require("../models/ExtractedArtwork.js")();
-
-var ExtractedArtwork = mongoose.model("ExtractedArtwork");
-
-var fs = require("fs");
-var libxmljs = require("libxmljs");
 
 var file = process.argv[2];
-
 var xmlDoc = libxmljs.parseXml(fs.readFileSync(file, "utf8"));
 
 var propMap = {
@@ -100,11 +103,29 @@ var searchByProps = function(root, propMap) {
     return results;
 };
 
-xmlDoc.find("//SCHEDA").forEach(function(node) {
-    var result = searchByProps(node, propMap);
-    result._id = "fzeri/" + result.id;
-    result.lang = "it";
-    result.source = "fzeri";
-    var model = new ExtractedArtwork(result);
-    console.log(model);
-});
+var loadData = function(results) {
+    mongoose.connect(process.env.MONGODB_URL);
+
+    mongoose.connection.on("error", function(err) {
+        console.error("Connection Error:", err)
+    });
+
+    mongoose.connection.once("open", function() {
+        var matches = xmlDoc.find("//SCHEDA");
+
+        async.eachLimit(matches, 4, function(node, callback) {
+            var result = searchByProps(node, propMap);
+            result._id = "fzeri/" + result.id;
+            result.lang = "it";
+            result.source = "fzeri";
+            var model = new ExtractedArtwork(result);
+            console.log(model);
+            model.save(callback);
+        }, function() {
+            console.log("DONE:", matches.length);
+            process.exit(0);
+        });
+    });
+};
+
+loadData();
