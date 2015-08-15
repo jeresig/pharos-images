@@ -9,9 +9,6 @@ module.exports = function(lib) {
         // UUID of the image (Format: SOURCE/IMAGEMD5)
         _id: String,
 
-        // The print that this image is a part of
-        print: {type: ObjectId, ref: "Print"},
-
         // The original extracted data
         extractedArtwork: {type: String, ref: "ExtractedArtwork"},
 
@@ -35,10 +32,6 @@ module.exports = function(lib) {
         // Full URL of the original page from where the image came.
         url: String,
 
-        // Other images relating to the print (could be alternate views or
-        // other images in a triptych, etc.
-        related: [{type: String, ref: "Image"}],
-
         // Similar images (as determined by MatchEngine)
         similar: [{
             score: Number,
@@ -50,6 +43,26 @@ module.exports = function(lib) {
     }, {
         collection: "images"
     });
+
+    ImageSchema.methods = {
+        getOriginalURL: function() {
+            return process.env.BASE_DATA_URL +
+                (this.source._id || this.source) +
+                "/images/" + this.imageName + ".jpg";
+        },
+
+        getScaledURL: function() {
+            return process.env.BASE_DATA_URL +
+                (this.source._id || this.source) +
+                "/scaled/" + this.imageName + ".jpg";
+        },
+
+        getThumbURL: function() {
+            return process.env.BASE_DATA_URL +
+                (this.source._id || this.source) +
+                "/thumbs/" + this.imageName + ".jpg";
+        }
+    };
 
     mongoose.model("Image", ImageSchema);
 };
