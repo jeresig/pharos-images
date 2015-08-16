@@ -35,7 +35,9 @@ module.exports = {
             every: "FOTO",
             data: {
                 id: "@sercdf",
-                path: "."
+                path: [".", function(val) {
+                    return /.*\//.replace(val);
+                }]
             }
         }
     },
@@ -45,6 +47,11 @@ module.exports = {
 
         for (var propName in propMap) {
             var searchValue = propMap[propName];
+            var hasFilter = Array.isArray(searchValue);
+
+            if (hasFilter) {
+                searchValue = searchValue[0];
+            }
 
             if (typeof searchValue === "string") {
                 if (searchValue === ".") {
@@ -58,14 +65,20 @@ module.exports = {
                             node.text());
                     }
                 }
+
+                if (hasFilter) {
+                    results[propName] =
+                        propMap[propName][1](results[propName], results);
+                }
+
             } else if (typeof searchValue === "object") {
                 if (searchValue.every) {
                     var matches = root.find(".//" + searchValue.every);
                     results[propName] = matches.map(function(node) {
-                        return searchByProps(node, searchValue.data);
-                    });
+                        return this.searchByProps(node, searchValue.data);
+                    }.bind(this));
                 } else {
-                    results[propName] = searchByProps(root, searchValue);
+                    results[propName] = this.searchByProps(root, searchValue);
                 }
             }
         }

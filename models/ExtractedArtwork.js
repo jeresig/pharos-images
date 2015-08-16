@@ -98,5 +98,5 @@ module.exports = function(lib) {
         });
     */
 
-    mongoose.model("ExtractedArtwork", ExtractedArtworkSchema);
+    return mongoose.model("ExtractedArtwork", ExtractedArtworkSchema);
 };
