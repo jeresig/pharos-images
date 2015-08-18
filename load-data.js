@@ -6,8 +6,9 @@ var ArgumentParser = require("argparse").ArgumentParser;
 // Load in configuration options
 require("dotenv").load();
 
-// Bring in ExtractedArtwork model
+// Bring in models
 var ExtractedArtwork = require("./models/ExtractedArtwork.js")();
+var Image = require("./models/Image.js")();
 
 var argparser = new ArgumentParser({
     description: "Parse a data file, given the specified converter, and load" +

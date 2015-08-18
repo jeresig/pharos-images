@@ -22,11 +22,15 @@
     "concat-stream": "^1.5.0",
     "csv-streamify": "^2.0.0",
     "dotenv": "^1.2.0",
+    "gm": "^1.18.1",
+    "graceful-fs": "^4.1.2",
+    "imageinfo": "^1.0.4",
     "jsonld": "^0.3.22",
     "libxmljs": "^0.14.2",
     "marcjs": "^0.1.10",
     "mongoose": "^4.0.7",
     "parse-dimensions": "0.0.1",
+    "request": "^2.60.0",
     "yearrange": "0.0.4"
   }
 }

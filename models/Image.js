@@ -64,5 +64,5 @@ module.exports = function(lib) {
         }
     };
 
-    mongoose.model("Image", ImageSchema);
+    return mongoose.model("Image", ImageSchema);
 };
