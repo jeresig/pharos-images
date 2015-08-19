@@ -61,6 +61,26 @@ module.exports = function(lib) {
             return process.env.BASE_DATA_URL +
                 (this.source._id || this.source) +
                 "/thumbs/" + this.imageName + ".jpg";
+        },
+
+        addImage: function(source, imgFile, callback) {
+            var baseDir = process.env.BASE_DATA_DIR; // + "/" + source
+
+            lib.images.processImage(imgFile, baseDir, false,
+                function(err, hash) {
+                    if (err) {
+                        return callback(err);
+                    }
+
+                    var Image = mongoose.model("Image");
+
+                    callback(err, new Image({
+                        _id: source + "/" + hash,
+                        source: source,
+                        imageName: source + "/images/" + hash + ".jpg",
+                        imageID: source + "/" + hash
+                    }));
+                });
         }
     };
 
