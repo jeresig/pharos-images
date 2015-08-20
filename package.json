@@ -29,6 +29,7 @@
     "libxmljs": "^0.14.2",
     "marcjs": "^0.1.10",
     "mongoose": "^4.0.7",
+    "mongoose-schema-extend": "^0.1.7",
     "parse-dimensions": "0.0.1",
     "request": "^2.60.0",
     "yearrange": "0.0.4"

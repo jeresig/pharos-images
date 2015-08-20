@@ -1,14 +1,8 @@
 var fs = require("fs");
 var async = require("async");
-var mongoose = require("mongoose");
 var ArgumentParser = require("argparse").ArgumentParser;
 
-// Load in configuration options
-require("dotenv").load();
-
-// Bring in models
-var ExtractedArtwork = require("./models/ExtractedArtwork.js")();
-var Image = require("./models/Image.js")();
+var core = require("./models");
 
 var argparser = new ArgumentParser({
     description: "Parse a data file, given the specified converter, and load" +
@@ -52,13 +46,7 @@ var converter = require(converterPath);
 // Start a stream for the source's data file
 var fileStream = fs.createReadStream(args.dataFile);
 
-mongoose.connect(process.env.MONGODB_URL);
-
-mongoose.connection.on("error", function(err) {
-    console.error("Error Connecting to Database:", err)
-});
-
-mongoose.connection.once("open", function() {
+core.init(function() {
     converter.process(fileStream, function(data, callback) {
         data._id = args.source + "/" + result.id;
         data.lang = args.lang;
@@ -67,7 +55,7 @@ mongoose.connection.once("open", function() {
         // Load in images
         //data.images
 
-        var model = new ExtractedArtwork(data);
+        var model = new core.models.ExtractedArtwork(data);
         console.log(model);
         model.save(callback);
     }, function() {
