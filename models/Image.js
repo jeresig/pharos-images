@@ -1,3 +1,5 @@
+var path = require("path");
+
 var mongoose = require("mongoose");
 
 module.exports = function(lib) {
@@ -63,10 +65,10 @@ module.exports = function(lib) {
                 "/thumbs/" + this.imageName + ".jpg";
         },
 
-        addImage: function(source, imgFile, callback) {
-            var baseDir = process.env.BASE_DATA_DIR; // + "/" + source
+        addImage: function(imageData, sourceDir, callback) {
+            var source = imageData.source;
 
-            lib.images.processImage(imgFile, baseDir, false,
+            lib.images.processImage(imgFile, sourceDir, false,
                 function(err, hash) {
                     if (err) {
                         return callback(err);
@@ -74,11 +76,17 @@ module.exports = function(lib) {
 
                     var Image = mongoose.model("Image");
 
+                    // Use the source-provided ID if it exists
+                    var id = imageData.id || hash;
+
                     callback(err, new Image({
-                        _id: source + "/" + hash,
+                        _id: source + "/" + id,
                         source: source,
-                        imageName: source + "/images/" + hash + ".jpg",
-                        imageID: source + "/" + hash
+                        imageName: hash,
+                        imageID: source + "/" + id
+                        // TODO: Get dimensions
+                        //width: ...,
+                        //height: ...
                     }));
                 });
         }
