@@ -65,7 +65,7 @@ module.exports = function(lib) {
                 "/thumbs/" + this.imageName + ".jpg";
         },
 
-        addImage: function(imageData, sourceDir, callback) {
+        addImage: function(imageData, imgFile, sourceDir, callback) {
             var source = imageData.source;
 
             lib.images.processImage(imgFile, sourceDir, false,

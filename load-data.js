@@ -71,9 +71,11 @@ core.init(function() {
             imageData.source = args.source;
             imageData.fileName = imageData.fileName.replace(/^.*\//, "");
 
-            //path.resolve(imageData.fileName)
+            var imgFile = path.resolve(args.imageDir, imageData.fileName);
+            var sourceDir = path.resolve(process.env.BASE_DATA_DIR,
+                args.source);
 
-            Image.addImage(imageData, sourceDir, function(err, image) {
+            Image.addImage(imageData, imgFile, sourceDir, function(err, image) {
                 if (err) {
                     return callback(err);
                 }
