@@ -34,6 +34,10 @@ module.exports = function(lib) {
         // Full URL of the original page from where the image came.
         url: String,
 
+        // Dimension of the image, in pixels
+        width: Number,
+        height: Number,
+
         // Similar images (as determined by MatchEngine)
         similar: [{
             score: Number,
@@ -79,15 +83,20 @@ module.exports = function(lib) {
                     // Use the source-provided ID if it exists
                     var id = imageData.id || hash;
 
-                    callback(err, new Image({
-                        _id: source + "/" + id,
-                        source: source,
-                        imageName: hash,
-                        imageID: source + "/" + id
-                        // TODO: Get dimensions
-                        //width: ...,
-                        //height: ...
-                    }));
+                    lib.images.getSize(imgFile, function(err, dimensions) {
+                        if (err) {
+                            return callback(err);
+                        }
+
+                        callback(err, new Image({
+                            _id: source + "/" + id,
+                            source: source,
+                            imageName: hash,
+                            imageID: source + "/" + id,
+                            width: dimensions.width,
+                            height: dimensions.height
+                        }));
+                    });
                 });
         }
     };
