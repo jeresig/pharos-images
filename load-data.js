@@ -11,69 +11,50 @@ var argparser = new ArgumentParser({
         "it in to the database for future traversal."
 });
 
-argparser.addArgument(["converter"], {
-    help: "The name of the converter to use on the data (see: converters/)."
-});
-
 argparser.addArgument(["source"], {
     help: "The name of source of the data (e.g. 'frick' or 'fzeri')."
 });
 
-argparser.addArgument(["dataFile"], {
-    help: "The data file to load in using the converter."
-});
-
-argparser.addArgument(["imageDir"], {
-    help: "A directory holding the images to import."
-});
-
-argparser.addArgument(["--lang"], {
-    defaultValue: "en",
-    help: "The language the contents of the file are in (default: en)."
-});
-
 var args = argparser.parseArgs();
+var sources = require("./data.sources.json");
 
-var converterPath = "./converters/" + args.converter;
+var importData = function(options, callback) {
+    var converterPath = "./converters/" + options.converter + ".js";
 
-if (!fs.existsSync(converterPath)) {
-    console.error("Error: Converter file not found:", converterPath);
-    process.exit(0);
-}
+    if (!fs.existsSync(converterPath)) {
+        return callback("Error: Converter file not found: " + converterPath);
+    }
 
-if (!fs.existsSync(args.dataFile)) {
-    console.error("Error: Data file not found:", args.dataFile);
-    process.exit(0);
-}
+    if (!fs.existsSync(options.dataFile)) {
+        return callback("Error: Data file not found: " + options.dataFile);
+    }
 
-if (!fs.existsSync(args.imageDir)) {
-    console.error("Error: Directory not found:", args.imageDir);
-    process.exit(0);
-}
+    if (!fs.existsSync(options.imageDir)) {
+        return callback("Error: Directory not found: " + options.imageDir);
+    }
 
-core.init(function() {
     // Import the converter module
     var converter = require(converterPath);
 
     // Start a stream for the source's data file
-    var fileStream = fs.createReadStream(args.dataFile);
+    var fileStream = fs.createReadStream(options.dataFile);
 
     // Models
     var Image = core.models.Image;
     var ExtractedArtwork = core.models.ExtractedArtwork;
 
     converter.process(fileStream, function(data, callback) {
-        data._id = args.source + "/" + result.id;
-        data.lang = args.lang;
-        data.source = args.source;
+        data._id = options.source + "/" + result.id;
+        data.lang = options.lang;
+        data.source = options.source;
 
         async.eachLimit(data.images, function(imageData, callback) {
-            imageData.source = args.source;
+            imageData.source = options.source;
             imageData.fileName = imageData.fileName.replace(/^.*\//, "");
 
-            var imgFile = path.resolve(args.imageDir, imageData.fileName);
+            var imgFile = path.resolve(options.imageDir, imageData.fileName);
             var sourceDir = path.resolve(process.env.BASE_DATA_DIR,
-                args.source);
+                options.source);
 
             Image.addImage(imageData, imgFile, sourceDir, function(err, image) {
                 if (err) {
@@ -91,8 +72,29 @@ core.init(function() {
             console.log(model);
             model.save(callback);
         });
-    }, function() {
-        console.log("DONE");
+    }, callback);
+};
+
+core.init(function() {
+    var sourceOptions;
+
+    sources.forEach(function(options) {
+        if (options.source === args.source) {
+            sourceOptions = options;
+        }
+    });
+
+    if (!sourceOptions) {
+        console.error("Source not found in data.config.json.");
+        process.exit(0);
+    }
+
+    importData(sourceOptions, function(err) {
+        if (err) {
+            console.error(err);
+        } else {
+            console.log("DONE");
+        }
         process.exit(0);
     });
 });
