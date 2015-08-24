@@ -83,20 +83,5 @@ module.exports = function(lib) {
             }
         });
 
-    /*
-    ExtractedArtworkSchema.virtual("collection")
-        .get(function() {
-            return this.collections[0];
-        })
-        .set(function(collection) {
-            if (this.collections[0]) {
-                this.collections[0].remove();
-            }
-            if (collection && typeof collection !== "string") {
-                this.collections.push(collection);
-            }
-        });
-    */
-
     return mongoose.model("ExtractedArtwork", ExtractedArtworkSchema);
 };
