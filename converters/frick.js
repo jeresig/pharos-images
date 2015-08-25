@@ -58,7 +58,7 @@ module.exports = {
                 results[propName] = searchValue[1](value, row);
 
             } else if (typeof searchValue === "object") {
-                results[propName] = searchByProps(row, searchValue);
+                results[propName] = this.searchByProps(row, searchValue);
             }
         }
 
@@ -98,6 +98,8 @@ module.exports = {
     },
 
     process: function(fileStream, addModel, done) {
+        var results = [];
+
         fileStream
             .pipe(csv({
                 objectMode: true,
@@ -112,7 +114,7 @@ module.exports = {
             }.bind(this))
             .on("end", function() {
                 var filtered = this.cluster(results, "id", ["images"]);
-                async.eachLimit(filtered, 4, addModel, done);
+                async.eachLimit(filtered, 1, addModel, done);
             }.bind(this));
     }
 };

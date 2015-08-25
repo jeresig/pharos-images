@@ -44,11 +44,11 @@ var importData = function(options, callback) {
     var ExtractedArtwork = core.models.ExtractedArtwork;
 
     converter.process(fileStream, function(data, callback) {
-        data._id = options.source + "/" + result.id;
+        data._id = options.source + "/" + data.id;
         data.lang = options.lang;
         data.source = options.source;
 
-        async.eachLimit(data.images, function(imageData, callback) {
+        async.eachLimit(data.images, 1, function(imageData, callback) {
             imageData.source = options.source;
             imageData.fileName = imageData.fileName.replace(/^.*\//, "");
 
