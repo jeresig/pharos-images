@@ -6,23 +6,29 @@ var pd = require("parse-dimensions");
 
 module.exports = {
     propMap: {
-        id: "WORK ID",
-        title: "TITLE",
+        id: "Xinet_ID",
+        title: "Title",
         dateCreateds: ["WORK DATE", function(date, data) {
-            return yr.parse(date || data["CREATOR DATES"]);
+            // WorkDate_earliestDate
+            // WorkDate_latestDate
+            // Qualifier
+            return yr.parse(date || data["Creator_datesDisplay"]);
         }],
-        categories: "FRICK CLASSIFICATION",
-        objectType: "MATERIAL",
-        // material?
+        // Category ?
+        // Supplemental Categories
+        categories: "WorkSubject_classSubj",
+        objectType: "WorkMaterial_display",
         artists: {
-            name: "CREATOR",
-            dates: ["CREATOR DATES", function(date) {
+            name: "Creator",
+            dates: ["Creator_datesDisplay", function(date) {
                 return yr.parse(date);
-            }],
-            school: "SCHOOL"
+            }]
         },
-        // VARIANT ARTIST ???
         dimensions: ["MEASUREMENTS", function(dimension) {
+            // WorkMeasurements_d
+            // WorkMeasurements_h
+            // WorkMeasurements_w
+            // WorkMeasurements_unit
             if (dimension) {
                 return pd.parseDimensions(dimension);
             } else {
@@ -30,12 +36,12 @@ module.exports = {
             }
         }],
         collections: {
-            location: "COLLECTION CITY",
-            name: "COLLECTION"
+            location: "WorkLocation_city",
+            name: "WorkLocation_collection"
         },
         images: {
-            id: "BIBLIOGRAPHIC RECORD NUMBER",
-            fileName: ["PATH", function(path) {
+            id: "BibRecordNumberLong",
+            fileName: ["Path", function(path) {
                 return /([^\/]*)$/.exec(path.replace(/\.tif$/, ".jpg"))[0];
             }]
         }

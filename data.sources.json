@@ -3,7 +3,7 @@
         "source": "frick",
         "converter": "frick",
         "lang": "en",
-        "dataFile": "data/frick/import_italiananon.txt",
+        "dataFile": "data/frick/ITALANON_FORJOHN_FINAL.txt",
         "imageDir": "data/frick/images/"
     },
     {
