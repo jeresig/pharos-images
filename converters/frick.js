@@ -110,6 +110,7 @@ module.exports = {
             .pipe(csv({
                 objectMode: true,
                 delimiter: "\t",
+                newline: "\r",
                 columns: true
             }))
             .on("data", function(data) {
