@@ -68,8 +68,10 @@ module.exports = function(lib) {
             return process.env.BASE_DATA_URL +
                 (this.source._id || this.source) +
                 "/thumbs/" + this.imageName + ".jpg";
-        },
+        }
+    };
 
+    ImageSchema.statics = {
         addImage: function(imageData, imgFile, sourceDir, callback) {
             var source = imageData.source;
 
