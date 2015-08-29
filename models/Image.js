@@ -85,8 +85,6 @@ module.exports = function(lib) {
                         return callback(err);
                     }
 
-                    var Image = mongoose.model("Image");
-
                     // Use the source-provided ID if it exists
                     var id = imageData.id || hash;
 
@@ -95,14 +93,16 @@ module.exports = function(lib) {
                             return callback(err);
                         }
 
-                        callback(err, new Image({
-                            _id: source + "/" + id,
+                        var imageID = source + "/" + id;
+
+                        callback(err, {
+                            _id: imageID,
                             source: source,
                             imageName: hash,
-                            imageID: source + "/" + id,
+                            imageID: imageID,
                             width: dimensions.width,
                             height: dimensions.height
-                        }));
+                        });
                     });
                 });
         }

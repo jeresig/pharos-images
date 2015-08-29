@@ -56,21 +56,27 @@ var importData = function(options, callback) {
             var sourceDir = path.resolve(process.env.BASE_DATA_DIR,
                 options.source);
 
-            Image.addImage(imageData, imgFile, sourceDir, function(err, image) {
+            Image.addImage(imageData, imgFile, sourceDir, function(err, imageData) {
                 if (err) {
                     return callback(err);
                 }
 
-                image.extractedArtwork = data._id;
-                image.save(function() {
+                imageData.extractedArtwork = data._id;
+
+                Image.findByIdAndUpdate(imageData._id, imageData, {
+                    upsert: true
+                }, function(err, image) {
                     data.images.push(image._id);
                     callback();
                 });
             });
         }, function() {
-            var model = new ExtractedArtwork(data);
-            console.log(model);
-            model.save(callback);
+            ExtractedArtwork.findByIdAndUpdate(data._id, data, {
+                upsert: true
+            }, function(err, artwork) {
+                console.log(artwork);
+                callback(err);
+            });
         });
     }, callback);
 };
