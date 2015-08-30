@@ -43,6 +43,10 @@ var importData = function(options, callback) {
     var Image = core.models.Image;
     var ExtractedArtwork = core.models.ExtractedArtwork;
 
+    // Keep track of important statistics
+    var missingImages = [];
+    var emptyArtworks = [];
+
     converter.process(fileStream, function(data, callback) {
         data._id = options.source + "/" + data.id;
         data.lang = options.lang;
@@ -55,6 +59,17 @@ var importData = function(options, callback) {
             var imgFile = path.resolve(options.imageDir, imageData.fileName);
             var sourceDir = path.resolve(process.env.BASE_DATA_DIR,
                 options.source);
+
+            if (!fs.existsSync(imgFile)) {
+                console.log("Missing Image:", imageData.fileName);
+
+                missingImages.push({
+                    fileName: imageData.fileName,
+                    artworkID: data._id
+                });
+
+                return callback();
+            }
 
             Image.addImage(imageData, imgFile, sourceDir, function(err, imageData) {
                 if (err) {
@@ -74,17 +89,32 @@ var importData = function(options, callback) {
                         image = new Image(imageData);
                     }
 
-                    image.save(function(err) {
-                        callback(err, imageData._id);
-                    });
+                    callback(err, image);
                 });
             });
-        }, function(err, imageIDs) {
+        }, function(err, images) {
             if (err) {
                 return callback(err);
             }
 
-            data.images = imageIDs;
+            // Filter out missing images
+            images = images.filter(function(image) {
+                return !!image;
+            });
+
+            if (images.length === 0) {
+                console.log("Empty Artwork:", data._id);
+
+                emptyArtworks.push({
+                    artworkID: data._id
+                });
+
+                return callback();
+            }
+
+            data.images = images.map(function(image) {
+                return image._id;
+            });
 
             ExtractedArtwork.findById(data._id, function(err, artwork) {
                 if (err) {
@@ -97,9 +127,19 @@ var importData = function(options, callback) {
                     artwork = new ExtractedArtwork(data);
                 }
 
-                console.log("Saving...", artwork, data);
+                console.log("Saving Artwork...", artwork._id);
 
-                artwork.save(callback);
+                artwork.save(function(err) {
+                    if (err) {
+                        return callback(err);
+                    }
+
+                    // Now that we know we can save all the images
+                    async.eachLimit(images, 1, function(image, callback) {
+                        console.log("Saving Image...", image._id);
+                        image.save(callback);
+                    }, callback);
+                });
             });
         });
     }, callback);

@@ -9,10 +9,10 @@ module.exports = {
         dateCreateds: {
             label: "DTZG",
             start: ["DTSI", function(val) {
-                return val.replace(/^(\d+).*$/, "$1");
+                return parseFloat(val);
             }],
             end: ["DTSF", function(val) {
-                return val.replace(/^(\d+).*$/, "$1");
+                return parseFloat(val);
             }],
             circa: "DTSV" // "DTSL"
         },
@@ -95,7 +95,7 @@ module.exports = {
             var xmlDoc = libxmljs.parseXml(fileData.toString("utf8"));
             var matches = xmlDoc.find("//SCHEDA");
 
-            async.eachLimit(matches, 4, function(node, callback) {
+            async.eachLimit(matches, 1, function(node, callback) {
                 var result = this.searchByProps(node, this.propMap);
                 addModel(result, callback);
             }.bind(this), done);

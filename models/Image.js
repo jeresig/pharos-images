@@ -76,10 +76,6 @@ module.exports = function(lib) {
         addImage: function(imageData, imgFile, sourceDir, callback) {
             var source = imageData.source;
 
-            if (!fs.existsSync(imgFile)) {
-                return callback(new Error("File not found: " + imgFile));
-            }
-
             lib.images.processImage(imgFile, sourceDir, false,
                 function(err, hash) {
                     if (err) {
