@@ -8,8 +8,12 @@ module.exports = {
         title: "SGTI",
         dateCreateds: {
             label: "DTZG",
-            start: "DTSI",
-            end: "DTSF",
+            start: ["DTSI", function(val) {
+                return val.replace(/^(\d+).*$/, "$1");
+            }],
+            end: ["DTSF", function(val) {
+                return val.replace(/^(\d+).*$/, "$1");
+            }],
             circa: "DTSV" // "DTSL"
         },
         medium: "MTC",
@@ -35,8 +39,8 @@ module.exports = {
             every: "FOTO",
             data: {
                 id: "@sercdf",
-                path: [".", function(val) {
-                    return /.*\//.replace(val);
+                fileName: [".", function(val) {
+                    return val.replace(/^.*\//, "");
                 }]
             }
         }
@@ -95,6 +99,6 @@ module.exports = {
                 var result = this.searchByProps(node, this.propMap);
                 addModel(result, callback);
             }.bind(this), done);
-        }));
+        }.bind(this)));
     }
 };

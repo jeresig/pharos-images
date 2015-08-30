@@ -3,21 +3,21 @@
         "source": "frick",
         "converter": "frick",
         "lang": "en",
-        "dataFile": "data/frick/ITALANON_FORJOHN_FINAL.txt",
-        "imageDir": "data/frick/images/"
+        "dataFile": "sources/frick/ITALANON_FORJOHN_FINAL.txt",
+        "imageDir": "sources/frick/images/"
     },
     {
         "source": "fzeri",
         "converter": "fzeri",
         "lang": "it",
-        "dataFile": "data/fzeri/fzeri_F_2014_10_10_103330.xml",
-        "imageDir": "data/fzeri/images/"
+        "dataFile": "sources/fzeri/fzeri_F_2014_10_10_103330.xml",
+        "imageDir": "sources/fzeri/images/"
     },
     {
         "source": "nga",
         "converter": "marc",
         "lang": "en",
-        "dataFile": "data/nga/pharos-ngaholdings.mrc",
-        "imageDir": "data/nga/images/"
+        "dataFile": "sources/nga/pharos-ngaholdings.mrc",
+        "imageDir": "sources/nga/images/"
     }
 ]

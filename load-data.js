@@ -48,7 +48,7 @@ var importData = function(options, callback) {
         data.lang = options.lang;
         data.source = options.source;
 
-        async.eachLimit(data.images, 1, function(imageData, callback) {
+        async.mapLimit(data.images, 1, function(imageData, callback) {
             imageData.source = options.source;
             imageData.fileName = imageData.fileName.replace(/^.*\//, "");
 
@@ -63,19 +63,43 @@ var importData = function(options, callback) {
 
                 imageData.extractedArtwork = data._id;
 
-                Image.findByIdAndUpdate(imageData._id, imageData, {
-                    upsert: true
-                }, function(err, image) {
-                    data.images.push(image._id);
-                    callback();
+                Image.findById(imageData._id, function(err, image) {
+                    if (err) {
+                        return callback(err);
+                    }
+
+                    if (image) {
+                        image.set(imageData);
+                    } else {
+                        image = new Image(imageData);
+                    }
+
+                    image.save(function(err) {
+                        callback(err, imageData._id);
+                    });
                 });
             });
-        }, function() {
-            ExtractedArtwork.findByIdAndUpdate(data._id, data, {
-                upsert: true
-            }, function(err, artwork) {
-                console.log(artwork);
-                callback(err);
+        }, function(err, imageIDs) {
+            if (err) {
+                return callback(err);
+            }
+
+            data.images = imageIDs;
+
+            ExtractedArtwork.findById(data._id, function(err, artwork) {
+                if (err) {
+                    return callback(err);
+                }
+
+                if (artwork) {
+                    artwork.set(data);
+                } else {
+                    artwork = new ExtractedArtwork(data);
+                }
+
+                console.log("Saving...", artwork, data);
+
+                artwork.save(callback);
             });
         });
     }, callback);

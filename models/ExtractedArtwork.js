@@ -1,4 +1,5 @@
 var mongoose = require("mongoose");
+var versioner = require("mongoose-version");
 
 module.exports = function(lib) {
     try {
@@ -48,13 +49,9 @@ module.exports = function(lib) {
 
         collections: [Collection],
 
-        categories: [String]
-        /*
-        images: [{
-            id: String,
-            fileName: String
-        }]
-        */
+        categories: [String],
+
+        images: [{type: String, ref: "Image"}]
     });
 
     ExtractedArtworkSchema.virtual("dateCreated")
@@ -82,6 +79,13 @@ module.exports = function(lib) {
                 this.dimensions.push(dimension);
             }
         });
+
+    ExtractedArtworkSchema.plugin(versioner, {
+        collection: "extractedartwork_versions",
+        suppressVersionIncrement: false,
+        strategy: "collection",
+        mongoose: mongoose
+    });
 
     return mongoose.model("ExtractedArtwork", ExtractedArtworkSchema);
 };

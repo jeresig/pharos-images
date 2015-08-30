@@ -2,6 +2,7 @@ var fs = require("fs");
 var path = require("path");
 
 var mongoose = require("mongoose");
+var versioner = require("mongoose-version");
 
 module.exports = function(lib) {
     try {
@@ -107,6 +108,13 @@ module.exports = function(lib) {
                 });
         }
     };
+
+    ImageSchema.plugin(versioner, {
+        collection: "image_versions",
+        suppressVersionIncrement: false,
+        strategy: "collection",
+        mongoose: mongoose
+    });
 
     return mongoose.model("Image", ImageSchema);
 };
