@@ -2,6 +2,8 @@ var async = require("async");
 var concat = require("concat-stream");
 var libxmljs = require("libxmljs");
 
+var pd = require("parse-dimensions");
+
 module.exports = {
     propMap: {
         id: "SERCD",
@@ -14,15 +16,20 @@ module.exports = {
             end: ["DTSF", function(val) {
                 return parseFloat(val);
             }],
-            circa: "DTSV" // "DTSL"
+            circa: ["DTSV", function(val, getByTagName) {
+                return val || getByTagName("DTSL");
+            }]
         },
         medium: "MTC",
         objectType: "OGTT",
-        dimensions: {
-            height: "MISA",
-            width: "MISL",
-            unit: "MISU"
-        },
+        dimensions: ["MISU", function(unit, getByTagName) {
+            if (unit) {
+                return pd.parseDimensions(
+                    getByTagName("MISL") + unit + " x " +
+                    getByTagName("MISA") + unit
+                );
+            }
+        }],
         collections: {
             name: "LDCN",
             country: "PVCS",
@@ -49,6 +56,15 @@ module.exports = {
     searchByProps: function(root, propMap) {
         var results = {};
 
+        var getByTagName = function(name) {
+            var node = root.get(".//" + name);
+            if (node) {
+                return (node.value ?
+                    node.value() :
+                    node.text());
+            }
+        };
+
         for (var propName in propMap) {
             var searchValue = propMap[propName];
             var hasFilter = Array.isArray(searchValue);
@@ -62,17 +78,12 @@ module.exports = {
                     results[propName] = root.text();
 
                 } else {
-                    var node = root.get(".//" + searchValue);
-                    if (node) {
-                        results[propName] = (node.value ?
-                            node.value() :
-                            node.text());
-                    }
+                    results[propName] = getByTagName(searchValue);
                 }
 
                 if (hasFilter) {
                     results[propName] =
-                        propMap[propName][1](results[propName], results);
+                        propMap[propName][1](results[propName], getByTagName);
                 }
 
             } else if (typeof searchValue === "object") {
