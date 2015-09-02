@@ -40,7 +40,6 @@ var importData = function(options, callback) {
     var fileStream = fs.createReadStream(options.dataFile);
 
     // Models
-    var Image = core.models.Image;
     var ExtractedArtwork = core.models.ExtractedArtwork;
 
     // Keep track of important statistics
@@ -52,97 +51,66 @@ var importData = function(options, callback) {
         data.lang = options.lang;
         data.source = options.source;
 
-        async.mapLimit(data.images, 1, function(imageData, callback) {
-            imageData.source = options.source;
-            imageData.fileName = imageData.fileName.replace(/^.*\//, "");
-
-            var imgFile = path.resolve(options.imageDir, imageData.fileName);
-            var sourceDir = path.resolve(process.env.BASE_DATA_DIR,
-                options.source);
-
-            if (!fs.existsSync(imgFile)) {
-                console.log("Missing Image:", imageData.fileName);
-
-                missingImages.push({
-                    fileName: imageData.fileName,
-                    artworkID: data._id
-                });
-
-                return callback();
-            }
-
-            Image.addImage(imageData, imgFile, sourceDir, function(err, imageData) {
-                if (err) {
-                    return callback(err);
-                }
-
-                imageData.extractedArtwork = data._id;
-
-                Image.findById(imageData._id, function(err, image) {
-                    if (err) {
-                        return callback(err);
-                    }
-
-                    if (image) {
-                        image.set(imageData);
-                    } else {
-                        image = new Image(imageData);
-                    }
-
-                    callback(err, image);
-                });
-            });
-        }, function(err, images) {
+        ExtractedArtwork.findById(data._id, function(err, artwork) {
             if (err) {
                 return callback(err);
             }
 
-            // Filter out missing images
-            images = images.filter(function(image) {
-                return !!image;
-            });
+            var images = data.images;
+            delete data.images;
 
-            if (images.length === 0) {
-                console.log("Empty Artwork:", data._id);
-
-                emptyArtworks.push({
-                    artworkID: data._id
-                });
-
-                return callback();
+            if (artwork) {
+                artwork.set(data);
+            } else {
+                artwork = new ExtractedArtwork(data);
             }
 
-            data.images = images.map(function(image) {
-                return image._id;
-            });
+            async.mapLimit(images, 2, function(imageData, callback) {
+                imageData.source = data.source;
+                imageData.fileName = imageData.fileName.replace(/^.*\//, "");
 
-            ExtractedArtwork.findById(data._id, function(err, artwork) {
+                var imgFile = path.resolve(options.imageDir,
+                    imageData.fileName);
+                var sourceDir = path.resolve(process.env.BASE_DATA_DIR,
+                    options.source);
+
+                if (!fs.existsSync(imgFile)) {
+                    console.log("Missing Image:", imageData.fileName);
+
+                    missingImages.push({
+                        fileName: imageData.fileName,
+                        artworkID: data._id
+                    });
+
+                    return callback();
+                }
+
+                artwork.addImage(imageData, imgFile, sourceDir, callback);
+            }, function(err) {
                 if (err) {
                     return callback(err);
                 }
 
-                if (artwork) {
-                    artwork.set(data);
-                } else {
-                    artwork = new ExtractedArtwork(data);
+                if (artwork.images.length === 0) {
+                    console.log("Empty Artwork:", data._id);
+
+                    emptyArtworks.push({
+                        artworkID: data._id
+                    });
+
+                    return callback();
                 }
 
                 console.log("Saving Artwork...", artwork._id);
-
-                artwork.save(function(err) {
-                    if (err) {
-                        return callback(err);
-                    }
-
-                    // Now that we know we can save all the images
-                    async.eachLimit(images, 1, function(image, callback) {
-                        console.log("Saving Image...", image._id);
-                        image.save(callback);
-                    }, callback);
-                });
+                artwork.save(callback);
             });
         });
-    }, callback);
+    }, function(err) {
+        callback(err, {
+            missingImages: missingImages,
+            emptyArtworks: emptyArtworks
+        });
+    });
 };
 
 core.init(function() {

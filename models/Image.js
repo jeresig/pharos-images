@@ -2,13 +2,8 @@ var fs = require("fs");
 var path = require("path");
 
 var mongoose = require("mongoose");
-var versioner = require("mongoose-version");
 
 module.exports = function(lib) {
-    try {
-        return mongoose.model("Image");
-    } catch(e) {}
-
     var ImageSchema = new lib.db.schema({
         // UUID of the image (Format: SOURCE/IMAGEMD5)
         _id: String,
@@ -48,10 +43,9 @@ module.exports = function(lib) {
             overlay: String,
             image: {type: String, ref: "Image"}
         }]
-    }, {
-        collection: "images"
     });
 
+    /*
     ImageSchema.methods = {
         getOriginalURL: function() {
             return process.env.BASE_DATA_URL +
@@ -71,46 +65,7 @@ module.exports = function(lib) {
                 "/thumbs/" + this.imageName + ".jpg";
         }
     };
+    */
 
-    ImageSchema.statics = {
-        addImage: function(imageData, imgFile, sourceDir, callback) {
-            var source = imageData.source;
-
-            lib.images.processImage(imgFile, sourceDir, false,
-                function(err, hash) {
-                    if (err) {
-                        return callback(err);
-                    }
-
-                    // Use the source-provided ID if it exists
-                    var id = imageData.id || hash;
-
-                    lib.images.getSize(imgFile, function(err, dimensions) {
-                        if (err) {
-                            return callback(err);
-                        }
-
-                        var imageID = source + "/" + id;
-
-                        callback(err, {
-                            _id: imageID,
-                            source: source,
-                            imageName: hash,
-                            imageID: imageID,
-                            width: dimensions.width,
-                            height: dimensions.height
-                        });
-                    });
-                });
-        }
-    };
-
-    ImageSchema.plugin(versioner, {
-        collection: "image_versions",
-        suppressVersionIncrement: false,
-        strategy: "collection",
-        mongoose: mongoose
-    });
-
-    return mongoose.model("Image", ImageSchema);
+    return ImageSchema;
 };

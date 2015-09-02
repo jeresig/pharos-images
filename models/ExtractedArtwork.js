@@ -11,6 +11,7 @@ module.exports = function(lib) {
     var Dimension = require("./Dimension")(lib);
     var Collection = require("./Collection")(lib);
     var Artist = require("./Artist")(lib);
+    var Image = require("./Image")(lib);
 
     var ExtractedArtworkSchema = new mongoose.Schema({
         // UUID of the image (Format: SOURCE/IMAGEMD5)
@@ -51,7 +52,7 @@ module.exports = function(lib) {
 
         categories: [String],
 
-        images: [{type: String, ref: "Image"}]
+        images: [Image]
     });
 
     ExtractedArtworkSchema.virtual("dateCreated")
@@ -79,6 +80,46 @@ module.exports = function(lib) {
                 this.dimensions.push(dimension);
             }
         });
+
+    ExtractedArtworkSchema.methods = {
+        addImage: function(imageData, imgFile, sourceDir, callback) {
+            var model = this;
+            var source = imageData.source;
+
+            lib.images.processImage(imgFile, sourceDir, false,
+                function(err, hash) {
+                    if (err) {
+                        return callback(err);
+                    }
+
+                    // Use the source-provided ID if it exists
+                    var id = imageData.id || hash;
+                    var imageID = source + "/" + id;
+
+                    // Stop if the image is already in the images list
+                    if (model.images.some(function(image) {
+                        return image.imageID === imageID;
+                    })) {
+                        return callback();
+                    }
+
+                    lib.images.getSize(imgFile, function(err, dimensions) {
+                        if (err) {
+                            return callback(err);
+                        }
+
+                        model.images.push({
+                            imageName: hash,
+                            imageID: imageID,
+                            width: dimensions.width,
+                            height: dimensions.height
+                        });
+
+                        callback();
+                    });
+                });
+        }
+    };
 
     ExtractedArtworkSchema.plugin(versioner, {
         collection: "extractedartwork_versions",
