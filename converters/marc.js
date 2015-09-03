@@ -1,9 +1,10 @@
+var async = require("async");
 var marc = require("marcjs");
 
 var yr = require("yearrange");
 var pd = require("parse-dimensions");
 
-modules.exports = {
+module.exports = {
     propMap: {
         id: ["001"],
         title: ["245", ["a"]],
@@ -39,7 +40,13 @@ modules.exports = {
                 name: results[0]
             };
         }],
-        images: ["856", ["u"]]
+        images: ["856", ["u"], function(results) {
+            var fileName = results[0].replace(/^.*\//, "");
+            return {
+                id: fileName.replace(/\.jpg$/, ""),
+                fileName: fileName
+            };
+        }]
     },
 
     parseRecord: function(record) {
@@ -103,19 +110,15 @@ modules.exports = {
     },
 
     process: function(fileStream, addModel, done) {
+        var results = [];
         var reader = new marc.getReader(fileStream, "iso2709");
 
         reader.on("data", function(record) {
-            this.pause();
+            results.push(this.parseRecord(record));
+        }.bind(this));
 
-            var result = this.parseRecord(record);
-
-            addModel(result, function() {
-                console.log(model);
-                this.resume();
-            }.bind(this));
+        reader.on("end", function() {
+            async.eachLimit(results, 4, addModel, done);
         });
-
-        reader.on("end", done);
     }
 };

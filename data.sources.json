@@ -17,7 +17,7 @@
         "source": "nga",
         "converter": "marc",
         "lang": "en",
-        "dataFile": "sources/nga/pharos-ngaholdings.mrc",
+        "dataFile": "sources/nga/pharos-ngabibs.mrc",
         "imageDir": "sources/nga/images/"
     }
 ]

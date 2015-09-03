@@ -59,6 +59,10 @@ var importData = function(options, callback) {
             var images = data.images;
             delete data.images;
 
+            if (!Array.isArray(images)) {
+                images = [images];
+            }
+
             if (artwork) {
                 artwork.set(data);
             } else {
