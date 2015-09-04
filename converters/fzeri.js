@@ -101,8 +101,8 @@ module.exports = {
         return results;
     },
 
-    process: function(fileStream, addModel, done) {
-        fileStream.pipe(concat(function(fileData) {
+    process: function(fileStreams, addModel, done) {
+        fileStreams[0].pipe(concat(function(fileData) {
             var xmlDoc = libxmljs.parseXml(fileData.toString("utf8"));
             var matches = xmlDoc.find("//SCHEDA");
 

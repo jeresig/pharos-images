@@ -25,9 +25,11 @@ var importData = function(options, callback) {
         return callback("Error: Converter file not found: " + converterPath);
     }
 
-    if (!fs.existsSync(options.dataFile)) {
-        return callback("Error: Data file not found: " + options.dataFile);
-    }
+    options.dataFiles.forEach(function(file) {
+        if (!fs.existsSync(file)) {
+            return callback("Error: Data file not found: " + file);
+        }
+    });
 
     if (!fs.existsSync(options.imageDir)) {
         return callback("Error: Directory not found: " + options.imageDir);
@@ -37,7 +39,9 @@ var importData = function(options, callback) {
     var converter = require(converterPath);
 
     // Start a stream for the source's data file
-    var fileStream = fs.createReadStream(options.dataFile);
+    var fileStreams = options.dataFiles.map(function(file) {
+        return fs.createReadStream(file);
+    });
 
     // Models
     var ExtractedArtwork = core.models.ExtractedArtwork;
@@ -46,7 +50,7 @@ var importData = function(options, callback) {
     var missingImages = [];
     var emptyArtworks = [];
 
-    converter.process(fileStream, function(data, callback) {
+    converter.process(fileStreams, function(data, callback) {
         data._id = options.source + "/" + data.id;
         data.lang = options.lang;
         data.source = options.source;

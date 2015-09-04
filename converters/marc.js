@@ -7,6 +7,7 @@ var pd = require("parse-dimensions");
 module.exports = {
     propMap: {
         id: ["001"],
+        bibID: ["004"],
         title: ["245", ["a"]],
         dateCreated: ["260", ["c"], function(results) {
             return yr.parse(results[0]);
@@ -109,16 +110,38 @@ module.exports = {
         return result;
     },
 
-    process: function(fileStream, addModel, done) {
-        var results = [];
-        var reader = new marc.getReader(fileStream, "iso2709");
+    process: function(fileStreams, addModel, done) {
+        var bibStream = fileStreams[0];
+        var holdingStream = fileStreams[1];
 
-        reader.on("data", function(record) {
-            results.push(this.parseRecord(record));
+        var bibs = {};
+        var bibReader = new marc.getReader(bibStream, "iso2709");
+
+        bibReader.on("data", function(record) {
+            var result = this.parseRecord(record);
+            result.images = [];
+            bibs[result.id] = result;
         }.bind(this));
 
-        reader.on("end", function() {
-            async.eachLimit(results, 4, addModel, done);
-        });
+        bibReader.on("end", function() {
+            var holdingReader = new marc.getReader(holdingStream, "iso2709");
+
+            holdingReader.on("data", function(record) {
+                var result = this.parseRecord(record);
+
+                if (result.bibID in bibs) {
+                    result.images.id = result.id;
+                    bibs[result.bibID].images.push(result.images);
+                }
+            }.bind(this));
+
+            holdingReader.on("end", function() {
+                var entries = Object.keys(bibs).map(function(id) {
+                    return bibs[id];
+                });
+
+                async.eachLimit(entries, 1, addModel, done);
+            });
+        }.bind(this));
     }
 };
