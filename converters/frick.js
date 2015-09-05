@@ -8,11 +8,16 @@ module.exports = {
     propMap: {
         id: "Xinet_ID",
         title: "Title",
-        dateCreateds: ["WORK DATE", function(date, data) {
-            // WorkDate_earliestDate
-            // WorkDate_latestDate
-            // Qualifier
-            return yr.parse(date || data["Creator_datesDisplay"]);
+        dateCreateds: ["WorkDate_earliestDate", function(earliest, data) {
+            if (earliest) {
+                return {
+                    start: parseFloat(earliest),
+                    end: parseFloat(data.WorkDate_latestDate),
+                    circa: !!(data.Qualifier)
+                };
+            }
+
+            return yr.parse(data.Creator_datesDisplay);
         }],
         // Category ?
         // Supplemental Categories
@@ -24,15 +29,9 @@ module.exports = {
                 return yr.parse(date);
             }]
         },
-        dimensions: ["MEASUREMENTS", function(dimension) {
-            // WorkMeasurements_d
-            // WorkMeasurements_h
-            // WorkMeasurements_w
-            // WorkMeasurements_unit
-            if (dimension) {
-                return pd.parseDimensions(dimension);
-            } else {
-                return [];
+        dimensions: ["WorkMeasurements_display", function(measurement, data) {
+            if (measurement) {
+                return pd.parseDimension(measurement);
             }
         }],
         collections: {
@@ -41,8 +40,8 @@ module.exports = {
         },
         images: {
             id: "BibRecordNumberLong",
-            fileName: ["Path", function(path) {
-                return /([^\/]*)$/.exec(path.replace(/\.tif$/, ".jpg"))[0];
+            fileName: ["Filename", function(fileName, data) {
+                return fileName.replace(/\.tif$/, ".jpg");
             }]
         }
     },
@@ -103,10 +102,10 @@ module.exports = {
         });
     },
 
-    process: function(fileStream, addModel, done) {
+    process: function(fileStreams, addModel, done) {
         var results = [];
 
-        fileStream
+        fileStreams[0]
             .pipe(csv({
                 objectMode: true,
                 delimiter: "\t",
@@ -114,7 +113,14 @@ module.exports = {
                 columns: true
             }))
             .on("data", function(data) {
-                var result = this.searchByProps(data, this.propMap);
+                var newData = {};
+
+                for (var prop in data) {
+                    var cleanProp = prop.replace(/\s*\*?$/, "");
+                    newData[cleanProp] = data[prop].replace(/\\N/g, "");
+                }
+
+                var result = this.searchByProps(newData, this.propMap);
                 if (result.id) {
                     results.push(result);
                 }
