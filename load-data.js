@@ -82,7 +82,7 @@ var importData = function(options, callback) {
                 var sourceDir = path.resolve(process.env.BASE_DATA_DIR,
                     options.source);
 
-                if (!fs.existsSync(imgFile)) {
+                if (!imageData.fileName || !fs.existsSync(imgFile)) {
                     console.log("Missing Image:", imageData.fileName);
 
                     missingImages.push({
