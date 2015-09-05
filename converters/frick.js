@@ -6,7 +6,7 @@ var pd = require("parse-dimensions");
 
 module.exports = {
     propMap: {
-        id: "Xinet_ID",
+        id: "BibRecordNumberLong",
         title: "Title",
         dateCreateds: ["WorkDate_earliestDate", function(earliest, data) {
             if (earliest) {
@@ -39,7 +39,7 @@ module.exports = {
             name: "WorkLocation_collection"
         },
         images: {
-            id: "BibRecordNumberLong",
+            id: "Xinet_ID",
             fileName: ["Filename", function(fileName, data) {
                 return fileName.replace(/\.tif$/, ".jpg");
             }]
