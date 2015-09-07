@@ -44,7 +44,7 @@ var importData = function(options, callback) {
     });
 
     // Models
-    var ExtractedArtwork = core.models.ExtractedArtwork;
+    var Artwork = core.models.Artwork;
 
     // Keep track of important statistics
     var missingImages = [];
@@ -55,7 +55,7 @@ var importData = function(options, callback) {
         data.lang = options.lang;
         data.source = options.source;
 
-        ExtractedArtwork.findById(data._id, function(err, artwork) {
+        Artwork.findById(data._id, function(err, artwork) {
             if (err) {
                 return callback(err);
             }
@@ -70,7 +70,7 @@ var importData = function(options, callback) {
             if (artwork) {
                 artwork.set(data);
             } else {
-                artwork = new ExtractedArtwork(data);
+                artwork = new Artwork(data);
             }
 
             async.mapLimit(images, 2, function(imageData, callback) {

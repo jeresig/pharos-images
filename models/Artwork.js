@@ -1,9 +1,10 @@
 var mongoose = require("mongoose");
 var versioner = require("mongoose-version");
+var mongoosastic = require("mongoosastic");
 
 module.exports = function(lib) {
     try {
-        return mongoose.model("ExtractedArtwork");
+        return mongoose.model("Artwork");
     } catch(e) {}
 
     var Name = require("./Name")(lib);
@@ -13,7 +14,7 @@ module.exports = function(lib) {
     var Artist = require("./Artist")(lib);
     var Image = require("./Image")(lib);
 
-    var ExtractedArtworkSchema = new mongoose.Schema({
+    var ArtworkSchema = new mongoose.Schema({
         // UUID of the image (Format: SOURCE/IMAGEMD5)
         _id: String,
 
@@ -55,7 +56,7 @@ module.exports = function(lib) {
         images: [Image]
     });
 
-    ExtractedArtworkSchema.virtual("dateCreated")
+    ArtworkSchema.virtual("dateCreated")
         .get(function() {
             return this.dateCreateds[0];
         })
@@ -68,7 +69,7 @@ module.exports = function(lib) {
             }
         });
 
-    ExtractedArtworkSchema.virtual("dimension")
+    ArtworkSchema.virtual("dimension")
         .get(function() {
             return this.dimensions[0];
         })
@@ -81,7 +82,7 @@ module.exports = function(lib) {
             }
         });
 
-    ExtractedArtworkSchema.methods = {
+    ArtworkSchema.methods = {
         addImage: function(imageData, imgFile, sourceDir, callback) {
             var model = this;
             var source = imageData.source;
@@ -121,12 +122,13 @@ module.exports = function(lib) {
         }
     };
 
-    ExtractedArtworkSchema.plugin(versioner, {
+    ArtworkSchema.plugin(mongoosastic, lib.db.mongoosastic);
+    ArtworkSchema.plugin(versioner, {
         collection: "extractedartwork_versions",
         suppressVersionIncrement: false,
         strategy: "collection",
         mongoose: mongoose
     });
 
-    return mongoose.model("ExtractedArtwork", ExtractedArtworkSchema);
+    return mongoose.model("Artwork", ArtworkSchema);
 };
