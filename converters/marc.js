@@ -30,7 +30,9 @@ module.exports = {
             return data;
         }],
         dimensions: ["300", ["c"], function(results) {
-            return results[0] ? pd.parseDimensions(results[0]) : undefined;
+            // Flip the results, assume height is first
+            return results[0] ?
+                pd.parseDimensions(results[0], true) : undefined;
         }],
         collections: ["710", ["a"], function(results) {
             if (!results[0]) {
