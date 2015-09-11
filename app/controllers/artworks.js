@@ -84,7 +84,12 @@ app.imageSearch = function(req, res, filter, tmplParams) {
         ];
     }
 
-    Image.search(query, {hydrate: true, hydrateOptions: {populate: "artists.artist source"}}, function(err, results){
+    Image.search(query, {
+        hydrate: true,
+        hydrateOptions: {
+            populate: "artists.artist source"
+        }
+    }, function(err, results){
         if (err) {
             console.error(err);
             return res.render("500");
@@ -112,8 +117,8 @@ app.imageSearch = function(req, res, filter, tmplParams) {
 
         res.render("images/index", _.extend({
             q: req.param("q"),
-            startDate: req.param("startDate") || "1765",
-            endDate: req.param("endDate") || "1868",
+            startDate: req.param("startDate") || process.env.DEFAULT_START_DATE,
+            endDate: req.param("endDate") || process.env.DEFAULT_END_DATE,
             images: results.hits,
             total: results.total,
 			start: start || 1,
