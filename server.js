@@ -8,25 +8,25 @@ require("dotenv").load();
 
 require("express-namespace");
 
-var ukiyoe = require("ukiyoe-models");
+var core = require("./models");
 
-ukiyoe.db.connect(function() {
+core.db.connect(function() {
     fs.readdirSync(__dirname + "/app/models").forEach(function (file) {
         if (~file.indexOf(".js")) {
-            require(__dirname + "/app/models/" + file)(ukiyoe);
+            require(__dirname + "/app/models/" + file)(core);
         }
     });
 
     // Bootstrap passport config
-    require("./config/passport")(passport, ukiyoe);
+    require("./config/passport")(passport, core);
 
     var app = express();
 
     // Bootstrap application settings
-    require("./config/express")(app, passport);
+    require("./config/express")(app, passport, core);
 
     // Bootstrap routes
-    require("./config/routes")(app, passport, ukiyoe);
+    require("./config/routes")(app, passport, core);
 
     // Start the app by listening on <port>
     var port = process.env.PORT;
