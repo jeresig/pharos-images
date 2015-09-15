@@ -4,9 +4,12 @@
  */
 module.exports = function(ukiyoe, app) {
 
+// Bail for now, we may not need this
+return;
+
 var Image = ukiyoe.db.model("Image"),
     qs = require("querystring"),
-    utils = require("../../lib/utils"),
+    utils = require("../lib/utils"),
     _ = require("lodash"),
     exports = {};
 

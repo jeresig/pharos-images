@@ -4,7 +4,7 @@ var request = require("request");
 module.exports = function(ukiyoe, app) {
 
 var Upload = ukiyoe.db.model("Upload"),
-    utils = require("../../lib/utils"),
+    utils = require("../lib/utils"),
     exports = {};
 
 Upload.prototype.getURL = function(locale) {

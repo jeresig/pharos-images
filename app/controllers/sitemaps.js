@@ -1,6 +1,6 @@
 module.exports = function(ukiyoe, app) {
 
-var Image = ukiyoe.db.model("Image");
+var Artwork = ukiyoe.db.model("Artwork");
 var Source = ukiyoe.db.model("Source");
 var Artist = ukiyoe.db.model("Artist");
 
@@ -15,7 +15,7 @@ var renderSitemap = function(res, sites) {
 
 return {
     index: function(req, res) {
-        Image.count().exec(function(err, total) {
+        Artwork.count().exec(function(err, total) {
             var sitemaps = [
                 { url: app.genURL(req.i18n.getLocale(),
                     "/sitemap-sources.xml") },
@@ -38,7 +38,7 @@ return {
     },
 
     search: function(req, res) {
-        Image.find().limit(numPerMap).skip(req.params.start).exec(function(err, images) {
+        Artwork.find().limit(numPerMap).skip(req.params.start).exec(function(err, images) {
             var sites = images.map(function(item) {
                 return {
                     url: item.getURL(req.i18n.getLocale()),

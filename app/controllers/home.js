@@ -3,7 +3,7 @@ var async = require("async");
 module.exports = function(ukiyoe) {
 
 var Era = ukiyoe.db.model("Era");
-var Image = ukiyoe.db.model("Image");
+var Artwork = ukiyoe.db.model("Artwork");
 var Artist = ukiyoe.db.model("Artist");
 
 var exports = {};
@@ -19,7 +19,7 @@ exports.index = function (req, res) {
                     callback();
                 });
         }, function() {
-            Image.count(function(err, total) {
+            Artwork.count(function(err, total) {
                 res.render("home/index", {
                     title: req.i18n.__("Japanese Woodblock Print Search"),
                     desc: req.i18n.__("Japanese Woodblock print search engine. Searches thousands of Ukiyo-e, Meiji, Shin Hanga, and Sosaku Hanga prints."),

@@ -5,7 +5,7 @@
 module.exports = function(ukiyoe) {
 
 var Bio = ukiyoe.db.model("Bio"),
-    utils = require("../../lib/utils"),
+    utils = require("../lib/utils"),
     _ = require("lodash"),
     exports = {};
 

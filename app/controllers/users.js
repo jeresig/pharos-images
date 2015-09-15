@@ -5,7 +5,7 @@
 module.exports = function(ukiyoe) {
 
 var User = ukiyoe.db.model("User"),
-    utils = require("../../lib/utils"),
+    utils = require("../lib/utils"),
     exports = {};
 
 var login = function(req, res) {

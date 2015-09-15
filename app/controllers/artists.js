@@ -6,8 +6,7 @@ var async = require("async");
 module.exports = function(ukiyoe, app) {
 
 var Artist = ukiyoe.db.model("Artist"),
-    Image = ukiyoe.db.model("Image"),
-    utils = require("../../lib/utils"),
+    utils = require("../lib/utils"),
     _ = require("lodash"),
     exports = {};
 

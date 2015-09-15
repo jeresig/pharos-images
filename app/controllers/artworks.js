@@ -6,7 +6,7 @@ module.exports = function(ukiyoe, app) {
 
 var Artwork = ukiyoe.db.model("Artwork"),
     qs = require("querystring"),
-    utils = require("../../lib/utils"),
+    utils = require("../lib/utils"),
     _ = require("lodash"),
     exports = {};
 

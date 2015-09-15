@@ -4,8 +4,8 @@ var _ = require("lodash");
 module.exports = function(ukiyoe, app) {
 
 var Source = ukiyoe.db.model("Source"),
-    Image = ukiyoe.db.model("Image"),
-    utils = require("../../lib/utils"),
+    Artwork = ukiyoe.db.model("Artwork"),
+    utils = require("../lib/utils"),
     sourceTypes = require("../../data/source-types.json"),
     sourceTypeMap = {},
     exports = {},
@@ -55,7 +55,7 @@ exports.index = function(req, res) {
         });
 
         async.eachLimit(sourcesToCount, 2, function(source, callback) {
-            Image.count({source: source._id}, function(err, count) {
+            Artwork.count({source: source._id}, function(err, count) {
                 source.numPrints = count;
                 callback();
             });
