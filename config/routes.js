@@ -23,8 +23,8 @@ module.exports = function(app, passport, ukiyoe) {
     var users = require("../app/controllers/users")(ukiyoe, app);
     var bios = require("../app/controllers/bios")(ukiyoe, app);
     var artists = require("../app/controllers/artists")(ukiyoe, app);
-    var images = require("../app/controllers/images")(ukiyoe, app);
-    //var artworks = require("../app/controllers/artworks")(ukiyoe, app);
+    //var images = require("../app/controllers/images")(ukiyoe, app);
+    var artworks = require("../app/controllers/artworks")(ukiyoe, app);
     var uploads = require("../app/controllers/uploads")(ukiyoe, app);
     var sources = require("../app/controllers/sources")(ukiyoe, app);
     var home = require("../app/controllers/home")(ukiyoe, app);
@@ -78,15 +78,15 @@ module.exports = function(app, passport, ukiyoe) {
     app.param("artistId", artists.load);
 
     //app.get("/images", images.index);
-    app.get("/search", cache(1), images.search);
+    app.get("/search", cache(1), artworks.search);
     //app.get("/images/new", auth.requiresLogin, images.new);
     //app.post("/images", auth.requiresLogin, images.create);
-    app.get("/images/:sourceId/:imageName", images.show);
+    app.get("/artworks/:sourceId/:artworkName", artworks.show);
     //app.get("/images/:imageId/edit", imageAuth, images.edit);
     //app.put("/images/:imageId", imageAuth, images.update);
     //app.del("/images/:imageId", imageAuth, images.destroy);
 
-    app.param("imageName", images.load);
+    app.param("artworkName", artworks.load);
 
     //app.get("/artworks/:sourceId/:artworkName", artworks.show);
     //app.param("artworkName", artworks.load);

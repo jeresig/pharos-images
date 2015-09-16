@@ -73,7 +73,7 @@ module.exports = function(app, passport) {
             secret: pkg.name,
             store: new mongoStore({
                 url: process.env.MONGODB_URL,
-                collection : "sessions"
+                collection: "sessions"
             })
         }));
 
