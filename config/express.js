@@ -6,6 +6,7 @@
 var express = require("express");
 var i18n = require("i18n-2");
 var mongoStore = require("connect-mongo")(express);
+var methodOverride = require("method-override");
 var helpers = require("view-helpers");
 var pkg = require("../package");
 var flash = require("connect-flash");
@@ -63,8 +64,8 @@ module.exports = function(app, passport) {
     swig.setDefaults({ cache: false });
 
     // bodyParser should be above methodOverride
-    app.use(express.bodyParser());
-    app.use(express.methodOverride());
+    //app.use(express.bodyParser());
+    app.use(methodOverride());
 
     // cookieParser should be above session
     app.use(express.cookieParser());
