@@ -1,35 +1,12 @@
+var qs = require("querystring");
+var _ = require("lodash");
 
-/**
- * Module dependencies.
- */
-module.exports = function(ukiyoe, app) {
+module.exports = function(core, app) {
 
-var Artwork = ukiyoe.db.model("Artwork"),
-    qs = require("querystring"),
-    utils = require("../lib/utils"),
-    _ = require("lodash"),
-    exports = {};
+var Artwork = core.db.model("Artwork");
 
 Artwork.prototype.getURL = function(locale) {
-    return app.genURL(locale, "/artwork/" + this._id);
-};
-
-exports.load = function(req, res, next, artworkName) {
-    Artwork.findById(req.params.sourceId + "/" + artworkName)
-        .populate("similar.artwork")
-        .populate("artists.artist")
-        .populate("source") // TODO: Don't do this.
-        .exec(function(err, image) {
-            if (err) {
-                return next(err);
-            }
-            if (!image) {
-                console.log("not found")
-                return next(new Error("not found"));
-            }
-            req.image = image;
-            next();
-        });
+    return app.genURL(locale, "/artwork/" + this.artworkName);
 };
 
 app.imageSearch = function(req, res, filter, tmplParams) {
@@ -84,7 +61,7 @@ app.imageSearch = function(req, res, filter, tmplParams) {
         ];
     }
 
-    Image.search(query, {
+    Artwork.search(query, {
         hydrate: true,
         hydrateOptions: {
             populate: "artists.artist source"
@@ -130,135 +107,68 @@ app.imageSearch = function(req, res, filter, tmplParams) {
     });
 };
 
-exports.search = function(req, res) {
-    var query = req.query.q || "*";
+return {
+    load: function(req, res, next, artworkName) {
+        Artwork.findById(req.params.sourceId + "/" + artworkName)
+            .populate("similar.artwork")
+            .populate("artists.artist")
+            .populate("source") // TODO: Don't do this.
+            .exec(function(err, image) {
+                if (err) {
+                    return next(err);
+                }
+                if (!image) {
+                    console.log("not found")
+                    return next(new Error("not found"));
+                }
+                req.image = image;
+                next();
+            });
+    },
 
-    app.imageSearch(req, res, {
-        query_string: {
-            query: query
-        }
-    }, {
-        title: req.i18n.__("Results for '%s'", query),
-        desc: req.i18n.__("Japanese Woodblock prints matching '%s'.", query)
-    });
-};
+    search: function(req, res) {
+        var query = req.query.q || "*";
 
-/**
- * List
- */
-
-exports.index = function(req, res) {
-    var page = (req.param("page") > 0 ? req.param("page") : 1) - 1;
-    var perPage = 100;
-    var options = {
-        query: "fish",
-        size: perPage,
-        from: page * perPage
-    };
-
-    // , hydrateOptions: {populate: "bios"}
-    Image.search(options, {hydrate: true}, function(err, results){
-        if (err) {
-            return res.render("500");
-        }
-
-        res.render("images/index", {
-            title: "Images",
-            images: results.hits,
-            page: page + 1,
-            pages: Math.ceil(results.total / perPage)
+        app.imageSearch(req, res, {
+            query_string: {
+                query: query
+            }
+        }, {
+            title: req.i18n.__("Results for '%s'", query),
+            desc: req.i18n.__("Japanese Woodblock prints matching '%s'.", query)
         });
-    });
-};
+    },
 
-/**
- * New image
- */
+    index: function(req, res) {
+        var page = (req.param("page") > 0 ? req.param("page") : 1) - 1;
+        var perPage = 100;
+        var options = {
+            query: "fish",
+            size: perPage,
+            from: page * perPage
+        };
 
-exports.new = function(req, res) {
-    res.render("images/new", {
-        title: "New Image",
-        image: new Image({})
-    });
-};
+        // , hydrateOptions: {populate: "bios"}
+        Artwork.search(options, {hydrate: true}, function(err, results){
+            if (err) {
+                return res.render("500");
+            }
 
-/**
- * Create an image
- */
-
-exports.create = function(req, res) {
-    var image = new Image(req.body);
-    image.user = req.user;
-
-    image.save(function(err) {
-        if (!err) {
-            req.flash("success", "Successfully created image!");
-            return res.redirect("/images/" + image._id);
-        }
-
-        res.render("images/new", {
-            title: "New Image",
-            image: image,
-            errors: utils.errors(err.errors || err)
+            res.render("images/index", {
+                title: "Artworks",
+                images: results.hits,
+                page: page + 1,
+                pages: Math.ceil(results.total / perPage)
+            });
         });
-    });
-};
+    },
 
-/**
- * Edit an image
- */
-
-exports.edit = function(req, res) {
-    res.render("images/edit", {
-        title: "Edit " + req.image.title,
-        image: req.image
-    });
-};
-
-/**
- * Update image
- */
-
-exports.update = function(req, res) {
-    var image = req.image;
-    image = _.extend(image, req.body);
-
-    image.save(function(err) {
-        if (!err) {
-            return res.redirect("/images/" + image._id);
-        }
-
-        res.render("images/edit", {
-            title: "Edit Image",
-            image: image,
-            errors: err.errors
+    show: function(req, res) {
+        res.render("images/show", {
+            title: req.image.getTitle(req.i18n.getLocale()),
+            image: req.image,
+            results: req.image.similar
         });
-    });
+    }
 };
-
-/**
- * Show
- */
-
-exports.show = function(req, res) {
-    res.render("images/show", {
-        title: req.image.getTitle(req.i18n.getLocale()),
-        image: req.image,
-        results: req.image.similar
-    });
-};
-
-/**
- * Delete an image
- */
-
-exports.destroy = function(req, res) {
-    var image = req.image;
-    image.remove(function(err) {
-        req.flash("info", "Deleted successfully")
-        res.redirect("/images")
-    });
-};
-
-return exports;
 };

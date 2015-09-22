@@ -1,11 +1,9 @@
 var _ = require("lodash");
 var request = require("request");
 
-module.exports = function(ukiyoe, app) {
+module.exports = function(core, app) {
 
-var Upload = ukiyoe.db.model("Upload"),
-    utils = require("../lib/utils"),
-    exports = {};
+var Upload = core.db.model("Upload");
 
 Upload.prototype.getURL = function(locale) {
     return app.genURL(locale, "/uploads/" + this.imageName);
@@ -26,25 +24,32 @@ exports.load = function(req, res, next, id) {
 };
 
 var handleUpload = function(req, baseDir, callback) {
-    var url = req.body.url || req.query.url;
+    var form = new formidable.IncomingForm();
+    form.encoding = "utf-8";
+    form.maxFieldsSize = process.env.MAX_UPLOAD_SIZE;
 
-    // Handle the user accidentally hitting enter
-    if (url && url === "http://") {
-        return callback({err: "No file specified."});
-    }
+    form.parse(req, function(err, fields, files) {
+        // NOTE: Is the query string also handled by formidable?
+        var url = fields.url || req.query.url;
 
-    var stream;
+        // Handle the user accidentally hitting enter
+        if (url && url === "http://") {
+            return callback({err: "No file specified."});
+        }
 
-    if (url) {
-        stream = request({
-            url: url,
-            timeout: 5000
-        });
-    } else {
-        stream = fs.createReadStream(req.files.file.path)
-    }
+        var stream;
 
-    ukiyoe.images.downloadStream(stream, baseDir, true, callback);
+        if (url) {
+            stream = request({
+                url: url,
+                timeout: 5000
+            });
+        } else {
+            stream = fs.createReadStream(files.file.path);
+        }
+
+        core.images.downloadStream(stream, baseDir, true, callback);
+    });
 };
 
 exports.searchUpload = function(req, res) {

@@ -1,14 +1,9 @@
 var async = require("async");
 
-/**
- * Module dependencies.
- */
-module.exports = function(ukiyoe, app) {
+module.exports = function(core, app) {
 
-var Artist = ukiyoe.db.model("Artist"),
-    utils = require("../lib/utils"),
-    _ = require("lodash"),
-    exports = {};
+var Artist = core.db.model("Artist");
+var exports = {};
 
 Artist.prototype.getURL = function(locale) {
     return app.genURL(locale, "/artists/" + (this.slug || "artist") +
@@ -133,71 +128,6 @@ exports.index = function(req, res) {
 };
 
 /**
- * New artist
- */
-
-exports.new = function(req, res) {
-    res.render("artists/new", {
-        title: "New Artst",
-        artist: new Artist({})
-    });
-};
-
-/**
- * Create an artist
- */
-
-exports.create = function(req, res) {
-    var artist = new Artist(req.body);
-    artist.user = req.user;
-
-    artist.save(function(err) {
-        if (!err) {
-            req.flash("success", "Successfully created artist!");
-            return res.redirect("/artists/" + artist._id);
-        }
-
-        res.render("artists/new", {
-            title: "New Artist",
-            artist: artist,
-            errors: utils.errors(err.errors || err)
-        });
-    });
-};
-
-/**
- * Edit an artist
- */
-
-exports.edit = function(req, res) {
-    res.render("artists/edit", {
-        title: "Edit " + req.artist.title,
-        artist: req.artist
-    });
-};
-
-/**
- * Update artist
- */
-
-exports.update = function(req, res) {
-    var artist = req.artist;
-    artist = _.extend(artist, req.body);
-
-    artist.save(function(err) {
-        if (!err) {
-            return res.redirect("/artists/" + artist._id);
-        }
-
-        res.render("artists/edit", {
-            title: "Edit Artist",
-            artist: artist,
-            errors: err.errors
-        });
-    });
-};
-
-/**
  * Show
  */
 
@@ -222,18 +152,6 @@ exports.show = function(req, res) {
                 })[0].bio
             });
         });
-    });
-};
-
-/**
- * Delete an artist
- */
-
-exports.destroy = function(req, res) {
-    var artist = req.artist;
-    artist.remove(function(err) {
-        req.flash("info", "Deleted successfully")
-        res.redirect("/artists")
     });
 };
 

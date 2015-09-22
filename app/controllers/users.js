@@ -2,9 +2,9 @@
 /**
  * Module dependencies.
  */
-module.exports = function(ukiyoe) {
+module.exports = function(core) {
 
-var User = ukiyoe.db.model("User"),
+var User = core.db.model("User"),
     utils = require("../lib/utils"),
     exports = {};
 
