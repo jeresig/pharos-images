@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="{{ CDN("/images/favicon.png", {"raw": true}) }}" type="image/x-icon"/>
-    <title>{{ title }} - Ukiyo-e.org</title>
+    <title>{{ title }} - {{ SITE_NAME }}</title>
     {% if desc %}<meta name="description" content="{{ desc }}"/>{% endif %}
 
     {% if image %}
@@ -18,7 +18,7 @@
     <meta property="og:type" content="article"/>
     <meta property="og:url" content="{{ URL(image) }}"/>
     <meta property="og:image" content="{{ image.getScaledURL() }}"/>
-    <meta property="og:site_name" content="Ukiyo-e.org"/>
+    <meta property="og:site_name" content="{{ SITE_NAME }}"/>
     {% endif %}
 
     {{ CDN("/css/bootstrap.min.css") }}
@@ -42,17 +42,14 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="/">Ukiyo-e.org</a>
+                <a class="navbar-brand" href="/">{{ SITE_NAME }}</a>
             </div>
 
             <div id="header-navbar" class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
-                    <!--<li{% if getSiteCategory() === "search" %} class="active"{% endif %}><a href="/search">{{ __("Search") }}</a></li>-->
                     <li{% if getSiteCategory() === "sources" %} class="active"{% endif %}>
                         <a href="{{ URL("/sources") }}">
                             {{ __("Sources") }}</a></li>
-                    <li><a href="http://blog.ukiyo-e.org/">
-                        {{ __("Blog") }}</a></li>
                     <li{% if getSiteCategory() === "about" %} class="active"{% endif %}>
                         <a href="{{ URL("/about") }}">
                         {{ __("About") }}</a></li>

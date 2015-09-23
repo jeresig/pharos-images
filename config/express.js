@@ -156,6 +156,8 @@ module.exports = function(app, passport) {
     };
 
     app.use(function(req, res, next) {
+        res.locals.SITE_NAME = process.env.SITE_NAME;
+
         res.locals.CDN = CDN(req, res);
 
         var otherLocale = function(req) {
