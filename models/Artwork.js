@@ -28,30 +28,30 @@ module.exports = function(lib) {
         modified: Date,
 
         // The source of the image.
-        source: {type: String, ref: "Source"},
+        source: {type: String, ref: "Source", es_indexed: true},
 
         // The language of the page from where the data is being extracted. This
         // will influence how extracted text is handled.
         lang: String,
 
         // The title of the print.
-        title: String,
+        title: {type: String, es_indexed: true},
 
         // A list of artist names extracted from the page.
-        artists: [Name],
+        artists: {type: [Name], es_indexed: true},
 
         // The size of the print (e.g. 100mm x 200mm)
-        dimensions: [Dimension],
+        dimensions: {type: [Dimension], es_indexed: true},
 
         // Date when the print was created (typically a rough year, or range).
-        dateCreateds: [YearRange],
+        dateCreateds: {type: [YearRange], es_indexed: true},
 
-        objectType: String,
-        medium: String,
+        objectType: {type: String, es_indexed: true},
+        medium: {type: String, es_indexed: true},
 
-        collections: [Collection],
+        collections: {type: [Collection], es_indexed: true},
 
-        categories: [String],
+        categories: {type: [String], es_indexed: true},
 
         images: [Image]
     });
@@ -124,7 +124,7 @@ module.exports = function(lib) {
 
     ArtworkSchema.plugin(mongoosastic, lib.db.mongoosastic);
     ArtworkSchema.plugin(versioner, {
-        collection: "extractedartwork_versions",
+        collection: "artwork_versions",
         suppressVersionIncrement: false,
         strategy: "collection",
         mongoose: mongoose
