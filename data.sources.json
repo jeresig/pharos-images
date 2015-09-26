@@ -1,5 +1,7 @@
 [
     {
+        "name": "Frick Art Reference Library",
+        "shortName": "Frick",
         "source": "frick",
         "converter": "frick",
         "lang": "en",
@@ -7,6 +9,8 @@
         "imageDir": "sources/frick/images/"
     },
     {
+        "name": "Francisco Zeri Foundation",
+        "shortName": "Zeri",
         "source": "fzeri",
         "converter": "fzeri",
         "lang": "it",
@@ -14,6 +18,8 @@
         "imageDir": "sources/fzeri/images/"
     },
     {
+        "name": "National Gallery of Art",
+        "shortName": "NGA",
         "source": "nga",
         "converter": "marc",
         "lang": "en",

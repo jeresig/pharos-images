@@ -110,7 +110,11 @@ var importData = function(options, callback) {
                 }
 
                 console.log("Saving Artwork...", artwork._id);
-                artwork.save(callback);
+                artwork.save(function() {
+                    // Make sure we wait until the data is fully indexed before
+                    // continuing, otherwise we may lose some information!
+                    artwork.on("es-indexed", callback);
+                });
             });
         });
     }, function(err) {
@@ -135,12 +139,23 @@ core.init(function() {
         process.exit(0);
     }
 
-    importData(sourceOptions, function(err) {
-        if (err) {
-            console.error(err);
-        } else {
-            console.log("DONE");
-        }
-        process.exit(0);
+    // Models
+    var Source = core.models.Source;
+
+    console.log("Creating source record...");
+
+    Source.create({
+        _id: sourceOptions.source,
+        name: sourceOptions.name,
+        shortName: sourceOptions.shortName
+    }, function() {
+        importData(sourceOptions, function(err) {
+            if (err) {
+                console.error(err);
+            } else {
+                console.log("DONE");
+            }
+            process.exit(0);
+        });
     });
 });
