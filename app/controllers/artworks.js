@@ -6,7 +6,7 @@ module.exports = function(core, app) {
 var Artwork = core.db.model("Artwork");
 
 Artwork.prototype.getURL = function(locale) {
-    return app.genURL(locale, "/artwork/" + this.artworkName);
+    return app.genURL(locale, "/artworks/" + this._id);
 };
 
 app.imageSearch = function(req, res, filter, tmplParams) {
@@ -15,15 +15,15 @@ app.imageSearch = function(req, res, filter, tmplParams) {
     var q = req.param("q") || "";
 
     var query = {
-        query: {
-            filtered: {
-                filter: {}
-            }
-        },
-        size: rows,
-        from: start,
+        filtered: {
+            filter: {},
+            query: filter
+        }
+    };
+
+    /*
+,
         "sort": [
-        /*
             {
                 "dateCreated.start": {
                     "order": "asc"
@@ -34,11 +34,8 @@ app.imageSearch = function(req, res, filter, tmplParams) {
                     "order": "asc"
                 }
             }
-        */
         ]
-    };
-
-    query.query.filtered.query = filter;
+    */
 
     if (req.param("startDate") && req.param("endDate")) {
         query.filtered.filter.and = [
@@ -62,9 +59,11 @@ app.imageSearch = function(req, res, filter, tmplParams) {
     }
 
     Artwork.search(query, {
+        size: rows,
+        from: start,
         hydrate: true,
         hydrateOptions: {
-            populate: "artists.artist source"
+            populate: "source"
         }
     }, function(err, results){
         if (err) {
@@ -72,7 +71,7 @@ app.imageSearch = function(req, res, filter, tmplParams) {
             return res.render("500");
         }
 
-        var matches = results.hits.length;
+        var matches = results.hits.hits.length;
 		var end = start + matches;
 		var urlPrefix = req.path + (req.query.q ?
 			"?" + qs.stringify({ q: req.query.q }) : "");
@@ -87,18 +86,18 @@ app.imageSearch = function(req, res, filter, tmplParams) {
 					sep + "start=" + (start - rows) : ""));
 		}
 
-		if (end < results.total) {
+		if (end < results.hits.total) {
 			nextLink = app.genURL(req.i18n.getLocale(), urlPrefix +
 				sep + "start=" + (start + rows));
 		}
 
-        res.render("images/index", _.extend({
+        res.render("artworks/index", _.extend({
             q: req.param("q"),
             startDate: req.param("startDate") || process.env.DEFAULT_START_DATE,
             endDate: req.param("endDate") || process.env.DEFAULT_END_DATE,
-            images: results.hits,
-            total: results.total,
-			start: start || 1,
+            images: results.hits.hits,
+            total: results.hits.total,
+			start: (results.hits.total > 0 ? start || 1 : 0),
 			end: end,
 			rows: rows,
 			prev: prevLink,
@@ -110,8 +109,6 @@ app.imageSearch = function(req, res, filter, tmplParams) {
 return {
     load: function(req, res, next, artworkName) {
         Artwork.findById(req.params.sourceId + "/" + artworkName)
-            .populate("similar.artwork")
-            .populate("artists.artist")
             .populate("source") // TODO: Don't do this.
             .exec(function(err, image) {
                 if (err) {
@@ -154,7 +151,7 @@ return {
                 return res.render("500");
             }
 
-            res.render("images/index", {
+            res.render("artworks/index", {
                 title: "Artworks",
                 images: results.hits,
                 page: page + 1,
@@ -164,9 +161,9 @@ return {
     },
 
     show: function(req, res) {
-        res.render("images/show", {
+        res.render("artworks/show", {
             title: req.image.getTitle(req.i18n.getLocale()),
-            image: req.image,
+            artwork: req.image,
             results: req.image.similar
         });
     }

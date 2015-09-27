@@ -52,6 +52,7 @@ module.exports = function(app, passport) {
     app.use(express.favicon());
 
     app.use(express.static(rootPath + "/public"));
+    app.use("/data", express.static(rootPath + "/data"));
     app.use(express.logger("dev"));
 
     app.engine("swig", swig.renderFile)
@@ -208,7 +209,9 @@ module.exports = function(app, passport) {
         };
 
         res.locals.shortName = function(item) {
-            return item.getShortName(req.i18n.getLocale());
+            if (item && item.getShortName) {
+                return item.getShortName(req.i18n.getLocale());
+            }
         };
 
         res.locals.getTitle = function(item) {
@@ -226,7 +229,8 @@ module.exports = function(app, passport) {
         // Format a number using commas
         // TODO: Handle locale here, as well
         res.locals.stringNum = function(num) {
-            return (num || "").toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            num = (typeof num === "number" ? num : "");
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         };
 
         next();
@@ -252,7 +256,7 @@ module.exports = function(app, passport) {
     });
 
     // development specific stuff
-    if (app.get("env") === "development" || app.get("env") === "staging") {
+    if (env === "development" || env === "staging") {
         app.locals.pretty = true;
     }
 };

@@ -83,6 +83,51 @@ module.exports = function(lib) {
         });
 
     ArtworkSchema.methods = {
+        getOriginalURL: function(image) {
+            image = image || this.images[0];
+            return process.env.BASE_DATA_URL +
+                (this.source._id || this.source) +
+                "/images/" + image.imageName + ".jpg";
+        },
+
+        getScaledURL: function(image) {
+            image = image || this.images[0];
+            return process.env.BASE_DATA_URL +
+                (this.source._id || this.source) +
+                "/scaled/" + image.imageName + ".jpg";
+        },
+
+        getThumbURL: function(image) {
+            image = image || this.images[0];
+            return process.env.BASE_DATA_URL +
+                (this.source._id || this.source) +
+                "/thumbs/" + image.imageName + ".jpg";
+        },
+
+        getTitle: function(locale) {
+            if (this.display_title) {
+                return this.display_title;
+            }
+
+            var parts = [];
+
+            if (this.artist) {
+                if (this.artist.artist) {
+                    parts.push(this.artist.artist.getFullName(locale) + ":");
+                }
+            }
+
+            if (this.title && /\S/.test(this.title)) {
+                parts.push(this.title);
+            }
+
+            if (this.source && this.source !== "uploads") {
+                parts.push("-", this.source.getFullName(locale));
+            }
+
+            return parts.join(" ");
+        },
+
         addImage: function(imageData, imgFile, sourceDir, callback) {
             var model = this;
             var source = imageData.source;

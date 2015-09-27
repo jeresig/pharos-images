@@ -3,19 +3,19 @@ module.exports = function(lib) {
         return lib.db.model("Source");
     } catch(e) {}
 
+    var Artwork = lib.db.model("Artwork");
+
     var SourceSchema = new lib.db.schema({
         _id: String,
         url: String,
         name: String,
         nameKanji: String,
         shortName: String,
-        shortNanji: String,
+        shortKanji: String,
         description: String,
         location: String,
         types: [String],
-        // NOTE: Is this needed? Generate dynamically?
-        numPrints: Number,
-        estNumPrints: Number,
+        estNumArtworks: Number,
         inactive: Boolean,
         hideLinks: Boolean,
         linkTitle: String,
@@ -29,6 +29,10 @@ module.exports = function(lib) {
 
         getShortName: function(locale) {
             return locale === "ja" && this.shortKanji || this.shortName;
+        },
+
+        getNumArtworks: function() {
+            Artwork.count({source: this._id}, callback);
         }
     };
 

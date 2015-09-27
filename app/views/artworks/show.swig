@@ -1,17 +1,23 @@
 {% extends "../layouts/default.swig" %}
 
-{% block title %}{{ image.title }}{% endblock %}
+{% block title %}{{ artwork.title }}{% endblock %}
 
 {% block content %}
 <div id="result" class="row">
     <div class="col-md-8 imageholder">
-        <a href="{{ image.getOriginalURL() }}">
-            <img src="{{ image.getScaledURL() }}"
-                alt="{{ getTitle(image) }}"
-                title="{{ getTitle(image) }}"/></a>
+        <div class="row">
+        {% for image in artwork.images %}
+            <div class="img col-md-3">
+                <a class="img" href="{{ artwork.getOriginalURL(image) }}">
+                    <img src="{{ artwork.getThumbURL(image) }}"
+                        alt="{{ getTitle(artwork) }}"
+                        title="{{ getTitle(artwork) }}"/></a>
+            </div>
+        {% endfor %}
+        </div>
     </div>
     <div class="details col-md-4">
-        {% for name in image.artists %}
+        {% for name in artwork.artists %}
             <p class="row artist">
                 <strong class="col-md-3 right">{{ __("Artist:") }}</strong>
                 <span class="col-md-9">
@@ -20,77 +26,89 @@
                         title="{{ fullName(name.artist) }}">
                         {{ fullName(name.artist) }}</a>
                     {% else %}
-                        {{ fullName(name.names[0]) }}
+                        {{ name.name }}
                     {% endif %}
                 </span>
             </p>
         {% endfor %}
-        {% if image.title %}
+        {% if artwork.title %}
             <p class="row title">
                 <strong class="col-md-3 right">{{ __("Title:") }}</strong>
-                <span class="col-md-9">{{ image.title }}</span>
+                <span class="col-md-9">{{ artwork.title }}</span>
             </p>
         {% endif %}
-        {% if image.dateCreated %}
+        {% if artwork.dateCreated %}
             <p class="row date">
                 <strong class="col-md-3 right">{{ __("Date:") }}</strong>
-                <span class="col-md-9">{{ getDate(image.dateCreated) }}</span>
+                <span class="col-md-9">{{ getDate(artwork.dateCreated) }}</span>
             </p>
         {% endif %}
-        {% if image.url %}
+        {% if artwork.medium %}
+            <p class="row medium">
+                <strong class="col-md-3 right">{{ __("Medium:") }}</strong>
+                <span class="col-md-9">{{ artwork.medium }}</span>
+            </p>
+        {% endif %}
+        {% if artwork.objectType %}
+            <p class="row objectType">
+                <strong class="col-md-3 right">{{ __("Object Type:") }}</strong>
+                <span class="col-md-9">{{ artwork.objectType }}</span>
+            </p>
+        {% endif %}
+        {% if artwork.url %}
             <p class="row details">
                 <strong class="col-md-3 right">
-                    {% if image.source.commercial %}
+                    {% if artwork.source.commercial %}
                         <small>{{ __("Details &amp;&nbsp;Prices:") }}</small>
                     {% else %}
                         {{ __("Details:") }}
                     {% endif %}
                 </strong>
                 <span class="col-md-9">
-                    {% if image.source.inactive %}
+                    {% if artwork.source.inactive %}
                         <small>{{ __("Unfortunately the source of this print no longer exists.") }}</small>
-                    {% elif image.source.hideLinks %}
+                    {% elif artwork.source.hideLinks %}
                         <small>{{ __("There is no way to link to this print on the source site. Please visit the source and search for the print there.") }}</small>
-                    {% elif image.source.linkTitle %}
-                        <small><a href="{{ image.url }}"
-                            title="{{ image.source.linkTitle }}">
+                    {% elif artwork.source.linkTitle %}
+                        <small><a href="{{ artwork.url }}"
+                            title="{{ artwork.source.linkTitle }}">
                             {{ getTitle(image) }}</a></small>
                     {% else %}
-                        <a href="{{ image.url }}">
+                        <a href="{{ artwork.url }}">
                             {{ __("More information...") }}</a>
                     {% endif %}
                 </span>
             </p>
         {% endif %}
-        {% if image.source && image.source != "uploads" %}
-            {% if image.source.inactive %}
+        {% if artwork.source && artwork.source != "uploads" %}
+            {% if artwork.source.inactive %}
                 <p class="row source">
                     <strong class="col-md-3 right">{{ __("Source:") }}</strong>
-                    <span class="col-md-9"><a href="{{ URL(image.source) }}" title="{{ fullName(image.source) }}">
-                        {{ fullName(image.source) }}</a></span>
+                    <span class="col-md-9"><a href="{{ URL(artwork.source) }}" title="{{ fullName(artwork.source) }}">
+                        {{ fullName(artwork.source) }}</a></span>
                 </p>
             {% else %}
                 <p class="row source">
                     <strong class="col-md-3 right">{{ __("Source:") }}</strong>
-                    <span class="col-md-9"><a href="{{ image.source.url }}">
-                        {% if image.source.linkText %}
-                            {{ image.source.linkText }}
+                    <span class="col-md-9"><a href="{{ artwork.source.url }}">
+                        {% if artwork.source.linkText %}
+                            {{ artwork.source.linkText }}
                         {% else %}
-                            {{ fullName(image.source) }}
+                            {{ fullName(artwork.source) }}
                         {% endif %}
                     </a><br/>
-                    <small><a href="{{ URL(image.source) }}" title="{{ fullName(image.source) }}">
-                        {{ __("Browse all %s prints...", image.source.count_string) }}</a></small></span>
+                    <small><a href="{{ URL(artwork.source) }}" title="{{ fullName(artwork.source) }}">
+                        {{ __("Browse all %s prints...", artwork.source.count_string) }}</a></small></span>
                 </p>
             {% endif %}
         {% endif %}
-        {% if image.source && image.source === "uploads" %}
+        {% if artwork.source && artwork.source === "uploads" %}
             {% if results.length == 0 %}
                 <h3>{{ __("Uh oh!") }}</h3>
                 <p>{{ __("No other copies of this print have been found.") }}</p>
                 <div class="hide-ja">
                 <p>It might be worthwhile to copy the uploaded image URL:</p>
-                <pre>{{ image.getOriginalURL() }}</pre>
+                <pre>{{ artwork.getOriginalURL() }}</pre>
                 <p>and ask the Ukiyo-e Q&amp;A community for help:</p>
                 <p><a href="http://www.ukiyo-e.se/wwwboard/wwwboard.html">
                     http://www.ukiyo-e.se/wwwboard/wwwboard.html</a></p>
@@ -124,19 +142,19 @@
         {% if item.image %}
         <div class="img col-md-3">
             <a class="img" href="{{ URL(item.image) }}">
-                <img src="{{ item.image.getThumbURL() }}"
+                <img src="{{ item.artwork.getThumbURL() }}"
                     alt="{{ getTitle(item.image) }}"
                     title="{{ getTitle(item.image) }}"/></a>
             <div class="details">
                 <div class="wrap">
                 {% if item.artist %}
-                    <a class="artist" href="{{ URL(item.image.artist) }}"
-                        title="{{ fullName(item.image.artist) }}">
-                        {{ shortName(item.image.artist) }}</a>
+                    <a class="artist" href="{{ URL(item.artwork.artist) }}"
+                        title="{{ fullName(item.artwork.artist) }}">
+                        {{ shortName(item.artwork.artist) }}</a>
                 {% endif %}
-                <a class="source" href="{{ URL(item.image.source) }}"
-                    title="{{ fullName(item.image.source) }}">
-                    {{ shortName(item.image.source) }}</a>
+                <a class="source" href="{{ URL(item.artwork.source) }}"
+                    title="{{ fullName(item.artwork.source) }}">
+                    {{ shortName(item.artwork.source) }}</a>
                 </div>
             </div>
         </div>
@@ -173,7 +191,7 @@
 
 </div>
 
-{% if results.length > 0 && image.source === "uploads" %}
+{% if results.length > 0 && artwork.source === "uploads" %}
 <div class="row">
     <div class="col-md-8">
     <h3>{{ __("Learn More") }}</h3>

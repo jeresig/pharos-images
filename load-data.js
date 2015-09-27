@@ -96,6 +96,7 @@ var importData = function(options, callback) {
                 artwork.addImage(imageData, imgFile, sourceDir, callback);
             }, function(err) {
                 if (err) {
+                    console.error("Error adding images:", err);
                     return callback(err);
                 }
 
@@ -110,10 +111,20 @@ var importData = function(options, callback) {
                 }
 
                 console.log("Saving Artwork...", artwork._id);
-                artwork.save(function() {
+                artwork.save(function(err) {
+                    if (err) {
+                        console.error("Error saving:", err);
+                    }
+
                     // Make sure we wait until the data is fully indexed before
                     // continuing, otherwise we may lose some information!
-                    artwork.on("es-indexed", callback);
+                    artwork.on("es-indexed", function(err, res) {
+                        if (err) {
+                            console.error("Error indexing:", err);
+                        }
+
+                        callback(err);
+                    });
                 });
             });
         });

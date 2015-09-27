@@ -132,8 +132,10 @@
 <div id="results">
     <div class="state row">
         <div class="col-md-12">
-            <span class="total">{{ __("<strong>%s</strong> prints found.", stringNum(total))|raw }}</span>
-            <span class="page">{{ __("Viewing prints %s to %s.", stringNum(start), stringNum(end)) }}</span>
+            <span class="total">{{ __("<strong>%s</strong> found.", stringNum(total))|raw }}</span>
+            {% if end %}
+                <span class="page">{{ __("Viewing %s to %s.", stringNum(start), stringNum(end)) }}</span>
+            {% endif %}
         </div>
     </div>
 
