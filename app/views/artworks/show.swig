@@ -4,7 +4,7 @@
 
 {% block content %}
 <div id="result" class="row">
-    <div class="col-md-8 imageholder">
+    <div class="col-md-6 imageholder">
         <div class="row">
         {% for image in artwork.images %}
             <div class="img col-md-3">
@@ -16,7 +16,7 @@
         {% endfor %}
         </div>
     </div>
-    <div class="details col-md-4">
+    <div class="details col-md-6">
         {% for name in artwork.artists %}
             <p class="row artist">
                 <strong class="col-md-3 right">{{ __("Artist:") }}</strong>
@@ -41,6 +41,16 @@
             <p class="row date">
                 <strong class="col-md-3 right">{{ __("Date:") }}</strong>
                 <span class="col-md-9">{{ getDate(artwork.dateCreated) }}</span>
+            </p>
+        {% endif %}
+        {% if artwork.dimensions.length > 0 %}
+            <p class="row date">
+                <strong class="col-md-3 right">{{ __("Dimensions:") }}</strong>
+                <span class="col-md-9">
+                    {% for dimension in artwork.dimensions %}
+                        {{ getDimension(dimension) }}<br/>
+                    {% endfor %}
+                </span>
             </p>
         {% endif %}
         {% if artwork.medium %}

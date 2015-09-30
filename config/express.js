@@ -226,6 +226,13 @@ module.exports = function(app, passport) {
                     "-" + item.end : "");
         };
 
+        res.locals.getDimension = function(item) {
+            // TODO: Use locale to show ft vs. cm
+            var unit = item.unit || "mm";
+            return [item.width, unit, " x ", item.height, unit,
+                item.label ? " (" + item.label + ")" : ""].join("");
+        };
+
         // Format a number using commas
         // TODO: Handle locale here, as well
         res.locals.stringNum = function(num) {
