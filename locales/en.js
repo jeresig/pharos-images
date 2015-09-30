@@ -41,5 +41,6 @@
 	"Artist:": "Artist:",
 	"Medium:": "Medium:",
 	"Object Type:": "Object Type:",
-	"Dimensions:": "Dimensions:"
+	"Dimensions:": "Dimensions:",
+	"Date:": "Date:"
 }

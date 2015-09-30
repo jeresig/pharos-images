@@ -60,12 +60,15 @@ var importData = function(options, callback) {
                 return callback(err);
             }
 
+            for (var key in data) {
+                if (Array.isArray(Artwork.schema.path(key).options.type) &&
+                    data[key] && !Array.isArray(data[key])) {
+                        data[key] = [data[key]];
+                }
+            }
+
             var images = data.images;
             delete data.images;
-
-            if (!Array.isArray(images)) {
-                images = [images];
-            }
 
             if (artwork) {
                 artwork.set(data);
