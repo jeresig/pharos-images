@@ -65,6 +65,16 @@
                 <span class="col-md-9">{{ artwork.objectType }}</span>
             </p>
         {% endif %}
+        {% if artwork.categories %}
+            <p class="row categories">
+                <strong class="col-md-3 right">{{ __("Categories:") }}</strong>
+                <span class="col-md-9">
+                    {% for category in artwork.categories %}
+                        {{ category }}<br/>
+                    {% endfor %}
+                </span>
+            </p>
+        {% endif %}
         {% if artwork.url %}
             <p class="row details">
                 <strong class="col-md-3 right">

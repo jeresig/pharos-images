@@ -42,5 +42,6 @@
 	"Medium:": "Medium:",
 	"Object Type:": "Object Type:",
 	"Dimensions:": "Dimensions:",
-	"Date:": "Date:"
+	"Date:": "Date:",
+	"Categories:": "Categories:"
 }
