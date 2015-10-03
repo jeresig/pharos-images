@@ -6,6 +6,13 @@
 <div id="result" class="row">
     <div class="col-md-6 imageholder">
         <div class="row">
+            <a href="{{ artwork.getOriginalURL(artwork.images[0]) }}">
+                <img src="{{ artwork.getScaledURL(artwork.images[0]) }}"
+                    alt="{{ getTitle(artwork) }}"
+                    title="{{ getTitle(artwork) }}"/></a>
+        </div>
+        {% if artwork.images.length > 1 %}
+        <div class="row">
         {% for image in artwork.images %}
             <div class="img col-md-3">
                 <a class="img" href="{{ artwork.getOriginalURL(image) }}">
@@ -15,6 +22,7 @@
             </div>
         {% endfor %}
         </div>
+        {% endif %}
     </div>
     <div class="details col-md-6">
         {% for name in artwork.artists %}

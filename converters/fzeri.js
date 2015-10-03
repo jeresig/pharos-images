@@ -7,6 +7,10 @@ var pd = require("parse-dimensions");
 module.exports = {
     propMap: {
         id: "SERCD",
+        url: ["SERCD", function(val) {
+            return "http://catalogo.fondazionezeri.unibo.it/scheda.jsp?" +
+                "decorator=layout_S2&apply=true&tipo_scheda=OA&id=" + val;
+        }],
         title: "SGTI",
         dateCreateds: {
             label: "DTZG",

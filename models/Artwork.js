@@ -34,6 +34,9 @@ module.exports = function(lib) {
         // will influence how extracted text is handled.
         lang: String,
 
+        // A link to the artwork at its source
+        url: {type: String},
+
         // The title of the print.
         title: {type: String, es_indexed: true},
 

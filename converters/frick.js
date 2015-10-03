@@ -7,6 +7,9 @@ var pd = require("parse-dimensions");
 module.exports = {
     propMap: {
         id: "BibRecordNumberLong",
+        url: ["BibRecordNumberLong", function(id) {
+            return "http://arcade.nyarc.org/record=" + id;
+        }],
         title: "WorkTitle",
         dateCreateds: ["WorkDate_earliestDate", function(earliest, data) {
             if (earliest) {

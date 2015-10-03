@@ -45,5 +45,7 @@
 	"Date:": "Date:",
 	"Categories:": "Categories:",
 	"Collection:": "Collection:",
-	"Type:": "Type:"
+	"Type:": "Type:",
+	"Details:": "Details:",
+	"More information...": "More information..."
 }

@@ -7,9 +7,13 @@ var pd = require("parse-dimensions");
 module.exports = {
     propMap: {
         id: ["001"],
+        url: ["001", function(id) {
+            return "http://library.nga.gov/imagecollections/mercury/" +
+                "holdingsInfo?bibId=" + id;
+        }],
         bibID: ["004"],
         title: ["245", ["a"]],
-        dateCreated: ["260", ["c"], function(results) {
+        dateCreateds: ["260", ["c"], function(results) {
             return yr.parse(results[0]);
         }],
         categories: ["650", ["a", "y", "z"], function(results) {
@@ -17,7 +21,7 @@ module.exports = {
                 return !!name;
             }).join(", ");
         }],
-        material: ["300", ["a"]],
+        medium: ["300", ["a"]],
         artists: ["100", ["a", "d"], function(results) {
             var data = {
                 name: results[0]

@@ -61,7 +61,13 @@ var importData = function(options, callback) {
             }
 
             for (var key in data) {
-                if (Array.isArray(Artwork.schema.path(key).options.type) &&
+                var schemaPath = Artwork.schema.path(key);
+
+                if (!schemaPath) {
+                    return callback(new Error("Unknown key: " + key));
+                }
+
+                if (Array.isArray(schemaPath.options.type) &&
                     data[key] && !Array.isArray(data[key])) {
                         data[key] = [data[key]];
                 }

@@ -37,7 +37,7 @@
     "jsonld": "^0.3.26",
     "libxmljs": "^0.14.3",
     "lodash": "^2.4.2",
-    "marcjs": "jeresig/marcjs#update-libxmljs",
+    "marcjs": "jeresig/marcjs",
     "method-override": "^2.3.5",
     "mongoosastic": "^3.2.0",
     "mongoose": "^3.9.7",
