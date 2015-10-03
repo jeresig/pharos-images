@@ -61,16 +61,29 @@
         {% endif %}
         {% if artwork.objectType %}
             <p class="row objectType">
-                <strong class="col-md-3 right">{{ __("Object Type:") }}</strong>
+                <strong class="col-md-3 right">{{ __("Type:") }}</strong>
                 <span class="col-md-9">{{ artwork.objectType }}</span>
             </p>
         {% endif %}
-        {% if artwork.categories %}
+        {% if artwork.categories.length > 0 %}
             <p class="row categories">
                 <strong class="col-md-3 right">{{ __("Categories:") }}</strong>
                 <span class="col-md-9">
                     {% for category in artwork.categories %}
                         {{ category }}<br/>
+                    {% endfor %}
+                </span>
+            </p>
+        {% endif %}
+        {% if artwork.collections.length > 0 %}
+            <p class="row categories">
+                <strong class="col-md-3 right">{{ __("Collection:") }}</strong>
+                <span class="col-md-9">
+                    {% for collection in artwork.collections %}
+                        {{ collection.name }}<br/>
+                        {% if collection.city %}
+                            {{ collection.city }}<br/>
+                        {% endif %}
                     {% endfor %}
                 </span>
             </p>

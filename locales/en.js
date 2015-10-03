@@ -43,5 +43,7 @@
 	"Object Type:": "Object Type:",
 	"Dimensions:": "Dimensions:",
 	"Date:": "Date:",
-	"Categories:": "Categories:"
+	"Categories:": "Categories:",
+	"Collection:": "Collection:",
+	"Type:": "Type:"
 }
