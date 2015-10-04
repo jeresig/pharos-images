@@ -219,11 +219,21 @@ module.exports = function(app, passport) {
         };
 
         res.locals.getDate = function(item) {
-            return item.dateCreated ?
-                res.locals.getDate(item.dateCreated) :
-                (item.circa ? "ca. " : "") +
+            if (item.dateCreated) {
+                return res.locals.getDate(item.dateCreated);
+            }
+
+            if (item.original) {
+                return item.original;
+            }
+
+            if (item.start && item.end) {
+                return (item.circa ? "ca. " : "") +
                     item.start + (item.end && item.end !== item.start ?
                     "-" + item.end : "");
+            }
+
+            return "";
         };
 
         res.locals.getDimension = function(item) {
