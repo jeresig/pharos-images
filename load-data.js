@@ -167,8 +167,11 @@ core.init(function() {
     Source.create({
         _id: sourceOptions.source,
         name: sourceOptions.name,
-        shortName: sourceOptions.shortName
+        shortName: sourceOptions.shortName,
+        url: sourceOptions.url
     }, function() {
+        console.log("Importing data...");
+
         importData(sourceOptions, function(err) {
             if (err) {
                 console.error(err);

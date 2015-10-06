@@ -1,7 +1,8 @@
 [
     {
-        "name": "Frick Art Reference Library",
+        "name": "Frick Library Photoarchive",
         "shortName": "Frick",
+        "url": "http://www.frick.org/research/photoarchive",
         "source": "frick",
         "converter": "frick",
         "lang": "en",
@@ -9,8 +10,9 @@
         "imageDir": "sources/frick/images/"
     },
     {
-        "name": "Francisco Zeri Foundation",
+        "name": "Fondazione Zeri",
         "shortName": "Zeri",
+        "url": "http://www.fondazionezeri.unibo.it/",
         "source": "fzeri",
         "converter": "fzeri",
         "lang": "it",
@@ -18,8 +20,9 @@
         "imageDir": "sources/fzeri/images/"
     },
     {
-        "name": "National Gallery of Art",
+        "name": "National Gallery of Art Library",
         "shortName": "NGA",
+        "url": "https://library.nga.gov/",
         "source": "nga",
         "converter": "marc",
         "lang": "en",
