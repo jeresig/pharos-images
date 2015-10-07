@@ -38,7 +38,7 @@ module.exports = {
             }
         }],
         collections: {
-            location: "WorkLocation_city",
+            city: "WorkLocation_city",
             name: "WorkLocation_collection"
         },
         images: {
