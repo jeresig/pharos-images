@@ -15,45 +15,29 @@ app.imageSearch = function(req, res, filter, tmplParams) {
     var q = req.param("q") || "";
 
     var query = {
-        match: {
-            _all: {
-                query: filter,
-                operator: "and"
-            }
-        }
-    };
-
-    /*
-,
-        "sort": [
-            {
-                "dateCreated.start": {
-                    "order": "asc"
+        filtered: {
+            query: {
+                query_string: {
+                        query: filter
                 }
             },
-            {
-                "dateCreated.end": {
-                    "order": "asc"
-                }
-            }
-        ]
-    */
+            filter: {}
+        }
+    };
 
     if (req.param("startDate") && req.param("endDate")) {
         query.filtered.filter.and = [
             {
                 range: {
-                    "dateCreated.start": {
-                        gte: parseFloat(req.param("startDate")),
+                    "dateCreateds.start": {
                         lte: parseFloat(req.param("endDate"))
                     }
                 }
             },
             {
                 range: {
-                    "dateCreated.end": {
-                        gte: parseFloat(req.param("startDate")),
-                        lte: parseFloat(req.param("endDate"))
+                    "dateCreateds.end": {
+                        gte: parseFloat(req.param("startDate"))
                     }
                 }
             }
@@ -64,6 +48,18 @@ app.imageSearch = function(req, res, filter, tmplParams) {
         size: rows,
         from: start,
         hydrate: true,
+        sort: [
+            {
+                "dateCreateds.start": {
+                    "order": "asc"
+                }
+            },
+            {
+                "dateCreateds.end": {
+                    "order": "asc"
+                }
+            }
+        ],
         hydrateOptions: {
             populate: "source"
         }
