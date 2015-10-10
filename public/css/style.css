@@ -109,6 +109,22 @@ blockquote.bio {
     font-size: 0.9em;
 }
 
+#results .slider {
+    width: 400px;
+    display: inline-block;
+}
+
+.noUi-horizontal.noUi-extended {
+    padding-left: 0;
+	padding-right: 32px;
+}
+.noUi-horizontal.noUi-extended .noUi-handle {
+	left: -1px;
+}
+.noUi-horizontal.noUi-extended .noUi-origin  {
+	right: -32px;
+}
+
 #results .state {
     margin: 10px -15px;
     border-bottom: 1px solid #CCC;
@@ -168,6 +184,7 @@ blockquote.bio {
 }
 
 #results .img .details .wrap {
+    color: #FFF;
     margin: 3px;
     position: relative;
     z-index: 2;

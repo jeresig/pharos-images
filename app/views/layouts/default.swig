@@ -25,6 +25,7 @@
     {{ CDN("/css/bootstrap-theme.min.css") }}
     {{ CDN("/css/select2.css") }}
     {{ CDN("/css/jquery.nouislider.css") }}
+    {{ CDN("/css/nouislider.pips.css") }}
     {{ CDN("/css/style.css") }}
 
     <!--[if lt IE 9]>
@@ -98,7 +99,7 @@
     {{ CDN("/js/jquery.min.js") }}
     {{ CDN("/js/bootstrap.min.js") }}
     {{ CDN("/js/select2.min.js") }}
-    {{ CDN("/js/jquery.nouislider.js") }}
+    {{ CDN("/js/nouislider.min.js") }}
     {{ CDN("/js/app.js") }}
     {% block script %}{% endblock %}
 </body>

@@ -20,21 +20,34 @@ $(function() {
         }
     });
 
-    var minDate = 1603;
-    var maxDate = (new Date).getYear() + 1900;
+    $(".date-range-picker").each(function() {
+        var minDate = $(this).data("min-date");
+        var maxDate = $(this).data("max-date");
+        var $startDate = $(this).find("input[name=startDate]");
+        var $endDate = $(this).find("input[name=endDate]");
 
-    var $startDate = $("input[name='startDate']");
-    var $endDate = $("input[name='endDate']");
+        var slider = $(this).find(".slider").addClass("noUi-extended")[0];
 
-    $(".slider").noUiSlider({
-        range: [minDate, maxDate],
-        start: [$startDate.val() || minDate, $endDate.val() || maxDate],
-        step: 1,
-        connect: true,
-        behaviour: "drag",
-        serialization: {
-            resolution: 1,
-            to: [$startDate, $endDate]
-        }
+        noUiSlider.create(slider, {
+            range: {
+                min: [minDate],
+                max: [maxDate]
+            },
+            start: [$startDate.val() || minDate, $endDate.val() || maxDate],
+            step: 5,
+            connect: true,
+            behaviour: "drag",
+            pips: {
+                mode: 'positions',
+                values: [0,25,50,75,100],
+                density: 4,
+                stepped: true
+            }
+        });
+
+        slider.noUiSlider.on("update", function(values) {
+            $startDate.val(Math.round(values[0]));
+            $endDate.val(Math.round(values[1]));
+        });
     });
 });

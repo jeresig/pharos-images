@@ -91,6 +91,8 @@ app.imageSearch = function(req, res, filter, tmplParams) {
 
         res.render("artworks/index", _.extend({
             q: req.param("q"),
+            minDate: process.env.DEFAULT_START_DATE,
+            maxDate: process.env.DEFAULT_END_DATE,
             startDate: req.param("startDate") || process.env.DEFAULT_START_DATE,
             endDate: req.param("endDate") || process.env.DEFAULT_END_DATE,
             images: results.hits.hits,
