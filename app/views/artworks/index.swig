@@ -143,8 +143,25 @@
 <p><input type="hidden" id="selectArtist" style="width:500px;"/></p>
 -->
 
-<div class="row">
-<div class="col-md-10">
+<div class="row results-wrap">
+<div class="results-side">
+<div class="results-side-wrap">
+{% if startDate %}
+<form action="/search" method="GET">
+<p>Query: <input type="search" name="q" value="{{q}}"/></p>
+<div class="date-range-picker" data-min-date="{{minDate}}" data-max-date="{{maxDate}}">
+    <div>
+        <input type="text" size="4" name="startDate" value="{{startDate}}"/>
+        <input type="text" size="4" name="endDate" value="{{endDate}}"/>
+    </div>
+    <div class="slider"></div>
+</div>
+<p><input type="submit" value="Search"/></p>
+</form>
+{% endif %}
+</div>
+</div>
+<div class="results-main">
 {% for image in images %}
 <div class="img">
     <a class="img" href="{{ URL(image) }}"
@@ -171,19 +188,6 @@
     </div>
 </div>
 {% endfor %}
-</div>
-<div class="col-md-2">
-{% if startDate %}
-<form action="/search" method="GET">
-<p>Query: <input type="search" name="q" value="{{q}}"/></p>
-<div class="date-range-picker" data-min-date="{{minDate}}" data-max-date="{{maxDate}}">
-    <input type="text" size="4" name="startDate" value="{{startDate}}"/>
-    <div class="slider"></div>
-    <input type="text" size="4" name="endDate" value="{{endDate}}"/>
-</div>
-<p><input type="submit" value="Search"/></p>
-</form>
-{% endif %}
 </div>
 </div>
 

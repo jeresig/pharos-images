@@ -109,9 +109,38 @@ blockquote.bio {
     font-size: 0.9em;
 }
 
+#results .date-range-picker {
+    padding-left: 10px;
+    padding-right: 30px;
+    padding-bottom: 50px;
+}
+
+#results input[name=endDate] {
+    float: right;
+}
+
 #results .slider {
-    width: 400px;
+    width: 100%;
     display: inline-block;
+}
+
+#results .results-wrap {
+    background: #EEE;
+}
+
+#results .results-side {
+    width: 25%;
+    float: right;
+}
+
+#results .results-side-wrap {
+    padding: 10px;
+}
+
+#results .results-main {
+    width: 75%;
+    float: right;
+    background: #FFF;
 }
 
 .noUi-horizontal.noUi-extended {
