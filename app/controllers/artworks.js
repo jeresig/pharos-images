@@ -25,19 +25,21 @@ app.imageSearch = function(req, res, filter, tmplParams) {
         }
     };
 
-    if (req.param("startDate") && req.param("endDate")) {
+    if (req.param("date")) {
+        var dates = req.param("date").split(";");
+
         query.filtered.filter.and = [
             {
                 range: {
                     "dateCreateds.start": {
-                        lte: parseFloat(req.param("endDate"))
+                        lte: parseFloat(dates[1])
                     }
                 }
             },
             {
                 range: {
                     "dateCreateds.end": {
-                        gte: parseFloat(req.param("startDate"))
+                        gte: parseFloat(dates[0])
                     }
                 }
             }
@@ -93,8 +95,8 @@ app.imageSearch = function(req, res, filter, tmplParams) {
             q: req.param("q"),
             minDate: process.env.DEFAULT_START_DATE,
             maxDate: process.env.DEFAULT_END_DATE,
-            startDate: req.param("startDate") || process.env.DEFAULT_START_DATE,
-            endDate: req.param("endDate") || process.env.DEFAULT_END_DATE,
+            date: req.param("date") ||
+                (process.env.DEFAULT_START_DATE + ";" + process.env.DEFAULT_END_DATE),
             images: results.hits.hits,
             total: results.hits.total,
 			start: (results.hits.total > 0 ? start || 1 : 0),

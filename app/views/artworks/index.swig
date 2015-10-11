@@ -146,15 +146,12 @@
 <div class="row results-wrap">
 <div class="results-side">
 <div class="results-side-wrap">
-{% if startDate %}
+{% if date %}
 <form action="/search" method="GET">
 <p>Query: <input type="search" name="q" value="{{q}}"/></p>
-<div class="date-range-picker" data-min-date="{{minDate}}" data-max-date="{{maxDate}}">
-    <div>
-        <input type="text" size="4" name="startDate" value="{{startDate}}"/>
-        <input type="text" size="4" name="endDate" value="{{endDate}}"/>
-    </div>
-    <div class="slider"></div>
+<div>
+    <input type="text" name="date" class="date-range-picker"
+        value="{{date}}" data-min="{{minDate}}" data-max="{{maxDate}}"/>
 </div>
 <p><input type="submit" value="Search"/></p>
 </form>
