@@ -115,15 +115,6 @@ blockquote.bio {
     padding-bottom: 50px;
 }
 
-#results input[name=endDate] {
-    float: right;
-}
-
-#results .slider {
-    width: 100%;
-    display: inline-block;
-}
-
 #results .results-wrap {
     background: #EEE;
 }
@@ -134,6 +125,7 @@ blockquote.bio {
 }
 
 #results .results-side-wrap {
+    margin-right: 15px;
     padding: 10px;
 }
 
