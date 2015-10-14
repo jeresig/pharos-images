@@ -109,12 +109,6 @@ blockquote.bio {
     font-size: 0.9em;
 }
 
-#results .date-range-picker {
-    padding-left: 10px;
-    padding-right: 30px;
-    padding-bottom: 50px;
-}
-
 #results .results-wrap {
     background: #EEE;
 }
@@ -133,17 +127,6 @@ blockquote.bio {
     width: 75%;
     float: right;
     background: #FFF;
-}
-
-.noUi-horizontal.noUi-extended {
-    padding-left: 0;
-	padding-right: 32px;
-}
-.noUi-horizontal.noUi-extended .noUi-handle {
-	left: -1px;
-}
-.noUi-horizontal.noUi-extended .noUi-origin  {
-	right: -32px;
 }
 
 #results .state {
