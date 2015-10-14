@@ -17,8 +17,22 @@ app.imageSearch = function(req, res, filter, tmplParams) {
     var query = {
         filtered: {
             query: {
-                query_string: {
-                        query: filter
+                bool: {
+                    must: [
+                        {
+                            simple_query_string: {
+                                query: filter,
+                                default_operator: "and"
+                            }
+                        },
+                        {
+                            simple_query_string: {
+                                fields: ["artists.*"],
+                                query: req.param("qartist") || "",
+                                default_operator: "and"
+                            }
+                        }
+                    ]
                 }
             },
             filter: {}
@@ -93,10 +107,12 @@ app.imageSearch = function(req, res, filter, tmplParams) {
 
         res.render("artworks/index", _.extend({
             q: req.param("q"),
+            qartist: req.param("qartist"),
             minDate: process.env.DEFAULT_START_DATE,
             maxDate: process.env.DEFAULT_END_DATE,
             date: req.param("date") ||
-                (process.env.DEFAULT_START_DATE + ";" + process.env.DEFAULT_END_DATE),
+                (process.env.DEFAULT_START_DATE + ";" +
+                process.env.DEFAULT_END_DATE),
             images: results.hits.hits,
             total: results.hits.total,
 			start: (results.hits.total > 0 ? start || 1 : 0),

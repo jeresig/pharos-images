@@ -146,16 +146,17 @@
 <div class="row results-wrap">
 <div class="results-side">
 <div class="results-side-wrap">
-{% if date %}
 <form action="/search" method="GET">
 <p>Query: <input type="search" name="q" value="{{q}}"/></p>
+<div>
+Artist: <input type="text" name="qartist" value="{{qartist}}"/>
+</div>
 <div>
     <input type="text" name="date" class="date-range-picker"
         value="{{date}}" data-min="{{minDate}}" data-max="{{maxDate}}"/>
 </div>
 <p><input type="submit" value="Search"/></p>
 </form>
-{% endif %}
 </div>
 </div>
 <div class="results-main">

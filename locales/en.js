@@ -47,5 +47,6 @@
 	"Collection:": "Collection:",
 	"Type:": "Type:",
 	"Details:": "Details:",
-	"More information...": "More information..."
+	"More information...": "More information...",
+	"Bios:": "Bios:"
 }
