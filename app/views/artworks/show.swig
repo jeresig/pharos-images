@@ -25,20 +25,20 @@
         {% endif %}
     </div>
     <div class="details col-md-6">
-        {% for name in artwork.artists %}
-            <p class="row artist">
-                <strong class="col-md-3 right">{{ __("Artist:") }}</strong>
-                <span class="col-md-9">
-                    {% if name.artist %}
-                    <a href="{{ URL(name.artist) }}"
-                        title="{{ fullName(name.artist) }}">
-                        {{ fullName(name.artist) }}</a>
-                    {% else %}
-                        {{ name.name }}
-                    {% endif %}
-                </span>
-            </p>
-        {% endfor %}
+        <p class="row artist">
+            <strong class="col-md-3 right">{{ __("Artist:") }}</strong>
+            <span class="col-md-9">
+            {% for name in artwork.artists %}
+                {% if name.artist %}
+                <a href="{{ URL(name.artist) }}"
+                    title="{{ fullName(name.artist) }}">
+                    {{ fullName(name.artist) }}</a><br/>
+                {% else %}
+                    <a href="{{ URL('/search?qartist=' + encodeURIComponent(name.name)) }}">{{ name.name }}</a><br/>
+                {% endif %}
+            {% endfor %}
+            </span>
+        </p>
         {% if artwork.title %}
             <p class="row title">
                 <strong class="col-md-3 right">{{ __("Title:") }}</strong>
