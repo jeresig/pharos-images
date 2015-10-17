@@ -143,9 +143,14 @@ return {
 
     search: function(req, res) {
         var query = req.query.q || "*";
+        var title = req.i18n.__("Results for '%s'", query);
+
+        if (req.query.qartist) {
+            title = req.i18n.__("Artist '%s'", req.query.qartist);
+        }
 
         app.imageSearch(req, res, query, {
-            title: req.i18n.__("Results for '%s'", query),
+            title: title,
             desc: req.i18n.__("Japanese Woodblock prints matching '%s'.", query)
         });
     },
