@@ -8,7 +8,13 @@ module.exports = {
     propMap: {
         id: "BibRecordNumberLong",
         url: ["BibRecordNumberLong", function(id) {
-            return "http://arcade.nyarc.org/record=" + id;
+            // The ID is actually missing the last number
+            // (although it's not always a number!)
+            id = id.replace(/^(b\d{7}).*$/, function(all, match) {
+                return match;
+            });
+
+            return "http://arcade.nyarc.org/record=" + id + "~S7";
         }],
         title: "WorkTitle",
         dateCreateds: ["WorkDate_earliestDate", function(earliest, data) {
