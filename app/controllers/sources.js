@@ -73,10 +73,6 @@ return {
 
     show: function(req, res) {
         app.imageSearch(req, res, {
-            term: {
-                source: req.source._id.toString()
-            }
-        }, {
             title: req.source.getFullName(req.i18n.getLocale()),
             desc: req.i18n.__("Japanese Woodblock prints at the %s.",
                 req.source.getFullName(req.i18n.getLocale())),

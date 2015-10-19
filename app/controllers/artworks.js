@@ -9,9 +9,10 @@ Artwork.prototype.getURL = function(locale) {
     return app.genURL(locale, "/artworks/" + this._id);
 };
 
-app.imageSearch = function(req, res, filter, tmplParams) {
+app.imageSearch = function(req, res, tmplParams) {
     var start = parseFloat(req.query.start || 0);
     var rows = 100;
+    var filter = req.param("q") || "*";
     var q = req.param("q") || "";
 
     var query = {
@@ -23,6 +24,13 @@ app.imageSearch = function(req, res, filter, tmplParams) {
                             simple_query_string: {
                                 query: filter,
                                 default_operator: "and"
+                            }
+                        },
+                        {
+                            simple_query_string: {
+                                fields: ["source"],
+                                query: req.param("source") || req.param("sourceId") || "",
+                                default_operator: "or"
                             }
                         },
                         {
@@ -149,7 +157,7 @@ return {
             title = req.i18n.__("Artist '%s'", req.query.qartist);
         }
 
-        app.imageSearch(req, res, query, {
+        app.imageSearch(req, res, {
             title: title,
             desc: req.i18n.__("Japanese Woodblock prints matching '%s'.", query)
         });
