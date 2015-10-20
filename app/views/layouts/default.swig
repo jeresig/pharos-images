@@ -23,7 +23,7 @@
 
     {{ CDN("/css/bootstrap.min.css") }}
     {{ CDN("/css/bootstrap-theme.min.css") }}
-    {{ CDN("/css/select2.css") }}
+    {{ CDN("/css/select2.min.css") }}
     {{ CDN("/css/ion.rangeSlider.css") }}
     {{ CDN("/css/ion.rangeSlider.skinFlat.css") }}
     {{ CDN("/css/style.css") }}

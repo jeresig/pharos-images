@@ -155,6 +155,14 @@ Artist: <input type="text" name="qartist" value="{{qartist}}"/>
     <input type="text" name="date" class="date-range-picker"
         value="{{date}}" data-min="{{minDate}}" data-max="{{maxDate}}"/>
 </div>
+<div>
+Sources:
+<select name="qsource" multiple="multiple" style="width: 100%;">
+{% for source in sources %}
+    <option value="{{source._id}}" {% if qsource.indexOf(source._id) >= 0 %} selected{% endif %}>{{source.shortName}}</option>
+{% endfor %}
+</select>
+</div>
 <p><input type="submit" value="Search"/></p>
 </form>
 </div>

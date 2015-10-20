@@ -20,6 +20,9 @@ $(function() {
         }
     });
 
+    // Source selection in the search sidebar
+    $("select[name=qsource]").select2();
+
     $(".date-range-picker").ionRangeSlider({
         type: "double",
         prettify_enabled: false,

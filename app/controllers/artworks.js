@@ -4,6 +4,7 @@ var _ = require("lodash");
 module.exports = function(core, app) {
 
 var Artwork = core.db.model("Artwork");
+var Source = core.db.model("Source");
 
 Artwork.prototype.getURL = function(locale) {
     return app.genURL(locale, "/artworks/" + this._id);
@@ -14,6 +15,11 @@ app.imageSearch = function(req, res, tmplParams) {
     var rows = 100;
     var filter = req.param("q") || "*";
     var q = req.param("q") || "";
+    var source = req.param("qsource") || req.param("sourceId") || "";
+
+    if (Array.isArray(source)) {
+        source = source.join(" ");
+    }
 
     var query = {
         filtered: {
@@ -29,7 +35,7 @@ app.imageSearch = function(req, res, tmplParams) {
                         {
                             simple_query_string: {
                                 fields: ["source"],
-                                query: req.param("source") || req.param("sourceId") || "",
+                                query: source,
                                 default_operator: "or"
                             }
                         },
@@ -94,41 +100,46 @@ app.imageSearch = function(req, res, tmplParams) {
         }
 
         var matches = results.hits.hits.length;
-		var end = start + matches;
-		var urlPrefix = req.path + (req.query.q ?
-			"?" + qs.stringify({ q: req.query.q }) : "");
-		var sep = req.query.q ? "&" : "?";
+        var end = start + matches;
+        var urlPrefix = req.path + (req.query.q ?
+            "?" + qs.stringify({ q: req.query.q }) : "");
+        var sep = req.query.q ? "&" : "?";
 
-		var prevLink = null;
-		var nextLink = null;
+        var prevLink = null;
+        var nextLink = null;
 
-		if (start > 0) {
-			prevLink = app.genURL(req.i18n.getLocale(), urlPrefix +
-				(start - rows > 0 ?
-					sep + "start=" + (start - rows) : ""));
-		}
+        if (start > 0) {
+            prevLink = app.genURL(req.i18n.getLocale(), urlPrefix +
+                (start - rows > 0 ?
+                    sep + "start=" + (start - rows) : ""));
+        }
 
-		if (end < results.hits.total) {
-			nextLink = app.genURL(req.i18n.getLocale(), urlPrefix +
-				sep + "start=" + (start + rows));
-		}
+        if (end < results.hits.total) {
+            nextLink = app.genURL(req.i18n.getLocale(), urlPrefix +
+                sep + "start=" + (start + rows));
+        }
 
-        res.render("artworks/index", _.extend({
-            q: req.param("q"),
-            qartist: req.param("qartist"),
-            minDate: process.env.DEFAULT_START_DATE,
-            maxDate: process.env.DEFAULT_END_DATE,
-            date: req.param("date") ||
-                (process.env.DEFAULT_START_DATE + ";" +
-                process.env.DEFAULT_END_DATE),
-            images: results.hits.hits,
-            total: results.hits.total,
-			start: (results.hits.total > 0 ? start || 1 : 0),
-			end: end,
-			rows: rows,
-			prev: prevLink,
-			next: nextLink
-        }, tmplParams));
+        // TODO: Cache the sources
+        Source.find({}, function(err, sources) {
+            res.render("artworks/index", _.extend({
+                q: req.param("q"),
+                qartist: req.param("qartist"),
+                qsource: source.split(" "),
+                sources: sources,
+                minDate: process.env.DEFAULT_START_DATE,
+                maxDate: process.env.DEFAULT_END_DATE,
+                date: req.param("date") ||
+                    (process.env.DEFAULT_START_DATE + ";" +
+                    process.env.DEFAULT_END_DATE),
+                images: results.hits.hits,
+                total: results.hits.total,
+                start: (results.hits.total > 0 ? start || 1 : 0),
+                end: end,
+                rows: rows,
+                prev: prevLink,
+                next: nextLink
+            }, tmplParams));
+        });
     });
 };
 
