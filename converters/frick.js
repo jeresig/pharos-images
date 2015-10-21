@@ -18,12 +18,15 @@ module.exports = {
         }],
         title: "WorkTitle",
         dateCreateds: ["WorkDate_earliestDate", function(earliest, data) {
-            if (earliest) {
+            if (earliest || data.WorkDate_latestDate) {
                 return {
                     start: parseFloat(earliest),
                     end: parseFloat(data.WorkDate_latestDate),
                     circa: !!(data.Qualifier)
                 };
+
+            } else if (data.WorkDate_display) {
+                return yr.parse(data.WorkDate_display);
             }
 
             return yr.parse(data.Creator_datesDisplay);
