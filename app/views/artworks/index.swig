@@ -165,6 +165,17 @@ Sources:
 </div>
 <p><input type="submit" value="Search"/></p>
 </form>
+
+{% for name, cluster in clusters %}
+    {% if cluster.buckets.length > 1 %}
+        <strong>{{name}}</strong>
+        <ul>
+            {% for bucket in cluster.buckets %}
+                <li>{{bucket.key}} ({{bucket.doc_count}})</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endfor %}
 </div>
 </div>
 <div class="results-main">

@@ -227,7 +227,7 @@ module.exports = function(app, passport) {
                 return item.original;
             }
 
-            if (item.start && item.end) {
+            if (item.start || item.end) {
                 return (item.circa ? "ca. " : "") +
                     item.start + (item.end && item.end !== item.start ?
                     "-" + item.end : "");

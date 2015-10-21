@@ -78,6 +78,13 @@ app.imageSearch = function(req, res, tmplParams) {
         size: rows,
         from: start,
         hydrate: true,
+        aggs: {
+            sources: {
+                terms: {
+                    field: "source"
+                }
+            }
+        },
         sort: [
             {
                 "dateCreateds.start": {
@@ -131,6 +138,7 @@ app.imageSearch = function(req, res, tmplParams) {
                 date: req.param("date") ||
                     (process.env.DEFAULT_START_DATE + ";" +
                     process.env.DEFAULT_END_DATE),
+                clusters: results.aggregations,
                 images: results.hits.hits,
                 total: results.hits.total,
                 start: (results.hits.total > 0 ? start || 1 : 0),
