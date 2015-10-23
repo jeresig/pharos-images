@@ -11,14 +11,23 @@ Artwork.prototype.getURL = function(locale) {
 };
 
 app.imageSearch = function(req, res, tmplParams) {
-    var start = parseFloat(req.query.start || 0);
     var rows = 100;
-    var filter = req.param("q") || "*";
-    var q = req.param("q") || "";
-    var source = req.param("qsource") || req.param("sourceId") || "";
 
-    if (Array.isArray(source)) {
-        source = source.join(" ");
+    var query = {
+        start: parseFloat(req.query.start || 0),
+        filter: req.param("q") || "*",
+        source: req.param("qsource") || req.param("sourceId") || "",
+        artist: req.param("qartist") || "",
+        date: req.param("date")
+    };
+
+    //var start = parseFloat(req.query.start || 0);
+    //var filter = req.param("q") || "*";
+    //var q = req.param("q") || "";
+    //var source = req.param("qsource") || req.param("sourceId") || "";
+
+    if (Array.isArray(query.source)) {
+        query.source = query.source.join(" ");
     }
 
     var query = {
@@ -28,21 +37,21 @@ app.imageSearch = function(req, res, tmplParams) {
                     must: [
                         {
                             simple_query_string: {
-                                query: filter,
+                                query: query.filter,
                                 default_operator: "and"
                             }
                         },
                         {
                             simple_query_string: {
                                 fields: ["source"],
-                                query: source,
+                                query: query.source,
                                 default_operator: "or"
                             }
                         },
                         {
                             simple_query_string: {
                                 fields: ["artists.*"],
-                                query: req.param("qartist") || "",
+                                query: query.artist,
                                 default_operator: "and"
                             }
                         }
@@ -53,8 +62,8 @@ app.imageSearch = function(req, res, tmplParams) {
         }
     };
 
-    if (req.param("date")) {
-        var dates = req.param("date").split(";");
+    if (query.date) {
+        var dates = query.date.split(";");
 
         query.filtered.filter.and = [
             {
@@ -115,34 +124,48 @@ app.imageSearch = function(req, res, tmplParams) {
 
         var matches = results.hits.hits.length;
         var end = start + matches;
-        var urlPrefix = req.path + (req.query.q ?
-            "?" + qs.stringify({ q: req.query.q }) : "");
-        var sep = req.query.q ? "&" : "?";
+        var urlPrefix = req.path + qs.stringify(query);
+        var sep = query.filter ? "&" : "?";
+
+        var queryURL = function(options) {
+            var params = Object.assign({}, options, query);
+
+            for (var param in params) {
+                if (params[param] === "") {
+                    delete params[param];
+                }
+            }
+
+            return app.genURL(req.i18n.getLocale(),
+                req.path + qs.stringify(params);
+        };
 
         var prevLink = null;
         var nextLink = null;
 
         if (start > 0) {
-            prevLink = app.genURL(req.i18n.getLocale(), urlPrefix +
-                (start - rows > 0 ?
-                    sep + "start=" + (start - rows) : ""));
+            prevLink = queryURL({
+                start: (start - rows > 0 ? (start - rows) : "")
+            });
         }
 
         if (end < results.hits.total) {
-            nextLink = app.genURL(req.i18n.getLocale(), urlPrefix +
-                sep + "start=" + (start + rows));
+            nextLink = queryURL({
+                start: (start + rows)
+            });
         }
 
         // TODO: Cache the sources
         Source.find({}, function(err, sources) {
             res.render("artworks/index", _.extend({
-                q: req.param("q"),
-                qartist: req.param("qartist"),
-                qsource: source.split(" "),
+                q: query.filter,
+                qartist: query.artist,
+                qsource: query.source.split(" "),
                 sources: sources,
+                queryURL: queryURL,
                 minDate: process.env.DEFAULT_START_DATE,
                 maxDate: process.env.DEFAULT_END_DATE,
-                date: req.param("date") ||
+                date: query.date ||
                     (process.env.DEFAULT_START_DATE + ";" +
                     process.env.DEFAULT_END_DATE),
                 clusters: results.aggregations,
