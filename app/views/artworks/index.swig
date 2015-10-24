@@ -147,19 +147,19 @@
 <div class="results-side">
 <div class="results-side-wrap">
 <form action="/search" method="GET">
-<p>Query: <input type="search" name="q" value="{{q}}"/></p>
+<p>Query: <input type="search" name="filter" value="{{query.filter}}"/></p>
 <div>
-Artist: <input type="text" name="qartist" value="{{qartist}}"/>
+Artist: <input type="text" name="artist" value="{{query.artist}}"/>
 </div>
 <div>
     <input type="text" name="date" class="date-range-picker"
-        value="{{date}}" data-min="{{minDate}}" data-max="{{maxDate}}"/>
+        value="{{query.date}}" data-min="{{minDate}}" data-max="{{maxDate}}"/>
 </div>
 <div>
 Sources:
-<select name="qsource" multiple="multiple" style="width: 100%;">
+<select name="source" multiple="multiple" style="width: 100%;">
 {% for source in sources %}
-    <option value="{{source._id}}" {% if qsource.indexOf(source._id) >= 0 %} selected{% endif %}>{{source.shortName}}</option>
+    <option value="{{source._id}}" {% if query.source.indexOf(source._id) >= 0 %} selected{% endif %}>{{source.shortName}}</option>
 {% endfor %}
 </select>
 </div>
@@ -171,7 +171,8 @@ Sources:
         <strong>{{name}}</strong>
         <ul>
             {% for bucket in cluster.buckets %}
-                <li>{{bucket.key}} ({{bucket.doc_count}})</li>
+                <li><a href="{{queryURL({artist:bucket.key})}}">
+                    {{bucket.key}} ({{bucket.doc_count}})</a></li>
             {% endfor %}
         </ul>
     {% endif %}

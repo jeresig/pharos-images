@@ -21,7 +21,7 @@ $(function() {
     });
 
     // Source selection in the search sidebar
-    $("select[name=qsource]").select2();
+    $("select[name=source]").select2();
 
     $(".date-range-picker").ionRangeSlider({
         type: "double",

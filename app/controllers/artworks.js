@@ -14,37 +14,42 @@ app.imageSearch = function(req, res, tmplParams) {
     var rows = 100;
 
     var query = {
-        start: parseFloat(req.query.start || 0),
-        filter: req.param("q") || "*",
-        source: req.param("qsource") || req.param("sourceId") || "",
-        artist: req.param("qartist") || "",
+        start: parseFloat(req.param("start") || 0),
+        filter: req.param("filter"),
+        source: req.param("source") || req.param("sourceId") || "",
+        artist: req.param("artist") || "",
         date: req.param("date")
     };
 
-    //var start = parseFloat(req.query.start || 0);
-    //var filter = req.param("q") || "*";
-    //var q = req.param("q") || "";
-    //var source = req.param("qsource") || req.param("sourceId") || "";
+    var queryURL = function(options) {
+        var params = Object.assign({}, query, options);
 
-    if (Array.isArray(query.source)) {
-        query.source = query.source.join(" ");
-    }
+        for (var param in params) {
+            if (!params[param]) {
+                delete params[param];
+            }
+        }
 
-    var query = {
+        return app.genURL(req.i18n.getLocale(),
+            req.path + "?" + qs.stringify(params));
+    };
+
+    var esQuery = {
         filtered: {
             query: {
                 bool: {
                     must: [
                         {
                             simple_query_string: {
-                                query: query.filter,
+                                query: query.filter || "*",
                                 default_operator: "and"
                             }
                         },
                         {
                             simple_query_string: {
                                 fields: ["source"],
-                                query: query.source,
+                                query: Array.isArray(query.source) ?
+                                    query.source.join(" ") : query.source,
                                 default_operator: "or"
                             }
                         },
@@ -62,10 +67,10 @@ app.imageSearch = function(req, res, tmplParams) {
         }
     };
 
-    if (query.date) {
+    if (esQuery.date) {
         var dates = query.date.split(";");
 
-        query.filtered.filter.and = [
+        esQuery.filtered.filter.and = [
             {
                 range: {
                     "dateCreateds.start": {
@@ -83,9 +88,9 @@ app.imageSearch = function(req, res, tmplParams) {
         ];
     }
 
-    Artwork.search(query, {
+    Artwork.search(esQuery, {
         size: rows,
-        from: start,
+        from: query.start,
         hydrate: true,
         aggs: {
             sources: {
@@ -122,56 +127,34 @@ app.imageSearch = function(req, res, tmplParams) {
             return res.render("500");
         }
 
-        var matches = results.hits.hits.length;
-        var end = start + matches;
-        var urlPrefix = req.path + qs.stringify(query);
-        var sep = query.filter ? "&" : "?";
-
-        var queryURL = function(options) {
-            var params = Object.assign({}, options, query);
-
-            for (var param in params) {
-                if (params[param] === "") {
-                    delete params[param];
-                }
-            }
-
-            return app.genURL(req.i18n.getLocale(),
-                req.path + qs.stringify(params);
-        };
-
+        var end = query.start + results.hits.hits.length;
         var prevLink = null;
         var nextLink = null;
 
-        if (start > 0) {
+        if (query.start > 0) {
             prevLink = queryURL({
-                start: (start - rows > 0 ? (start - rows) : "")
+                start: (query.start - rows > 0 ? (query.start - rows) : "")
             });
         }
 
         if (end < results.hits.total) {
             nextLink = queryURL({
-                start: (start + rows)
+                start: (query.start + rows)
             });
         }
 
         // TODO: Cache the sources
         Source.find({}, function(err, sources) {
             res.render("artworks/index", _.extend({
-                q: query.filter,
-                qartist: query.artist,
-                qsource: query.source.split(" "),
                 sources: sources,
+                query: query,
                 queryURL: queryURL,
                 minDate: process.env.DEFAULT_START_DATE,
                 maxDate: process.env.DEFAULT_END_DATE,
-                date: query.date ||
-                    (process.env.DEFAULT_START_DATE + ";" +
-                    process.env.DEFAULT_END_DATE),
                 clusters: results.aggregations,
                 images: results.hits.hits,
                 total: results.hits.total,
-                start: (results.hits.total > 0 ? start || 1 : 0),
+                start: (results.hits.total > 0 ? query.start || 1 : 0),
                 end: end,
                 rows: rows,
                 prev: prevLink,
