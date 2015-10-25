@@ -41,20 +41,20 @@ module.exports = function(lib) {
         title: {type: String, es_indexed: true},
 
         // A list of artist names extracted from the page.
-        artists: {type: [Name], es_indexed: true},
+        artists: [Name],
 
         // The size of the print (e.g. 100mm x 200mm)
-        dimensions: {type: [Dimension], es_indexed: true},
+        dimensions: [Dimension],
 
         // Date when the print was created (typically a rough year, or range).
-        dateCreateds: {type: [YearRange], es_indexed: true},
+        dateCreateds: [YearRange],
 
         objectType: {type: String, es_indexed: true},
         medium: {type: String, es_indexed: true},
 
-        collections: {type: [Collection], es_indexed: true},
+        collections: [Collection],
 
-        categories: {type: [String], es_indexed: true},
+        categories: [String],
 
         images: [Image]
     });

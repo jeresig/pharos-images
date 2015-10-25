@@ -98,11 +98,9 @@ app.imageSearch = function(req, res, tmplParams) {
                     field: "source"
                 }
             },
-            // TODO(jeresig): Change the mapping to provide a name
-            // field that has an un-analyzed version of the name
             artists: {
                 terms: {
-                    field: "artists.name"
+                    field: "artists.name.raw"
                 }
             }
         },

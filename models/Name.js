@@ -12,7 +12,16 @@ module.exports = function(lib) {
         settings: mongoose.Schema.Types.Mixed,
 
         // The English form of the full artist's name
-        name: {type: String, es_indexed: true},
+        name: {
+            type: String,
+            es_indexed: true,
+            es_type: "multi_field",
+            // A raw name to use for building aggregations in Elasticsearch
+            es_fields: {
+                name: {type: "string", index: "analyzed"},
+                raw: {type: "string", index: "not_analyzed"}
+            }
+        },
 
         // Same but in ascii (for example: Hokushō becomes Hokushoo)
         ascii: String,

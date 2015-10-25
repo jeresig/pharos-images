@@ -8,7 +8,7 @@ core.init(function() {
         var count = 0;
         stream.on('data', function(err, doc){
             count++;
-            //console.log('indexed ' + count);
+            console.log('indexed ' + count);
         });
         stream.on('close', function(){
             process.exit(0);
