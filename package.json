@@ -47,6 +47,7 @@
     "parse-dimensions": "0.0.1",
     "passport": "^0.1.18",
     "passport-local": "^0.1.6",
+    "pastec": "0.0.1",
     "request": "^2.60.0",
     "swig": "^1.4.2",
     "view-helpers": "^0.1.5",
