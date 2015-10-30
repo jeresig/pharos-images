@@ -2,6 +2,10 @@ var mongoose = require("mongoose");
 var versioner = require("mongoose-version");
 var mongoosastic = require("mongoosastic");
 
+var pastec = require("pastec")({
+    server: process.env.PASTEC_URL
+});
+
 module.exports = function(lib) {
     try {
         return mongoose.model("Artwork");
@@ -164,7 +168,8 @@ module.exports = function(lib) {
                             height: dimensions.height
                         });
 
-                        callback();
+                        // Save the image to Pastec
+                        pastec.add(imgFile, imageID, callback);
                     });
                 });
         }
