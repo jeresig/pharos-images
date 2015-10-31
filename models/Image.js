@@ -35,14 +35,14 @@ module.exports = function(lib) {
         width: Number,
         height: Number,
 
-        // Similar images (as determined by MatchEngine)
-        similar: [{
-            score: Number,
-            target_overlap_percent: Number,
-            query_overlap_percent: Number,
-            overlay: String,
-            image: {type: String, ref: "Image"}
-        }]
+        // Similar images (as determined by Pastec)
+        similarImages: [{
+            _id: String,
+            score: Number
+        }],
+
+        // Computed by looking at the results of similarImages
+        similarArtworks: [{type: String, ref: "Artwork"}]
     });
 
     /*
