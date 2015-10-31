@@ -39,10 +39,7 @@ module.exports = function(lib) {
         similarImages: [{
             _id: String,
             score: Number
-        }],
-
-        // Computed by looking at the results of similarImages
-        similarArtworks: [{type: String, ref: "Artwork"}]
+        }]
     });
 
     /*

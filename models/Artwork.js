@@ -60,7 +60,10 @@ module.exports = function(lib) {
 
         categories: [String],
 
-        images: [Image]
+        images: [Image],
+
+        // Computed by looking at the results of similarImages
+        similarArtworks: [{type: String, ref: "Artwork"}]
     });
 
     ArtworkSchema.virtual("dateCreated")
@@ -109,6 +112,20 @@ module.exports = function(lib) {
             return process.env.BASE_DATA_URL +
                 (this.source._id || this.source) +
                 "/thumbs/" + image.imageName + ".jpg";
+        },
+
+        getImagePath: function(image) {
+            image = image || this.images[0];
+            return process.env.BASE_DATA_DIR +
+                (this.source._id || this.source) +
+                "/images/" + image.imageName + ".jpg";
+        },
+
+        getScaledPath: function(image) {
+            image = image || this.images[0];
+            return process.env.BASE_DATA_DIR +
+                (this.source._id || this.source) +
+                "/scaled/" + image.imageName + ".jpg";
         },
 
         getTitle: function(locale) {
