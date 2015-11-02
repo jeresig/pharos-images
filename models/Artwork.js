@@ -186,7 +186,7 @@ module.exports = function(lib) {
                         });
 
                         // Save the image to Pastec
-                        pastec.add(imgFile, imageID, callback);
+                        pastec.add(imgFile, imageName, callback);
                     });
                 });
         }

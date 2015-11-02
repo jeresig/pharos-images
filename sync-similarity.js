@@ -26,20 +26,37 @@ core.init(function() {
         .on("data", function(artwork) {
             this.pause();
             async.mapLimit(artwork.images, 1, function(image, callback) {
+                // NOTE(jeresig): Whenever pastec gets support for searching by
+                // ID, this should be switched over to using `image.imageName`
                 var path = artwork.getScaledPath(image);
                 pastec.fileSimilar(path, function(err, matches) {
-                    matches = matches.map(function(match) {
-                        // TODO: Convert the match
-                        return match;
-                    });
-
                     image.similarImages = matches;
-
                     callback(err, image);
                 });
             }, (err, results) => {
-                // TODO: Calculate artwork matches before saving
-                artwork.save(() => this.resume());
+                // Calculate artwork matches before saving
+                var matches = [];
+
+                results.forEach(result => {
+                    result.forEach(match => {
+                        matches.push({"images.imageName": match.id});
+                    });
+                });
+
+                if (matches.length === 0) {
+                    artwork.save(() => this.resume());
+
+                } else {
+                    Artwork.find({$or: matches}, (err, artworks) => {
+                        if (err) {
+                            return callback(err);
+                        }
+
+                        artwork.similarArtworks =
+                            artworks.map(artwork => artwork._id);
+                        artwork.save(() => this.resume());
+                    });
+                }
             });
         })
         .on("close", function() {

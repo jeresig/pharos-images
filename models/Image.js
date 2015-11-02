@@ -37,7 +37,7 @@ module.exports = function(lib) {
 
         // Similar images (as determined by Pastec)
         similarImages: [{
-            _id: String,
+            id: String,
             score: Number
         }]
     });
