@@ -31,7 +31,7 @@ core.init(function() {
                 var path = artwork.getScaledPath(image);
                 pastec.fileSimilar(path, function(err, matches) {
                     image.similarImages = matches;
-                    callback(err, image);
+                    callback(err, matches);
                 });
             }, (err, results) => {
                 // Calculate artwork matches before saving
