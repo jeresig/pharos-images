@@ -153,42 +153,54 @@ module.exports = function(lib) {
         },
 
         addImage: function(imageData, imgFile, sourceDir, callback) {
-            var model = this;
-            var source = imageData.source;
+            lib.images.processImage(imgFile, sourceDir, false, (err, hash) => {
+                if (err) {
+                    return callback(err);
+                }
 
-            lib.images.processImage(imgFile, sourceDir, false,
-                function(err, hash) {
+                // Store the name of the image file
+                imageData.file = imageFile;
+
+                // Use the source-provided ID if it exists
+                imageData.id = imageData.id || hash;
+                var imageID = imageData.source + "/" + imageData.id;
+
+                // Stop if the image is already in the images list
+                if (this.images.some(function(image) {
+                    return image.imageID === imageID;
+                })) {
+                    return this.indexImage(imageData, callback);
+                }
+
+                lib.images.getSize(imgFile, (err, dimensions) => {
                     if (err) {
                         return callback(err);
                     }
 
-                    // Use the source-provided ID if it exists
-                    var id = imageData.id || hash;
-                    var imageID = source + "/" + id;
-
-                    // Stop if the image is already in the images list
-                    if (model.images.some(function(image) {
-                        return image.imageID === imageID;
-                    })) {
-                        return callback();
-                    }
-
-                    lib.images.getSize(imgFile, function(err, dimensions) {
-                        if (err) {
-                            return callback(err);
-                        }
-
-                        model.images.push({
-                            imageName: hash,
-                            imageID: imageID,
-                            width: dimensions.width,
-                            height: dimensions.height
-                        });
-
-                        // Save the image to Pastec
-                        pastec.add(imgFile, imageName, callback);
+                    this.images.push({
+                        imageName: imageData.id,
+                        imageID: imageID,
+                        width: dimensions.width,
+                        height: dimensions.height
                     });
+
+                    this.indexImage(imageData, callback);
                 });
+            });
+        },
+
+        indexImage: function(imageData, callback) {
+            pastec.idIndexed(imageData.id, function(err, indexed) {
+                if (err) {
+                    return callback(err);
+                }
+
+                if (indexed) {
+                    return callback();
+                }
+
+                pastec.add(imageData.file, imageData.id, callback);
+            });
         }
     };
 
