@@ -161,6 +161,7 @@ core.init(function() {
 
     // Models
     var Source = core.models.Source;
+    var Artwork = core.models.Artwork;
 
     console.log("Creating source record...");
 
@@ -175,10 +176,19 @@ core.init(function() {
         importData(sourceOptions, function(err) {
             if (err) {
                 console.error(err);
-            } else {
-                console.log("DONE");
+                process.exit(0);
             }
-            process.exit(0);
+
+            console.log("Saving image index...");
+
+            Artwork.saveImageIndex(function(err) {
+                if (err) {
+                    console.error(err);
+                } else {
+                    console.log("DONE");
+                }
+                process.exit(0);
+            });
         });
     });
 });

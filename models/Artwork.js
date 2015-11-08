@@ -158,12 +158,13 @@ module.exports = function(lib) {
                     return callback(err);
                 }
 
-                // Store the name of the image file
-                imageData.file = imageFile;
+                // Store the name and hash of the image file
+                imageData.file = imgFile;
+                imageData.hash = hash;
 
                 // Use the source-provided ID if it exists
-                imageData.id = imageData.id || hash;
-                var imageID = imageData.source + "/" + imageData.id;
+                var id = imageData.id || hash;
+                var imageID = imageData.source + "/" + id;
 
                 // Stop if the image is already in the images list
                 if (this.images.some(function(image) {
@@ -178,7 +179,7 @@ module.exports = function(lib) {
                     }
 
                     this.images.push({
-                        imageName: imageData.id,
+                        imageName: imageData.hash,
                         imageID: imageID,
                         width: dimensions.width,
                         height: dimensions.height
@@ -190,7 +191,7 @@ module.exports = function(lib) {
         },
 
         indexImage: function(imageData, callback) {
-            pastec.idIndexed(imageData.id, function(err, indexed) {
+            pastec.idIndexed(imageData.hash, function(err, indexed) {
                 if (err) {
                     return callback(err);
                 }
@@ -199,8 +200,14 @@ module.exports = function(lib) {
                     return callback();
                 }
 
-                pastec.add(imageData.file, imageData.id, callback);
+                pastec.add(imageData.file, imageData.hash, callback);
             });
+        }
+    };
+
+    ArtworkSchema.statics = {
+        saveImageIndex: function(callback) {
+            pastec.saveIndex(process.env.PASTEC_INDEX, callback);
         }
     };
 
