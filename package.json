@@ -27,6 +27,7 @@
     "express": "^3.21.2",
     "express-cdn": "https://registry.npmjs.org/express-cdn/-/express-cdn-0.1.9.tgz",
     "express-namespace": "^0.1.1",
+    "farmhash": "^1.1.0",
     "forever": "^0.10.11",
     "formidable": "^1.0.17",
     "forms-mongoose": "0.0.6",
