@@ -200,7 +200,14 @@ module.exports = function(lib) {
                     return callback();
                 }
 
-                pastec.add(imageData.file, imageData.hash, callback);
+                pastec.add(imageData.file, imageData.hash, function(err) {
+                    // Ignore small images, we just won't index them
+                    if (err && err.type === "IMAGE_SIZE_TOO_SMALL") {
+                        return callback();
+                    }
+
+                    return callback(err);
+                });
             });
         }
     };
