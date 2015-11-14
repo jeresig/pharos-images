@@ -53,7 +53,7 @@ exports.oldSlugRedirect = function(req, res, next) {
 exports.search = function(req, res) {
     var perPage = 10;
 
-    var q = req.param("q") || "";
+    var q = req.params.q || "";
     // TODO: Fix kanji searching
     var query = q.trim().split(/\s+/).map(function(name) {
         return name ? name + "*" : "";
@@ -89,7 +89,7 @@ exports.search = function(req, res) {
 };
 
 exports.searchByName = function(req, res) {
-    var query = req.param("q") || "";
+    var query = req.params.q || "";
 
     Artist.searchByName(query, function(err, results) {
         if (err) {
@@ -105,7 +105,7 @@ exports.searchByName = function(req, res) {
  */
 
 exports.index = function(req, res) {
-    var page = (req.param("page") > 0 ? req.param("page") : 1) - 1;
+    var page = (req.params.page > 0 ? req.params.page : 1) - 1;
     var perPage = 100;
     var options = {
         query: "Utagawa",

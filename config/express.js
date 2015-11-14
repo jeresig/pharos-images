@@ -1,39 +1,25 @@
-
-/*!
- * Module dependencies.
- */
-
 var express = require("express");
-var i18n = require("i18n-2");
-var mongoStore = require("connect-mongo")(express);
+var bodyParser = require("body-parser");
 var methodOverride = require("method-override");
-var helpers = require("view-helpers");
-var pkg = require("../package");
+var cookieParser = require("cookie-parser");
+var expressSession = require("express-session");
+var serveFavicon = require("serve-favicon");
+var serveStatic = require("serve-static");
+var csurf = require("csurf");
+var morgan = require("morgan");
 var flash = require("connect-flash");
-var env = process.env.NODE_ENV || "development";
+var mongoStore = require("connect-mongo")(expressSession);
+var helpers = require("view-helpers");
+
+var i18n = require("i18n-2");
 var swig = require("swig");
+
+var pkg = require("../package");
+var env = process.env.NODE_ENV || "development";
 var path = require("path");
 var rootPath = path.resolve(__dirname + "../..");
 
-/*!
- * Expose
- */
-
 module.exports = function(app, passport) {
-    // Add basic auth for staging
-    if (env === "staging") {
-        app.use(express.basicAuth(function(user, pass) {
-            return "username" === user & "password" === pass;
-        }));
-
-        app.use(function (req, res, next) {
-            if (req.remoteUser && req.user && !req.user._id) {
-                delete req.user;
-            }
-            next();
-        });
-    }
-
     var CDN = require("express-cdn")(app, {
         publicDir: rootPath + "/public",
         viewsDir: rootPath + "/app/views",
@@ -49,11 +35,11 @@ module.exports = function(app, passport) {
     app.set("showStackError", true);
 
     // use express favicon
-    app.use(express.favicon());
+    app.use(serveFavicon(rootPath + "/public/images/favicon.png"));
 
-    app.use(express.static(rootPath + "/public"));
-    app.use("/data", express.static(rootPath + "/data"));
-    app.use(express.logger("dev"));
+    app.use(serveStatic(rootPath + "/public"));
+    app.use("/data", serveStatic(rootPath + "/data"));
+    app.use(morgan("dev"));
 
     app.engine("swig", swig.renderFile)
 
@@ -65,12 +51,16 @@ module.exports = function(app, passport) {
     swig.setDefaults({ cache: false });
 
     // bodyParser should be above methodOverride
-    //app.use(express.bodyParser());
+    app.use(bodyParser.urlencoded({
+        extended: false
+    }));
     app.use(methodOverride());
 
     // cookieParser should be above session
-    app.use(express.cookieParser());
-    app.use(express.session({
+    app.use(cookieParser());
+    app.use(expressSession({
+        resave: false,
+        saveUninitialized: false,
         secret: pkg.name,
         store: new mongoStore({
             url: process.env.MONGODB_URL,
@@ -86,9 +76,9 @@ module.exports = function(app, passport) {
     app.use(flash());
 
     // expose pkg and node env to views
-    app.use(function (req, res, next) {
-        res.locals.pkg = pkg
-        res.locals.env = env
+    app.use(function(req, res, next) {
+        res.locals.pkg = pkg;
+        res.locals.env = env;
         next();
     });
 
@@ -97,13 +87,14 @@ module.exports = function(app, passport) {
 
     // adds CSRF support
     if (process.env.NODE_ENV !== "test") {
-        app.use(express.csrf());
+        app.use(csurf());
 
         app.use(function(req, res, next) {
             res.locals.csrf_token = req.csrfToken();
             next();
         });
     }
+
     // Supported locales
     app.localeNames = {
         en: "English",
@@ -253,11 +244,8 @@ module.exports = function(app, passport) {
         next();
     });
 
-    // routes should be at the last
-    app.use(app.router);
-
     // custom error handler
-    app.use(function (err, req, res, next) {
+    app.use(function(err, req, res, next) {
         if (err.message
             && (~err.message.indexOf("not found")
             || (~err.message.indexOf("Cast to ObjectId failed")))) {
@@ -266,10 +254,6 @@ module.exports = function(app, passport) {
 
         console.error(err.stack);
         res.status(500).render("500");
-    })
-
-    app.use(function (req, res, next) {
-        res.status(404).render("404", { url: req.originalUrl });
     });
 
     // development specific stuff

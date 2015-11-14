@@ -1,5 +1,4 @@
 var async = require("async");
-var _ = require("lodash");
 
 module.exports = function(core, app) {
 

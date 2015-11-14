@@ -1,5 +1,4 @@
 var qs = require("querystring");
-var _ = require("lodash");
 
 module.exports = function(core, app) {
 
@@ -14,11 +13,11 @@ app.imageSearch = function(req, res, tmplParams) {
     var rows = 100;
 
     var query = {
-        start: parseFloat(req.param("start") || 0),
-        filter: req.param("filter"),
-        source: req.param("source") || req.param("sourceId") || "",
-        artist: req.param("artist") || "",
-        date: req.param("date")
+        start: parseFloat(req.query.start || 0),
+        filter: req.query.filter,
+        source: req.query.source || req.params.sourceId || "",
+        artist: req.query.artist || "",
+        date: req.query.date
     };
 
     var queryURL = function(options) {
@@ -35,42 +34,41 @@ app.imageSearch = function(req, res, tmplParams) {
     };
 
     var esQuery = {
-        filtered: {
-            query: {
-                bool: {
-                    must: [
-                        {
-                            simple_query_string: {
-                                query: query.filter || "*",
-                                default_operator: "and"
-                            }
-                        },
-                        {
-                            simple_query_string: {
-                                fields: ["source"],
-                                query: Array.isArray(query.source) ?
-                                    query.source.join(" ") : query.source,
-                                default_operator: "or"
-                            }
-                        },
-                        {
-                            simple_query_string: {
-                                fields: ["artists.*"],
-                                query: query.artist,
-                                default_operator: "and"
-                            }
+        bool: {
+            must: [
+                {
+                    query_string: {
+                        query: query.filter || "*",
+                        default_operator: "and"
+                    }
+                },
+                {
+                    match: {
+                        source: {
+                            query: Array.isArray(query.source) ?
+                                query.source.join(" ") : query.source,
+                            operator: "or",
+                            zero_terms_query: "all"
                         }
-                    ]
+                    }
+                },
+                {
+                    multi_match: {
+                        fields: ["artists.*"],
+                        query: query.artist,
+                        operator: "and",
+                        zero_terms_query: "all"
+                    }
                 }
-            },
+            ],
             filter: {}
         }
     };
 
-    if (esQuery.date) {
+    if (query.date) {
         var dates = query.date.split(";");
 
-        esQuery.filtered.filter.and = [
+        esQuery.bool.filter.and = [
             {
                 range: {
                     "dateCreateds.start": {
@@ -91,7 +89,6 @@ app.imageSearch = function(req, res, tmplParams) {
     Artwork.search(esQuery, {
         size: rows,
         from: query.start,
-        hydrate: true,
         aggs: {
             sources: {
                 terms: {
@@ -116,6 +113,7 @@ app.imageSearch = function(req, res, tmplParams) {
                 }
             }
         ],
+        hydrate: true,
         hydrateOptions: {
             populate: "source"
         }
@@ -143,7 +141,7 @@ app.imageSearch = function(req, res, tmplParams) {
 
         // TODO: Cache the sources
         Source.find({}, function(err, sources) {
-            res.render("artworks/index", _.extend({
+            res.render("artworks/index", Object.assign({
                 sources: sources,
                 query: query,
                 queryURL: queryURL,
@@ -180,8 +178,8 @@ return {
     },
 
     search: function(req, res) {
-        var query = req.query.q || "*";
-        var title = req.i18n.__("Results for '%s'", query);
+        var query = req.query.q;
+        var title = req.i18n.__("Results for '%s'", query || "*");
 
         if (req.query.qartist) {
             title = req.i18n.__("Artist '%s'", req.query.qartist);
@@ -189,31 +187,7 @@ return {
 
         app.imageSearch(req, res, {
             title: title,
-            desc: req.i18n.__("Japanese Woodblock prints matching '%s'.", query)
-        });
-    },
-
-    index: function(req, res) {
-        var page = (req.param("page") > 0 ? req.param("page") : 1) - 1;
-        var perPage = 100;
-        var options = {
-            query: "fish",
-            size: perPage,
-            from: page * perPage
-        };
-
-        // , hydrateOptions: {populate: "bios"}
-        Artwork.search(options, {hydrate: true}, function(err, results){
-            if (err) {
-                return res.render("500");
-            }
-
-            res.render("artworks/index", {
-                title: "Artworks",
-                images: results.hits,
-                page: page + 1,
-                pages: Math.ceil(results.total / perPage)
-            });
+            desc: req.i18n.__("Artworks matching '%s'.", query)
         });
     },
 

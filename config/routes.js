@@ -67,4 +67,8 @@ module.exports = function(app, passport, ukiyoe) {
 
     app.get("/about", cache(1), home.about);
     app.get("/", cache(1), home.index);
+
+    app.use(function (req, res, next) {
+        res.status(404).render("404", { url: req.originalUrl });
+    });
 };
