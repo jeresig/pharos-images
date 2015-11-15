@@ -1,39 +1,31 @@
-var express = require("express");
-var passport = require("passport");
-var env = process.env.NODE_ENV || "development";
-var fs = require("fs");
+const fs = require("fs");
+
+const express = require("express");
+
+const i18n = require("./middlewares/i18n");
+const cdn = require("./middlewares/cdn");
 
 // Load in configuration options
 require("dotenv").load();
 
-require("express-namespace");
-
-var core = require("./models");
+const core = require("./models");
 
 core.db.connect(function() {
-    fs.readdirSync(__dirname + "/app/models").forEach(function (file) {
-        if (~file.indexOf(".js")) {
-            require(__dirname + "/app/models/" + file)(core);
-        }
-    });
-
-    // Bootstrap passport config
-    require("./config/passport")(passport, core);
-
-    var app = express();
+    const app = express();
 
     // Bootstrap application settings
-    require("./config/express")(app, passport, core);
+    require("./config/express")(app, core);
+
+    // Bootstrap passport config
+    require("./config/passport")(app, core);
 
     // Bootstrap routes
-    require("./config/routes")(app, passport, core);
+    require("./config/routes")(app, core);
 
     // Start the app by listening on <port>
-    var port = process.env.PORT;
+    console.log(`PORT: ${process.env.PORT}`);
 
-    console.log("PORT: " + port);
-
-    app.listen(port, function() {
+    app.listen(process.env.PORT, function() {
         if (process.send) {
             process.send("online");
         }

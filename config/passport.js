@@ -1,26 +1,16 @@
+const passport = require("passport");
+const LocalStrategy = require("passport-local").Strategy;
 
-/*!
- * Module dependencies.
- */
-
-var LocalStrategy = require("passport-local").Strategy;
-
-/**
- * Expose
- */
-
-module.exports = function(passport, ukiyoe) {
-    var User = ukiyoe.db.model("User");
+module.exports = function(app, core) {
+    const User = core.db.model("User");
 
     // serialize sessions
-    passport.serializeUser(function(user, done) {
-        done(null, user.id);
+    passport.serializeUser((user, callback) => {
+        callback(null, user.id);
     });
 
-    passport.deserializeUser(function(id, done) {
-        User.findOne({ _id: id }, function (err, user) {
-            done(err, user);
-        });
+    passport.deserializeUser((id, callback) => {
+        User.findOne({_id: id}, callback);
     });
 
     // use local strategy
@@ -29,19 +19,24 @@ module.exports = function(passport, ukiyoe) {
             usernameField: "email",
             passwordField: "password"
         },
-        function(email, password, done) {
+        (email, password, callback) => {
             User.findOne({ email: email }).exec(function(err, user) {
                 if (err) {
-                    return done(err);
+                    return callback(err);
                 }
                 if (!user) {
-                    return done(null, false, { message: "Unknown user" });
+                    return callback(null, false, { message: "Unknown user" });
                 }
                 if (!user.authenticate(password)) {
-                    return done(null, false, { message: "Invalid password" });
+                    return callback(null, false, { message: "Invalid password" });
                 }
-                return done(null, user);
+                return callback(null, user);
             });
         }
     ));
+
+    // Initialize Passport and the Passport session, which allows users to
+    // login to the site.
+    app.use(passport.initialize());
+    app.use(passport.session());
 };

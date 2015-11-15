@@ -17,7 +17,7 @@ return {
     index: function(req, res) {
         Artwork.count().exec(function(err, total) {
             var sitemaps = [
-                { url: app.genURL(req.i18n.getLocale(),
+                {url: app.genURL(req.i18n.getLocale(),
                     "/sitemap-sources.xml") },
                 {url: app.genURL(req.i18n.getLocale(),
                     "/sitemap-artists.xml") }

@@ -1,43 +1,23 @@
 var env = process.env.NODE_ENV || "development";
 
-var auth = require("./middlewares/authorization");
-
-var extractedartistAuth = [
-    auth.requiresLogin
-];
-
-var artistAuth = [
-    auth.requiresLogin
-];
-
-var imageAuth = [
-    auth.requiresLogin
-];
-
-var passportOptions = {
-    failureFlash: "Invalid email or password.",
-    failureRedirect: "/login"
+// Utility method of setting the cache header on a request
+// Used as a piece of Express middleware
+var cache = (hours) =>
+    (req, res, next) => {
+        if (env === "production") {
+            res.setHeader("Cache-Control", `public, max-age=${hours * 3600}`);
+        }
+        next();
+    }
 };
 
-module.exports = function(app, passport, ukiyoe) {
-    var artists = require("../app/controllers/artists")(ukiyoe, app);
-    var artworks = require("../app/controllers/artworks")(ukiyoe, app);
-    var uploads = require("../app/controllers/uploads")(ukiyoe, app);
-    var sources = require("../app/controllers/sources")(ukiyoe, app);
-    var home = require("../app/controllers/home")(ukiyoe, app);
-    var sitemaps = require("../app/controllers/sitemaps")(ukiyoe, app);
-
-    // Utility method of setting the cache header on a request
-    // Used as a piece of Express middleware
-    var cache = function(hours) {
-        return function(req, res, next) {
-            if (env === "production") {
-                res.setHeader("Cache-Control",
-                    "public, max-age=" + (hours * 3600));
-            }
-            next();
-        };
-    };
+module.exports = function(app, core) {
+    var artists = require("../app/controllers/artists")(core, app);
+    var artworks = require("../app/controllers/artworks")(core, app);
+    var uploads = require("../app/controllers/uploads")(core, app);
+    var sources = require("../app/controllers/sources")(core, app);
+    var home = require("../app/controllers/home")(core, app);
+    var sitemaps = require("../app/controllers/sitemaps")(core, app);
 
     app.get("/artists", cache(1), artists.index);
     app.get("/artists/:slug", artists.oldSlugRedirect);
@@ -68,7 +48,9 @@ module.exports = function(app, passport, ukiyoe) {
     app.get("/about", cache(1), home.about);
     app.get("/", cache(1), home.index);
 
-    app.use(function (req, res, next) {
-        res.status(404).render("404", { url: req.originalUrl });
+    app.use(function(req, res, next) {
+        res.status(404).render("404", {
+            url: req.originalUrl
+        });
     });
 };

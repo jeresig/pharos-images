@@ -21,7 +21,6 @@
     "async": "^1.5.0",
     "body-parser": "^1.14.1",
     "concat-stream": "^1.5.0",
-    "connect-flash": "^0.1.1",
     "connect-mongo": "^0.8.2",
     "cookie-parser": "^1.4.0",
     "csurf": "^1.8.3",
@@ -29,12 +28,9 @@
     "dotenv": "^1.2.0",
     "express": "^4.13.3",
     "express-cdn": "^0.2.7",
-    "express-namespace": "^0.1.1",
     "express-session": "^1.12.1",
     "farmhash": "^1.1.0",
-    "forever": "^0.15.1",
     "formidable": "^1.0.17",
-    "forms-mongoose": "0.0.6",
     "gm": "^1.18.1",
     "graceful-fs": "^4.1.2",
     "i18n-2": "^0.6.0",
@@ -58,7 +54,6 @@
     "serve-favicon": "^2.3.0",
     "serve-static": "^1.10.0",
     "swig": "^1.4.2",
-    "view-helpers": "^0.1.5",
     "yearrange": "0.0.5"
   }
 }
