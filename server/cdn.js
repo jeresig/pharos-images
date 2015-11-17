@@ -5,7 +5,7 @@ const expressCDN = require("express-cdn");
 const env = process.env.NODE_ENV || "development";
 const rootPath = path.resolve(__dirname, "../..");
 
-exports = function(app) {
+module.exports = function(core, app) {
     const CDN = expressCDN(app, {
         publicDir: rootPath + "/public",
         viewsDir: rootPath + "/app/views",

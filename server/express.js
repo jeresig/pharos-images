@@ -18,9 +18,9 @@ const env = process.env.NODE_ENV || "development";
 
 const viewMethods = require("./middlewares/view-methods");
 
-const rootPath = path.resolve(__dirname, "../..");
+const rootPath = path.resolve(__dirname, "..");
 
-module.exports = function(app, passport) {
+module.exports = function(core, app) {
     // A basic logger for tracking who is accessing the service
     app.use(morgan("dev"));
 

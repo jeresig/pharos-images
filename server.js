@@ -1,26 +1,19 @@
-const fs = require("fs");
-
-const express = require("express");
-
-const i18n = require("./middlewares/i18n");
-const cdn = require("./middlewares/cdn");
-
 // Load in configuration options
 require("dotenv").load();
 
+const fs = require("fs");
+const express = require("express");
 const core = require("./models");
 
 core.db.connect(function() {
     const app = express();
 
-    // Bootstrap application settings
-    require("./config/express")(app, core);
-
-    // Bootstrap passport config
-    require("./config/passport")(app, core);
-
-    // Bootstrap routes
-    require("./config/routes")(app, core);
+    // Load in the main server logic
+    require("./server/express")(core, app);
+    require("./server/passport")(core, app);
+    require("./server/i18n")(core, app);
+    require("./server/cdn")(core, app);
+    require("./server/routes")(core, app);
 
     // Start the app by listening on <port>
     console.log(`PORT: ${process.env.PORT}`);

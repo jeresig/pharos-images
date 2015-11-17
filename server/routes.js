@@ -1,23 +1,14 @@
-var env = process.env.NODE_ENV || "development";
+const cache = require("./middlewares/cache");
 
-// Utility method of setting the cache header on a request
-// Used as a piece of Express middleware
-var cache = (hours) =>
-    (req, res, next) => {
-        if (env === "production") {
-            res.setHeader("Cache-Control", `public, max-age=${hours * 3600}`);
-        }
-        next();
-    }
-};
+const env = process.env.NODE_ENV || "development";
 
-module.exports = function(app, core) {
-    var artists = require("../app/controllers/artists")(core, app);
-    var artworks = require("../app/controllers/artworks")(core, app);
-    var uploads = require("../app/controllers/uploads")(core, app);
-    var sources = require("../app/controllers/sources")(core, app);
-    var home = require("../app/controllers/home")(core, app);
-    var sitemaps = require("../app/controllers/sitemaps")(core, app);
+module.exports = function(core, app) {
+    const artists = require("../logic/artists")(core, app);
+    const artworks = require("../logic/artworks")(core, app);
+    const uploads = require("../logic/uploads")(core, app);
+    const sources = require("../logic/sources")(core, app);
+    const home = require("../logic/home")(core, app);
+    const sitemaps = require("../logic/sitemaps")(core, app);
 
     app.get("/artists", cache(1), artists.index);
     app.get("/artists/:slug", artists.oldSlugRedirect);
@@ -48,7 +39,7 @@ module.exports = function(app, core) {
     app.get("/about", cache(1), home.about);
     app.get("/", cache(1), home.index);
 
-    app.use(function(req, res, next) {
+    app.use((req, res, next) => {
         res.status(404).render("404", {
             url: req.originalUrl
         });

@@ -8,7 +8,7 @@ Source.prototype.getURL = function(locale) {
     return app.genURL(locale, "/source/" + this._id);
 };
 
-var sourceTypes = require("../../data/source-types.json");
+var sourceTypes = require("../data/source-types.json");
 
 var sourceTypeMap = {};
 var numColumns = 4;

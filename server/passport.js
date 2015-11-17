@@ -1,7 +1,7 @@
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 
-module.exports = function(app, core) {
+module.exports = function(core, app) {
     const User = core.db.model("User");
 
     // serialize sessions

@@ -1,10 +1,10 @@
-const urls = require("./urls");
+const urls = require("../../lib/urls");
 
-const otherLocale = function(req) {
+const otherLocale = (req) => {
     return req.i18n.getLocale() === "en" ? "ja" : "en";
 };
 
-exports = function(req, res, next) {
+module.exports = (req, res, next) => {
     const locales = {
         SITE_NAME: process.env.SITE_NAME,
 
