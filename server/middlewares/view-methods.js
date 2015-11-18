@@ -1,4 +1,5 @@
 const urls = require("../../lib/urls");
+const locales = require("../../data/locales.json");
 
 const otherLocale = (req) => {
     return req.i18n.getLocale() === "en" ? "ja" : "en";
@@ -9,11 +10,11 @@ module.exports = (req, res, next) => {
         SITE_NAME: process.env.SITE_NAME,
 
         getLocales() {
-            return app.locales;
+            return Object.keys(locales);
         },
 
         getLocaleName(locale) {
-            return app.localeNames[locale];
+            return locales[locale];
         },
 
         getSiteCategory() {

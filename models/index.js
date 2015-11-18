@@ -1,17 +1,14 @@
-var fs = require("fs");
-var path = require("path");
+"use strict";
 
-var async = require("async");
+const fs = require("fs");
+const path = require("path");
 
-// Load in configuration options
-require("dotenv").load();
-
-var lib = {};
+const lib = {};
 
 // Load Libraries
-fs.readdirSync(path.resolve(__dirname, "../lib")).forEach(function(file) {
-    if (~file.indexOf(".js")) {
-        var name = file.replace(/\.js$/, "");
+fs.readdirSync(path.resolve(__dirname, "../lib")).forEach((file) => {
+    if (file.endsWith(".js")) {
+        const name = path.basename(file, ".js");
         lib[name] = require(path.resolve(__dirname, "../lib/", file))(lib);
     }
 });
@@ -19,19 +16,15 @@ fs.readdirSync(path.resolve(__dirname, "../lib")).forEach(function(file) {
 lib.models = {};
 
 // Load Models
-fs.readdirSync(__dirname).forEach(function(file) {
-    if (~file.indexOf(".js") && file !== "index.js") {
-        var name = file.replace(/\.js$/, "");
+fs.readdirSync(__dirname).forEach((file) => {
+    if (file.endsWith(".js") && file !== "index.js") {
+        const name = path.basename(file, ".js");
         lib.models[name] = require("./" + file)(lib);
     }
 });
 
 lib.init = function(callback) {
-    async.parallel([
-        function(callback) {
-            lib.db.connect(callback);
-        }
-    ], callback);
+    lib.db.connect(callback);
 };
 
 module.exports = lib;

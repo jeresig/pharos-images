@@ -1,11 +1,13 @@
+"use strict";
+
 module.exports = function(lib) {
     try {
         return lib.db.model("Source");
     } catch(e) {}
 
-    var Artwork = lib.db.model("Artwork");
+    const Artwork = lib.db.model("Artwork");
 
-    var SourceSchema = new lib.db.schema({
+    const SourceSchema = new lib.db.schema({
         _id: String,
         url: String,
         name: String,
@@ -23,6 +25,10 @@ module.exports = function(lib) {
     });
 
     SourceSchema.methods = {
+        getURL(locale) {
+            return lib.urls.gen(locale, `/source/${this._id}`);
+        },
+
         getFullName: function(locale) {
             return locale === "ja" && this.nameKanji || this.name;
         },

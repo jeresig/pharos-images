@@ -1,12 +1,10 @@
+"use strict";
+
 const async = require("async");
 
 module.exports = function(core, app) {
     const Artist = core.db.model("Artist");
-
-    Artist.prototype.getURL = (locale) => {
-        return app.genURL(locale, "/artists/" + (this.slug || "artist") +
-            "/" + this._id);
-    };
+    const search = require("./shared/search")(core, app);
 
     return {
         load(req, res, next, id) {
@@ -34,7 +32,7 @@ module.exports = function(core, app) {
 
                 if (!artist) {
                     // TODO: Maybe do an artist search instead?
-                    res.redirect(301, app.genURL(
+                    res.redirect(301, core.urls.gen(
                         req.i18n.getLocale(),
                         "/search?q=" + encodeURIComponent(
                             req.params.slug.replace(/-/g, " "))
@@ -124,11 +122,7 @@ module.exports = function(core, app) {
                 async.each(req.artist.bios, (bio, callback) => {
                     bio.populate("source", callback);
                 }, () => {
-                    app.imageSearch(req, res, {
-                        term: {
-                            "artists.artist": req.artist._id.toString()
-                        },
-                    }, {
+                    search(req, res, {
                         title: req.artist.getFullName(req.i18n.getLocale()),
                         desc: req.i18n.__("Japanese Woodblock prints by %s.",
                             req.artist.getFullName(req.i18n.getLocale())),

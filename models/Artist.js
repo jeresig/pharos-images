@@ -1,15 +1,17 @@
-var mongoose = require("mongoose");
+"use strict";
 
-module.exports = function(lib) {
+const mongoose = require("mongoose");
+
+module.exports = (lib) => {
     try {
         return mongoose.model("Artist");
     } catch(e) {}
 
-    var Name = require("./Name")(lib);
-    var YearRange = require("./YearRange")(lib);
-    var Bio = require("./Bio")(lib);
+    const Name = require("./Name")(lib);
+    const YearRange = require("./YearRange")(lib);
+    const Bio = require("./Bio")(lib);
 
-    var ArtistSchema = new mongoose.Schema({
+    const ArtistSchema = new mongoose.Schema({
         // The date that this item was created
         created: {type: Date, "default": Date.now},
 
@@ -82,6 +84,13 @@ module.exports = function(lib) {
             return (this.name.plain || "artist").toLowerCase()
                 .replace(/ /g, "-");
         });
+
+    ArtistSchema.methods = {
+        getURL(locale) {
+            return lib.urls.gen(locale,
+                `/artists/${this.slug || "artist"}/${this._id}`);
+        }
+    };
 
     mongoose.model("Artist", ArtistSchema);
 };

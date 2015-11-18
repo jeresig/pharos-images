@@ -1,21 +1,29 @@
-var versioner = require("mongoose-version");
+"use strict";
 
-module.exports = function(lib) {
+const path = require("path");
+const versioner = require("mongoose-version");
+
+module.exports = (lib) => {
     try {
         return mongoose.model("Upload");
     } catch(e) {}
 
-    var Image = require("./Image")(lib);
+    const Image = require("./Image")(lib);
 
-    var UploadSchema = Image.extend({
-        // owner: ObjectId,
-
-    }, {
+    const UploadSchema = Image.extend({}, {
         collection: "uploads"
     });
 
-    UploadSchema.statics.getDataDir = function() {
-        return path.resolve(process.env.BASE_DATA_DIR, "uploads");
+    UploadSchema.methods = {
+        getURL(locale) {
+            return lib.urls.gen(locale, `/uploads/${this.imageName}`);
+        }
+    };
+
+    UploadSchema.statics = {
+        getDataDir() {
+            return path.resolve(process.env.BASE_DATA_DIR, "uploads");
+        }
     };
 
     UploadSchema.plugin(versioner, {

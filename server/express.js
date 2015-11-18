@@ -39,7 +39,7 @@ module.exports = function(core, app) {
 
     // Configure how the views are handled (with swig)
     app.engine("swig", swig.renderFile);
-    app.set("views", rootPath + "/app/views");
+    app.set("views", rootPath + "/views");
     app.set("view engine", "swig");
 
     // Enable caching of the view files by Express, but only in production

@@ -93,6 +93,10 @@ module.exports = function(lib) {
         });
 
     ArtworkSchema.methods = {
+        getURL(locale) {
+            return lib.urls.gen(locale, `/artworks/${this._id}`);
+        },
+
         getOriginalURL: function(image) {
             image = image || this.images[0];
             return process.env.BASE_DATA_URL +
