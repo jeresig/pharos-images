@@ -1,23 +1,27 @@
-var core = require("../models");
+"use strict";
 
-var Artwork = core.db.model("Artwork");
+const core = require("../core");
+
+const Artwork = core.db.Artwork;
 
 core.init(function() {
-    Artwork.createMapping(function(err, mapping) {
+    Artwork.createMapping((err, mapping) => {
         if (err) {
             console.error(err);
         }
-        var stream = Artwork.synchronize();
-        var count = 0;
-        stream.on('data', function(err, doc){
-            count++;
-            console.log('indexed ' + count);
-        });
-        stream.on('close', function(){
-            process.exit(0);
-        });
-        stream.on('error', function(err){
-            console.log(err);
-        });
+
+        let count = 0;
+
+        Artwork.synchronize()
+            .on("data", (err, doc) => {
+                count++;
+                console.log(`indexed ${count}`);
+            })
+            .on("close", () => {
+                process.exit(0);
+            })
+            .on("error", (err) => {
+                console.log(err);
+            });
     });
 });

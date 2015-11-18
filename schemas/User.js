@@ -8,7 +8,7 @@ module.exports = (core) => {
         email: {type: String, default: ""},
         hashed_password: {type: String, default: ""},
         salt: {type: String, default: ""},
-        authToken: {type: String, default: ""}
+        authToken: {type: String, default: ""},
     });
 
     User
@@ -33,11 +33,11 @@ module.exports = (core) => {
         "Email cannot be blank");
 
     User.path("email").validate(function(email, callback) {
-        var User = core.db.model("User");
+        const User = core.db.model("User");
 
         // Check only when it is a new user or when email field is modified
         if (this.isNew || this.isModified("email")) {
-            User.find({ email: email }).exec(function(err, users) {
+            User.find({email: email}).exec((err, users) => {
                 callback(!err && users.length === 0);
             });
         } else {
@@ -47,7 +47,6 @@ module.exports = (core) => {
 
     User.path("hashed_password").validate(validatePresenceOf,
         "Password cannot be blank");
-
 
     User.pre("save", function(next) {
         if (!this.isNew) {
@@ -80,7 +79,7 @@ module.exports = (core) => {
             } catch (err) {
                 return "";
             }
-        }
+        },
     };
 
     return User;

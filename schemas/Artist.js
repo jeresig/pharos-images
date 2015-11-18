@@ -37,7 +37,7 @@ module.exports = (core) => {
         actives: [YearRange],
         lives: [YearRange],
 
-        gender: {type: String, es_indexed: true}
+        gender: {type: String, es_indexed: true},
     });
 
     Artist.virtual("name")
@@ -83,7 +83,7 @@ module.exports = (core) => {
         getURL(locale) {
             return core.urls.gen(locale,
                 `/artists/${this.slug || "artist"}/${this._id}`);
-        }
+        },
     };
 
     return Artist;

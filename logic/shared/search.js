@@ -14,13 +14,13 @@ module.exports = (core, app) => {
             filter: req.query.filter,
             source: req.query.source || req.params.sourceId || "",
             artist: req.query.artist || "",
-            date: req.query.date
+            date: req.query.date,
         };
 
         const queryURL = function(options) {
             const params = Object.assign({}, query, options);
 
-            for (let param in params) {
+            for (const param in params) {
                 if (!params[param]) {
                     delete params[param];
                 }
@@ -36,8 +36,8 @@ module.exports = (core, app) => {
                     {
                         query_string: {
                             query: query.filter || "*",
-                            default_operator: "and"
-                        }
+                            default_operator: "and",
+                        },
                     },
                     {
                         match: {
@@ -45,21 +45,21 @@ module.exports = (core, app) => {
                                 query: Array.isArray(query.source) ?
                                     query.source.join(" ") : query.source,
                                 operator: "or",
-                                zero_terms_query: "all"
-                            }
-                        }
+                                zero_terms_query: "all",
+                            },
+                        },
                     },
                     {
                         multi_match: {
                             fields: ["artists.*"],
                             query: query.artist,
                             operator: "and",
-                            zero_terms_query: "all"
-                        }
-                    }
+                            zero_terms_query: "all",
+                        },
+                    },
                 ],
-                filter: {}
-            }
+                filter: {},
+            },
         };
 
         if (query.date) {
@@ -69,17 +69,17 @@ module.exports = (core, app) => {
                 {
                     range: {
                         "dateCreateds.start": {
-                            lte: parseFloat(dates[1])
-                        }
-                    }
+                            lte: parseFloat(dates[1]),
+                        },
+                    },
                 },
                 {
                     range: {
                         "dateCreateds.end": {
-                            gte: parseFloat(dates[0])
-                        }
-                    }
-                }
+                            gte: parseFloat(dates[0]),
+                        },
+                    },
+                },
             ];
         }
 
@@ -89,31 +89,31 @@ module.exports = (core, app) => {
             aggs: {
                 sources: {
                     terms: {
-                        field: "source"
-                    }
+                        field: "source",
+                    },
                 },
                 artists: {
                     terms: {
-                        field: "artists.name.raw"
-                    }
-                }
+                        field: "artists.name.raw",
+                    },
+                },
             },
             sort: [
                 {
                     "dateCreateds.start": {
-                        "order": "asc"
-                    }
+                        "order": "asc",
+                    },
                 },
                 {
                     "dateCreateds.end": {
-                        "order": "asc"
-                    }
-                }
+                        "order": "asc",
+                    },
+                },
             ],
             hydrate: true,
             hydrateOptions: {
-                populate: "source"
-            }
+                populate: "source",
+            },
         }, (err, results) => {
             if (err) {
                 console.error(err);
@@ -122,10 +122,10 @@ module.exports = (core, app) => {
 
             const end = query.start + results.hits.hits.length;
             const prevLink = (query.start > 0 && queryURL({
-                start: (query.start - rows > 0 ? (query.start - rows) : "")
+                start: (query.start - rows > 0 ? (query.start - rows) : ""),
             }));
             const nextLink = (end < results.hits.total && queryURL({
-                start: (query.start + rows)
+                start: (query.start + rows),
             }));
 
             // TODO: Cache the sources
@@ -143,7 +143,7 @@ module.exports = (core, app) => {
                     end: end,
                     rows: rows,
                     prev: prevLink,
-                    next: nextLink
+                    next: nextLink,
                 }, tmplParams));
             });
         });

@@ -4,7 +4,9 @@
   "description": "This is the work-in-progress, open source, image database which will be used by the PHAROS art history photo archive consortium.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "eslint lib/*.js logic/*.js logic/shared/*.js schemas/*.js server/*.js server/*/*.js *.js",
+    "test": "npm run lint",
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
@@ -56,5 +58,8 @@
     "serve-static": "^1.10.0",
     "swig": "^1.4.2",
     "yearrange": "0.0.5"
+  },
+  "devDependencies": {
+    "eslint": "^1.9.0"
   }
 }

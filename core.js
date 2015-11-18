@@ -9,10 +9,10 @@ const path = require("path");
 const core = {};
 
 // Load Libraries
-fs.readdirSync("core").forEach((file) => {
+fs.readdirSync("lib").forEach((file) => {
     if (file.endsWith(".js")) {
         const name = path.basename(file, ".js");
-        core[name] = require(path.resolve(__dirname, "./core/", file))(core);
+        core[name] = require(path.resolve(__dirname, "./lib/", file))(core);
     }
 });
 

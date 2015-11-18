@@ -4,7 +4,7 @@ const versioner = require("mongoose-version");
 const mongoosastic = require("mongoosastic");
 
 const pastec = require("pastec")({
-    server: process.env.PASTEC_URL
+    server: process.env.PASTEC_URL,
 });
 
 module.exports = (core) => {
@@ -12,7 +12,6 @@ module.exports = (core) => {
     const YearRange = require("./YearRange")(core);
     const Dimension = require("./Dimension")(core);
     const Collection = require("./Collection")(core);
-    const Artist = require("./Artist")(core);
     const Image = require("./Image")(core);
 
     const Artwork = new core.db.schema({
@@ -60,7 +59,7 @@ module.exports = (core) => {
         images: [Image],
 
         // Computed by looking at the results of similarImages
-        similarArtworks: [{type: String, ref: "Artwork"}]
+        similarArtworks: [{type: String, ref: "Artwork"}],
     });
 
     Artwork.virtual("dateCreated")
@@ -179,7 +178,7 @@ module.exports = (core) => {
                         imageName: imageData.hash,
                         imageID: imageID,
                         width: dimensions.width,
-                        height: dimensions.height
+                        height: dimensions.height,
                     });
 
                     this.indexImage(imageData, callback);
@@ -206,13 +205,13 @@ module.exports = (core) => {
                     return callback(err);
                 });
             });
-        }
+        },
     };
 
     Artwork.statics = {
         saveImageIndex(callback) {
             pastec.saveIndex(process.env.PASTEC_INDEX, callback);
-        }
+        },
     };
 
     Artwork.plugin(mongoosastic, core.db.mongoosastic);
@@ -220,8 +219,8 @@ module.exports = (core) => {
         collection: "artwork_versions",
         suppressVersionIncrement: false,
         strategy: "collection",
-        mongoose: core.db.mongoose
+        mongoose: core.db.mongoose,
     });
 
-    return Artwork
+    return Artwork;
 };

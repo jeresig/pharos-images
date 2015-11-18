@@ -15,7 +15,7 @@ module.exports = (core) => {
         inactive: Boolean,
         hideLinks: Boolean,
         linkTitle: String,
-        linkText: String
+        linkText: String,
     });
 
     Source.methods = {
@@ -33,7 +33,7 @@ module.exports = (core) => {
 
         getNumArtworks: function() {
             // Artwork.count({source: this._id}, callback);
-        }
+        },
     };
 
     return Source;

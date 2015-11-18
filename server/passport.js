@@ -1,7 +1,7 @@
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 
-module.exports = function(core, app) {
+module.exports = (core, app) => {
     const User = core.db.model("User");
 
     // serialize sessions
@@ -17,18 +17,22 @@ module.exports = function(core, app) {
     passport.use(new LocalStrategy(
         {
             usernameField: "email",
-            passwordField: "password"
+            passwordField: "password",
         },
         (email, password, callback) => {
-            User.findOne({ email: email }).exec(function(err, user) {
+            User.findOne({email: email}).exec((err, user) => {
                 if (err) {
                     return callback(err);
                 }
                 if (!user) {
-                    return callback(null, false, { message: "Unknown user" });
+                    return callback(null, false, {
+                        message: "Unknown user",
+                    });
                 }
                 if (!user.authenticate(password)) {
-                    return callback(null, false, { message: "Invalid password" });
+                    return callback(null, false, {
+                        message: "Invalid password",
+                    });
                 }
                 return callback(null, user);
             });

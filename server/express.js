@@ -1,6 +1,5 @@
 const path = require("path");
 
-const express = require("express");
 const bodyParser = require("body-parser");
 const methodOverride = require("method-override");
 const cookieParser = require("cookie-parser");
@@ -20,14 +19,14 @@ const viewMethods = require("./middlewares/view-methods");
 
 const rootPath = path.resolve(__dirname, "..");
 
-module.exports = function(core, app) {
+module.exports = (core, app) => {
     // A basic logger for tracking who is accessing the service
     app.use(morgan("dev"));
 
     // Enable error handling and displaying of a 500 error page
     // when an exception is thrown
     app.set("showStackError", true);
-    app.use(function(err, req, res, next) {
+    app.use((err, req, res, next) => {
         console.error(err.stack);
         res.status(500).render("500");
     });
@@ -49,7 +48,7 @@ module.exports = function(core, app) {
     // Parses the contents of HTTP POST bodies, handling URL-encoded forms
     // and also JSON blobs
     app.use(bodyParser.urlencoded({
-        extended: false
+        extended: false,
     }));
 
     // Adds in support for overriding HTTP verbs to help
@@ -66,17 +65,20 @@ module.exports = function(core, app) {
         secret: pkg.name,
         store: new mongoStore({
             url: process.env.MONGODB_URL,
-            collection: "sessions"
-        })
+            collection: "sessions",
+        }),
     }));
 
     // Add Cross-Site Request Forgery (CSRF) support
     if (process.env.NODE_ENV !== "test") {
         app.use(csurf());
 
-        app.use(function(req, res, next) {
+        app.use((req, res, next) => {
             res.locals.csrf_token = req.csrfToken();
             next();
         });
     }
+
+    // Bring in the methods that will be available to the views
+    app.use(viewMethods);
 };

@@ -8,5 +8,5 @@ module.exports = (core) => new core.db.schema({
     start_ca: Boolean,
     end: {type: Number, es_indexed: true},
     end_ca: Boolean,
-    current: {type: Boolean, es_indexed: true}
+    current: {type: Boolean, es_indexed: true},
 });

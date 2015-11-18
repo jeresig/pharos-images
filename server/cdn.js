@@ -5,7 +5,7 @@ const expressCDN = require("express-cdn");
 const env = process.env.NODE_ENV || "development";
 const rootPath = path.resolve(__dirname, "../..");
 
-module.exports = function(core, app) {
+module.exports = (core, app) => {
     const CDN = expressCDN(app, {
         publicDir: rootPath + "/public",
         viewsDir: rootPath + "/app/views",
@@ -15,10 +15,10 @@ module.exports = function(core, app) {
         key: process.env.S3_KEY,
         secret: process.env.S3_SECRET,
         ssl: false,
-        production: env === "production"
+        production: env === "production",
     });
 
-    app.use(function(req, res, next) {
+    app.use((req, res, next) => {
         res.locals.CDN = CDN(req, res);
         next();
     });

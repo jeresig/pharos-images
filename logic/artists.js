@@ -55,24 +55,24 @@ module.exports = function(core, app) {
 
             const options = {
                 query: query,
-                size: perPage
+                size: perPage,
             };
 
             Artist.search(options, {hydrate: true}, (err, artists) => {
                 if (err) {
-                    console.error(err)
+                    console.error(err);
                     return res.render("500");
                 }
 
                 const results = {
-                    matches: []
+                    matches: [],
                 };
 
                 artists.hits.forEach((artist) => {
                     // TODO: Figure out locale
                     results.matches.push({
                         id: artist._id,
-                        text: artist.name.name
+                        text: artist.name.name,
                     });
                 });
 
@@ -98,10 +98,16 @@ module.exports = function(core, app) {
             const options = {
                 query: "Utagawa",
                 size: perPage,
-                from: page * perPage
+                from: page * perPage,
+            };
+            const settings = {
+                hydrate: true,
+                hydrateOptions: {
+                    populate: "bios",
+                },
             };
 
-            Artist.search(options, {hydrate: true, hydrateOptions: {populate: "bios"}}, function(err, results){
+            Artist.search(options, settings, (err, results) => {
                 if (err) {
                     return res.render("500");
                 }
@@ -110,7 +116,7 @@ module.exports = function(core, app) {
                     title: "Artists",
                     artists: results.hits,
                     page: page + 1,
-                    pages: Math.ceil(results.total / perPage)
+                    pages: Math.ceil(results.total / perPage),
                 });
             });
         },
@@ -128,11 +134,12 @@ module.exports = function(core, app) {
                             req.artist.getFullName(req.i18n.getLocale())),
                         artist: req.artist,
                         bio: req.artist.bios.sort((a, b) => {
-                            return (b.bio ? b.bio.length : 0) - (a.bio ? a.bio.length : 0);
-                        })[0].bio
+                            return (b.bio ? b.bio.length : 0) -
+                                (a.bio ? a.bio.length : 0);
+                        })[0].bio,
                     });
                 });
             });
-        }
+        },
     };
 };

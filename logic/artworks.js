@@ -8,7 +8,7 @@ module.exports = function(core, app) {
         load(req, res, next, artworkName) {
             Artwork.findById(`${req.params.sourceId}/${artworkName}`)
                 .populate("source") // TODO: Don't do this.
-                .exec(function(err, image) {
+                .exec((err, image) => {
                     if (err) {
                         return next(err);
                     }
@@ -23,7 +23,7 @@ module.exports = function(core, app) {
 
         search(req, res) {
             const query = req.query.filter;
-            const title = req.i18n.__("Results for '%s'", query || "*");
+            let title = req.i18n.__("Results for '%s'", query || "*");
 
             if (req.query.artist) {
                 title = req.i18n.__("Artist '%s'", req.query.artist);
@@ -31,7 +31,7 @@ module.exports = function(core, app) {
 
             search(req, res, {
                 title: title,
-                desc: req.i18n.__("Artworks matching '%s'.", query)
+                desc: req.i18n.__("Artworks matching '%s'.", query),
             });
         },
 
@@ -39,8 +39,8 @@ module.exports = function(core, app) {
             res.render("artworks/show", {
                 title: req.image.getTitle(req.i18n.getLocale()),
                 artwork: req.image,
-                results: req.image.similar
+                results: req.image.similar,
             });
-        }
+        },
     };
 };

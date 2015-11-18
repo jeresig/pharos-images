@@ -1,8 +1,7 @@
-const fs = require("fs");
 const express = require("express");
 const core = require("./core");
 
-core.db.connect(function() {
+core.db.connect(() => {
     const app = express();
 
     // Load in the main server logic
@@ -15,13 +14,13 @@ core.db.connect(function() {
     // Start the app by listening on <port>
     console.log(`PORT: ${process.env.PORT}`);
 
-    app.listen(process.env.PORT, function() {
+    app.listen(process.env.PORT, () => {
         if (process.send) {
             process.send("online");
         }
     });
 
-    process.on("message", function(message) {
+    process.on("message", (message) => {
         if (message === "shutdown") {
             process.exit(0);
         }

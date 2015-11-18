@@ -18,8 +18,8 @@ module.exports = (core) => new core.db.schema({
         // A raw name to use for building aggregations in Elasticsearch
         es_fields: {
             name: {type: "string", index: "analyzed"},
-            raw: {type: "string", index: "not_analyzed"}
-        }
+            raw: {type: "string", index: "not_analyzed"},
+        },
     },
 
     // Same but in ascii (for example: Hokushō becomes Hokushoo)
@@ -50,5 +50,5 @@ module.exports = (core) => new core.db.schema({
     after: Boolean,
 
     // Is this work attributed to an artist
-    attributed: Boolean
+    attributed: Boolean,
 });

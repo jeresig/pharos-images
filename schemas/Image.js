@@ -31,6 +31,6 @@ module.exports = (core) => new core.db.schema({
     // Similar images (as determined by Pastec)
     similarImages: [{
         id: String,
-        score: Number
-    }]
+        score: Number,
+    }],
 });

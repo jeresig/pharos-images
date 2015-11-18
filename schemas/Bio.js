@@ -52,7 +52,7 @@ module.exports = (core) => {
         gender: String,
 
         // Locations in which the artist was active
-        locations: [String]
+        locations: [String],
     });
 
     Bio.virtual("name")

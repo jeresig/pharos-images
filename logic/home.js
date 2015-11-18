@@ -18,13 +18,13 @@ module.exports = (core) => {
                             era.artists = artists;
                             callback();
                         });
-                }, function() {
+                }, () => {
                     Artwork.count((err, total) => {
                         res.render("home/index", {
-                            title: req.i18n.__("Japanese Woodblock Print Search"),
-                            desc: req.i18n.__("Japanese Woodblock print search engine. Searches thousands of Ukiyo-e, Meiji, Shin Hanga, and Sosaku Hanga prints."),
+                            title: req.i18n.__("Title"),
+                            desc: req.i18n.__("Description"),
                             eras: eras,
-                            total: total
+                            total: total,
                         });
                     });
                 });
@@ -34,8 +34,8 @@ module.exports = (core) => {
         about(req, res) {
             res.render("home/about", {
                 title: req.i18n.__("About The Site"),
-                desc: req.i18n.__("About the design, construction, and creation of the Ukiyo-e.org site.")
+                desc: req.i18n.__("Description"),
             });
-        }
+        },
     };
 };

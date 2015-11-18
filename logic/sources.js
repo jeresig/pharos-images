@@ -6,7 +6,7 @@ module.exports = (core, app) => {
     const Source = core.db.model("Source");
     const search = require("./shared/search")(core, app);
 
-    const sourceTypes = require("../data/source-types.json");
+    const sourceTypes = require("../config/source-types.json");
 
     const sourceTypeMap = {};
     const numColumns = 4;
@@ -23,7 +23,7 @@ module.exports = (core, app) => {
             }
 
             // Get most recently created row
-            curRow = cluster[type][ cluster[type].length - 1 ];
+            let curRow = cluster[type][ cluster[type].length - 1 ];
 
             if (curRow.length === numColumns) {
                 curRow = [];
@@ -36,12 +36,12 @@ module.exports = (core, app) => {
 
     return {
         index(req, res) {
-            Source.find({}, function(err, sources) {
+            Source.find({}, (err, sources) => {
                 if (err) {
                     return res.render("500");
                 }
 
-                const total = 0;
+                let total = 0;
                 const activeSources = {};
 
                 async.eachLimit(sources, 2, (source, callback) => {
@@ -49,7 +49,7 @@ module.exports = (core, app) => {
                         source.numArtworks = count;
                         callback();
                     });
-                }, function() {
+                }, () => {
                     sources.forEach((source) => {
                         if (source.numArtworks > 0) {
                             total += source.numArtworks;
@@ -58,11 +58,11 @@ module.exports = (core, app) => {
                     });
 
                     res.render("sources/index", {
-                        title: req.i18n.__("Sources of Japanese Woodblock Prints"),
+                        title: req.i18n.__("Title"),
                         sourceTypes: sourceTypes,
                         sourceTypeMap: sourceTypeMap,
                         activeSources: activeSources,
-                        total: total
+                        total: total,
                     });
                 });
             });
@@ -71,9 +71,9 @@ module.exports = (core, app) => {
         show(req, res) {
             search(req, res, {
                 title: req.source.getFullName(req.i18n.getLocale()),
-                desc: req.i18n.__("Japanese Woodblock prints at the %s.",
+                desc: req.i18n.__("Artworks at the %s.",
                     req.source.getFullName(req.i18n.getLocale())),
-                url: req.source.url
+                url: req.source.url,
             });
         },
 
@@ -88,6 +88,6 @@ module.exports = (core, app) => {
                 req.source = source;
                 next();
             });
-        }
+        },
     };
 };

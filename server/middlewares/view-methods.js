@@ -1,12 +1,12 @@
-const urls = require("../../lib/urls");
-const locales = require("../../data/locales.json");
+const urls = require("../../lib/urls")();
+const locales = require("../../config/locales.json");
 
 const otherLocale = (req) => {
     return req.i18n.getLocale() === "en" ? "ja" : "en";
 };
 
 module.exports = (req, res, next) => {
-    const locales = {
+    const methods = {
         SITE_NAME: process.env.SITE_NAME,
 
         getLocales() {
@@ -32,7 +32,7 @@ module.exports = (req, res, next) => {
         },
 
         getOtherURL(locale) {
-            return urls.gen(locale, req.path);
+            return urls.gen(otherLocale(req), req.path);
         },
 
         curLocale() {
@@ -46,7 +46,7 @@ module.exports = (req, res, next) => {
         },
 
         fullName(item) {
-            var locale = req.i18n.getLocale();
+            const locale = req.i18n.getLocale();
             return item.getFullName ?
                 item.getFullName(locale) :
                 locale === "ja" && item.kanji || item.name || item;
@@ -82,7 +82,7 @@ module.exports = (req, res, next) => {
 
         getDimension(item) {
             // TODO: Use locale to show ft vs. cm
-            var unit = item.unit || "mm";
+            const unit = item.unit || "mm";
             return [item.width, unit, " x ", item.height, unit,
                 item.label ? " (" + item.label + ")" : ""].join("");
         },
@@ -92,10 +92,10 @@ module.exports = (req, res, next) => {
         stringNum(num) {
             num = (typeof num === "number" ? num : "");
             return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-        }
+        },
     };
 
-    Object.assign(res.locals, locales);
+    Object.assign(res.locals, methods);
 
     next();
 };

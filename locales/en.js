@@ -50,5 +50,6 @@
 	"More information...": "More information...",
 	"Bios:": "Bios:",
 	"Results for artist '%s'": "Results for artist '%s'",
-	"Artist '%s'": "Artist '%s'"
+	"Artist '%s'": "Artist '%s'",
+	"Title": "Title"
 }

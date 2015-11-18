@@ -16,5 +16,5 @@ module.exports = {
             return res.redirect("/users/" + req.profile.id);
         }
         next();
-    }
+    },
 };

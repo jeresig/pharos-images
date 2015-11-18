@@ -1,7 +1,5 @@
 const cache = require("./middlewares/cache");
 
-const env = process.env.NODE_ENV || "development";
-
 module.exports = function(core, app) {
     const artists = require("../logic/artists")(core, app);
     const artworks = require("../logic/artworks")(core, app);
@@ -41,7 +39,7 @@ module.exports = function(core, app) {
 
     app.use((req, res, next) => {
         res.status(404).render("404", {
-            url: req.originalUrl
+            url: req.originalUrl,
         });
     });
 };

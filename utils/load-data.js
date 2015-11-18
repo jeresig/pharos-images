@@ -1,12 +1,14 @@
-var fs = require("fs");
-var path = require("path");
+"use strict";
 
-var async = require("async");
-var ArgumentParser = require("argparse").ArgumentParser;
+const fs = require("fs");
+const path = require("path");
 
-var core = require("./models");
+const async = require("async");
+const ArgumentParser = require("argparse").ArgumentParser;
 
-var argparser = new ArgumentParser({
+const core = require("../core");
+
+const argparser = new ArgumentParser({
     description: "Parse a data file, given the specified converter, and load" +
         "it in to the database for future traversal."
 });
@@ -15,56 +17,55 @@ argparser.addArgument(["source"], {
     help: "The name of source of the data (e.g. 'frick' or 'fzeri')."
 });
 
-var args = argparser.parseArgs();
-var sources = require("./data.sources.json");
+const args = argparser.parseArgs();
+const sources = require("../config/data.sources.json");
 
-var importData = function(options, callback) {
-    var converterPath = "./converters/" + options.converter + ".js";
+const importData = function(options, callback) {
+    const converterPath = `../converters/${options.converter}.js`;
 
     if (!fs.existsSync(converterPath)) {
-        return callback("Error: Converter file not found: " + converterPath);
+        return callback(`Error: Converter file not found: ${converterPath}`);
     }
 
     options.dataFiles.forEach(function(file) {
         if (!fs.existsSync(file)) {
-            return callback("Error: Data file not found: " + file);
+            return callback(`Error: Data file not found: ${file}`);
         }
     });
 
     if (!fs.existsSync(options.imageDir)) {
-        return callback("Error: Directory not found: " + options.imageDir);
+        return callback(`Error: Directory not found: ${options.imageDir}`);
     }
 
     // Import the converter module
-    var converter = require(converterPath);
+    const converter = require(converterPath);
 
     // Start a stream for the source's data file
-    var fileStreams = options.dataFiles.map(function(file) {
-        return fs.createReadStream(file);
-    });
+    const fileStreams = options.dataFiles.map(
+        (file) => fs.createReadStream(file));
 
     // Models
-    var Artwork = core.models.Artwork;
+    const Artwork = core.models.Artwork;
 
     // Keep track of important statistics
-    var missingImages = [];
-    var emptyArtworks = [];
+    const missingImages = [];
+    const emptyArtworks = [];
 
-    converter.process(fileStreams, function(data, callback) {
-        data._id = options.source + "/" + data.id;
+    converter.process(fileStreams, (data, callback) => {
+        data._id = `${options.source}/${data.id}`;
         data.lang = options.lang;
         data.source = options.source;
 
-        Artwork.findById(data._id, function(err, artwork) {
+        Artwork.findById(data._id, (err, artwork) => {
             if (err) {
                 return callback(err);
             }
 
-            for (var key in data) {
-                var schemaPath = Artwork.schema.path(key);
+            for (let key in data) {
+                const schemaPath = Artwork.schema.path(key);
 
                 if (!schemaPath) {
-                    return callback(new Error("Unknown key: " + key));
+                    return callback(new Error(`Unknown key: ${key}`));
                 }
 
                 if (Array.isArray(schemaPath.options.type) &&
@@ -73,7 +74,7 @@ var importData = function(options, callback) {
                 }
             }
 
-            var images = data.images;
+            const images = data.images;
             delete data.images;
 
             if (artwork) {
@@ -82,13 +83,13 @@ var importData = function(options, callback) {
                 artwork = new Artwork(data);
             }
 
-            async.mapLimit(images, 2, function(imageData, callback) {
+            async.mapLimit(images, 2, (imageData, callback) => {
                 imageData.source = data.source;
-                imageData.fileName = imageData.fileName.replace(/^.*\//, "");
+                imageData.fileName = imageData.fileName.replace(/^.*[\/]/, "");
 
-                var imgFile = path.resolve(options.imageDir,
+                const imgFile = path.resolve(options.imageDir,
                     imageData.fileName);
-                var sourceDir = path.resolve(process.env.BASE_DATA_DIR,
+                const sourceDir = path.resolve(process.env.BASE_DATA_DIR,
                     options.source);
 
                 if (!imageData.fileName || !fs.existsSync(imgFile)) {
@@ -103,7 +104,7 @@ var importData = function(options, callback) {
                 }
 
                 artwork.addImage(imageData, imgFile, sourceDir, callback);
-            }, function(err) {
+            }, (err) => {
                 if (err) {
                     console.error("Error adding images:", err);
                     return callback(err);
@@ -120,14 +121,15 @@ var importData = function(options, callback) {
                 }
 
                 console.log("Saving Artwork...", artwork._id);
-                artwork.save(function(err) {
+
+                artwork.save((err) => {
                     if (err) {
                         console.error("Error saving:", err);
                     }
 
                     // Make sure we wait until the data is fully indexed before
                     // continuing, otherwise we may lose some information!
-                    artwork.on("es-indexed", function(err, res) {
+                    artwork.on("es-indexed", (err, res) => {
                         if (err) {
                             console.error("Error indexing:", err);
                         }
@@ -137,7 +139,7 @@ var importData = function(options, callback) {
                 });
             });
         });
-    }, function(err) {
+    }, (err) => {
         callback(err, {
             missingImages: missingImages,
             emptyArtworks: emptyArtworks
@@ -145,8 +147,8 @@ var importData = function(options, callback) {
     });
 };
 
-core.init(function() {
-    var sourceOptions;
+core.init(() => {
+    let sourceOptions;
 
     sources.forEach(function(options) {
         if (options.source === args.source) {
@@ -160,8 +162,8 @@ core.init(function() {
     }
 
     // Models
-    var Source = core.models.Source;
-    var Artwork = core.models.Artwork;
+    const Source = core.models.Source;
+    const Artwork = core.models.Artwork;
 
     console.log("Creating source record...");
 
@@ -170,10 +172,10 @@ core.init(function() {
         name: sourceOptions.name,
         shortName: sourceOptions.shortName,
         url: sourceOptions.url
-    }, function() {
+    }, () => {
         console.log("Importing data...");
 
-        importData(sourceOptions, function(err) {
+        importData(sourceOptions, (err) => {
             if (err) {
                 console.error(err);
                 process.exit(0);
@@ -181,7 +183,7 @@ core.init(function() {
 
             console.log("Saving image index...");
 
-            Artwork.saveImageIndex(function(err) {
+            Artwork.saveImageIndex((err) => {
                 if (err) {
                     console.error(err);
                 } else {

@@ -1,0 +1,9 @@
+[
+	{ "type": "museum", "name": "Museums" },
+	{ "type": "university", "name": "Universities" },
+	{ "type": "library", "name": "Libraries" },
+	{ "type": "database", "name": "Databases" },
+	{ "type": "private", "name": "Private Collections" },
+	{ "type": "auction", "name": "Auction Houses" },
+	{ "type": "dealer", "name": "Dealers" }
+]
