@@ -6,29 +6,29 @@ require("dotenv").load();
 const fs = require("fs");
 const path = require("path");
 
-const lib = {};
+const core = {};
 
 // Load Libraries
-fs.readdirSync("lib").forEach((file) => {
+fs.readdirSync("core").forEach((file) => {
     if (file.endsWith(".js")) {
         const name = path.basename(file, ".js");
-        lib[name] = require(path.resolve(__dirname, "./lib/", file))(lib);
+        core[name] = require(path.resolve(__dirname, "./core/", file))(core);
     }
 });
 
-lib.models = {};
+core.models = {};
 
 // Load Models
 fs.readdirSync("schemas").forEach((file) => {
     if (file.endsWith(".js")) {
         const name = path.basename(file, ".js");
-        lib.models[name] = lib.db.model(name,
-            require("./schemas/" + file)(lib));
+        core.models[name] = core.db.model(name,
+            require("./schemas/" + file)(core));
     }
 });
 
-lib.init = (callback) => {
-    lib.db.connect(callback);
+core.init = (callback) => {
+    core.db.connect(callback);
 };
 
-module.exports = lib;
+module.exports = core;
