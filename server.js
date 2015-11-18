@@ -1,9 +1,6 @@
-// Load in configuration options
-require("dotenv").load();
-
 const fs = require("fs");
 const express = require("express");
-const core = require("./models");
+const core = require("./core");
 
 core.db.connect(function() {
     const app = express();

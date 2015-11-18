@@ -1,13 +1,7 @@
 "use strict";
 
-module.exports = function(lib) {
-    try {
-        return lib.db.model("Source");
-    } catch(e) {}
-
-    const Artwork = lib.db.model("Artwork");
-
-    const SourceSchema = new lib.db.schema({
+module.exports = (core) => {
+    const Source = new core.db.schema({
         _id: String,
         url: String,
         name: String,
@@ -24,9 +18,9 @@ module.exports = function(lib) {
         linkText: String
     });
 
-    SourceSchema.methods = {
+    Source.methods = {
         getURL(locale) {
-            return lib.urls.gen(locale, `/source/${this._id}`);
+            return core.urls.gen(locale, `/source/${this._id}`);
         },
 
         getFullName: function(locale) {
@@ -38,9 +32,9 @@ module.exports = function(lib) {
         },
 
         getNumArtworks: function() {
-            Artwork.count({source: this._id}, callback);
+            // Artwork.count({source: this._id}, callback);
         }
     };
 
-    return lib.db.model("Source", SourceSchema);
+    return Source;
 };

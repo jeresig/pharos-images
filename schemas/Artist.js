@@ -1,17 +1,11 @@
 "use strict";
 
-const mongoose = require("mongoose");
+module.exports = (core) => {
+    const Name = require("./Name")(core);
+    const YearRange = require("./YearRange")(core);
+    const Bio = require("./Bio")(core);
 
-module.exports = (lib) => {
-    try {
-        return mongoose.model("Artist");
-    } catch(e) {}
-
-    const Name = require("./Name")(lib);
-    const YearRange = require("./YearRange")(lib);
-    const Bio = require("./Bio")(lib);
-
-    const ArtistSchema = new mongoose.Schema({
+    const Artist = new core.db.schema({
         // The date that this item was created
         created: {type: Date, "default": Date.now},
 
@@ -22,13 +16,13 @@ module.exports = (lib) => {
         names: {type: [Name], es_indexed: true},
         aliases: {type: [Name], es_indexed: true},
 
-        bios: [{type: String, ref: "Bio"}],
+        bios: [Bio],
 
         // An image that is representative of the artist's work
-        repImage: {type: String, ref: "Image"},
+        repImage: String,
 
         // An image depicting the artist
-        artistImage: {type: String, ref: "Image"},
+        artistImage: String,
 
         // Eras in which the artist was active
         eras: [{type: String, ref: "Era"}],
@@ -46,7 +40,7 @@ module.exports = (lib) => {
         gender: {type: String, es_indexed: true}
     });
 
-    ArtistSchema.virtual("name")
+    Artist.virtual("name")
         .get(function() {
             return this.names[0];
         })
@@ -57,7 +51,7 @@ module.exports = (lib) => {
             this.names.push(name);
         });
 
-    ArtistSchema.virtual("active")
+    Artist.virtual("active")
         .get(function() {
             return this.actives[0];
         })
@@ -68,7 +62,7 @@ module.exports = (lib) => {
             this.actives.push(active);
         });
 
-    ArtistSchema.virtual("life")
+    Artist.virtual("life")
         .get(function() {
             return this.lives[0];
         })
@@ -79,18 +73,18 @@ module.exports = (lib) => {
             this.lives.push(life);
         });
 
-    ArtistSchema.virtual("slug")
+    Artist.virtual("slug")
         .get(function() {
             return (this.name.plain || "artist").toLowerCase()
                 .replace(/ /g, "-");
         });
 
-    ArtistSchema.methods = {
+    Artist.methods = {
         getURL(locale) {
-            return lib.urls.gen(locale,
+            return core.urls.gen(locale,
                 `/artists/${this.slug || "artist"}/${this._id}`);
         }
     };
 
-    mongoose.model("Artist", ArtistSchema);
+    return Artist;
 };

@@ -1,24 +1,21 @@
-var mongoose = require("mongoose");
-var versioner = require("mongoose-version");
-var mongoosastic = require("mongoosastic");
+"use strict";
 
-var pastec = require("pastec")({
+const versioner = require("mongoose-version");
+const mongoosastic = require("mongoosastic");
+
+const pastec = require("pastec")({
     server: process.env.PASTEC_URL
 });
 
-module.exports = function(lib) {
-    try {
-        return mongoose.model("Artwork");
-    } catch(e) {}
+module.exports = (core) => {
+    const Name = require("./Name")(core);
+    const YearRange = require("./YearRange")(core);
+    const Dimension = require("./Dimension")(core);
+    const Collection = require("./Collection")(core);
+    const Artist = require("./Artist")(core);
+    const Image = require("./Image")(core);
 
-    var Name = require("./Name")(lib);
-    var YearRange = require("./YearRange")(lib);
-    var Dimension = require("./Dimension")(lib);
-    var Collection = require("./Collection")(lib);
-    var Artist = require("./Artist")(lib);
-    var Image = require("./Image")(lib);
-
-    var ArtworkSchema = new mongoose.Schema({
+    const Artwork = new core.db.schema({
         // UUID of the image (Format: SOURCE/IMAGEMD5)
         _id: String,
 
@@ -66,7 +63,7 @@ module.exports = function(lib) {
         similarArtworks: [{type: String, ref: "Artwork"}]
     });
 
-    ArtworkSchema.virtual("dateCreated")
+    Artwork.virtual("dateCreated")
         .get(function() {
             return this.dateCreateds[0];
         })
@@ -79,7 +76,7 @@ module.exports = function(lib) {
             }
         });
 
-    ArtworkSchema.virtual("dimension")
+    Artwork.virtual("dimension")
         .get(function() {
             return this.dimensions[0];
         })
@@ -92,57 +89,55 @@ module.exports = function(lib) {
             }
         });
 
-    ArtworkSchema.methods = {
+    Artwork.methods = {
         getURL(locale) {
-            return lib.urls.gen(locale, `/artworks/${this._id}`);
+            return core.urls.gen(locale, `/artworks/${this._id}`);
         },
 
-        getOriginalURL: function(image) {
+        getOriginalURL(image) {
             image = image || this.images[0];
             return process.env.BASE_DATA_URL +
                 (this.source._id || this.source) +
                 "/images/" + image.imageName + ".jpg";
         },
 
-        getScaledURL: function(image) {
+        getScaledURL(image) {
             image = image || this.images[0];
             return process.env.BASE_DATA_URL +
                 (this.source._id || this.source) +
-                "/scaled/" + image.imageName + ".jpg";
+                `/scaled/${image.imageName}.jpg`;
         },
 
-        getThumbURL: function(image) {
+        getThumbURL(image) {
             image = image || this.images[0];
             return process.env.BASE_DATA_URL +
                 (this.source._id || this.source) +
-                "/thumbs/" + image.imageName + ".jpg";
+                `/thumbs/${image.imageName}.jpg`;
         },
 
-        getImagePath: function(image) {
+        getImagePath(image) {
             image = image || this.images[0];
             return process.env.BASE_DATA_DIR +
                 (this.source._id || this.source) +
-                "/images/" + image.imageName + ".jpg";
+                `/images/${image.imageName}.jpg`;
         },
 
-        getScaledPath: function(image) {
+        getScaledPath(image) {
             image = image || this.images[0];
             return process.env.BASE_DATA_DIR +
                 (this.source._id || this.source) +
-                "/scaled/" + image.imageName + ".jpg";
+                `/scaled/${image.imageName}.jpg`;
         },
 
-        getTitle: function(locale) {
+        getTitle(locale) {
             if (this.display_title) {
                 return this.display_title;
             }
 
-            var parts = [];
+            const parts = [];
 
-            if (this.artist) {
-                if (this.artist.artist) {
-                    parts.push(this.artist.artist.getFullName(locale) + ":");
-                }
+            if (this.artist && this.artist.artist) {
+                parts.push(`${this.artist.artist.getFullName(locale)}:`);
             }
 
             if (this.title && /\S/.test(this.title)) {
@@ -156,8 +151,8 @@ module.exports = function(lib) {
             return parts.join(" ");
         },
 
-        addImage: function(imageData, imgFile, sourceDir, callback) {
-            lib.images.processImage(imgFile, sourceDir, false, (err, hash) => {
+        addImage(imageData, imgFile, sourceDir, callback) {
+            core.images.processImage(imgFile, sourceDir, false, (err, hash) => {
                 if (err) {
                     return callback(err);
                 }
@@ -167,17 +162,15 @@ module.exports = function(lib) {
                 imageData.hash = hash;
 
                 // Use the source-provided ID if it exists
-                var id = imageData.id || hash;
-                var imageID = imageData.source + "/" + id;
+                const id = imageData.id || hash;
+                const imageID = `${imageData.source}/${id}`;
 
                 // Stop if the image is already in the images list
-                if (this.images.some(function(image) {
-                    return image.imageID === imageID;
-                })) {
+                if (this.images.some((image) => image.imageID === imageID)) {
                     return this.indexImage(imageData, callback);
                 }
 
-                lib.images.getSize(imgFile, (err, dimensions) => {
+                core.images.getSize(imgFile, (err, dimensions) => {
                     if (err) {
                         return callback(err);
                     }
@@ -194,8 +187,8 @@ module.exports = function(lib) {
             });
         },
 
-        indexImage: function(imageData, callback) {
-            pastec.idIndexed(imageData.hash, function(err, indexed) {
+        indexImage(imageData, callback) {
+            pastec.idIndexed(imageData.hash, (err, indexed) => {
                 if (err) {
                     return callback(err);
                 }
@@ -204,7 +197,7 @@ module.exports = function(lib) {
                     return callback();
                 }
 
-                pastec.add(imageData.file, imageData.hash, function(err) {
+                pastec.add(imageData.file, imageData.hash, (err) => {
                     // Ignore small images, we just won't index them
                     if (err && err.type === "IMAGE_SIZE_TOO_SMALL") {
                         return callback();
@@ -216,19 +209,19 @@ module.exports = function(lib) {
         }
     };
 
-    ArtworkSchema.statics = {
-        saveImageIndex: function(callback) {
+    Artwork.statics = {
+        saveImageIndex(callback) {
             pastec.saveIndex(process.env.PASTEC_INDEX, callback);
         }
     };
 
-    ArtworkSchema.plugin(mongoosastic, lib.db.mongoosastic);
-    ArtworkSchema.plugin(versioner, {
+    Artwork.plugin(mongoosastic, core.db.mongoosastic);
+    Artwork.plugin(versioner, {
         collection: "artwork_versions",
         suppressVersionIncrement: false,
         strategy: "collection",
-        mongoose: mongoose
+        mongoose: core.db.mongoose
     });
 
-    return mongoose.model("Artwork", ArtworkSchema);
+    return Artwork
 };

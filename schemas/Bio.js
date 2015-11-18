@@ -1,16 +1,12 @@
-var mongoose = require("mongoose");
+"use strict";
 
-module.exports = function(lib) {
-    try {
-        return mongoose.model("Bio");
-    } catch(e) {}
+module.exports = (core) => {
+    const Name = require("./Name")(core);
+    const YearRange = require("./YearRange")(core);
 
-    var Name = require("./Name")(lib);
-    var YearRange = require("./YearRange")(lib);
+    const ObjectId = core.db.schema.Types.ObjectId;
 
-    var ObjectId = mongoose.Schema.Types.ObjectId;
-
-    var BioSchema = new mongoose.Schema({
+    const Bio = new core.db.schema({
         // UUID of the image (Format: SOURCE/IMAGEMD5)
         _id: String,
 
@@ -59,7 +55,7 @@ module.exports = function(lib) {
         locations: [String]
     });
 
-    BioSchema.virtual("name")
+    Bio.virtual("name")
         .get(function() {
             return this.names[0];
         })
@@ -70,7 +66,7 @@ module.exports = function(lib) {
             this.names.push(name);
         });
 
-    BioSchema.virtual("active")
+    Bio.virtual("active")
         .get(function() {
             return this.actives[0];
         })
@@ -83,7 +79,7 @@ module.exports = function(lib) {
             }
         });
 
-    BioSchema.virtual("life")
+    Bio.virtual("life")
         .get(function() {
             return this.lives[0];
         })
@@ -96,5 +92,5 @@ module.exports = function(lib) {
             }
         });
 
-    mongoose.model("Bio", BioSchema);
+    return Bio;
 };
