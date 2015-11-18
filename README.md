@@ -1,4 +1,6 @@
-# pharos-images
+# Pharos Images
+
+[![Build Status](https://travis-ci.org/jeresig/pharos-images.svg?branch=master)](https://travis-ci.org/jeresig/pharos-images)
 
 This is the work-in-progress, open source, image database which will be used by the PHAROS art history photo archive consortium.
 
