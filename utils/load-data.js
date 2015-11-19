@@ -21,12 +21,15 @@ const args = argparser.parseArgs();
 const sources = require("../config/data.sources.json");
 
 const importData = (options, callback) => {
-    const converterPath = path.resolve(
+    const converterPath = path.resolve(__dirname,
         `../converters/${options.converter}.js`);
 
     if (!fs.existsSync(converterPath)) {
         return callback(`Error: Converter file not found: ${converterPath}`);
     }
+
+    options.dataFiles = options.dataFiles.map((file) =>
+        path.resolve(__dirname, "..", file));
 
     options.dataFiles.forEach((file) => {
         if (!fs.existsSync(file)) {
