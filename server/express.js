@@ -34,13 +34,13 @@ module.exports = (core, app) => {
     });
 
     // Configure all the paths for serving the static content on the site
-    app.use(serveFavicon(rootPath + "/public/images/favicon.png"));
-    app.use(serveStatic(rootPath + "/public"));
-    app.use("/data", serveStatic(rootPath + "/data"));
+    app.use(serveFavicon(`${rootPath}/public/images/favicon.png`));
+    app.use(serveStatic(`${rootPath}/public`));
+    app.use("/data", serveStatic(`${rootPath}/data`));
 
     // Configure how the views are handled (with swig)
     app.engine("swig", swig.renderFile);
-    app.set("views", rootPath + "/views");
+    app.set("views", `${rootPath}/views`);
     app.set("view engine", "swig");
 
     // Enable caching of the view files by Express, but only in production

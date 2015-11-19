@@ -76,7 +76,7 @@ module.exports = (req, res, next) => {
             if (item.start || item.end) {
                 return (item.circa ? "ca. " : "") +
                     item.start + (item.end && item.end !== item.start ?
-                    "-" + item.end : "");
+                    `-${item.end}` : "");
             }
 
             return "";
@@ -86,7 +86,7 @@ module.exports = (req, res, next) => {
             // TODO: Use locale to show ft vs. cm
             const unit = item.unit || "mm";
             return [item.width, unit, " x ", item.height, unit,
-                item.label ? " (" + item.label + ")" : ""].join("");
+                item.label ? ` (${item.label})` : ""].join("");
         },
 
         // Format a number using commas

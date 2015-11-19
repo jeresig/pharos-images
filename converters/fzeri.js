@@ -1,50 +1,53 @@
-var async = require("async");
-var concat = require("concat-stream");
-var libxmljs = require("libxmljs");
+"use strict";
 
-var pd = require("parse-dimensions");
+const async = require("async");
+const concat = require("concat-stream");
+const libxmljs = require("libxmljs");
+
+const pd = require("parse-dimensions");
 
 module.exports = {
     propMap: {
         id: "SERCD",
-        url: ["SERCD", function(val) {
-            return "http://catalogo.fondazionezeri.unibo.it/scheda.jsp?" +
-                "decorator=layout_S2&apply=true&tipo_scheda=OA&id=" + val;
-        }],
+        url: [
+            "SERCD",
+            (val) => `http://catalogo.fondazionezeri.unibo.it/scheda.jsp?` +
+                `decorator=layout_S2&apply=true&tipo_scheda=OA&id=${val}`,
+        ],
         title: "SGTI",
         dateCreateds: {
             label: "DTZG",
-            start: ["DTSI", function(val) {
-                return parseFloat(val);
-            }],
-            end: ["DTSF", function(val) {
-                return parseFloat(val);
-            }],
-            circa: ["DTSV", function(val, getByTagName) {
-                return val || getByTagName("DTSL");
-            }]
+            start: ["DTSI", (val) => parseFloat(val)],
+            end: ["DTSF", (val) => parseFloat(val)],
+            circa: [
+                "DTSV",
+                (val, getByTagName) => (val || getByTagName("DTSL")),
+            ],
         },
         medium: "MTC",
         objectType: "OGTT",
-        dimensions: ["MISU", function(unit, getByTagName) {
-            if (unit) {
-                return pd.parseDimensions(
-                    getByTagName("MISL") + unit + " x " +
-                    getByTagName("MISA") + unit
-                );
-            }
-        }],
+        dimensions: [
+            "MISU",
+            (unit, getByTagName) => {
+                if (unit) {
+                    return pd.parseDimensions(
+                        `${getByTagName("MISL")}${unit} x ` +
+                        `${getByTagName("MISA")}${unit}`
+                    );
+                }
+            },
+        ],
         collections: {
             name: "LDCN",
             country: "PVCS",
-            city: "PVCC"
+            city: "PVCC",
         },
         artists: {
             every: "PARAGRAFO[@etichetta='AUTHOR']/RIPETIZIONE",
             data: {
                 name: "AUTN",
-                pseudonym: "AUTP"
-            }
+                pseudonym: "AUTP",
+            },
         },
         images: {
             every: "FOTO",
@@ -52,16 +55,16 @@ module.exports = {
                 id: "@sercdf",
                 fileName: [".", function(val) {
                     return val.replace(/^.*\//, "");
-                }]
-            }
-        }
+                }],
+            },
+        },
     },
 
-    searchByProps: function(root, propMap) {
-        var results = {};
+    searchByProps(root, propMap) {
+        const results = {};
 
-        var getByTagName = function(name) {
-            var node = root.get(".//" + name);
+        const getByTagName = (name) => {
+            const node = root.get(`.//${name}`);
             if (node) {
                 return (node.value ?
                     node.value() :
@@ -69,9 +72,9 @@ module.exports = {
             }
         };
 
-        for (var propName in propMap) {
-            var searchValue = propMap[propName];
-            var hasFilter = Array.isArray(searchValue);
+        for (const propName in propMap) {
+            let searchValue = propMap[propName];
+            const hasFilter = Array.isArray(searchValue);
 
             if (hasFilter) {
                 searchValue = searchValue[0];
@@ -92,10 +95,9 @@ module.exports = {
 
             } else if (typeof searchValue === "object") {
                 if (searchValue.every) {
-                    var matches = root.find(".//" + searchValue.every);
-                    results[propName] = matches.map(function(node) {
-                        return this.searchByProps(node, searchValue.data);
-                    }.bind(this));
+                    const matches = root.find(`.//${searchValue.every}`);
+                    results[propName] = matches.map(
+                        (node) => this.searchByProps(node, searchValue.data));
                 } else {
                     results[propName] = this.searchByProps(root, searchValue);
                 }
@@ -105,15 +107,15 @@ module.exports = {
         return results;
     },
 
-    process: function(fileStreams, addModel, done) {
-        fileStreams[0].pipe(concat(function(fileData) {
-            var xmlDoc = libxmljs.parseXml(fileData.toString("utf8"));
-            var matches = xmlDoc.find("//SCHEDA");
+    process(fileStreams, addModel, done) {
+        fileStreams[0].pipe(concat((fileData) => {
+            const xmlDoc = libxmljs.parseXml(fileData.toString("utf8"));
+            const matches = xmlDoc.find("//SCHEDA");
 
-            async.eachLimit(matches, 4, function(node, callback) {
-                var result = this.searchByProps(node, this.propMap);
+            async.eachLimit(matches, 4, (node, callback) => {
+                const result = this.searchByProps(node, this.propMap);
                 addModel(result, callback);
-            }.bind(this), done);
-        }.bind(this)));
-    }
+            }, done);
+        }));
+    },
 };

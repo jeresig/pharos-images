@@ -9,8 +9,8 @@ const rootPath = path.resolve(__dirname, "../..");
 
 module.exports = (core, app) => {
     const CDN = expressCDN(app, {
-        publicDir: rootPath + "/public",
-        viewsDir: rootPath + "/app/views",
+        publicDir: `${rootPath}/public`,
+        viewsDir: `${rootPath}/app/views`,
         extensions: [".swig"],
         domain: process.env.S3_STATIC_BUCKET,
         bucket: process.env.S3_STATIC_BUCKET,

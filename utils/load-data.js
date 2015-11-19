@@ -10,24 +10,25 @@ const core = require("../core");
 
 const argparser = new ArgumentParser({
     description: "Parse a data file, given the specified converter, and load" +
-        "it in to the database for future traversal."
+        "it in to the database for future traversal.",
 });
 
 argparser.addArgument(["source"], {
-    help: "The name of source of the data (e.g. 'frick' or 'fzeri')."
+    help: "The name of source of the data (e.g. 'frick' or 'fzeri').",
 });
 
 const args = argparser.parseArgs();
 const sources = require("../config/data.sources.json");
 
-const importData = function(options, callback) {
-    const converterPath = `../converters/${options.converter}.js`;
+const importData = (options, callback) => {
+    const converterPath = path.resolve(
+        `../converters/${options.converter}.js`);
 
     if (!fs.existsSync(converterPath)) {
         return callback(`Error: Converter file not found: ${converterPath}`);
     }
 
-    options.dataFiles.forEach(function(file) {
+    options.dataFiles.forEach((file) => {
         if (!fs.existsSync(file)) {
             return callback(`Error: Data file not found: ${file}`);
         }
@@ -61,7 +62,7 @@ const importData = function(options, callback) {
                 return callback(err);
             }
 
-            for (let key in data) {
+            for (const key in data) {
                 const schemaPath = Artwork.schema.path(key);
 
                 if (!schemaPath) {
@@ -69,8 +70,8 @@ const importData = function(options, callback) {
                 }
 
                 if (Array.isArray(schemaPath.options.type) &&
-                    data[key] && !Array.isArray(data[key])) {
-                        data[key] = [data[key]];
+                        data[key] && !Array.isArray(data[key])) {
+                    data[key] = [data[key]];
                 }
             }
 
@@ -97,7 +98,7 @@ const importData = function(options, callback) {
 
                     missingImages.push({
                         fileName: imageData.fileName,
-                        artworkID: data._id
+                        artworkID: data._id,
                     });
 
                     return callback();
@@ -114,7 +115,7 @@ const importData = function(options, callback) {
                     console.log("Empty Artwork:", data._id);
 
                     emptyArtworks.push({
-                        artworkID: data._id
+                        artworkID: data._id,
                     });
 
                     return callback();
@@ -142,7 +143,7 @@ const importData = function(options, callback) {
     }, (err) => {
         callback(err, {
             missingImages: missingImages,
-            emptyArtworks: emptyArtworks
+            emptyArtworks: emptyArtworks,
         });
     });
 };
@@ -150,7 +151,7 @@ const importData = function(options, callback) {
 core.init(() => {
     let sourceOptions;
 
-    sources.forEach(function(options) {
+    sources.forEach((options) => {
         if (options.source === args.source) {
             sourceOptions = options;
         }
@@ -171,7 +172,7 @@ core.init(() => {
         _id: sourceOptions.source,
         name: sourceOptions.name,
         shortName: sourceOptions.shortName,
-        url: sourceOptions.url
+        url: sourceOptions.url,
     }, () => {
         console.log("Importing data...");
 

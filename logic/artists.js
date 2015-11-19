@@ -34,8 +34,8 @@ module.exports = function(core, app) {
                     // TODO: Maybe do an artist search instead?
                     res.redirect(301, core.urls.gen(
                         req.i18n.getLocale(),
-                        "/search?q=" + encodeURIComponent(
-                            req.params.slug.replace(/-/g, " "))
+                        `/search?q=${encodeURIComponent(
+                            req.params.slug.replace(/-/g, " "))}`
                     ));
                 } else {
                     res.redirect(301, artist.getURL());
@@ -49,7 +49,7 @@ module.exports = function(core, app) {
             const q = req.params.q || "";
             // TODO: Fix kanji searching
             const query = q.trim().split(/\s+/)
-                .map((name) => name ? name + "*" : "")
+                .map((name) => name ? `${name}*` : "")
                 .filter((name) => !!name)
                 .join(" AND ");
 

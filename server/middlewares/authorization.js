@@ -15,7 +15,7 @@ module.exports = {
         if (req.profile.id !== req.user.id) {
             // TODO(jeresig): Come up with a way to display messages
             //req.flash("info", "You are not authorized");
-            return res.redirect("/users/" + req.profile.id);
+            return res.redirect(`/users/${req.profile.id}`);
         }
         next();
     },

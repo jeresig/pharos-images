@@ -55,7 +55,7 @@ module.exports = (core, app) => {
 
                 // TODO: Add in uploader's user name (once those exist)
                 const upload = new Upload({
-                    _id: "uploads/" + id,
+                    _id: `uploads/${id}`,
                     imageName: id,
                     source: "uploads",
                 });

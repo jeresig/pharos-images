@@ -4,7 +4,7 @@ const core = require("../core");
 
 const Artwork = core.db.Artwork;
 
-core.init(function() {
+core.init(() => {
     Artwork.createMapping((err, mapping) => {
         if (err) {
             console.error(err);

@@ -93,39 +93,39 @@ module.exports = (core) => {
             return core.urls.gen(locale, `/artworks/${this._id}`);
         },
 
+        sourceURLBase() {
+            return process.env.BASE_DATA_URL +
+                (this.source._id || this.source);
+        },
+
+        sourceDirBase() {
+            return process.env.BASE_DATA_DIR +
+                (this.source._id || this.source);
+        },
+
         getOriginalURL(image) {
             image = image || this.images[0];
-            return process.env.BASE_DATA_URL +
-                (this.source._id || this.source) +
-                "/images/" + image.imageName + ".jpg";
+            return `${this.sourceURLBase()}/images/${image.imageName}.jpg`;
         },
 
         getScaledURL(image) {
             image = image || this.images[0];
-            return process.env.BASE_DATA_URL +
-                (this.source._id || this.source) +
-                `/scaled/${image.imageName}.jpg`;
+            return `${this.sourceURLBase()}/scaled/${image.imageName}.jpg`;
         },
 
         getThumbURL(image) {
             image = image || this.images[0];
-            return process.env.BASE_DATA_URL +
-                (this.source._id || this.source) +
-                `/thumbs/${image.imageName}.jpg`;
+            return `${this.sourceURLBase()}/thumbs/${image.imageName}.jpg`;
         },
 
         getImagePath(image) {
             image = image || this.images[0];
-            return process.env.BASE_DATA_DIR +
-                (this.source._id || this.source) +
-                `/images/${image.imageName}.jpg`;
+            return `${this.sourceDirBase()}/images/${image.imageName}.jpg`;
         },
 
         getScaledPath(image) {
             image = image || this.images[0];
-            return process.env.BASE_DATA_DIR +
-                (this.source._id || this.source) +
-                `/scaled/${image.imageName}.jpg`;
+            return `${this.sourceDirBase()}/scaled/${image.imageName}.jpg`;
         },
 
         getTitle(locale) {

@@ -1,22 +1,12 @@
 "use strict";
 
-const fs = require("fs");
-const path = require("path");
-
 const async = require("async");
-const ArgumentParser = require("argparse").ArgumentParser;
 
 const core = require("../core");
 
 const pastec = require("pastec")({
-    server: process.env.PASTEC_URL
+    server: process.env.PASTEC_URL,
 });
-
-const argparser = new ArgumentParser({
-    description: "..."
-});
-
-const args = argparser.parseArgs();
 
 core.init(() => {
     // Models
@@ -25,7 +15,7 @@ core.init(() => {
     console.log("Finding artwork records...");
 
     Artwork.find().stream()
-        .on("data", function(artwork) {
+        .on("data", (artwork) => {
             this.pause();
             async.mapLimit(artwork.images, 1, (image, callback) => {
                 // NOTE(jeresig): Whenever pastec gets support for searching by
@@ -39,8 +29,8 @@ core.init(() => {
                 // Calculate artwork matches before saving
                 const matches = [];
 
-                results.forEach(result => {
-                    result.forEach(match => {
+                results.forEach((result) => {
+                    result.forEach((match) => {
                         matches.push({"images.imageName": match.id});
                     });
                 });
@@ -51,17 +41,18 @@ core.init(() => {
                 } else {
                     Artwork.find({$or: matches}, (err, artworks) => {
                         if (err) {
-                            return callback(err);
+                            console.error(err);
+                            return;
                         }
 
                         artwork.similarArtworks =
-                            artworks.map(artwork => artwork._id);
+                            artworks.map((artwork) => artwork._id);
                         artwork.save(() => this.resume());
                     });
                 }
             });
         })
-        .on("close", () => {
+        .on("close", (err) => {
             if (err) {
                 console.error(err);
             } else {

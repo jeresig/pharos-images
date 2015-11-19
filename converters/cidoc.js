@@ -1,26 +1,27 @@
-var fs = require("fs");
-var path = require("path");
+"use strict";
 
-var jsonld = require("jsonld");
+const fs = require("fs");
 
-var nquads = fs.readFileSync(process.argv[2], "utf8");
+const jsonld = require("jsonld");
 
-var cidocPrefix = "http://erlangen-crm.org/current/";
+const nquads = fs.readFileSync(process.argv[2], "utf8");
 
-var processRecord = function(record) {
-    var baseRecord = record["@graph"][0];
-    var rootID = baseRecord["@id"];
-    var map = {};
+const cidocPrefix = "http://erlangen-crm.org/current/";
 
-    record["@graph"].forEach(function(item) {
+const processRecord = (record) => {
+    const baseRecord = record["@graph"][0];
+    const rootID = baseRecord["@id"];
+    const map = {};
+
+    record["@graph"].forEach((item) => {
         map[item["@id"]] = item;
     });
 
-    var linkUpRecord = function(baseRecord, rootID) {
+    const linkUpRecord = (baseRecord, rootID) => {
         delete baseRecord["@id"];
 
-        for (var key in baseRecord) {
-            var val = baseRecord[key];
+        for (let key in baseRecord) {
+            const val = baseRecord[key];
 
             if (key.indexOf(cidocPrefix) === 0) {
                 delete baseRecord[key];
@@ -29,12 +30,13 @@ var processRecord = function(record) {
             }
 
             if (typeof val === "object") {
-                baseRecord[key] = val.map(function(obj) {
+                baseRecord[key] = val.map((obj) => {
                     if (typeof obj === "object") {
                         if ("@value" in obj) {
                             return obj["@value"];
 
-                        } else if (obj["@id"] in map && map[obj["@id"]] !== obj) {
+                        } else if (obj["@id"] in map &&
+                                map[obj["@id"]] !== obj) {
                             if (obj["@id"] !== rootID) {
                                 return map[obj["@id"]];
                             }
@@ -55,14 +57,14 @@ var processRecord = function(record) {
         return baseRecord;
     };
 
-    for (var itemName in map) {
+    for (const itemName in map) {
         linkUpRecord(map[itemName], rootID);
     }
 
     return baseRecord;
-}
+};
 
-jsonld.fromRDF(nquads, {format: "application/nquads"}, function(err, records) {
-    var results = records.slice(1).map(processRecord);
+jsonld.fromRDF(nquads, {format: "application/nquads"}, (err, records) => {
+    const results = records.slice(1).map(processRecord);
     console.log(JSON.stringify(results, null, "     "));
 });

@@ -23,7 +23,7 @@ fs.readdirSync("schemas").forEach((file) => {
     if (file.endsWith(".js")) {
         const name = path.basename(file, ".js");
         core.models[name] = core.db.model(name,
-            require("./schemas/" + file)(core));
+            require(`./schemas/${file}`)(core));
     }
 });
 
