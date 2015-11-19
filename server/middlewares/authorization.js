@@ -1,3 +1,5 @@
+"use strict";
+
 module.exports = {
     // Generic require login routing middleware
     requiresLogin(req, res, next) {

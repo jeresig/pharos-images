@@ -1,3 +1,5 @@
+"use strict";
+
 const urls = require("../../lib/urls")();
 const locales = require("../../config/locales.json");
 

@@ -1,3 +1,5 @@
+"use strict";
+
 const i18n = require("i18n-2");
 
 const locales = require("../config/locales.json");

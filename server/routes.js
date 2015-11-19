@@ -1,3 +1,5 @@
+"use strict";
+
 const cache = require("./middlewares/cache");
 
 module.exports = function(core, app) {
