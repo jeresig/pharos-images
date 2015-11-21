@@ -52,7 +52,7 @@
     "parse-dimensions": "0.0.2",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
-    "pastec": "0.0.3",
+    "pastec": "0.0.4",
     "request": "^2.65.0",
     "serve-favicon": "^2.3.0",
     "serve-static": "^1.10.0",

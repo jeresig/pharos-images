@@ -18,10 +18,7 @@ core.init(() => {
         .on("data", (artwork) => {
             this.pause();
             async.mapLimit(artwork.images, 1, (image, callback) => {
-                // NOTE(jeresig): Whenever pastec gets support for searching by
-                // ID, this should be switched over to using `image.imageName`
-                const path = artwork.getScaledPath(image);
-                pastec.fileSimilar(path, (err, matches) => {
+                pastec.similar(image.imageName, (err, matches) => {
                     image.similarImages = matches;
                     callback(err, matches);
                 });
