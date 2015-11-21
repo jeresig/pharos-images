@@ -171,11 +171,17 @@ core.init(() => {
 
     console.log("Creating source record...");
 
-    Source.create({
+    // Will update an existing record, if it exists, or create a new
+    // one if it doesn't.
+    Source.update({
+        _id: sourceOptions.source,
+    }, {
         _id: sourceOptions.source,
         name: sourceOptions.name,
         shortName: sourceOptions.shortName,
         url: sourceOptions.url,
+    }, {
+        upsert: true,
     }, () => {
         console.log("Importing data...");
 
