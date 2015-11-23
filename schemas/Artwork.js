@@ -208,12 +208,6 @@ module.exports = (core) => {
         },
     };
 
-    Artwork.statics = {
-        saveImageIndex(callback) {
-            pastec.saveIndex(process.env.PASTEC_INDEX, callback);
-        },
-    };
-
     Artwork.plugin(mongoosastic, core.db.mongoosastic);
     Artwork.plugin(versioner, {
         collection: "artwork_versions",
