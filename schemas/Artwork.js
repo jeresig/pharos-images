@@ -59,7 +59,10 @@ module.exports = (core) => {
         images: [Image],
 
         // Computed by looking at the results of similarImages
-        similarArtworks: [{type: String, ref: "Artwork"}],
+        similarArtworks: [{
+            artwork: {type: String, ref: "Artwork"},
+            score: Number,
+        }],
     });
 
     Artwork.virtual("dateCreated")

@@ -14,42 +14,64 @@ core.init(() => {
 
     console.log("Finding artwork records...");
 
-    Artwork.find().stream()
+    Artwork.find({}, {}, {timeout: true}).stream()
         .on("data", function(artwork) {
             this.pause();
 
             console.log("Syncing", artwork._id);
 
             async.mapLimit(artwork.images, 1, (image, callback) => {
-                pastec.similar(image.imageName, (err, matches) => {
-                    matches = matches.filter((match) =>
-                        match.id.toString() !== image.imageName);
-                    image.similarImages = matches;
-                    callback(err, matches);
+                const id = image.imageName;
+
+                pastec.idIndexed(id, (err, exists) => {
+                    if (err || !exists) {
+                        return callback(err);
+                    }
+
+                    pastec.similar(id, (err, matches) => {
+                        if (err) {
+                            return callback(err);
+                        }
+
+                        matches = matches.filter((match) => match.id !== id);
+                        image.similarImages = matches;
+                        callback(err, matches);
+                    });
                 });
             }, (err, results) => {
                 // Calculate artwork matches before saving
-                const matches = [];
-
-                results.forEach((result) => {
-                    result.forEach((match) => {
-                        matches.push({"images.imageName": match.id});
-                    });
-                });
+                const matches = results.filter((match) => match)
+                    .reduce((a, b) => a.concat(b), []);
+                const scores = matches.reduce((obj, match) => {
+                    obj[match.id] = Math.max(match.score, obj[match.id] || 0);
+                    return obj;
+                }, {});
 
                 if (matches.length === 0) {
                     artwork.save(() => this.resume());
 
                 } else {
-                    Artwork.find({$or: matches}, (err, artworks) => {
+                    const query = matches.map((match) => ({
+                        "images.imageName": match.id,
+                    }));
+
+                    Artwork.find({$or: query}, (err, artworks) => {
                         if (err) {
                             console.error(err);
                             return;
                         }
 
                         artwork.similarArtworks = artworks
-                            .map((similar) => similar._id)
-                            .filter((id) => id !== artwork._id);
+                            .filter((similar) => similar._id !== artwork._id)
+                            .map((similar) => {
+                                const imageScores = similar.images.map(
+                                    (image) => scores[image.imageName] || 0);
+
+                                return {
+                                    id: similar._id,
+                                    score: Math.max(...imageScores),
+                                };
+                            });
 
                         artwork.save(() => this.resume());
                     });
