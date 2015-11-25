@@ -68,8 +68,8 @@ core.init(() => {
                                     (image) => scores[image.imageName] || 0);
 
                                 return {
-                                    id: similar._id,
-                                    score: Math.max(...imageScores),
+                                    artwork: similar._id,
+                                    score: imageScores.reduce((a, b) => a + b),
                                 };
                             });
 
