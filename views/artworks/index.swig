@@ -77,9 +77,9 @@ Sources:
                     {{ shortName(image.artist.artist) }}</a>
             {% endif %}
         {% endif %}
-        <a class="source" href="{{ URL(image.source) }}"
-            title="{{ fullName(image.source) }}">
-            {{ shortName(image.source) }}</a>
+        <a class="source" href="{{ URL(image.getSource()) }}"
+            title="{{ fullName(image.getSource()) }}">
+            {{ shortName(image.getSource()) }}</a>
         </div>
     </div>
 </div>

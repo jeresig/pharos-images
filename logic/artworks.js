@@ -8,7 +8,6 @@ module.exports = function(core, app) {
         load(req, res, next, artworkName) {
             Artwork.findById(`${req.params.sourceId}/${artworkName}`)
                 .populate("similarArtworks.artwork")
-                .populate("source") // TODO: Don't do this.
                 .exec((err, image) => {
                     if (err) {
                         return next(err);

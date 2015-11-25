@@ -5,6 +5,7 @@ require("dotenv").load();
 
 const fs = require("fs");
 const path = require("path");
+const async = require("async");
 
 const core = {};
 
@@ -28,7 +29,10 @@ fs.readdirSync("schemas").forEach((file) => {
 });
 
 core.init = (callback) => {
-    core.db.connect(callback);
+    async.series([
+        (callback) => core.db.connect(callback),
+        (callback) => core.models.Source.cacheSources(callback),
+    ], callback);
 };
 
 module.exports = core;

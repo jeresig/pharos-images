@@ -97,13 +97,11 @@ module.exports = (core) => {
         },
 
         sourceURLBase() {
-            return process.env.BASE_DATA_URL +
-                (this.source._id || this.source);
+            return process.env.BASE_DATA_URL + this.source;
         },
 
         sourceDirBase() {
-            return process.env.BASE_DATA_DIR +
-                (this.source._id || this.source);
+            return process.env.BASE_DATA_DIR + this.source;
         },
 
         getOriginalURL(image) {
@@ -147,10 +145,14 @@ module.exports = (core) => {
             }
 
             if (this.source && this.source !== "uploads") {
-                parts.push("-", this.source.getFullName(locale));
+                parts.push("-", this.getSource().getFullName(locale));
             }
 
             return parts.join(" ");
+        },
+
+        getSource() {
+            return core.models.Source.getSource(this.source);
         },
 
         addImage(imageData, imgFile, sourceDir, callback) {

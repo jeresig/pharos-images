@@ -1,6 +1,8 @@
 "use strict";
 
 module.exports = (core) => {
+    let sourceCache = [];
+
     const Source = new core.db.schema({
         _id: String,
         url: String,
@@ -33,6 +35,34 @@ module.exports = (core) => {
 
         getNumArtworks: function() {
             // Artwork.count({source: this._id}, callback);
+        },
+    };
+
+    Source.statics = {
+        cacheSources(callback) {
+            core.models.Source.find({}, (err, sources) => {
+                sourceCache = sources;
+                callback(err, sources);
+            });
+        },
+
+        getSources() {
+            return sourceCache;
+        },
+
+        getSource(sourceName) {
+            // Return the object if it's already a Source object
+            if (sourceName && sourceName._id) {
+                return sourceName;
+            }
+
+            for (const source of this.getSources()) {
+                if (source._id === sourceName) {
+                    return source;
+                }
+            }
+
+            throw new Error(`Source not found: ${sourceName}`);
         },
     };
 

@@ -3,7 +3,7 @@
 const express = require("express");
 const core = require("./core");
 
-core.db.connect(() => {
+core.init(() => {
     const app = express();
 
     // Load in the main server logic

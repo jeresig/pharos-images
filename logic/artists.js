@@ -1,7 +1,5 @@
 "use strict";
 
-const async = require("async");
-
 module.exports = function(core, app) {
     const Artist = core.db.model("Artist");
     const search = require("./shared/search")(core, app);
@@ -123,21 +121,15 @@ module.exports = function(core, app) {
 
         show(req, res) {
             req.artist.populate("bios", () => {
-                // Ugh, why doesn't this work?
-                // .populate("bios.source")
-                async.each(req.artist.bios, (bio, callback) => {
-                    bio.populate("source", callback);
-                }, () => {
-                    search(req, res, {
-                        title: req.artist.getFullName(req.i18n.getLocale()),
-                        desc: req.i18n.__("Japanese Woodblock prints by %s.",
-                            req.artist.getFullName(req.i18n.getLocale())),
-                        artist: req.artist,
-                        bio: req.artist.bios.sort((a, b) => {
-                            return (b.bio ? b.bio.length : 0) -
-                                (a.bio ? a.bio.length : 0);
-                        })[0].bio,
-                    });
+                search(req, res, {
+                    title: req.artist.getFullName(req.i18n.getLocale()),
+                    desc: req.i18n.__("Japanese Woodblock prints by %s.",
+                        req.artist.getFullName(req.i18n.getLocale())),
+                    artist: req.artist,
+                    bio: req.artist.bios.sort((a, b) => {
+                        return (b.bio ? b.bio.length : 0) -
+                            (a.bio ? a.bio.length : 0);
+                    })[0].bio,
                 });
             });
         },

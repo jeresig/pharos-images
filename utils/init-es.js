@@ -2,7 +2,7 @@
 
 const core = require("../core");
 
-const Artwork = core.db.Artwork;
+const Artwork = core.models.Artwork;
 
 core.init(() => {
     Artwork.createMapping((err, mapping) => {

@@ -111,9 +111,6 @@ module.exports = (core, app) => {
                 },
             ],
             hydrate: true,
-            hydrateOptions: {
-                populate: "source",
-            },
         }, (err, results) => {
             if (err) {
                 console.error(err);
@@ -128,24 +125,21 @@ module.exports = (core, app) => {
                 start: (query.start + rows),
             }));
 
-            // TODO: Cache the sources
-            Source.find({}, (err, sources) => {
-                res.render("artworks/index", Object.assign({
-                    sources: sources,
-                    query: query,
-                    queryURL: queryURL,
-                    minDate: process.env.DEFAULT_START_DATE,
-                    maxDate: process.env.DEFAULT_END_DATE,
-                    clusters: results.aggregations,
-                    images: results.hits.hits,
-                    total: results.hits.total,
-                    start: (results.hits.total > 0 ? query.start || 1 : 0),
-                    end: end,
-                    rows: rows,
-                    prev: prevLink,
-                    next: nextLink,
-                }, tmplParams));
-            });
+            res.render("artworks/index", Object.assign({
+                sources: Source.getSources(),
+                query: query,
+                queryURL: queryURL,
+                minDate: process.env.DEFAULT_START_DATE,
+                maxDate: process.env.DEFAULT_END_DATE,
+                clusters: results.aggregations,
+                images: results.hits.hits,
+                total: results.hits.total,
+                start: (results.hits.total > 0 ? query.start || 1 : 0),
+                end: end,
+                rows: rows,
+                prev: prevLink,
+                next: nextLink,
+            }, tmplParams));
         });
     };
 };

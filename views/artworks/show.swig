@@ -99,20 +99,20 @@
         {% if artwork.url %}
             <p class="row details">
                 <strong class="col-md-3 right">
-                    {% if artwork.source.commercial %}
+                    {% if artwork.getSource().commercial %}
                         <small>{{ __("Details &amp;&nbsp;Prices:") }}</small>
                     {% else %}
                         {{ __("Details:") }}
                     {% endif %}
                 </strong>
                 <span class="col-md-9">
-                    {% if artwork.source.inactive %}
+                    {% if artwork.getSource().inactive %}
                         <small>{{ __("Unfortunately the source of this print no longer exists.") }}</small>
-                    {% elif artwork.source.hideLinks %}
+                    {% elif artwork.getSource().hideLinks %}
                         <small>{{ __("There is no way to link to this print on the source site. Please visit the source and search for the print there.") }}</small>
-                    {% elif artwork.source.linkTitle %}
+                    {% elif artwork.getSource().linkTitle %}
                         <small><a href="{{ artwork.url }}"
-                            title="{{ artwork.source.linkTitle }}">
+                            title="{{ artwork.getSource().linkTitle }}">
                             {{ getTitle(image) }}</a></small>
                     {% else %}
                         <a href="{{ artwork.url }}">
@@ -122,24 +122,26 @@
             </p>
         {% endif %}
         {% if artwork.source && artwork.source != "uploads" %}
-            {% if artwork.source.inactive %}
+            {% if artwork.getSource().inactive %}
                 <p class="row source">
                     <strong class="col-md-3 right">{{ __("Source:") }}</strong>
-                    <span class="col-md-9"><a href="{{ URL(artwork.source) }}" title="{{ fullName(artwork.source) }}">
-                        {{ fullName(artwork.source) }}</a></span>
+                    <span class="col-md-9"><a href="{{ URL(artwork.getSource()) }}"
+                        title="{{ fullName(artwork.getSource()) }}">
+                        {{ fullName(artwork.getSource()) }}</a></span>
                 </p>
             {% else %}
                 <p class="row source">
                     <strong class="col-md-3 right">{{ __("Source:") }}</strong>
-                    <span class="col-md-9"><a href="{{ artwork.source.url }}">
-                        {% if artwork.source.linkText %}
-                            {{ artwork.source.linkText }}
+                    <span class="col-md-9"><a href="{{ artwork.getSource().url }}">
+                        {% if artwork.getSource().linkText %}
+                            {{ artwork.getSource().linkText }}
                         {% else %}
-                            {{ fullName(artwork.source) }}
+                            {{ fullName(artwork.getSource()) }}
                         {% endif %}
                     </a><br/>
-                    <small><a href="{{ URL(artwork.source) }}" title="{{ fullName(artwork.source) }}">
-                        {{ __("Browse all %s prints...", artwork.source.count_string) }}</a></small></span>
+                    <small><a href="{{ URL(artwork.getSource()) }}"
+                        title="{{ fullName(artwork.getSource()) }}">
+                        {{ __("Browse all %s prints...", artwork.getSource().count_string) }}</a></small></span>
                 </p>
             {% endif %}
         {% endif %}
@@ -184,14 +186,12 @@
                     title="{{ getTitle(match.artwork) }}"/></a>
             <div class="details">
                 <div class="wrap">
-                {% if match.artwork.artist %}
-                    <a class="artist" href="{{ URL(match.artwork.artist) }}"
-                        title="{{ fullName(match.artwork.artist) }}">
-                        {{ shortName(match.artwork.artist) }}</a>
+                {% if match.artwork.dateCreated %}
+                    <span class="date">{{ getDate(match.artwork.dateCreated) }}</span>
                 {% endif %}
-                <a class="source" href="{{ URL(match.artwork.source) }}"
-                    title="{{ fullName(match.artwork.source) }}">
-                    {{ shortName(match.artwork.source) }}</a>
+                <a class="source" href="{{ URL(match.artwork.getSource()) }}"
+                    title="{{ fullName(match.artwork.getSource()) }}">
+                    {{ shortName(match.artwork.getSource()) }}</a>
                 </div>
             </div>
         </div>
@@ -199,68 +199,7 @@
     {% endfor %}
     </div>
 </div>
-
-<!--
-<div id="image-holder"></div>
-<div id="compare">
-    <div class="compare-nav left-nav">
-        <a href="" class="compare-prev">
-            <i class="icon-step-backward icon-white"></i>
-            {{ __("Previous") }}</a>
-        <a href="" class="compare-next">{{ __("Next") }}
-            <i class="icon-step-forward icon-white"></i></a>
-    </div>
-    <div class="compare-nav right-nav">
-        <a href="" class="reset-zoom"><i class="icon-zoom-out icon-white"></i>
-            {{ __("Reset Zoom") }}</a>
-        <a href="" class="compare-close"><i class="icon-remove icon-white"></i>
-            {{ __("Close") }}</a>
-    </div>
-    <div class="details">
-        <a href="" class="source"></a>:
-        <a href="" class="artist"></a> -
-        <a href="" class="title"></a>
-    </div>
-    <canvas id="compare-canvas"></canvas>
-</div>
--->
 {% endif %}
 
-<!--
-<div id="disqus_thread" class="{% if results.length > 0 %}col-md-4{% else %}col-md-12{% endif %}"></div>
--->
-
 </div>
-
-{% if artwork.similarArtworks.length > 0 && artwork.source._id === "uploads" %}
-<div class="row">
-    <div class="col-md-8">
-    <h3>{{ __("Learn More") }}</h3>
-    {% for group in groups %}
-        <p><strong><a href="{{ URL(group.source) }}">
-            {{ fullName(group.source) }}</a></strong></p>
-        <ul>
-        {% for item in group.items %}
-            <li><a href="{{ item.source_url }}">{{ item.source_url }}</a></li>
-        {% endfor %}
-        </ul>
-    {% endfor %}
-    </div>
-</div>
-{% endif %}
-
-<script type="text/javascript">
-var imageData = {{ image|json_encode|raw }};
-var results = {{ results|json_encode|raw }};
-</script>
-
-<script type="text/javascript">
-var disqus_shortname = 'ukiyoe';
-
-(function() {
-    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-    dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
-    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-})();
-</script>
 {% endblock %}
