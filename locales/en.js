@@ -51,5 +51,8 @@
 	"Bios:": "Bios:",
 	"Results for artist '%s'": "Results for artist '%s'",
 	"Artist '%s'": "Artist '%s'",
-	"Title": "Title"
+	"Title": "Title",
+	"Similar Artworks": "Similar Artworks",
+	"Compare Prints...": "Compare Prints...",
+	"Reset Zoom": "Reset Zoom"
 }

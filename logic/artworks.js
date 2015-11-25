@@ -7,6 +7,7 @@ module.exports = function(core, app) {
     return {
         load(req, res, next, artworkName) {
             Artwork.findById(`${req.params.sourceId}/${artworkName}`)
+                .populate("similarArtworks.artwork")
                 .populate("source") // TODO: Don't do this.
                 .exec((err, image) => {
                     if (err) {

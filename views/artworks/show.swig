@@ -160,42 +160,38 @@
 </div>
 
 <div class="row">
-    {% if results.length > 0 %}
-    <div class="col-md-8">
-        <h2>{{ __("Other Copies") }}
-        {% if results.length > 0 %}
+    {% if artwork.similarArtworks.length > 0 %}
+    <div class="col-md-12">
+        <h2>{{ __("Similar Artworks") }}
             <a href="" class="btn compare-all"><i class="icon-eye-open"></i>
-                {{ __("Compare Prints...") }}</a>
-        {% endif %}</h2>
+                {{ __("Compare Images...") }}</a>
+        </h2>
     </div>
     {% endif %}
-    <div class="{% if results.length > 0 %}col-md-4{% else %}col-md-12{% endif %}">
-        <h2>{{ __("Discuss This Print") }}</h2>
-    </div>
 </div>
 
 <div class="row">
 
-{% if results.length > 0 %}
-<div id="results" class="col-md-8">
+{% if artwork.similarArtworks.length > 0 %}
+<div id="results" class="col-md-12">
     <div class="row">
-    {% for item in results %}
-        {% if item.image %}
+    {% for match in artwork.similarArtworks %}
+        {% if match.artwork %}
         <div class="img col-md-3">
-            <a class="img" href="{{ URL(item.image) }}">
-                <img src="{{ item.artwork.getThumbURL() }}"
-                    alt="{{ getTitle(item.image) }}"
-                    title="{{ getTitle(item.image) }}"/></a>
+            <a class="img" href="{{ URL(match.artwork) }}">
+                <img src="{{ match.artwork.getThumbURL(match.artwork.images[0]) }}"
+                    alt="{{ getTitle(match.artwork) }}"
+                    title="{{ getTitle(match.artwork) }}"/></a>
             <div class="details">
                 <div class="wrap">
-                {% if item.artist %}
-                    <a class="artist" href="{{ URL(item.artwork.artist) }}"
-                        title="{{ fullName(item.artwork.artist) }}">
-                        {{ shortName(item.artwork.artist) }}</a>
+                {% if match.artwork.artist %}
+                    <a class="artist" href="{{ URL(match.artwork.artist) }}"
+                        title="{{ fullName(match.artwork.artist) }}">
+                        {{ shortName(match.artwork.artist) }}</a>
                 {% endif %}
-                <a class="source" href="{{ URL(item.artwork.source) }}"
-                    title="{{ fullName(item.artwork.source) }}">
-                    {{ shortName(item.artwork.source) }}</a>
+                <a class="source" href="{{ URL(match.artwork.source) }}"
+                    title="{{ fullName(match.artwork.source) }}">
+                    {{ shortName(match.artwork.source) }}</a>
                 </div>
             </div>
         </div>
@@ -204,6 +200,7 @@
     </div>
 </div>
 
+<!--
 <div id="image-holder"></div>
 <div id="compare">
     <div class="compare-nav left-nav">
@@ -226,13 +223,16 @@
     </div>
     <canvas id="compare-canvas"></canvas>
 </div>
+-->
 {% endif %}
 
+<!--
 <div id="disqus_thread" class="{% if results.length > 0 %}col-md-4{% else %}col-md-12{% endif %}"></div>
+-->
 
 </div>
 
-{% if results.length > 0 && artwork.source === "uploads" %}
+{% if artwork.similarArtworks.length > 0 && artwork.source._id === "uploads" %}
 <div class="row">
     <div class="col-md-8">
     <h3>{{ __("Learn More") }}</h3>
