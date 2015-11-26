@@ -69,7 +69,10 @@ core.init(() => {
 
                                 return {
                                     artwork: similar._id,
+                                    images: similar.images.map(
+                                        (image) => image.imageName),
                                     score: imageScores.reduce((a, b) => a + b),
+                                    source: similar.source,
                                 };
                             });
 

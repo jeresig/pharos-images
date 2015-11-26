@@ -61,7 +61,9 @@ module.exports = (core) => {
         // Computed by looking at the results of similarImages
         similarArtworks: [{
             artwork: {type: String, ref: "Artwork"},
+            imageNames: [String],
             score: Number,
+            source: String,
         }],
     });
 
