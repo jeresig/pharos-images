@@ -49,19 +49,6 @@ module.exports = (core, app) => {
         },
 
         searchUpload(req, res) {
-            // TODO: Add in uploader's user name (once those exist)
-            const upload = new Upload({
-                source: "uploads",
-                images: [
-                    {
-                        imageID: `uploads/${id}`,
-                        imageName: id,
-                    },
-                ],
-            });
-
-            upload.addImage(Upload.getDataDir())
-
             handleUpload(req, Upload.getDataDir(), (err, id) => {
                 if (err) {
                     // TODO: Show some sort of error message
@@ -69,7 +56,18 @@ module.exports = (core, app) => {
                         core.urls.gen(req.i18n.getLocale(), "/"));
                 }
 
+                // TODO: Add in uploader's user name (once those exist)
+                const upload = new Upload({
+                    source: "uploads",
+                    images: [
+                        {
+                            imageID: `uploads/${id}`,
+                            imageName: id,
+                        },
+                    ],
+                });
 
+                // upload.addImage(Upload.getDataDir())
 
                 upload.save(() => {
                     res.redirect(upload.getURL(req.i18n.getLocale()));

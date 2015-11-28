@@ -160,13 +160,13 @@ module.exports = (core) => {
         },
 
         addImage(imageData, imgFile, sourceDir, callback) {
-            const fileStream = fs.createReadStream(imgFile);
+            const stream = fs.createReadStream(imgFile);
 
             // .file (imgFile)
             // .hash (hash)
             // .source (source)
 
-            core.images.processImage(fileStream, sourceDir, false, (err, hash) => {
+            core.images.processImage(stream, sourceDir, false, (err, hash) => {
                 if (err) {
                     return callback(err);
                 }
@@ -184,7 +184,7 @@ module.exports = (core) => {
                     return this.indexImage(imageData, callback);
                 }
 
-                core.images.getSize(fileStream, (err, dimensions) => {
+                core.images.getSize(stream, (err, dimensions) => {
                     if (err) {
                         return callback(err);
                     }
