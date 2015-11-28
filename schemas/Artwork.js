@@ -1,9 +1,6 @@
 "use strict";
 
-const fs = require("fs");
 const async = require("async");
-const versioner = require("mongoose-version");
-const mongoosastic = require("mongoosastic");
 
 const pastec = require("pastec")({
     server: process.env.PASTEC_URL,
@@ -148,7 +145,7 @@ module.exports = (core) => {
                 parts.push(this.title);
             }
 
-            if (this.source && this.source !== "uploads") {
+            if (this.source) {
                 parts.push("-", this.getSource().getFullName(locale));
             }
 
@@ -159,50 +156,41 @@ module.exports = (core) => {
             return core.models.Source.getSource(this.source);
         },
 
-        addImage(imageData, imgFile, sourceDir, callback) {
-            const stream = fs.createReadStream(imgFile);
+        addImage(file, id, callback) {
+            const sourceDir = this.sourceDirBase();
 
-            // .file (imgFile)
-            // .hash (hash)
-            // .source (source)
-
-            core.images.processImage(stream, sourceDir, false, (err, hash) => {
+            core.images.processImage(file, sourceDir, false, (err, hash) => {
                 if (err) {
                     return callback(err);
                 }
 
-                // Store the name and hash of the image file
-                imageData.file = imgFile;
-                imageData.hash = hash;
-
                 // Use the source-provided ID if it exists
-                const id = imageData.id || hash;
-                const imageID = `${imageData.source}/${id}`;
+                const imageID = `${this.source}/${id || hash}`;
 
                 // Stop if the image is already in the images list
                 if (this.images.some((image) => image.imageID === imageID)) {
-                    return this.indexImage(imageData, callback);
+                    return this.indexImage(file, hash, callback);
                 }
 
-                core.images.getSize(stream, (err, dimensions) => {
+                core.images.getSize(file, (err, size) => {
                     if (err) {
                         return callback(err);
                     }
 
                     this.images.push({
-                        imageName: imageData.hash,
+                        imageName: hash,
                         imageID: imageID,
-                        width: dimensions.width,
-                        height: dimensions.height,
+                        width: size.width,
+                        height: size.height,
                     });
 
-                    this.indexImage(imageData, callback);
+                    this.indexImage(file, hash, callback);
                 });
             });
         },
 
-        indexImage(imageData, callback) {
-            pastec.idIndexed(imageData.hash, (err, indexed) => {
+        indexImage(file, id, callback) {
+            pastec.idIndexed(id, (err, indexed) => {
                 if (err) {
                     return callback(err);
                 }
@@ -211,7 +199,7 @@ module.exports = (core) => {
                     return callback();
                 }
 
-                pastec.add(imageData.file, imageData.hash, (err) => {
+                pastec.add(file, id, (err) => {
                     // Ignore small images, we just won't index them
                     if (err && err.type === "IMAGE_SIZE_TOO_SMALL") {
                         return callback();
@@ -282,7 +270,8 @@ module.exports = (core) => {
                                     score: imageScores.reduce((a, b) => a + b),
                                     source: similar.source,
                                 };
-                            });
+                            })
+                            .sort((a, b) => b.score - a.score);
 
                         callback();
                     });
@@ -290,14 +279,6 @@ module.exports = (core) => {
             });
         },
     };
-
-    Artwork.plugin(mongoosastic, core.db.mongoosastic);
-    Artwork.plugin(versioner, {
-        collection: "artwork_versions",
-        suppressVersionIncrement: false,
-        strategy: "collection",
-        mongoose: core.db.mongoose,
-    });
 
     return Artwork;
 };

@@ -113,7 +113,7 @@
                     {% elif artwork.getSource().linkTitle %}
                         <small><a href="{{ artwork.url }}"
                             title="{{ artwork.getSource().linkTitle }}">
-                            {{ getTitle(image) }}</a></small>
+                            {{ getTitle(artwork) }}</a></small>
                     {% else %}
                         <a href="{{ artwork.url }}">
                             {{ __("More information...") }}</a>
@@ -121,42 +121,28 @@
                 </span>
             </p>
         {% endif %}
-        {% if artwork.source && artwork.source != "uploads" %}
-            {% if artwork.getSource().inactive %}
-                <p class="row source">
-                    <strong class="col-md-3 right">{{ __("Source:") }}</strong>
-                    <span class="col-md-9"><a href="{{ URL(artwork.getSource()) }}"
-                        title="{{ fullName(artwork.getSource()) }}">
-                        {{ fullName(artwork.getSource()) }}</a></span>
-                </p>
-            {% else %}
-                <p class="row source">
-                    <strong class="col-md-3 right">{{ __("Source:") }}</strong>
-                    <span class="col-md-9"><a href="{{ artwork.getSource().url }}">
-                        {% if artwork.getSource().linkText %}
-                            {{ artwork.getSource().linkText }}
-                        {% else %}
-                            {{ fullName(artwork.getSource()) }}
-                        {% endif %}
-                    </a><br/>
-                    <small><a href="{{ URL(artwork.getSource()) }}"
-                        title="{{ fullName(artwork.getSource()) }}">
-                        {{ __("Browse all %s prints...", artwork.getSource().count_string) }}</a></small></span>
-                </p>
-            {% endif %}
-        {% endif %}
-        {% if artwork.source && artwork.source === "uploads" %}
-            {% if results.length == 0 %}
-                <h3>{{ __("Uh oh!") }}</h3>
-                <p>{{ __("No other copies of this print have been found.") }}</p>
-                <div class="hide-ja">
-                <p>It might be worthwhile to copy the uploaded image URL:</p>
-                <pre>{{ artwork.getOriginalURL() }}</pre>
-                <p>and ask the Ukiyo-e Q&amp;A community for help:</p>
-                <p><a href="http://www.ukiyo-e.se/wwwboard/wwwboard.html">
-                    http://www.ukiyo-e.se/wwwboard/wwwboard.html</a></p>
-                </div>
-            {% endif %}
+
+        {% if artwork.getSource().inactive %}
+            <p class="row source">
+                <strong class="col-md-3 right">{{ __("Source:") }}</strong>
+                <span class="col-md-9"><a href="{{ URL(artwork.getSource()) }}"
+                    title="{{ fullName(artwork.getSource()) }}">
+                    {{ fullName(artwork.getSource()) }}</a></span>
+            </p>
+        {% else %}
+            <p class="row source">
+                <strong class="col-md-3 right">{{ __("Source:") }}</strong>
+                <span class="col-md-9"><a href="{{ artwork.getSource().url }}">
+                    {% if artwork.getSource().linkText %}
+                        {{ artwork.getSource().linkText }}
+                    {% else %}
+                        {{ fullName(artwork.getSource()) }}
+                    {% endif %}
+                </a><br/>
+                <small><a href="{{ URL(artwork.getSource()) }}"
+                    title="{{ fullName(artwork.getSource()) }}">
+                    {{ __("Browse all %s prints...", artwork.getSource().count_string) }}</a></small></span>
+            </p>
         {% endif %}
     </div>
 </div>
@@ -164,10 +150,7 @@
 <div class="row">
     {% if artwork.similarArtworks.length > 0 %}
     <div class="col-md-12">
-        <h2>{{ __("Similar Artworks") }}
-            <a href="" class="btn compare-all"><i class="icon-eye-open"></i>
-                {{ __("Compare Images...") }}</a>
-        </h2>
+        <h2>{{ __("Similar Artworks") }}</h2>
     </div>
     {% endif %}
 </div>

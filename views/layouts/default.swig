@@ -9,15 +9,15 @@
     <title>{{ title }} - {{ SITE_NAME }}</title>
     {% if desc %}<meta name="description" content="{{ desc }}"/>{% endif %}
 
-    {% if image %}
+    {% if artwork %}
     <meta name="twitter:card" content="photo">
-    <meta name="twitter:url" content="{{ URL(image) }}">
-    <meta name="twitter:title" content="{{ getTitle(image) }}">
-    <meta name="twitter:image" content="{{ image.getScaledURL() }}">
-    <meta property="og:title" content="{{ getTitle(image) }}"/>
+    <meta name="twitter:url" content="{{ URL(artwork) }}">
+    <meta name="twitter:title" content="{{ getTitle(artwork) }}">
+    <meta name="twitter:image" content="{{ artwork.getScaledURL(artwork.images[0]) }}">
+    <meta property="og:title" content="{{ getTitle(artwork) }}"/>
     <meta property="og:type" content="article"/>
-    <meta property="og:url" content="{{ URL(image) }}"/>
-    <meta property="og:image" content="{{ image.getScaledURL() }}"/>
+    <meta property="og:url" content="{{ URL(artwork) }}"/>
+    <meta property="og:image" content="{{ artwork.getScaledURL(artwork.images[0]) }}"/>
     <meta property="og:site_name" content="{{ SITE_NAME }}"/>
     {% endif %}
 

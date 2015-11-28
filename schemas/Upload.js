@@ -1,8 +1,5 @@
 "use strict";
 
-const path = require("path");
-const versioner = require("mongoose-version");
-
 module.exports = (core) => {
     const Artwork = require("./Artwork")(core);
 
@@ -10,24 +7,14 @@ module.exports = (core) => {
         collection: "uploads",
     });
 
-    Upload.methods = {
-        getURL(locale) {
-            return core.urls.gen(locale, `/uploads/${this._id}`);
-        },
+    Upload.methods.getTitle = function(locale) {
+        // TODO: Find way to i18n this.
+        return "Uploaded Image";
     };
 
-    Upload.statics = {
-        getDataDir() {
-            return path.resolve(process.env.BASE_DATA_DIR, "uploads");
-        },
+    Upload.methods.getURL = function(locale) {
+        return core.urls.gen(locale, `/uploads/${this._id}`);
     };
-
-    Upload.plugin(versioner, {
-        collection: "upload_versions",
-        suppressVersionIncrement: false,
-        strategy: "collection",
-        mongoose: core.db.mongoose,
-    });
 
     return Upload;
 };

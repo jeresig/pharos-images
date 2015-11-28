@@ -39,7 +39,6 @@ module.exports = function(core, app) {
             res.render("artworks/show", {
                 title: req.image.getTitle(req.i18n.getLocale()),
                 artwork: req.image,
-                results: req.image.similar,
             });
         },
     };
