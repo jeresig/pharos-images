@@ -7,7 +7,6 @@ const methodOverride = require("method-override");
 const cookieParser = require("cookie-parser");
 const serveFavicon = require("serve-favicon");
 const serveStatic = require("serve-static");
-const csurf = require("csurf");
 const morgan = require("morgan");
 const session = require("express-session");
 const mongoStore = require("connect-mongo")(session);
@@ -66,20 +65,10 @@ module.exports = (core, app) => {
         saveUninitialized: false,
         secret: pkg.name,
         store: new mongoStore({
-            url: process.env.MONGODB_URL,
+            mongooseConnection: core.db.mongoose.connection,
             collection: "sessions",
         }),
     }));
-
-    // Add Cross-Site Request Forgery (CSRF) support
-    if (process.env.NODE_ENV !== "test") {
-        app.use(csurf());
-
-        app.use((req, res, next) => {
-            res.locals.csrf_token = req.csrfToken();
-            next();
-        });
-    }
 
     // Bring in the methods that will be available to the views
     app.use(viewMethods);

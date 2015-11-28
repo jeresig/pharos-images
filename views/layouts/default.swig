@@ -83,8 +83,8 @@
                 <form action="/search" method="GET"
                     class="navbar-form navbar-right search">
                     <input type="text" class="form-control search-query"
-                        placeholder="{{ __("Search") }}" id="q"
-                        name="q" value="{{ q }}" />
+                        placeholder="{{ __("Search") }}" id="filter"
+                        name="filter" value="{{ query.filter }}" />
                     <input type="submit" class="btn btn-primary"
                         value="{{ __("Search") }}" />
                 </form>

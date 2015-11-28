@@ -18,7 +18,7 @@
         <h4>{{ __("Search %s artworks:", stringNum(total)) }}</h4>
         <form action="/search" method="GET" class="form-search search">
             <div class="form-group">
-                <input type="search" id="q" name="q" placeholder="{{ __("Search") }}" class="form-control search-query" />
+                <input type="search" id="filter" name="filter" placeholder="{{ __("Search") }}" class="form-control search-query" />
                 <input type="submit" value="{{ __("Search") }}" class="btn btn-primary" />
             </div>
         </form>
@@ -32,7 +32,6 @@
                 <li><a href="#paste" data-toggle="tab">{{ __("Paste Image URL") }}</a></li>
             </ul>
             <form action="/upload" method="POST" enctype="multipart/form-data" class="upload">
-                <input type="hidden" name="_csrf" value="{{ csrf_token }}"/>
                 <input type="hidden" name="test" value=""/>
                 <div class="tab-content">
                     <div class="tab-pane active" id="upload">

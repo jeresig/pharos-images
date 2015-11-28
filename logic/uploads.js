@@ -22,11 +22,14 @@ module.exports = (core, app) => {
                 return callback({err: "No file specified."});
             }
 
-            const stream = (url ?
-                request({url: url, timeout: 5000}) :
-                fs.createReadStream(files.file.path));
+            if (url) {
+                const stream = request({url: url, timeout: 5000});
+                core.images.downloadStream(stream, baseDir, false, callback);
 
-            core.images.downloadStream(stream, baseDir, true, callback);
+            } else {
+                const stream = fs.createReadStream(files.file.path);
+                core.images.processImage(stream, baseDir, false, callback);
+            }
         });
     };
 
@@ -46,6 +49,19 @@ module.exports = (core, app) => {
         },
 
         searchUpload(req, res) {
+            // TODO: Add in uploader's user name (once those exist)
+            const upload = new Upload({
+                source: "uploads",
+                images: [
+                    {
+                        imageID: `uploads/${id}`,
+                        imageName: id,
+                    },
+                ],
+            });
+
+            upload.addImage(Upload.getDataDir())
+
             handleUpload(req, Upload.getDataDir(), (err, id) => {
                 if (err) {
                     // TODO: Show some sort of error message
@@ -53,12 +69,7 @@ module.exports = (core, app) => {
                         core.urls.gen(req.i18n.getLocale(), "/"));
                 }
 
-                // TODO: Add in uploader's user name (once those exist)
-                const upload = new Upload({
-                    _id: `uploads/${id}`,
-                    imageName: id,
-                    source: "uploads",
-                });
+
 
                 upload.save(() => {
                     res.redirect(upload.getURL(req.i18n.getLocale()));
@@ -68,7 +79,7 @@ module.exports = (core, app) => {
 
         show(req, res) {
             // Update similar matches on every load
-            req.upload.updateSimilar(() => {
+            req.upload.syncSimilarity(() => {
                 req.upload.save(() => {
                     res.render("images/show", {
                         image: req.upload,

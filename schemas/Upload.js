@@ -4,15 +4,15 @@ const path = require("path");
 const versioner = require("mongoose-version");
 
 module.exports = (core) => {
-    const Image = require("./Image")(core);
+    const Artwork = require("./Artwork")(core);
 
-    const Upload = Image.extend({}, {
+    const Upload = Artwork.extend({}, {
         collection: "uploads",
     });
 
     Upload.methods = {
         getURL(locale) {
-            return core.urls.gen(locale, `/uploads/${this.imageName}`);
+            return core.urls.gen(locale, `/uploads/${this._id}`);
         },
     };
 
