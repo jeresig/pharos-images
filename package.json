@@ -61,6 +61,8 @@
     "yearrange": "0.0.5"
   },
   "devDependencies": {
-    "eslint": "^1.9.0"
-  }
+    "eslint": "^1.9.0",
+    "pre-commit": "^1.1.2"
+  },
+  "pre-commit": ["test"]
 }
