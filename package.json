@@ -6,7 +6,11 @@
   "scripts": {
     "lint": "eslint lib/*.js logic/*.js logic/shared/*.js schemas/*.js server/*.js server/*/*.js utils/*.js converters/*.js *.js",
     "test": "npm run lint",
-    "start": "node server.js"
+    "start": "node server.js",
+    "extract-i18n-js": "jsxgettext --keyword=format --keyword=gettext -L javascript --output-dir=./translations --output=messages.pot logic/*.js schemas/*.js server/*.js lib/*.js",
+    "extract-i18n-views": "jsxgettext --join-existing --keyword=format --keyword=gettext -L swig --output-dir=./translations --output=messages.pot views/*.swig views/*/*.swig",
+    "extract-i18n": "npm run extract-i18n-js && npm run extract-i18n-views",
+    "update-i18n": "tx pull -a && po2json.js -p translations/de/messages.po > translations/de/messages.json && po2json.js -p translations/it/messages.po > translations/it/messages.json"
   },
   "repository": {
     "type": "git",
@@ -36,7 +40,7 @@
     "formidable": "^1.0.17",
     "gm": "^1.18.1",
     "graceful-fs": "^4.1.2",
-    "i18n-2": "^0.6.2",
+    "i18n-abide": "0.0.23",
     "imageinfo": "^1.0.4",
     "jsonld": "^0.4.2",
     "kerberos": "0.0.17",
@@ -61,9 +65,11 @@
   },
   "devDependencies": {
     "eslint": "^1.10.2",
+    "jsxgettext": "^0.8.1",
     "pre-commit": "^1.1.2"
   },
   "pre-commit": [
-    "test"
+    "test",
+    "extract-i18n"
   ]
 }

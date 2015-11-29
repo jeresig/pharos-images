@@ -18,15 +18,15 @@ module.exports = function(core, app) {
         index(req, res) {
             Artwork.count().exec((err, total) => {
                 const sitemaps = [
-                    {url: core.urls.gen(req.i18n.getLocale(),
+                    {url: core.urls.gen(res.locals.lang,
                         "/sitemap-sources.xml") },
-                    {url: core.urls.gen(req.i18n.getLocale(),
+                    {url: core.urls.gen(res.locals.lang,
                         "/sitemap-artists.xml") },
                 ];
 
                 for (let i = 0; i < total; i += numPerMap) {
                     sitemaps.push({
-                        url: core.urls.gen(req.i18n.getLocale(),
+                        url: core.urls.gen(res.locals.lang,
                             `/sitemap-search-${i}.xml`),
                     });
                 }
@@ -44,7 +44,7 @@ module.exports = function(core, app) {
                 .skip(req.params.start)
                 .exec((err, images) => {
                     const sites = images.map((item) => ({
-                        url: item.getURL(req.i18n.getLocale()),
+                        url: item.getURL(res.locals.lang),
                         image: item.file,
                     }));
 
@@ -55,22 +55,22 @@ module.exports = function(core, app) {
         sources: function(req, res) {
             Source.find({count: {$gt: 0}}).exec((err, sources) => {
                 const sites = sources.map((source) => ({
-                    url: source.getURL(req.i18n.getLocale()),
+                    url: source.getURL(res.locals.lang),
                 }));
 
                 // Add in the Index Page
                 sites.push({
-                    url: core.urls.gen(req.i18n.getLocale(), "/"),
+                    url: core.urls.gen(res.locals.lang, "/"),
                 });
 
                 // Add in the Sources Page
                 sites.push({
-                    url: core.urls.gen(req.i18n.getLocale(), "/sources"),
+                    url: core.urls.gen(res.locals.lang, "/sources"),
                 });
 
                 // Add in the About Page
                 sites.push({
-                    url: core.urls.gen(req.i18n.getLocale(), "/about"),
+                    url: core.urls.gen(res.locals.lang, "/about"),
                 });
 
                 renderSitemap(res, sites);
@@ -80,7 +80,7 @@ module.exports = function(core, app) {
         artists: function(req, res) {
             Artist.find({printCount: {$gt: 0}}).exec((err, artists) => {
                 const sites = artists.map((artist) => ({
-                    url: artist.getURL(req.i18n.getLocale()),
+                    url: artist.getURL(res.locals.lang),
                 }));
 
                 renderSitemap(res, sites);

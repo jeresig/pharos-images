@@ -26,7 +26,7 @@ module.exports = (core, app) => {
                 }
             }
 
-            return core.urls.gen(req.i18n.getLocale(),
+            return core.urls.gen(res.locals.lang,
                 `${req.path}?${qs.stringify(params)}`);
         };
 

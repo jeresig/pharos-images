@@ -1,12 +1,16 @@
 <!DOCTYPE html>
-<html lang="{{ __("en-US") }}" class="{{ __("en-US") }}">
+<html lang="{{ lang }}" dir="{{ lang_dir }}" class="{{ getSiteCategory() }}">
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-    <meta http-equiv="content-language" content="{{ __("en-US") }}"/>
+    <meta http-equiv="content-language" content="{{ lang }}"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <link rel="icon" href="{{ CDN("/images/favicon.png", {"raw": true}) }}" type="image/x-icon"/>
-    <title>{{ title }} - {{ SITE_NAME }}</title>
+    <title>{% if title %}
+        {{ title }} - {{ SITE_NAME }}
+    {% else %}
+        {{ SITE_NAME }}
+    {% endif %}</title>
     {% if desc %}<meta name="description" content="{{ desc }}"/>{% endif %}
 
     {% if artwork %}
@@ -43,14 +47,14 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="/">{{ SITE_NAME }}</a>
+                <a class="navbar-brand" href="{{ URL("/") }}">{{ SITE_NAME }}</a>
             </div>
 
             <div id="header-navbar" class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
                     <li class="nav-divider"></li>
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle"
+                        <a href="" class="dropdown-toggle"
                             data-toggle="dropdown" role="button"
                             aria-expanded="false">
                             <img src="{{ CDN("/images/" + curLocale() + ".png", {"raw": true}) }}"
@@ -74,23 +78,24 @@
                     </li>
                 </ul>
 
-                <form action="/search" method="GET"
+                <form action="{{ URL("/search") }}" method="GET"
                     class="navbar-form navbar-right search">
+                    {% if qsLocale() %}
+                        <input type="hidden" name="lang" value="{{ lang }}"/>
+                    {% endif %}
                     <input type="text" class="form-control search-query"
-                        placeholder="{{ __("Search") }}" id="filter"
+                        placeholder="{{ gettext("Search") }}" id="filter"
                         name="filter" value="{{ query.filter }}" />
                     <input type="submit" class="btn btn-primary"
-                        value="{{ __("Search") }}" />
+                        value="{{ gettext("Search") }}" />
                 </form>
             </div>
         </div>
     </div>
 
-    {% if getSiteCategory() === "home" %}
-        <div class="home-splash">
-            <h1>{{ SITE_NAME }}</h1>
-        </div>
-    {% endif %}
+    <div class="home-splash">
+        <h1>{{ SITE_NAME }}</h1>
+    </div>
 
     <div class="container">
         {% block content %}{% endblock %}

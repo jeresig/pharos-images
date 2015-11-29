@@ -1,7 +1,7 @@
 {% extends "layouts/default.swig" %}
 
-{% block title %}{{ __("404 - Not found") }}{% endblock %}
+{% block title %}{{ gettext("Not found") }}{% endblock %}
 
 {% block content %}
-404 - Not found
+    <h1>{{ gettext("Not found") }}</h1>
 {% endblock %}

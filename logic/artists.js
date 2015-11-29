@@ -14,7 +14,7 @@ module.exports = function(core, app) {
                     return next(new Error("not found"));
                 }
                 if (req.params.slug && req.params.slug !== artist.slug) {
-                    res.redirect(301, artist.getURL(req.i18n.getLocale()));
+                    res.redirect(301, artist.getURL(res.locals.lang));
                     return;
                 }
                 req.artist = artist;
@@ -31,7 +31,7 @@ module.exports = function(core, app) {
                 if (!artist) {
                     // TODO: Maybe do an artist search instead?
                     res.redirect(301, core.urls.gen(
-                        req.i18n.getLocale(),
+                        res.locals.lang,
                         `/search?q=${encodeURIComponent(
                             req.params.slug.replace(/-/g, " "))}`
                     ));
@@ -122,9 +122,9 @@ module.exports = function(core, app) {
         show(req, res) {
             req.artist.populate("bios", () => {
                 search(req, res, {
-                    title: req.artist.getFullName(req.i18n.getLocale()),
-                    desc: req.i18n.__("Japanese Woodblock prints by %s.",
-                        req.artist.getFullName(req.i18n.getLocale())),
+                    title: req.artist.getFullName(res.locals.lang),
+                    desc: req.format(req.gettext("Artworks by %(artist)s."),
+                        {artist: req.artist.getFullName(res.locals.lang)}),
                     artist: req.artist,
                     bio: req.artist.bios.sort((a, b) => {
                         return (b.bio ? b.bio.length : 0) -

@@ -1,9 +1,6 @@
 {% extends "../layouts/default.swig" %}
 
-{% block title %}{{ __("Index Page") }}{% endblock %}
-
 {% block content %}
-
 <table>
 {% for artist in artists %}
     <tr>
@@ -25,5 +22,4 @@
     </tr>
 {% endfor %}
 </table>
-
 {% endblock %}

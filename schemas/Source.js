@@ -67,7 +67,10 @@ module.exports = (core) => {
                 return sourceName;
             }
 
-            for (const source of this.getSources()) {
+            const sources = this.getSources();
+
+            for (let i = 0; i < sources.length; i++) {
+                const source = sources[i];
                 if (source._id === sourceName) {
                     return source;
                 }

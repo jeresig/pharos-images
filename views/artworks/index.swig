@@ -1,7 +1,5 @@
 {% extends "../layouts/default.swig" %}
 
-{% block title %}{{ __("Index Page") }}{% endblock %}
-
 {% block content %}
 
 <div class="row">
@@ -14,91 +12,105 @@
 <div id="results">
     <div class="state row">
         <div class="col-md-12">
-            <span class="total">{{ __("<strong>%s</strong> found.", stringNum(total))|raw }}</span>
+            <span class="total">{{ format(gettext("<strong>%(numPrints)s</strong> found."), {numPrints: stringNum(total)})|raw }}</span>
             {% if end %}
-                <span class="page">{{ __("Viewing %s to %s.", stringNum(start), stringNum(end)) }}</span>
+                <span class="page">{{ format(gettext("Viewing %(start)s to %(end)s."), {start: stringNum(start), end: stringNum(end)}) }}</span>
             {% endif %}
         </div>
     </div>
 
-<div class="row results-wrap">
-<div class="results-side">
-<div class="results-side-wrap">
-<form action="/search" method="GET">
-<p>Query: <input type="search" name="filter" value="{{query.filter}}"/></p>
-<div>
-Artist: <input type="text" name="artist" value="{{query.artist}}"/>
-</div>
-<div>
-    <input type="text" name="date" class="date-range-picker"
-        value="{{query.date}}" data-min="{{minDate}}" data-max="{{maxDate}}"/>
-</div>
-<div>
-Sources:
-<select name="source" multiple="multiple" style="width: 100%;">
-{% for source in sources %}
-    <option value="{{source._id}}" {% if query.source.indexOf(source._id) >= 0 %} selected{% endif %}>{{source.shortName}}</option>
-{% endfor %}
-</select>
-</div>
-<p><input type="submit" value="Search"/></p>
-</form>
+    <div class="row results-wrap">
+        <div class="results-side">
+            <div class="results-side-wrap">
+                <form action="/search" method="GET">
+                    {% if qsLocale() %}
+                        <input type="hidden" name="lang" value="{{ lang }}"/>
+                    {% endif %}
+                    <div>
+                        {{ gettext("Query:") }}
+                        <input type="search" name="filter" value="{{query.filter}}"/>
+                    </div>
+                    <div>
+                        {{ gettext("Artist:") }}
+                        <input type="text" name="artist" value="{{query.artist}}"/>
+                    </div>
+                    <div>
+                        <input type="text" name="date" class="date-range-picker"
+                            value="{{query.date}}" data-min="{{minDate}}" data-max="{{maxDate}}"/>
+                    </div>
+                    <div>
+                        {{ gettext("Sources:") }}
+                        <select name="source" multiple="multiple" style="width: 100%;">
+                        {% for source in sources %}
+                            <option value="{{source._id}}" {% if query.source.indexOf(source._id) >= 0 %} selected{% endif %}>{{source.shortName}}</option>
+                        {% endfor %}
+                        </select>
+                    </div>
+                    <div><input type="submit" value="{{ gettext("Search") }}"/></div>
+                </form>
 
-{% for name, cluster in clusters %}
-    {% if cluster.buckets.length > 1 %}
-        <strong>{{name}}</strong>
-        <ul>
-            {% for bucket in cluster.buckets %}
-                <li><a href="{{queryURL({artist:bucket.key})}}">
-                    {{bucket.key}} ({{bucket.doc_count}})</a></li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-{% endfor %}
-</div>
-</div>
-<div class="results-main">
-{% for image in images %}
-<div class="img">
-    <a class="img" href="{{ URL(image) }}"
-        title="{{ getTitle(image) }}">
-    <img src="{{ image.getThumbURL() }}"
-        alt="{{ getTitle(image) }}"
-        title="{{ getTitle(image) }}"/></a>
-    <div class="details">
-        <div class="wrap">
-        {% if image.dateCreated %}
-            <span class="date">{{ getDate(image.dateCreated) }}</span>
-        {% endif %}
-        {% if image.artist %}
-            {% if image.artist.artist %}
-                <a class="artist" href="{{ URL(image.artist.artist) }}"
-                    title="{{ fullName(image.artist.artist) }}">
-                    {{ shortName(image.artist.artist) }}</a>
-            {% endif %}
-        {% endif %}
-        <a class="source" href="{{ URL(image.getSource()) }}"
-            title="{{ fullName(image.getSource()) }}">
-            {{ shortName(image.getSource()) }}</a>
+                {% for name, cluster in clusters %}
+                    {% if cluster.buckets.length > 1 %}
+                        <strong>{% if name === "artists" %}
+                            {{ gettext("Artists:") }}
+                        {% elseif name === "sources" %}
+                            {{ gettext("Sources:") }}
+                        {% endif %}</strong>
+                        <ul>
+                            {% for bucket in cluster.buckets %}
+                                <li><a href="{{queryURL({artist:bucket.key})}}">
+                                    {{bucket.key}} ({{bucket.doc_count}})</a></li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="results-main">
+        {% for image in images %}
+            <div class="img">
+                <a class="img" href="{{ URL(image) }}"
+                    title="{{ getTitle(image) }}">
+                    <img src="{{ image.getThumbURL() }}"
+                        alt="{{ getTitle(image) }}"
+                        title="{{ getTitle(image) }}"/>
+                </a>
+                <div class="details">
+                    <div class="wrap">
+                        {% if image.dateCreated %}
+                            <span class="date">{{ getDate(image.dateCreated) }}</span>
+                        {% endif %}
+
+                        {% if image.artist %}
+                            {% if image.artist.artist %}
+                                <a class="artist" href="{{ URL(image.artist.artist) }}"
+                                    title="{{ fullName(image.artist.artist) }}">
+                                    {{ shortName(image.artist.artist) }}</a>
+                            {% endif %}
+                        {% endif %}
+
+                        <a class="source" href="{{ URL(image.getSource()) }}"
+                            title="{{ fullName(image.getSource()) }}">
+                            {{ shortName(image.getSource()) }}</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
         </div>
     </div>
-</div>
-{% endfor %}
-</div>
-</div>
 
-<div class="search-nav row col-md-12">
-    {% if prev %}
-        <span class="prev"><a href="{{ prev }}" class="btn btn-primary"
-            rel="prev">&laquo; {{ __("Previous") }}</a></span>
-    {% endif %}
+    <div class="search-nav row col-md-12">
+        {% if prev %}
+            <span class="prev"><a href="{{ prev }}" class="btn btn-primary"
+                rel="prev">&laquo; {{ gettext("Previous") }}</a></span>
+        {% endif %}
 
-    {% if next %}
-        <span class="next"><a href="{{ next }}" class="btn btn-primary"
-            rel="next">{{ __("Next") }} &raquo;</a></span>
-    {% endif %}
-</div>
-
+        {% if next %}
+            <span class="next"><a href="{{ next }}" class="btn btn-primary"
+                rel="next">{{ gettext("Next") }} &raquo;</a></span>
+        {% endif %}
+    </div>
 </div>
 
 {% endblock %}

@@ -7,9 +7,9 @@ module.exports = (core, app) => {
     return {
         show(req, res) {
             search(req, res, {
-                title: req.source.getFullName(req.i18n.getLocale()),
-                desc: req.i18n.__("Artworks at the %s.",
-                    req.source.getFullName(req.i18n.getLocale())),
+                title: req.source.getFullName(res.locals.lang),
+                desc: req.format(req.gettext("Artworks at the %(source)s."),
+                    {source: req.source.getFullName(res.locals.lang)}),
                 url: req.source.url,
             });
         },

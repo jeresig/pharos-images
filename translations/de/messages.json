@@ -1,0 +1,183 @@
+{
+   "messages": {
+      "": {
+         "Project-Id-Version": " Pharos Images\nReport-Msgid-Bugs-To: \nPOT-Creation-Date: 2015-11-29 20:45+0000\nPO-Revision-Date: 2015-11-29 20:47+0000\nLast-Translator: jeresig <jeresig@gmail.com>\nLanguage-Team: German (http://www.transifex.com/pharos/pharos-images/language/de/)\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nLanguage: de\nPlural-Forms: nplurals=2; plural=(n != 1);\n"
+      },
+      "Artworks by %(artist)s.": [
+         null,
+         ""
+      ],
+      "Results for '%(query)s'": [
+         null,
+         ""
+      ],
+      "Artist '%(artist)s'": [
+         null,
+         ""
+      ],
+      "Artworks matching '%(query)s'.": [
+         null,
+         ""
+      ],
+      "Artworks at the %(source)s.": [
+         null,
+         ""
+      ],
+      "No file specified.": [
+         null,
+         ""
+      ],
+      "Uploaded Image": [
+         null,
+         ""
+      ],
+      "Not found": [
+         null,
+         ""
+      ],
+      "Internal error occurred.": [
+         null,
+         ""
+      ],
+      "<strong>%(numPrints)s</strong> found.": [
+         null,
+         ""
+      ],
+      "Viewing %(start)s to %(end)s.": [
+         null,
+         ""
+      ],
+      "Query:": [
+         null,
+         ""
+      ],
+      "Artist:": [
+         null,
+         ""
+      ],
+      "Sources:": [
+         null,
+         ""
+      ],
+      "Search": [
+         null,
+         ""
+      ],
+      "Artists:": [
+         null,
+         ""
+      ],
+      "Previous": [
+         null,
+         ""
+      ],
+      "Next": [
+         null,
+         ""
+      ],
+      "Title:": [
+         null,
+         ""
+      ],
+      "Date:": [
+         null,
+         ""
+      ],
+      "Dimensions:": [
+         null,
+         ""
+      ],
+      "Medium:": [
+         null,
+         ""
+      ],
+      "Type:": [
+         null,
+         ""
+      ],
+      "Categories:": [
+         null,
+         ""
+      ],
+      "Collection:": [
+         null,
+         ""
+      ],
+      "Details &amp;&nbsp;Prices:": [
+         null,
+         ""
+      ],
+      "Details:": [
+         null,
+         ""
+      ],
+      "Unfortunately the source of this artwork no longer exists.": [
+         null,
+         ""
+      ],
+      "There is no way to link to this artwork on the source site. Please visit the source and search for the artwork there.": [
+         null,
+         ""
+      ],
+      "More information...": [
+         null,
+         ""
+      ],
+      "Source:": [
+         null,
+         ""
+      ],
+      "Browse all %(count)s artworks...": [
+         null,
+         ""
+      ],
+      "Similar Artworks": [
+         null,
+         ""
+      ],
+      "Search %(count)s Artworks:": [
+         null,
+         ""
+      ],
+      "Search by Image:": [
+         null,
+         ""
+      ],
+      "Upload a picture of an artwork to find similar artworks across multiple collections.": [
+         null,
+         ""
+      ],
+      "Upload an Image": [
+         null,
+         ""
+      ],
+      "Paste Image URL": [
+         null,
+         ""
+      ],
+      "Search by Image": [
+         null,
+         ""
+      ],
+      "Browse by Collection:": [
+         null,
+         ""
+      ],
+      "%(count)s Artworks": [
+         null,
+         ""
+      ],
+      "Uh oh!": [
+         null,
+         ""
+      ],
+      "No similar artworks were found.": [
+         null,
+         ""
+      ],
+      "Score:": [
+         null,
+         ""
+      ]
+   }
+}

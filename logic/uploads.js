@@ -21,14 +21,14 @@ module.exports = (core, app) => {
                 // Handle the user accidentally hitting enter
                 if (url === "http://") {
                     return callback({
-                        err: req.i18n.__("No file specified."),
+                        err: req.gettext("No file specified."),
                     });
                 }
 
                 core.images.download(url, callback);
 
             } else {
-                callback({err: req.i18n.__("No file specified.")});
+                callback({err: req.gettext("No file specified.")});
             }
         });
     };
@@ -63,7 +63,7 @@ module.exports = (core, app) => {
                     // TODO: Show some sort of error message
                     console.error("Error Uploading Image:", err);
                     return res.redirect(
-                        core.urls.gen(req.i18n.getLocale(), "/"));
+                        core.urls.gen(res.locals.lang, "/"));
                 }
 
                 core.images.processImage(file, upload.sourceDirBase(),
@@ -72,7 +72,7 @@ module.exports = (core, app) => {
                             // TODO: Show some sort of error message
                             console.error("Error Processing Image:", err);
                             return res.redirect(
-                                core.urls.gen(req.i18n.getLocale(), "/"));
+                                core.urls.gen(res.locals.lang, "/"));
                         }
 
                         upload._id = id;
@@ -82,12 +82,12 @@ module.exports = (core, app) => {
                                 // TODO: Show some sort of error message
                                 console.error("Error Adding Image:", err);
                                 return res.redirect(
-                                    core.urls.gen(req.i18n.getLocale(), "/"));
+                                    core.urls.gen(res.locals.lang, "/"));
                             }
 
                             upload.syncSimilarity(() => {
                                 upload.save(() => res.redirect(
-                                    upload.getURL(req.i18n.getLocale())));
+                                    upload.getURL(res.locals.lang)));
                             });
                         });
                     });
@@ -98,7 +98,7 @@ module.exports = (core, app) => {
             // TODO: Update similar matches if new image data has
             // since come in since it was last updated.
             res.render("uploads/show", {
-                title: req.i18n.__("Uploaded Image"),
+                title: req.gettext("Uploaded Image"),
                 artwork: req.upload,
             });
         },

@@ -1,0 +1,203 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2015-11-29 20:45+0000\n"
+
+#: logic/artists.js:126
+msgid "Artworks by %(artist)s."
+msgstr ""
+
+#: logic/artworks.js:26
+msgid "Results for '%(query)s'"
+msgstr ""
+
+#: logic/artworks.js:30
+msgid "Artist '%(artist)s'"
+msgstr ""
+
+#: logic/artworks.js:36
+msgid "Artworks matching '%(query)s'."
+msgstr ""
+
+#: logic/sources.js:11
+msgid "Artworks at the %(source)s."
+msgstr ""
+
+#: logic/uploads.js:24
+#: logic/uploads.js:31
+msgid "No file specified."
+msgstr ""
+
+#: logic/uploads.js:101
+msgid "Uploaded Image"
+msgstr ""
+
+#: views/404.swig:1
+#: views/404.swig:2
+msgid "Not found"
+msgstr ""
+
+#: views/500.swig:1
+#: views/500.swig:2
+msgid "Internal error occurred."
+msgstr ""
+
+#: views/artworks/index.swig:1
+msgid "<strong>%(numPrints)s</strong> found."
+msgstr ""
+
+#: views/artworks/index.swig:2
+msgid "Viewing %(start)s to %(end)s."
+msgstr ""
+
+#: views/artworks/index.swig:3
+msgid "Query:"
+msgstr ""
+
+#: views/artworks/index.swig:4
+#: views/artworks/show.swig:1
+msgid "Artist:"
+msgstr ""
+
+#: views/artworks/index.swig:5
+#: views/artworks/index.swig:8
+msgid "Sources:"
+msgstr ""
+
+#: views/artworks/index.swig:6
+#: views/home/index.swig:2
+#: views/home/index.swig:3
+#: views/layouts/default.swig:1
+#: views/layouts/default.swig:2
+msgid "Search"
+msgstr ""
+
+#: views/artworks/index.swig:7
+msgid "Artists:"
+msgstr ""
+
+#: views/artworks/index.swig:9
+msgid "Previous"
+msgstr ""
+
+#: views/artworks/index.swig:10
+msgid "Next"
+msgstr ""
+
+#: views/artworks/show.swig:2
+msgid "Title:"
+msgstr ""
+
+#: views/artworks/show.swig:3
+msgid "Date:"
+msgstr ""
+
+#: views/artworks/show.swig:4
+msgid "Dimensions:"
+msgstr ""
+
+#: views/artworks/show.swig:5
+msgid "Medium:"
+msgstr ""
+
+#: views/artworks/show.swig:6
+msgid "Type:"
+msgstr ""
+
+#: views/artworks/show.swig:7
+msgid "Categories:"
+msgstr ""
+
+#: views/artworks/show.swig:8
+msgid "Collection:"
+msgstr ""
+
+#: views/artworks/show.swig:9
+msgid "Details &amp;&nbsp;Prices:"
+msgstr ""
+
+#: views/artworks/show.swig:10
+msgid "Details:"
+msgstr ""
+
+#: views/artworks/show.swig:11
+msgid "Unfortunately the source of this artwork no longer exists."
+msgstr ""
+
+#: views/artworks/show.swig:12
+msgid ""
+"There is no way to link to this artwork on the source site. Please visit "
+"the source and search for the artwork there."
+msgstr ""
+
+#: views/artworks/show.swig:13
+msgid "More information..."
+msgstr ""
+
+#: views/artworks/show.swig:14
+#: views/artworks/show.swig:15
+msgid "Source:"
+msgstr ""
+
+#: views/artworks/show.swig:16
+msgid "Browse all %(count)s artworks..."
+msgstr ""
+
+#: views/artworks/show.swig:17
+#: views/uploads/show.swig:3
+msgid "Similar Artworks"
+msgstr ""
+
+#: views/home/index.swig:1
+msgid "Search %(count)s Artworks:"
+msgstr ""
+
+#: views/home/index.swig:4
+msgid "Search by Image:"
+msgstr ""
+
+#: views/home/index.swig:5
+msgid ""
+"Upload a picture of an artwork to find similar artworks across multiple "
+"collections."
+msgstr ""
+
+#: views/home/index.swig:6
+msgid "Upload an Image"
+msgstr ""
+
+#: views/home/index.swig:7
+msgid "Paste Image URL"
+msgstr ""
+
+#: views/home/index.swig:8
+#: views/home/index.swig:9
+msgid "Search by Image"
+msgstr ""
+
+#: views/home/index.swig:10
+msgid "Browse by Collection:"
+msgstr ""
+
+#: views/home/index.swig:11
+msgid "%(count)s Artworks"
+msgstr ""
+
+#: views/uploads/show.swig:1
+msgid "Uh oh!"
+msgstr ""
+
+#: views/uploads/show.swig:2
+msgid "No similar artworks were found."
+msgstr ""
+
+#: views/uploads/show.swig:4
+msgid "Score:"
+msgstr ""

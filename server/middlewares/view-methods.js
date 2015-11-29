@@ -3,10 +3,6 @@
 const urls = require("../../lib/urls")();
 const locales = require("../../config/locales.json");
 
-const otherLocale = (req) => {
-    return req.i18n.getLocale() === "en" ? "ja" : "en";
-};
-
 module.exports = (req, res, next) => {
     const methods = {
         SITE_NAME: process.env.SITE_NAME,
@@ -34,21 +30,25 @@ module.exports = (req, res, next) => {
         },
 
         getOtherURL(locale) {
-            return urls.gen(otherLocale(req), req.path);
+            return urls.gen(locale, req.path);
         },
 
         curLocale() {
-            return req.i18n.getLocale();
+            return res.locals.lang;
+        },
+
+        qsLocale() {
+            return req.query.lang;
         },
 
         URL(path) {
             return path.getURL ?
-                path.getURL(req.i18n.getLocale()) :
-                urls.gen(req.i18n.getLocale(), path);
+                path.getURL(res.locals.lang) :
+                urls.gen(res.locals.lang, path);
         },
 
         fullName(item) {
-            const locale = req.i18n.getLocale();
+            const locale = res.locals.lang;
             return item.getFullName ?
                 item.getFullName(locale) :
                 locale === "ja" && item.kanji || item.name || item;
@@ -56,12 +56,12 @@ module.exports = (req, res, next) => {
 
         shortName(item) {
             if (item && item.getShortName) {
-                return item.getShortName(req.i18n.getLocale());
+                return item.getShortName(res.locals.lang);
             }
         },
 
         getTitle(item) {
-            return item.getTitle(req.i18n.getLocale());
+            return item.getTitle(res.locals.lang);
         },
 
         getDate(item) {
