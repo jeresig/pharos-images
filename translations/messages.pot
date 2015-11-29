@@ -8,7 +8,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2015-11-29 20:45+0000\n"
+"POT-Creation-Date: 2015-11-29 21:15+0000\n"
 
 #: logic/artists.js:126
 msgid "Artworks by %(artist)s."
@@ -160,33 +160,37 @@ msgid "Search %(count)s Artworks:"
 msgstr ""
 
 #: views/home/index.swig:4
-msgid "Search by Image:"
+msgid "Browse All"
 msgstr ""
 
 #: views/home/index.swig:5
+msgid "Search by Image:"
+msgstr ""
+
+#: views/home/index.swig:6
 msgid ""
 "Upload a picture of an artwork to find similar artworks across multiple "
 "collections."
 msgstr ""
 
-#: views/home/index.swig:6
+#: views/home/index.swig:7
 msgid "Upload an Image"
 msgstr ""
 
-#: views/home/index.swig:7
+#: views/home/index.swig:8
 msgid "Paste Image URL"
 msgstr ""
 
-#: views/home/index.swig:8
 #: views/home/index.swig:9
+#: views/home/index.swig:10
 msgid "Search by Image"
 msgstr ""
 
-#: views/home/index.swig:10
+#: views/home/index.swig:11
 msgid "Browse by Collection:"
 msgstr ""
 
-#: views/home/index.swig:11
+#: views/home/index.swig:12
 msgid "%(count)s Artworks"
 msgstr ""
 
