@@ -12,7 +12,7 @@
 <div id="results">
     <div class="state row">
         <div class="col-md-12">
-            <span class="total">{{ format(gettext("<strong>%(numPrints)s</strong> found."), {numPrints: stringNum(total)})|raw }}</span>
+            <span class="total">{{ format(gettext("<strong>%(numArtworks)s</strong> found."), {numArtworks: stringNum(total)})|raw }}</span>
             {% if end %}
                 <span class="page">{{ format(gettext("Viewing %(start)s to %(end)s."), {start: stringNum(start), end: stringNum(end)}) }}</span>
             {% endif %}

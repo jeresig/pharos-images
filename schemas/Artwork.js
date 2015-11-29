@@ -36,16 +36,16 @@ module.exports = (core) => {
         // A link to the artwork at its source
         url: {type: String},
 
-        // The title of the print.
+        // The title of the artwork.
         title: {type: String, es_indexed: true},
 
         // A list of artist names extracted from the page.
         artists: [Name],
 
-        // The size of the print (e.g. 100mm x 200mm)
+        // The size of the artwork (e.g. 100mm x 200mm)
         dimensions: [Dimension],
 
-        // Date when the print was created (typically a rough year, or range).
+        // Date when the artwork was created (typically a rough year, or range).
         dateCreateds: [YearRange],
 
         objectType: {type: String, es_indexed: true},

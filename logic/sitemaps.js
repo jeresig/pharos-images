@@ -53,7 +53,7 @@ module.exports = function(core, app) {
         },
 
         sources: function(req, res) {
-            Source.find({count: {$gt: 0}}).exec((err, sources) => {
+            Source.find({}).exec((err, sources) => {
                 const sites = sources.map((source) => ({
                     url: source.getURL(res.locals.lang),
                 }));
@@ -63,22 +63,12 @@ module.exports = function(core, app) {
                     url: core.urls.gen(res.locals.lang, "/"),
                 });
 
-                // Add in the Sources Page
-                sites.push({
-                    url: core.urls.gen(res.locals.lang, "/sources"),
-                });
-
-                // Add in the About Page
-                sites.push({
-                    url: core.urls.gen(res.locals.lang, "/about"),
-                });
-
                 renderSitemap(res, sites);
             });
         },
 
         artists: function(req, res) {
-            Artist.find({printCount: {$gt: 0}}).exec((err, artists) => {
+            Artist.find({}).exec((err, artists) => {
                 const sites = artists.map((artist) => ({
                     url: artist.getURL(res.locals.lang),
                 }));
