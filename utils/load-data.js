@@ -87,27 +87,22 @@ const importData = (options, callback) => {
                 artwork = new Artwork(data);
             }
 
-            async.mapLimit(images, 2, (imageData, callback) => {
-                imageData.source = data.source;
-                imageData.fileName = imageData.fileName.replace(/^.*[\/]/, "");
+            async.mapLimit(images, 2, (image, callback) => {
+                const fileName = image.fileName.replace(/^.*[\/]/, "");
+                const imgFile = path.resolve(options.imageDir, fileName);
 
-                const imgFile = path.resolve(options.imageDir,
-                    imageData.fileName);
-                const sourceDir = path.resolve(process.env.BASE_DATA_DIR,
-                    options.source);
-
-                if (!imageData.fileName || !fs.existsSync(imgFile)) {
-                    console.log("Missing Image:", imageData.fileName);
+                if (!fileName || !fs.existsSync(imgFile)) {
+                    console.log("Missing Image:", fileName);
 
                     missingImages.push({
-                        fileName: imageData.fileName,
+                        fileName: fileName,
                         artworkID: data._id,
                     });
 
                     return callback();
                 }
 
-                artwork.addImage(imageData, imgFile, sourceDir, callback);
+                artwork.addImage(imgFile, image.id, callback);
             }, (err) => {
                 if (err) {
                     console.error("Error adding images:", err);
