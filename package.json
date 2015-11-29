@@ -27,16 +27,16 @@
     "connect-mongo": "^0.8.2",
     "cookie-parser": "^1.4.0",
     "csurf": "^1.8.3",
-    "csv-streamify": "^3.0.0",
+    "csv-streamify": "^3.0.3",
     "dotenv": "^1.2.0",
     "express": "^4.13.3",
-    "express-cdn": "^0.2.7",
+    "express-cdn": "^0.2.8",
     "express-session": "^1.12.1",
     "farmhash": "^1.1.0",
     "formidable": "^1.0.17",
     "gm": "^1.18.1",
     "graceful-fs": "^4.1.2",
-    "i18n-2": "^0.6.0",
+    "i18n-2": "^0.6.2",
     "imageinfo": "^1.0.4",
     "jsonld": "^0.4.2",
     "kerberos": "0.0.17",
@@ -44,7 +44,7 @@
     "marcjs": "^0.1.12",
     "method-override": "^2.3.5",
     "mongoosastic": "^3.6.0",
-    "mongoose": "^4.2.5",
+    "mongoose": "^4.2.8",
     "mongoose-schema-extend": "^0.2.0",
     "mongoose-user": "0.0.1",
     "mongoose-version": "^0.2.4",
@@ -53,15 +53,17 @@
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
     "pastec": "0.0.5",
-    "request": "^2.65.0",
+    "request": "^2.67.0",
     "serve-favicon": "^2.3.0",
     "serve-static": "^1.10.0",
     "swig": "^1.4.2",
     "yearrange": "0.0.5"
   },
   "devDependencies": {
-    "eslint": "^1.9.0",
+    "eslint": "^1.10.2",
     "pre-commit": "^1.1.2"
   },
-  "pre-commit": ["test"]
+  "pre-commit": [
+    "test"
+  ]
 }
