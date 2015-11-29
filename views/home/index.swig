@@ -3,19 +3,9 @@
 {% block title %}{{ SITE_NAME }}{% endblock %}
 
 {% block content %}
-<div id="search-box" class="row">
-    <div class="col-md-12">
-        <h2 class="hidden-phone">{{ SITE_NAME }}</h2>
-
-        <p class="hidden-phone">...</p>
-    </div>
-
-    <div class="col-md-7 image-example">
-        ...
-    </div>
-
-    <div class="col-md-5 upload-box">
-        <h4>{{ __("Search %s artworks:", stringNum(total)) }}</h4>
+<div class="home-contents row">
+    <div class="col-md-6 col-md-offset-3 upload-box">
+        <h3>{{ __("Search %s Artworks:", stringNum(total)) }}</h3>
         <form action="/search" method="GET" class="form-search search">
             <div class="form-group">
                 <input type="search" id="filter" name="filter" placeholder="{{ __("Search") }}" class="form-control search-query" />
@@ -23,7 +13,7 @@
             </div>
         </form>
 
-        <h4>{{ __("Search by Image:") }}</h4>
+        <h3>{{ __("Search by Image:") }}</h3>
         <p>{{ __("Upload a picture of an artwork to find similar artworks across multiple collections.") }}</p>
 
         <div class="tabblable">
@@ -49,26 +39,15 @@
                 </div>
             </form>
         </div>
-    </div>
-</div>
 
-<div id="results" class="ages">
-    {% for era in eras %}
-        <h2>{{ __(era.name) }}</h2>
-        <div class="row">
-        {% for artist in era.artists %}
-            <div class="img col-md-3" data-slug="{{ artist.slug }}">
-                <a class="img" href="{{ URL(artist) }}">
-                    <img src="{{ artist.repImage.thumb }}" alt="{{ fullName(artist) }}"/></a>
-                <div class="details">
-                    <div class="wrap">
-                    <a class="artist" href="{{ URL(artist) }}" title="{{ fullName(artist) }}">{{ fullName(artist) }}</a>
-                    ({{ artist.printCount }})
-                    </div>
-                </div>
-          </div>
-        {% endfor %}
+        <h3>{{ __("Browse by Collection:") }}</h3>
+
+        <div class="sources">
+            {% for source in sources %}
+            <h4><a href="{{ URL(source) }}">{{ fullName(source) }}</a></h4>
+            <p>{{ __("%s Artworks", stringNum(source.numArtworks)) }}</p>
+            {% endfor %}
         </div>
-    {% endfor %}
+    </div>
 </div>
 {% endblock %}

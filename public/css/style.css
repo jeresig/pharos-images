@@ -403,3 +403,42 @@ body.no-scroll {
 .lang-notice {
     display: none;
 }
+
+.home-splash {
+    background: url(../images/background-collage.sm.jpg) repeat-x;
+    width: 100%;
+    height: 350px;
+    text-align: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.home-splash h1 {
+    position: absolute;
+    bottom: 0;
+    color: #FFF;
+    width: 100%;
+}
+
+.home-contents {
+    margin-top: 300px;
+}
+
+.navbar-default {
+    background: rgba(0,0,0,0.5);
+}
+
+.navbar-default .navbar-brand,
+.navbar-default .navbar-nav > li > a,
+.navbar-default .navbar-nav > li > a:hover,
+.navbar-default .navbar-nav > li > a:focus {
+    color: #FFF;
+}
+
+.navbar-default .navbar-nav > .dropdown:not(.open) > a .caret,
+.navbar-default .navbar-nav > .dropdown:not(.open) > a:hover .caret,
+.navbar-default .navbar-nav > .dropdown:not(.open) > a:focus .caret {
+    border-top-color: #FFF;
+    border-bottom-color: #FFF;
+}

@@ -58,5 +58,11 @@
 	"Uploaded Image": "Uploaded Image",
 	"Uh oh!": "Uh oh!",
 	"No other copies of this print have been found.": "No other copies of this print have been found.",
-	"Description": "Description"
+	"Description": "Description",
+	"Artworks matching '%s'.": "Artworks matching '%s'.",
+	"Browse by Collection:": "Browse by Collection:",
+	"Artworks at the %s.": "Artworks at the %s.",
+	"%s Artworks": "%s Artworks",
+	"Search %s Artworks:": "Search %s Artworks:",
+	"Browse all %s artworks...": "Browse all %s artworks..."
 }

@@ -1,7 +1,10 @@
 "use strict";
 
+const async = require("async");
+
 module.exports = (core) => {
     let sourceCache = [];
+    const Artwork = core.models.Artwork;
 
     const Source = new core.db.schema({
         _id: String,
@@ -33,8 +36,11 @@ module.exports = (core) => {
             return locale === "ja" && this.shortKanji || this.shortName;
         },
 
-        getNumArtworks: function() {
-            // Artwork.count({source: this._id}, callback);
+        cacheNumArtworks: function(callback) {
+            Artwork.count({source: this._id}, (err, num) => {
+                this.numArtworks = num || 0;
+                callback(err);
+            });
         },
     };
 
@@ -42,7 +48,12 @@ module.exports = (core) => {
         cacheSources(callback) {
             core.models.Source.find({}, (err, sources) => {
                 sourceCache = sources;
-                callback(err, sources);
+
+                async.eachLimit(sources, 2, (source, callback) => {
+                    source.cacheNumArtworks(callback);
+                }, () => {
+                    callback(err, sources);
+                });
             });
         },
 

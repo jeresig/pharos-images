@@ -28,6 +28,8 @@ module.exports = function(core, app) {
 
     app.get("/source/:sourceId", cache(12), sources.show);
 
+    app.param("sourceId", sources.load);
+
     app.get("/sitemap.xml", sitemaps.index);
     app.get("/sitemap-sources.xml", sitemaps.sources);
     app.get("/sitemap-artists.xml", sitemaps.artists);

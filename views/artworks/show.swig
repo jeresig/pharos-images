@@ -141,7 +141,7 @@
                 </a><br/>
                 <small><a href="{{ URL(artwork.getSource()) }}"
                     title="{{ fullName(artwork.getSource()) }}">
-                    {{ __("Browse all %s prints...", artwork.getSource().count_string) }}</a></small></span>
+                    {{ __("Browse all %s artworks...", stringNum(artwork.getSource().numArtworks)) }}</a></small></span>
             </p>
         {% endif %}
     </div>

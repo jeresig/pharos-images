@@ -86,6 +86,12 @@
         </div>
     </div>
 
+    {% if getSiteCategory() === "home" %}
+        <div class="home-splash">
+            <h1>{{ SITE_NAME }}</h1>
+        </div>
+    {% endif %}
+
     <div class="container">
         {% block content %}{% endblock %}
     </div>
