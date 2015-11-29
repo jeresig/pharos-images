@@ -3,8 +3,8 @@
 const qs = require("querystring");
 
 module.exports = (core, app) => {
-    const Artwork = core.db.model("Artwork");
-    const Source = core.db.model("Source");
+    const Artwork = core.models.Artwork;
+    const Source = core.models.Source;
 
     return (req, res, tmplParams) => {
         const rows = 100;

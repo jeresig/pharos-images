@@ -1,7 +1,7 @@
 "use strict";
 
 module.exports = function(core, app) {
-    const Artwork = core.db.model("Artwork");
+    const Artwork = core.models.Artwork;
     const search = require("./shared/search")(core, app);
 
     return {

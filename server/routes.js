@@ -26,17 +26,13 @@ module.exports = function(core, app) {
 
     app.param("uploadId", uploads.load);
 
-    app.get("/sources", cache(1), sources.index);
     app.get("/source/:sourceId", cache(12), sources.show);
-
-    app.param("sourceId", sources.load);
 
     app.get("/sitemap.xml", sitemaps.index);
     app.get("/sitemap-sources.xml", sitemaps.sources);
     app.get("/sitemap-artists.xml", sitemaps.artists);
     app.get("/sitemap-search-:start.xml", sitemaps.search);
 
-    app.get("/about", cache(1), home.about);
     app.get("/", cache(1), home.index);
 
     app.use((req, res, next) => {

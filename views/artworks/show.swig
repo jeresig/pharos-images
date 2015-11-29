@@ -34,7 +34,7 @@
                     title="{{ fullName(name.artist) }}">
                     {{ fullName(name.artist) }}</a><br/>
                 {% else %}
-                    <a href="{{ URL('/search?qartist=' + encodeURIComponent(name.name)) }}">{{ name.name }}</a><br/>
+                    <a href="{{ URL('/search?artist=' + encodeURIComponent(name.name)) }}">{{ name.name }}</a><br/>
                 {% endif %}
             {% endfor %}
             </span>

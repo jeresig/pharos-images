@@ -1,9 +1,9 @@
 "use strict";
 
 module.exports = function(core, app) {
-    const Artwork = core.db.model("Artwork");
-    const Source = core.db.model("Source");
-    const Artist = core.db.model("Artist");
+    const Artwork = core.models.Artwork;
+    const Source = core.models.Source;
+    const Artist = core.models.Artist;
 
     const numPerMap = 1000;
 

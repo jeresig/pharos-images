@@ -57,5 +57,6 @@
 	"Reset Zoom": "Reset Zoom",
 	"Uploaded Image": "Uploaded Image",
 	"Uh oh!": "Uh oh!",
-	"No other copies of this print have been found.": "No other copies of this print have been found."
+	"No other copies of this print have been found.": "No other copies of this print have been found.",
+	"Description": "Description"
 }

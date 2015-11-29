@@ -48,12 +48,6 @@
 
             <div id="header-navbar" class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
-                    <li{% if getSiteCategory() === "sources" %} class="active"{% endif %}>
-                        <a href="{{ URL("/sources") }}">
-                            {{ __("Sources") }}</a></li>
-                    <li{% if getSiteCategory() === "about" %} class="active"{% endif %}>
-                        <a href="{{ URL("/about") }}">
-                        {{ __("About") }}</a></li>
                     <li class="nav-divider"></li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle"

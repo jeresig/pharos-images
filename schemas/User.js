@@ -33,7 +33,7 @@ module.exports = (core) => {
         "Email cannot be blank");
 
     User.path("email").validate(function(email, callback) {
-        const User = core.db.model("User");
+        const User = core.models.User;
 
         // Check only when it is a new user or when email field is modified
         if (this.isNew || this.isModified("email")) {

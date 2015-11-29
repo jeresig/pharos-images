@@ -3,7 +3,7 @@
 const formidable = require("formidable");
 
 module.exports = (core, app) => {
-    const Upload = core.db.model("Upload");
+    const Upload = core.models.Upload;
 
     const handleUpload = function(req, callback) {
         const form = new formidable.IncomingForm();
