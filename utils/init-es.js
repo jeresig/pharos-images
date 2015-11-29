@@ -5,9 +5,11 @@ const core = require("../core");
 const Artwork = core.models.Artwork;
 
 core.init(() => {
+    console.log("Re-building index...");
+
     Artwork.createMapping((err, mapping) => {
         if (err) {
-            console.error(err);
+            return console.error(err);
         }
 
         let count = 0;

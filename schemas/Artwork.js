@@ -61,8 +61,8 @@ module.exports = (core) => {
         similarArtworks: [{
             artwork: {type: String, ref: "Artwork"},
             imageNames: [String],
-            score: Number,
-            source: String,
+            score: {type: Number, es_indexed: true},
+            source: {type: String, es_indexed: true},
         }],
     });
 
