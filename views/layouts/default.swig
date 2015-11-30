@@ -7,9 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <link rel="icon" href="{{ CDN("/images/favicon.png", {"raw": true}) }}" type="image/x-icon"/>
     <title>{% if title %}
-        {{ title }} - {{ SITE_NAME }}
+        {{ title }} - {{ SITE_NAME_SHORT }}: {{ SITE_NAME }}
     {% else %}
-        {{ SITE_NAME }}
+        {{ SITE_NAME_SHORT }}: {{ SITE_NAME }}
     {% endif %}</title>
     {% if desc %}<meta name="description" content="{{ desc }}"/>{% endif %}
 
