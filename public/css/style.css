@@ -414,21 +414,36 @@ body.no-scroll {
     left: 0;
 }
 
-.home-splash h1 {
+.home-splash .splash-contents {
     display: none;
 }
 
 .home .home-splash {
-    height: 250px;
+    height: 275px;
+}
+
+.home .home-splash .splash-contents {
+    display: block;
+    position: relative;
+    margin: 0 auto;
+    margin-top: 60px;
+    width: 430px;
+    height: 203px;
+}
+
+.home .home-splash img {
+    float: left;
 }
 
 .home .home-splash h1 {
     display: block;
     position: absolute;
+    width: 225px;
     bottom: 0;
+    right: 0;
     color: #FFF;
-    width: 100%;
     text-shadow: 0px 0px 4px black;
+    text-align: left;
 }
 
 .home-contents {
@@ -437,6 +452,14 @@ body.no-scroll {
 
 .navbar-default {
     background: rgba(0,0,0,0.5);
+}
+
+.navbar-brand img {
+    height: 40px;
+    width: 40px;
+    position: absolute;
+    top: 0;
+    margin-left: -50px;
 }
 
 .navbar-default .navbar-brand,

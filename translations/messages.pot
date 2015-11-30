@@ -8,7 +8,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2015-11-29 22:25+0000\n"
+"POT-Creation-Date: 2015-11-30 20:18+0000\n"
 
 #: logic/artists.js:126
 msgid "Artworks by %(artist)s."
@@ -19,10 +19,14 @@ msgid "Results for '%(query)s'"
 msgstr ""
 
 #: logic/artworks.js:30
+msgid "All Artworks"
+msgstr ""
+
+#: logic/artworks.js:34
 msgid "Artist '%(artist)s'"
 msgstr ""
 
-#: logic/artworks.js:36
+#: logic/artworks.js:40
 msgid "Artworks matching '%(query)s'."
 msgstr ""
 

@@ -26,6 +26,10 @@ module.exports = function(core, app) {
             let title = req.format(req.gettext("Results for '%(query)s'"),
                 {query: query || "*"});
 
+            if (!query) {
+                title = req.gettext("All Artworks");
+            }
+
             if (req.query.artist) {
                 title = req.format(req.gettext("Artist '%(artist)s'"),
                     {artist: req.query.artist});

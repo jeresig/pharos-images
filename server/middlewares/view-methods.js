@@ -6,6 +6,7 @@ const locales = require("../../config/locales.json");
 module.exports = (req, res, next) => {
     const methods = {
         SITE_NAME: process.env.SITE_NAME,
+        SITE_NAME_SHORT: process.env.SITE_NAME_SHORT,
 
         getLocales() {
             return Object.keys(locales);

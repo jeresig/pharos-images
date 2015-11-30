@@ -47,7 +47,11 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="{{ URL("/") }}">{{ SITE_NAME }}</a>
+                <a class="navbar-brand" href="{{ URL("/") }}">
+                    <img alt="{{ SITE_NAME }}" src="{{ CDN("/images/lighthouse.sm.png", {"raw": true}) }}"
+                        height="40" width="40"/>
+                    {{ SITE_NAME_SHORT }}
+                </a>
             </div>
 
             <div id="header-navbar" class="collapse navbar-collapse">
@@ -94,7 +98,11 @@
     </div>
 
     <div class="home-splash">
-        <h1>{{ SITE_NAME }}</h1>
+        <div class="splash-contents">
+            <img src="{{ CDN("/images/lighthouse.md.png", {"raw": true}) }}"
+                alt="{{ SITE_NAME_SHORT }}" width="200" height="203"/>
+            <h1>{{ SITE_NAME_SHORT }}<br>{{ SITE_NAME }}</h1>
+        </div>
     </div>
 
     <div class="container">
