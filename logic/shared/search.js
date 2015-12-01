@@ -30,58 +30,65 @@ module.exports = (core, app) => {
                 `${req.path}?${qs.stringify(params)}`);
         };
 
-        const esQuery = {
-            bool: {
-                must: [
-                    {
-                        query_string: {
-                            query: query.filter || "*",
-                            default_operator: "and",
-                        },
-                    },
-                    {
-                        match: {
-                            source: {
-                                query: Array.isArray(query.source) ?
-                                    query.source.join(" ") : query.source,
-                                operator: "or",
-                                zero_terms_query: "all",
-                            },
-                        },
-                    },
-                    {
-                        multi_match: {
-                            fields: ["artists.*"],
-                            query: query.artist,
-                            operator: "and",
-                            zero_terms_query: "all",
-                        },
-                    },
-                ],
-                filter: {},
+        const matches = [
+            {
+                query_string: {
+                    query: query.filter || "*",
+                    default_operator: "and",
+                },
             },
-        };
+        ];
+
+        if (query.source) {
+            matches.push({
+                match: {
+                    source: {
+                        query: Array.isArray(query.source) ?
+                            query.source.join(" ") : query.source,
+                        operator: "or",
+                        zero_terms_query: "all",
+                    },
+                },
+            });
+        }
+
+        if (query.artist) {
+            matches.push({
+                multi_match: {
+                    fields: ["artists.*"],
+                    query: query.artist,
+                    operator: "and",
+                    zero_terms_query: "all",
+                },
+            });
+        }
 
         if (query.date) {
             const dates = query.date.split(";");
 
-            esQuery.bool.filter.and = [
-                {
-                    range: {
-                        "dateCreateds.start": {
-                            lte: parseFloat(dates[1]),
-                        },
+            matches.push({
+                range: {
+                    "dateCreateds.start": {
+                        lte: parseFloat(dates[1]),
                     },
                 },
-                {
-                    range: {
-                        "dateCreateds.end": {
-                            gte: parseFloat(dates[0]),
-                        },
+            });
+
+            matches.push({
+                range: {
+                    "dateCreateds.end": {
+                        gte: parseFloat(dates[0]),
                     },
                 },
-            ];
+            });
         }
+
+        const esQuery = {
+            bool: {
+                must: matches,
+                filter: {},
+            },
+        };
 
         Artwork.search(esQuery, {
             size: rows,
