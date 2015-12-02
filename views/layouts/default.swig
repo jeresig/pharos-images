@@ -56,7 +56,6 @@
 
             <div id="header-navbar" class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
-                    <li class="nav-divider"></li>
                     <li class="dropdown">
                         <a href="" class="dropdown-toggle"
                             data-toggle="dropdown" role="button"
@@ -83,13 +82,15 @@
                 </ul>
 
                 <form action="{{ URL("/search") }}" method="GET"
-                    class="navbar-form navbar-right search">
+                    class="navbar-form navbar-right search form-inline hidden-xs">
                     {% if qsLocale() %}
                         <input type="hidden" name="lang" value="{{ lang }}"/>
                     {% endif %}
-                    <input type="text" class="form-control search-query"
-                        placeholder="{{ gettext("Search") }}" id="filter"
-                        name="filter" value="{{ query.filter }}" />
+                    <div class="form-group">
+                        <input type="text" class="form-control search-query"
+                            placeholder="{{ gettext("Search") }}" id="filter"
+                            name="filter" value="{{ query.filter }}" />
+                    </div>
                     <input type="submit" class="btn btn-primary"
                         value="{{ gettext("Search") }}" />
                 </form>

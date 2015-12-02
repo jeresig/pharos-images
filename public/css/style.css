@@ -1,3 +1,4 @@
+/*
 .right {
     text-align: right;
 }
@@ -403,6 +404,175 @@ body.no-scroll {
 .lang-notice {
     display: none;
 }
+*/
+
+#results {
+    list-style: none;
+    padding: 0;
+    overflow: hidden;
+}
+
+#results div.img {
+    height: 220px;
+    width: 220px;
+    float: left;
+    margin-left: 15px;
+}
+
+@media (max-width: 979px) {
+    #results div.img {
+        height: 166px;
+        width: 166px;
+    }
+}
+
+@media (min-width: 1200px) {
+    #results div.img {
+        height: 270px;
+        width: 270px;
+    }
+}
+
+blockquote.bio {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: 0.9em;
+}
+
+#results .results-wrap {
+    background: #EEE;
+}
+
+#results .results-side {
+    width: 25%;
+    float: right;
+}
+
+#results .results-side-wrap {
+    margin-right: 15px;
+    padding: 10px;
+}
+
+#results .results-main {
+    width: 75%;
+    float: right;
+    background: #FFF;
+}
+
+#results .state {
+    margin: 10px -15px;
+    border-bottom: 1px solid #CCC;
+    font-size: 16px;
+}
+
+#results .state .page {
+    float: right;
+}
+
+#results .search-nav {
+    margin: 10px 0px;
+    top: 10px;
+    padding-top: 10px;
+    position: relative;
+    border-top: 1px solid #CCC;
+    clear: both;
+    font-size: 16px;
+    overflow: hidden;
+}
+
+#results .search-nav .next {
+    float: right;
+}
+
+#results div.img {
+    position: relative;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+#results .img img {
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+#results .img .details {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    text-align: left;
+    overflow: hidden;
+}
+
+@media (max-width: 979px) {
+    #results .img .details {
+        font-size: 0.8em;
+    }
+
+    .hidden-tablet {
+        display: none !important;
+    }
+}
+
+#results .img .details .wrap {
+    color: #FFF;
+    margin: 3px;
+    position: relative;
+    z-index: 2;
+}
+
+#results .img .details .loading-bar {
+    background: rgba(223, 240, 216, 0.8);
+    width: 0%;
+    height: 100%;
+    position: absolute;
+    z-index: 1;
+}
+
+#results .img .details strong {
+    font-size: 1.2em;
+}
+
+#results .img .details a {
+    color: #FFF;
+    overflow: auto;
+}
+
+#results .img .details .score {
+    color: #EEE;
+}
+
+#results .img .details .source {
+    float: right;
+}
+
+#results .loading {
+    padding-top: 20px;
+    padding-bottom: 10px;
+    font-size: 20px;
+    text-align: center;
+    clear: both;
+}
+
+#results h1.other {
+    clear: both;
+    padding-top: 20px;
+}
+
+#results h2 {
+    clear: both;
+    margin-bottom: 15px;
+    padding-top: 25px;
+    border-bottom: 1px solid #CCC;
+}
+
+#results.ages .details {
+    color: #FFF;
+    text-align: center;
+}
 
 .home-splash {
     background: url(../images/background-collage.sm.jpg) repeat-x;
@@ -450,16 +620,15 @@ body.no-scroll {
     margin-top: 200px;
 }
 
-.navbar-default {
-    background: rgba(0,0,0,0.5);
+.navbar-brand img {
+    margin-bottom: -20px;
+    position: relative;
+    top: -15px;
 }
 
-.navbar-brand img {
-    height: 40px;
-    width: 40px;
-    position: absolute;
-    top: 0;
-    margin-left: -50px;
+/*
+.navbar-default {
+    background: rgba(255,255,255,0.5);
 }
 
 .navbar-default .navbar-brand,
@@ -468,12 +637,13 @@ body.no-scroll {
 .navbar-default .navbar-nav > li > a,
 .navbar-default .navbar-nav > li > a:hover,
 .navbar-default .navbar-nav > li > a:focus {
-    color: #FFF;
+    color: #000;
 }
 
 .navbar-default .navbar-nav > .dropdown:not(.open) > a .caret,
 .navbar-default .navbar-nav > .dropdown:not(.open) > a:hover .caret,
 .navbar-default .navbar-nav > .dropdown:not(.open) > a:focus .caret {
-    border-top-color: #FFF;
-    border-bottom-color: #FFF;
+    border-top-color: #000;
+    border-bottom-color: #000;
 }
+*/

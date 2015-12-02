@@ -26,27 +26,34 @@
                     {% if qsLocale() %}
                         <input type="hidden" name="lang" value="{{ lang }}"/>
                     {% endif %}
-                    <div>
-                        {{ gettext("Query:") }}
-                        <input type="search" name="filter" value="{{query.filter}}"/>
+                    <div class="form-group">
+                        <label for="filter" class="control-label">{{ gettext("Query:") }}</label>
+                        <input type="search" name="filter"
+                            placeholder="{{ gettext("Sample: christ or cristo") }}"
+                            value="{{query.filter}}" class="form-control"/>
                     </div>
-                    <div>
-                        {{ gettext("Artist:") }}
-                        <input type="text" name="artist" value="{{query.artist}}"/>
+                    <div class="form-group">
+                        <label for="artist" class="control-label">{{ gettext("Artist:") }}</label>
+                        <input type="text" name="artist"
+                            placeholder="{{ gettext("Sample: Andrea del Sarto") }}"
+                            value="{{query.artist}}" class="form-control"/>
                     </div>
-                    <div>
+                    <div class="form-group">
+                        <label for="date" class="control-label">{{ gettext("Date:") }}</label>
                         <input type="text" name="date" class="date-range-picker"
                             value="{{query.date}}" data-min="{{minDate}}" data-max="{{maxDate}}"/>
                     </div>
-                    <div>
-                        {{ gettext("Sources:") }}
-                        <select name="source" multiple="multiple" style="width: 100%;">
+                    <div class="form-group">
+                        <label for="source" class="control-label">{{ gettext("Sources:") }}</label>
+                        <select name="source" multiple="multiple" style="width: 100%;" class="form-control">
                         {% for source in sources %}
                             <option value="{{source._id}}" {% if query.source.indexOf(source._id) >= 0 %} selected{% endif %}>{{source.shortName}}</option>
                         {% endfor %}
                         </select>
                     </div>
-                    <div><input type="submit" value="{{ gettext("Search") }}"/></div>
+                    <div class="form-group">
+                        <input type="submit" value="{{ gettext("Search") }}"/>
+                    </div>
                 </form>
 
                 {% for name, cluster in clusters %}
