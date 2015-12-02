@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="home-contents row">
-    <div class="col-md-6 col-md-offset-3 upload-box">
+    <div class="col-sm-8 col-sm-offset-2 upload-box">
         <h3>{{ format(gettext("Search %(count)s Artworks:"), {count: stringNum(total)}) }}</h3>
         <form action="{{ URL("/search") }}" method="GET" class="form-search search form-inline">
             <div class="form-group">

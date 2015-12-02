@@ -101,10 +101,13 @@
     <div class="home-splash">
         <div class="splash-contents">
             <img src="{{ CDN("/images/lighthouse.md.png", {"raw": true}) }}"
-                alt="{{ SITE_NAME_SHORT }}" width="200" height="203"/>
+                alt="{{ SITE_NAME_SHORT }}" width="200" height="203"
+                class="hidden-xs"/>
             <h1>{{ SITE_NAME_SHORT }}<br>{{ SITE_NAME }}</h1>
         </div>
     </div>
+
+    <div class="home-splash-offset"></div>
 
     <div class="container">
         {% block content %}{% endblock %}
