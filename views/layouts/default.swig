@@ -27,15 +27,7 @@
 
     {{ CDN("/css/bootstrap.min.css") }}
     {{ CDN("/css/bootstrap-theme.min.css") }}
-    {{ CDN("/css/select2.min.css") }}
-    {{ CDN("/css/ion.rangeSlider.css") }}
-    {{ CDN("/css/ion.rangeSlider.skinFlat.css") }}
     {{ CDN("/css/style.css") }}
-
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
-    <![endif]-->
 </head>
 <body>
     <div class="navbar navbar-default navbar-static-top">
@@ -115,9 +107,6 @@
 
     {{ CDN("/js/jquery.min.js") }}
     {{ CDN("/js/bootstrap.min.js") }}
-    {{ CDN("/js/select2.min.js") }}
-    {{ CDN("/js/ion.rangeSlider.min.js") }}
-    {{ CDN("/js/app.js") }}
     {% block script %}{% endblock %}
 </body>
 </html>

@@ -8,7 +8,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2015-12-02 17:15+0000\n"
+"POT-Creation-Date: 2015-12-04 03:58+0000\n"
 
 #: logic/artists.js:126
 msgid "Artworks by %(artist)s."
@@ -84,11 +84,15 @@ msgid "Date:"
 msgstr ""
 
 #: views/artworks/index.swig:8
-#: views/artworks/index.swig:11
+#: views/artworks/index.swig:12
 msgid "Sources:"
 msgstr ""
 
 #: views/artworks/index.swig:9
+msgid "All Sources"
+msgstr ""
+
+#: views/artworks/index.swig:10
 #: views/home/index.swig:2
 #: views/home/index.swig:3
 #: views/layouts/default.swig:1
@@ -96,17 +100,17 @@ msgstr ""
 msgid "Search"
 msgstr ""
 
-#: views/artworks/index.swig:10
+#: views/artworks/index.swig:11
 msgid "Artists:"
-msgstr ""
-
-#: views/artworks/index.swig:12
-#: views/artworks/index.swig:14
-msgid "Previous"
 msgstr ""
 
 #: views/artworks/index.swig:13
 #: views/artworks/index.swig:15
+msgid "Previous"
+msgstr ""
+
+#: views/artworks/index.swig:14
+#: views/artworks/index.swig:16
 msgid "Next"
 msgstr ""
 

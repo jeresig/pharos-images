@@ -14,7 +14,8 @@ module.exports = (core, app) => {
             filter: req.query.filter,
             source: req.query.source || req.params.sourceId || "",
             artist: req.query.artist || "",
-            date: req.query.date,
+            dateStart: req.query.dateStart,
+            dateEnd: req.query.dateEnd,
         };
 
         const queryURL = function(options) {
@@ -63,22 +64,83 @@ module.exports = (core, app) => {
             });
         }
 
-        if (query.date) {
-            const dates = query.date.split(";");
+        if (query.dateStart || query.dateEnd) {
+            const start = query.dateStart || -10000;
+            const end = query.dateEnd || (new Date).getYear() + 1900;
 
-            matches.push({
-                range: {
-                    "dateCreateds.start": {
-                        lte: parseFloat(dates[1]),
-                    },
+            const startInside = {
+                bool: {
+                    must: [
+                        {
+                            range: {
+                                "dateCreateds.start": {
+                                    lte: parseFloat(start),
+                                },
+                            },
+                        },
+
+                        {
+                            range: {
+                                "dateCreateds.end": {
+                                    gte: parseFloat(start),
+                                },
+                            },
+                        },
+                    ],
                 },
-            });
+            };
+
+            const endInside = {
+                bool: {
+                    must: [
+                        {
+                            range: {
+                                "dateCreateds.start": {
+                                    lte: parseFloat(end),
+                                },
+                            },
+                        },
+
+                        {
+                            range: {
+                                "dateCreateds.end": {
+                                    gte: parseFloat(end),
+                                },
+                            },
+                        },
+                    ],
+                },
+            };
+
+            const contains = {
+                bool: {
+                    must: [
+                        {
+                            range: {
+                                "dateCreateds.start": {
+                                    gte: parseFloat(start),
+                                },
+                            },
+                        },
+
+                        {
+                            range: {
+                                "dateCreateds.end": {
+                                    lte: parseFloat(end),
+                                },
+                            },
+                        },
+                    ],
+                },
+            };
 
             matches.push({
-                range: {
-                    "dateCreateds.end": {
-                        gte: parseFloat(dates[0]),
-                    },
+                bool: {
+                    should: [
+                        startInside,
+                        endInside,
+                        contains,
+                    ],
                 },
             });
         }

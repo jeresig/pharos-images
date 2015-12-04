@@ -35,13 +35,19 @@
                     value="{{query.artist}}" class="form-control"/>
             </div>
             <div class="form-group">
-                <label for="date" class="control-label">{{ gettext("Date:") }}</label>
-                <input type="text" name="date" class="date-range-picker"
-                    value="{{query.date}}" data-min="{{minDate}}" data-max="{{maxDate}}"/>
+                <label for="date-start" class="control-label">{{ gettext("Date:") }}</label>
+                <div class="form-inline">
+                    <input type="number" name="dateStart" value="{{query.dateStart}}"
+                        placeholder="{{minDate}}" class="form-control date-control"/>
+                    &hyphen;
+                    <input type="number" name="dateEnd" value="{{query.dateEnd}}"
+                        placeholder="{{maxDate}}" class="form-control date-control"/>
+                </div>
             </div>
             <div class="form-group">
                 <label for="source" class="control-label">{{ gettext("Sources:") }}</label>
-                <select name="source" multiple="multiple" style="width: 100%;" class="form-control">
+                <select name="source" style="width: 100%;" class="form-control">
+                    <option value="" selected="selected">{{ gettext("All Sources") }}</option>
                 {% for source in sources %}
                     <option value="{{source._id}}" {% if query.source.indexOf(source._id) >= 0 %} selected{% endif %}>{{source.shortName}}</option>
                 {% endfor %}

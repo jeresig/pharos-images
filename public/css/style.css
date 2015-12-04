@@ -102,3 +102,12 @@
     color: #FFF;
     overflow: auto;
 }
+
+/*
+ * Styling for the image results form.
+ */
+
+.date-control {
+    display: inline-block;
+    width: 70px;
+}
