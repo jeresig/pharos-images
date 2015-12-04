@@ -49,7 +49,7 @@
                 <select name="source" style="width: 100%;" class="form-control">
                     <option value="" selected="selected">{{ gettext("All Sources") }}</option>
                 {% for source in sources %}
-                    <option value="{{source._id}}" {% if query.source.indexOf(source._id) >= 0 %} selected{% endif %}>{{source.shortName}}</option>
+                    <option value="{{source._id}}" {% if query.source.indexOf(source._id) >= 0 %} selected{% endif %}>{{source.name}}</option>
                 {% endfor %}
                 </select>
             </div>
@@ -60,20 +60,14 @@
         </form>
 
         <div class="hidden-xs hidden-sm">
-        {% for name, cluster in clusters %}
-            {% if cluster.buckets.length > 1 %}
-                <strong>{% if name === "artists" %}
-                    {{ gettext("Artists:") }}
-                {% elseif name === "sources" %}
-                    {{ gettext("Sources:") }}
-                {% endif %}</strong>
-                <ul>
-                    {% for bucket in cluster.buckets %}
-                        <li><a href="{{queryURL({artist:bucket.key})}}">
-                            {{bucket.key}} ({{bucket.doc_count}})</a></li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
+        {% for cluster in clusters %}
+            <strong>{{ cluster.name }}</strong>
+            <ul>
+                {% for bucket in cluster.buckets %}
+                    <li><a href="{{ bucket.url }}">
+                        {{ bucket.text }} ({{bucket.count}})</a></li>
+                {% endfor %}
+            </ul>
         {% endfor %}
         </div>
     </div>
