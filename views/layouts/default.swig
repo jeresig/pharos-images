@@ -107,6 +107,7 @@
 
     {{ CDN("/js/jquery.min.js") }}
     {{ CDN("/js/bootstrap.min.js") }}
+    {{ CDN("/js/app.js") }}
     {% block script %}{% endblock %}
 </body>
 </html>

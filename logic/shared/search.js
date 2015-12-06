@@ -1,322 +1,47 @@
 "use strict";
 
-const qs = require("querystring");
-
 module.exports = (core, app) => {
     const Artwork = core.models.Artwork;
     const Source = core.models.Source;
 
+    const facets = require("./facets")(core, app);
+    const queries = require("./queries");
+    const sorts = require("./sorts");
+
     return (req, res, tmplParams) => {
-        const rows = 100;
+        // Build the query object which will be used to construct
+        // the search URL and matches later
+        const query = Object.keys(queries).reduce((obj, name) => {
+            obj[name] = queries[name].value(req) ||
+                (queries[name].defaultValue &&
+                    queries[name].defaultValue(req));
+            return obj;
+        }, {});
 
-        const facets = {
-            artist: {
-                agg: {
-                    terms: {
-                        field: "artists.name.raw",
-                        size: 50,
-                    },
-                },
-                name: (res) => res.locals.gettext("Artists"),
-                url: (bucket) => queryURL("artist", bucket.key),
-                text: (bucket) => bucket.key,
-            },
+        // Generate the matches which will be fed in to Elasticsearch
+        // to build the query matching
+        const matches = Object.keys(queries)
+            .map((name) => query[name] && queries[name].match &&
+                queries[name].match(query))
+            .filter((match) => match);
 
-            source: {
-                agg: {
-                    terms: {
-                        field: "source",
-                    },
-                },
-                name: (res) => res.locals.gettext("Sources"),
-                url: (bucket) => queryURL("source", bucket.key),
-                text: (bucket) => Source.getSource(bucket.key).name,
-            },
+        // Construct the facets that will be put in to Elasticsearch
+        // (called aggregations)
+        const aggregations = Object.keys(facets).reduce((obj, name) => {
+            obj[name] = facets[name].agg;
+            return obj;
+        }, {});
 
-            width: {
-                agg: {
-                    range: {
-                        field: "dimensions.width",
-                        ranges: [
-                            { to: 99 },
-                            { from: 100, to: 199 },
-                            { from: 200, to: 299 },
-                            { from: 300, to: 399 },
-                            { from: 400, to: 499 },
-                            { from: 500, to: 599 },
-                            { from: 600, to: 699 },
-                            { from: 700, to: 799 },
-                            { from: 800, to: 899 },
-                            { from: 900, to: 999 },
-                            { from: 1000, to: 1249 },
-                            { from: 1250, to: 1599 },
-                            { from: 1500, to: 1749 },
-                            { from: 1750, to: 1999 },
-                            { from: 2000 },
-                        ],
-                    },
-                },
-                name: (res) => res.locals.gettext("Width (mm)"),
-                url: (bucket) => queryURL({
-                    widthMin: bucket.from,
-                    widthMax: bucket.to,
-                }),
-                text: (bucket) => bucket.to ?
-                    `${bucket.from || 0}-${bucket.to}` :
-                    `${bucket.from}+`,
-            },
-
-            height: {
-                agg: {
-                    range: {
-                        field: "dimensions.height",
-                        ranges: [
-                            { to: 99 },
-                            { from: 100, to: 199 },
-                            { from: 200, to: 299 },
-                            { from: 300, to: 399 },
-                            { from: 400, to: 499 },
-                            { from: 500, to: 599 },
-                            { from: 600, to: 699 },
-                            { from: 700, to: 799 },
-                            { from: 800, to: 899 },
-                            { from: 900, to: 999 },
-                            { from: 1000, to: 1249 },
-                            { from: 1250, to: 1599 },
-                            { from: 1500, to: 1749 },
-                            { from: 1750, to: 1999 },
-                            { from: 2000 },
-                        ],
-                    },
-                },
-                name: (res) => res.locals.gettext("Height (mm)"),
-                url: (bucket) => queryURL({
-                    heightMin: bucket.from,
-                    heightMax: bucket.to,
-                }),
-                text: (bucket) => bucket.to ?
-                    `${bucket.from || 0}-${bucket.to}` :
-                    `${bucket.from}+`,
-            },
-        };
-
-        const query = {
-            start: parseFloat(req.query.start || 0),
-            filter: req.query.filter,
-            source: req.query.source || req.params.sourceId || "",
-            artist: req.query.artist || "",
-            dateStart: req.query.dateStart,
-            dateEnd: req.query.dateEnd,
-            widthMin: req.query.widthMin,
-            widthMax: req.query.widthMax,
-            heightMin: req.query.heightMin,
-            heightMax: req.query.heightMax,
-        };
-
-        const queryURL = function(options, value) {
-            if (typeof options === "string") {
-                const tmp = {};
-                tmp[options] = value;
-                options = tmp;
-            }
-
-            const params = Object.assign({}, query, options);
-
-            for (const param in params) {
-                if (!params[param]) {
-                    delete params[param];
-                }
-            }
-
-            if (Object.keys(params).length === 1 && "source" in params) {
-                return Source.getSource(params.source)
-                    .getURL(res.locals.lang);
-            }
-
-            return core.urls.gen(res.locals.lang,
-                `${req.path}?${qs.stringify(params)}`);
-        };
-
-        const matches = [
-            {
-                query_string: {
-                    query: query.filter || "*",
-                    default_operator: "and",
-                },
-            },
-        ];
-
-        if (query.source) {
-            matches.push({
-                match: {
-                    source: {
-                        query: Array.isArray(query.source) ?
-                            query.source.join(" ") : query.source,
-                        operator: "or",
-                        zero_terms_query: "all",
-                    },
-                },
-            });
-        }
-
-        if (query.artist) {
-            matches.push({
-                multi_match: {
-                    fields: ["artists.*"],
-                    query: query.artist,
-                    operator: "and",
-                    zero_terms_query: "all",
-                },
-            });
-        }
-
-        if (query.dateStart || query.dateEnd) {
-            const start = query.dateStart || -10000;
-            const end = query.dateEnd || (new Date).getYear() + 1900;
-
-            const startInside = {
-                bool: {
-                    must: [
-                        {
-                            range: {
-                                "dateCreateds.start": {
-                                    lte: parseFloat(start),
-                                },
-                            },
-                        },
-
-                        {
-                            range: {
-                                "dateCreateds.end": {
-                                    gte: parseFloat(start),
-                                },
-                            },
-                        },
-                    ],
-                },
-            };
-
-            const endInside = {
-                bool: {
-                    must: [
-                        {
-                            range: {
-                                "dateCreateds.start": {
-                                    lte: parseFloat(end),
-                                },
-                            },
-                        },
-
-                        {
-                            range: {
-                                "dateCreateds.end": {
-                                    gte: parseFloat(end),
-                                },
-                            },
-                        },
-                    ],
-                },
-            };
-
-            const contains = {
-                bool: {
-                    must: [
-                        {
-                            range: {
-                                "dateCreateds.start": {
-                                    gte: parseFloat(start),
-                                },
-                            },
-                        },
-
-                        {
-                            range: {
-                                "dateCreateds.end": {
-                                    lte: parseFloat(end),
-                                },
-                            },
-                        },
-                    ],
-                },
-            };
-
-            matches.push({
-                bool: {
-                    should: [
-                        startInside,
-                        endInside,
-                        contains,
-                    ],
-                },
-            });
-        }
-
-        if (query.widthMin) {
-            matches.push({
-                range: {
-                    "dimensions.width": {
-                        gte: parseFloat(query.widthMin),
-                    },
-                },
-            });
-        }
-
-        if (query.widthMax) {
-            matches.push({
-                range: {
-                    "dimensions.width": {
-                        lte: parseFloat(query.widthMax),
-                    },
-                },
-            });
-        }
-
-        if (query.heightMin) {
-            matches.push({
-                range: {
-                    "dimensions.height": {
-                        gte: parseFloat(query.heightMin),
-                    },
-                },
-            });
-        }
-
-        if (query.heightMax) {
-            matches.push({
-                range: {
-                    "dimensions.height": {
-                        lte: parseFloat(query.heightMax),
-                    },
-                },
-            });
-        }
-
-        const esQuery = {
+        // Query for the artworks in Elasticsearch
+        Artwork.search({
             bool: {
                 must: matches,
-                filter: {},
             },
-        };
-
-        Artwork.search(esQuery, {
-            size: rows,
+        }, {
+            size: query.rows,
             from: query.start,
-            aggs: Object.keys(facets).reduce((obj, name) => {
-                obj[name] = facets[name].agg;
-                return obj;
-            }, {}),
-            sort: [
-                {
-                    "dateCreateds.start": {
-                        "order": "asc",
-                    },
-                },
-                {
-                    "dateCreateds.end": {
-                        "order": "asc",
-                    },
-                },
-            ],
+            aggs: aggregations,
+            sort: sorts[query.sort].sort,
             hydrate: true,
         }, (err, results) => {
             if (err) {
@@ -324,36 +49,64 @@ module.exports = (core, app) => {
                 return res.render("500");
             }
 
+            // Expose the query object to the templates and to the
+            // searchURL method.
+            res.locals.query = query;
+
+            // The number of the last item in this result set
             const end = query.start + results.hits.hits.length;
-            const prevLink = (query.start > 0 && queryURL({
-                start: (query.start - rows > 0 ? (query.start - rows) : ""),
-            }));
-            const nextLink = (end < results.hits.total && queryURL({
-                start: (query.start + rows),
+
+            // The link to the previous page of search results
+            const prevLink = (query.start > 0 && res.locals.searchURL({
+                start: (query.start - query.rows > 0 ?
+                    (query.start - query.rows) : ""),
             }));
 
-            const aggregations = results.aggregations;
-            const facetData = Object.keys(aggregations).map((name) => ({
+            // The link to the next page of the search results
+            const nextLink = (end < results.hits.total &&
+                res.locals.searchURL({start: query.start + query.rows}));
+
+            // Construct a nicer form of the facet data to feed in to
+            // the templates
+            const facetData = Object.keys(facets).map((name) => ({
                 name: facets[name].name(res),
-                buckets: aggregations[name].buckets.map((bucket) => ({
-                    text: facets[name].text(bucket),
-                    url: facets[name].url(bucket),
+                buckets: results.aggregations[name].buckets.map((bucket) => ({
+                    text: facets[name].text(res, bucket),
+                    url: facets[name].url(res, bucket),
                     count: bucket.doc_count,
                 })).filter((bucket) => bucket.count > 0),
-            })).filter((facet) => facet.buckets.length > 1);
+            }))
+            .filter((facet) => facet.buckets.length > 1);
+
+            // Make sure that there aren't too many buckets displaying at
+            // any one time, otherwise it gets too long. We mitigate this
+            // by splitting the extra buckets into a separate container
+            // and then allow the user to toggle its visibility.
+            facetData.forEach((facet) => {
+                if (facet.buckets.length > 10) {
+                    facet.extra = facet.buckets.slice(5);
+                    facet.buckets = facet.buckets.slice(0, 5);
+                }
+            });
+
+            // Construct a list of the possible sorts, their translated
+            // names and their selected state, for the template.
+            const sortData = Object.keys(sorts).map((id) => ({
+                id: id,
+                name: sorts[id].name(res),
+                selected: query.sort === id,
+            }));
 
             res.render("artworks/index", Object.assign({
                 sources: Source.getSources(),
-                query: query,
-                queryURL: queryURL,
                 minDate: process.env.DEFAULT_START_DATE,
                 maxDate: process.env.DEFAULT_END_DATE,
+                sorts: sortData,
                 facets: facetData,
-                images: results.hits.hits,
+                artworks: results.hits.hits,
                 total: results.hits.total,
-                start: (results.hits.total > 0 ? query.start || 1 : 0),
+                start: (results.hits.total > 0 ? query.start + 1 : 0),
                 end: end,
-                rows: rows,
                 prev: prevLink,
                 next: nextLink,
             }, tmplParams));

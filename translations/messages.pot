@@ -8,7 +8,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2015-12-06 03:24+0000\n"
+"POT-Creation-Date: 2015-12-06 23:01+0000\n"
 
 #: logic/artists.js:126
 msgid "Artworks by %(artist)s."
@@ -54,7 +54,7 @@ msgid "Internal error occurred."
 msgstr ""
 
 #: views/artworks/index.swig:1
-msgid "<strong>%(numArtworks)s</strong> found."
+msgid "%(numArtworks)s matches."
 msgstr ""
 
 #: views/artworks/index.swig:2
@@ -62,7 +62,7 @@ msgid "Viewing %(start)s to %(end)s."
 msgstr ""
 
 #: views/artworks/index.swig:3
-msgid "Query:"
+msgid "Query"
 msgstr ""
 
 #: views/artworks/index.swig:4
@@ -70,28 +70,38 @@ msgid "Sample: christ or cristo"
 msgstr ""
 
 #: views/artworks/index.swig:5
-#: views/artworks/show.swig:1
-msgid "Artist:"
+msgid "Artist"
 msgstr ""
 
 #: views/artworks/index.swig:6
-msgid "Sample: Andrea del Sarto"
+msgid "Sample Andrea del Sarto"
 msgstr ""
 
 #: views/artworks/index.swig:7
-#: views/artworks/show.swig:3
-msgid "Date:"
+msgid "Date"
 msgstr ""
 
 #: views/artworks/index.swig:8
-msgid "Sources:"
+msgid "Width (mm)"
 msgstr ""
 
 #: views/artworks/index.swig:9
-msgid "All Sources"
+msgid "Height (mm)"
 msgstr ""
 
 #: views/artworks/index.swig:10
+msgid "Sources"
+msgstr ""
+
+#: views/artworks/index.swig:11
+msgid "All Sources"
+msgstr ""
+
+#: views/artworks/index.swig:12
+msgid "Sort"
+msgstr ""
+
+#: views/artworks/index.swig:13
 #: views/home/index.swig:2
 #: views/home/index.swig:3
 #: views/layouts/default.swig:1
@@ -99,18 +109,30 @@ msgstr ""
 msgid "Search"
 msgstr ""
 
-#: views/artworks/index.swig:11
-#: views/artworks/index.swig:13
+#: views/artworks/index.swig:14
+msgid "Show %(count)s more..."
+msgstr ""
+
+#: views/artworks/index.swig:15
+#: views/artworks/index.swig:17
 msgid "Previous"
 msgstr ""
 
-#: views/artworks/index.swig:12
-#: views/artworks/index.swig:14
+#: views/artworks/index.swig:16
+#: views/artworks/index.swig:18
 msgid "Next"
+msgstr ""
+
+#: views/artworks/show.swig:1
+msgid "Artist:"
 msgstr ""
 
 #: views/artworks/show.swig:2
 msgid "Title:"
+msgstr ""
+
+#: views/artworks/show.swig:3
+msgid "Date:"
 msgstr ""
 
 #: views/artworks/show.swig:4

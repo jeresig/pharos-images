@@ -68,16 +68,11 @@
  * Custom styling for the image results.
  */
 
-.results-wrap {
-    background: #F5F5F5;
-}
-
 .results-side {
-    padding-top: 15px;
+    padding: 0;
 }
 
 .results-main {
-    background: #FFF;
     overflow: auto;
 }
 
@@ -104,10 +99,39 @@
 }
 
 /*
- * Styling for the image results form.
+ * Styling for the artwork search form.
  */
+
+.search-form {
+    padding-bottom: 0;
+}
 
 .date-control {
     display: inline-block;
-    width: 70px;
+    width: 46px;
+    padding: 6px;
+}
+
+.size-control {
+    display: inline-block;
+    width: 46px;
+    padding: 6px;
+}
+
+/*
+ * Styling for the facets in the search results.
+ */
+
+.facet ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.facet .toggle-facets {
+    margin-top: 5px;
+}
+
+.facet .extra-facets {
+    display: none;
 }

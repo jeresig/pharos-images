@@ -17,6 +17,7 @@ const pkg = require("../package");
 const env = process.env.NODE_ENV || "development";
 
 const viewMethods = require("./middlewares/view-methods");
+const queryURL = require("./middlewares/query-url");
 
 const rootPath = path.resolve(__dirname, "..");
 
@@ -72,4 +73,5 @@ module.exports = (core, app) => {
 
     // Bring in the methods that will be available to the views
     app.use(viewMethods);
+    app.use(queryURL(core, app));
 };

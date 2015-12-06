@@ -11,63 +11,117 @@
 
 <div class="row results-wrap">
     <div class="results-side col-sm-3 col-sm-push-9">
-        <form action="/search" method="GET">
-            {% if qsLocale() %}
-                <input type="hidden" name="lang" value="{{ lang }}"/>
-            {% endif %}
-            <div class="form-group">
-                <span class="total">{{ format(gettext("<strong>%(numArtworks)s</strong> found."), {numArtworks: stringNum(total)})|raw }}</span>
+        <div class="panel panel-default facet">
+            <div class="panel-heading">
+                <strong>{{ format(gettext("%(numArtworks)s matches."), {numArtworks: stringNum(total)})|raw }}</strong>
 
                 {% if end %}
-                    <span class="page">{{ format(gettext("Viewing %(start)s to %(end)s."), {start: stringNum(start), end: stringNum(end)}) }}</span>
+                    <span>{{ format(gettext("Viewing %(start)s to %(end)s."), {start: stringNum(start), end: stringNum(end)}) }}</span>
                 {% endif %}
             </div>
-            <div class="form-group">
-                <label for="filter" class="control-label">{{ gettext("Query:") }}</label>
-                <input type="search" name="filter"
-                    placeholder="{{ gettext("Sample: christ or cristo") }}"
-                    value="{{query.filter}}" class="form-control"/>
-            </div>
-            <div class="form-group">
-                <label for="artist" class="control-label">{{ gettext("Artist:") }}</label>
-                <input type="text" name="artist"
-                    placeholder="{{ gettext("Sample: Andrea del Sarto") }}"
-                    value="{{query.artist}}" class="form-control"/>
-            </div>
-            <div class="form-group">
-                <label for="date-start" class="control-label">{{ gettext("Date:") }}</label>
-                <div class="form-inline">
-                    <input type="number" name="dateStart" value="{{query.dateStart}}"
-                        placeholder="{{minDate}}" class="form-control date-control"/>
-                    &hyphen;
-                    <input type="number" name="dateEnd" value="{{query.dateEnd}}"
-                        placeholder="{{maxDate}}" class="form-control date-control"/>
+            <div class="panel-body search-form">
+            <form action="/search" method="GET">
+                {% if qsLocale() %}
+                    <input type="hidden" name="lang" value="{{ lang }}"/>
+                {% endif %}
+                <div class="form-group">
+                    <label for="filter" class="control-label">{{ gettext("Query") }}</label>
+                    <input type="search" name="filter"
+                        placeholder="{{ gettext("Sample: christ or cristo") }}"
+                        value="{{query.filter}}" class="form-control"/>
                 </div>
+                <div class="form-group">
+                    <label for="artist" class="control-label">{{ gettext("Artist") }}</label>
+                    <input type="text" name="artist"
+                        placeholder="{{ gettext("Sample Andrea del Sarto") }}"
+                        value="{{query.artist}}" class="form-control"/>
+                </div>
+                <div class="form-group">
+                    <label for="dateStart" class="control-label">{{ gettext("Date") }}</label>
+                    <div class="form-inline">
+                        <input type="text" name="dateStart" value="{{query.dateStart}}"
+                            placeholder="{{minDate}}" class="form-control date-control"/>
+                        &hyphen;
+                        <input type="text" name="dateEnd" value="{{query.dateEnd}}"
+                            placeholder="{{maxDate}}" class="form-control date-control"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-xs-6 col-sm-12 col-lg-6">
+                        <label for="widthMin" class="control-label">{{ gettext("Width (mm)") }}</label>
+                        <div class="form-inline">
+                            <input type="text" name="widthMin" value="{{query.widthMin}}"
+                                placeholder="10" class="form-control size-control"/>
+                            &hyphen;
+                            <input type="text" name="widthMax" value="{{query.widthMax}}"
+                                placeholder="200" class="form-control size-control"/>
+                        </div>
+                    </div>
+                    <div class="form-group col-xs-6 col-sm-12 col-lg-6">
+                        <label for="heightMin" class="control-label">{{ gettext("Height (mm)") }}</label>
+                        <div class="form-inline">
+                            <input type="text" name="heightMin" value="{{query.heightMin}}"
+                                placeholder="10" class="form-control size-control"/>
+                            &hyphen;
+                            <input type="text" name="heightMax" value="{{query.heightMax}}"
+                                placeholder="200" class="form-control size-control"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="source" class="control-label">{{ gettext("Sources") }}</label>
+                    <select name="source" style="width: 100%;" class="form-control">
+                        <option value="" selected>{{ gettext("All Sources") }}</option>
+                    {% for source in sources %}
+                        <option value="{{source._id}}" {% if query.source === source._id %} selected{% endif %}>{{source.name}}</option>
+                    {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="source" class="control-label">{{ gettext("Sort") }}</label>
+                    <select name="sort" style="width: 100%;" class="form-control">
+                    {% for sort in sorts %}
+                        <option value="{{sort.id}}" {% if sort.selected %} selected{% endif %}>{{sort.name}}</option>
+                    {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="{{ gettext("Search") }}"
+                        class="btn btn-primary"/>
+                </div>
+            </form>
             </div>
-            <div class="form-group">
-                <label for="source" class="control-label">{{ gettext("Sources:") }}</label>
-                <select name="source" style="width: 100%;" class="form-control">
-                    <option value="" selected="selected">{{ gettext("All Sources") }}</option>
-                {% for source in sources %}
-                    <option value="{{source._id}}" {% if query.source.indexOf(source._id) >= 0 %} selected{% endif %}>{{source.name}}</option>
-                {% endfor %}
-                </select>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="{{ gettext("Search") }}"
-                    class="btn btn-primary"/>
-            </div>
-        </form>
+        </div>
 
         <div class="hidden-xs hidden-sm">
         {% for facet in facets %}
-            <strong>{{ facet.name }}</strong>
-            <ul>
-                {% for bucket in facet.buckets %}
-                    <li><a href="{{ bucket.url }}">
-                        {{ bucket.text }} ({{bucket.count}})</a></li>
-                {% endfor %}
-            </ul>
+            <div class="panel panel-default facet">
+                <div class="panel-heading">{{ facet.name }}</div>
+                <div class="panel-body">
+                    <ul>
+                        {% for bucket in facet.buckets %}
+                            <li><a href="{{ bucket.url }}">
+                                {{ bucket.text }}</a> ({{bucket.count}})</li>
+                        {% endfor %}
+                    </ul>
+
+                    {% if facet.extra %}
+                        <button class="btn btn-default btn-xs toggle-facets">
+                            {{ format(gettext("Show %(count)s more..."), {count: facet.extra.length}) }}
+                        </button>
+
+                        <div class="extra-facets">
+                        <ul>
+                            {% for bucket in facet.extra %}
+                                <li><a href="{{ bucket.url }}">
+                                    {{ bucket.text }}</a>
+                                    ({{bucket.count}})</li>
+                            {% endfor %}
+                        </ul>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
         {% endfor %}
         </div>
     </div>
@@ -78,14 +132,16 @@
                 {% if prev %}
                     <li class="previous">
                         <a href="{{ prev }}">
-                            <span aria-hidden="true">&larr;</span> {{ gettext("Previous") }}
+                            <span aria-hidden="true">&larr;</span>
+                            {{ gettext("Previous") }}
                         </a>
                     </li>
                 {% endif %}
                 {% if next %}
                     <li class="next">
                         <a href="{{ next }}">
-                            {{ gettext("Next") }} <span aria-hidden="true">&rarr;</span>
+                            {{ gettext("Next") }}
+                            <span aria-hidden="true">&rarr;</span>
                         </a>
                     </li>
                 {% endif %}
@@ -93,32 +149,32 @@
         </nav>
 
         <div class="row">
-        {% for image in images %}
+        {% for artwork in artworks %}
             <div class="img col-xs-6 col-sm-4 col-md-3">
-                <a class="img" href="{{ URL(image) }}"
-                    title="{{ getTitle(image) }}">
-                    <img src="{{ image.getThumbURL() }}"
-                        alt="{{ getTitle(image) }}"
-                        title="{{ getTitle(image) }}"/>
+                <a class="img" href="{{ URL(artwork) }}"
+                    title="{{ getTitle(artwork) }}">
+                    <img src="{{ artwork.getThumbURL() }}"
+                        alt="{{ getTitle(artwork) }}"
+                        title="{{ getTitle(artwork) }}"/>
                 </a>
                 <div class="details">
                     <div class="wrap">
-                        {% if image.dateCreated %}
-                            <span>{{ getDate(image.dateCreated) }}</span>
+                        {% if artwork.dateCreated %}
+                            <span>{{ getDate(artwork.dateCreated) }}</span>
                         {% endif %}
 
-                        {% if image.artist %}
-                            {% if image.artist.artist %}
-                                <a href="{{ URL(image.artist.artist) }}"
-                                    title="{{ fullName(image.artist.artist) }}">
-                                    {{ shortName(image.artist.artist) }}</a>
+                        {% if artwork.artist %}
+                            {% if artwork.artist.artist %}
+                                <a href="{{ URL(artwork.artist.artist) }}"
+                                    title="{{ fullName(artwork.artist.artist) }}">
+                                    {{ shortName(artwork.artist.artist) }}</a>
                             {% endif %}
                         {% endif %}
 
                         <a class="pull-right"
-                            href="{{ URL(image.getSource()) }}"
-                            title="{{ fullName(image.getSource()) }}">
-                            {{ shortName(image.getSource()) }}</a>
+                            href="{{ URL(artwork.getSource()) }}"
+                            title="{{ fullName(artwork.getSource()) }}">
+                            {{ shortName(artwork.getSource()) }}</a>
                     </div>
                 </div>
             </div>
