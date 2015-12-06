@@ -60,10 +60,10 @@
         </form>
 
         <div class="hidden-xs hidden-sm">
-        {% for cluster in clusters %}
-            <strong>{{ cluster.name }}</strong>
+        {% for facet in facets %}
+            <strong>{{ facet.name }}</strong>
             <ul>
-                {% for bucket in cluster.buckets %}
+                {% for bucket in facet.buckets %}
                     <li><a href="{{ bucket.url }}">
                         {{ bucket.text }} ({{bucket.count}})</a></li>
                 {% endfor %}

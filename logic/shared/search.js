@@ -9,17 +9,95 @@ module.exports = (core, app) => {
     return (req, res, tmplParams) => {
         const rows = 100;
 
-        const clusterNames = {
-            "artist": res.locals.gettext("Artists"),
-            "source": res.locals.gettext("Sources"),
-        };
+        const facets = {
+            artist: {
+                agg: {
+                    terms: {
+                        field: "artists.name.raw",
+                        size: 50,
+                    },
+                },
+                name: (res) => res.locals.gettext("Artists"),
+                url: (bucket) => queryURL("artist", bucket.key),
+                text: (bucket) => bucket.key,
+            },
 
-        const clusterText = (name, key) => {
-            if (name === "source") {
-                return Source.getSource(key).name;
-            }
+            source: {
+                agg: {
+                    terms: {
+                        field: "source",
+                    },
+                },
+                name: (res) => res.locals.gettext("Sources"),
+                url: (bucket) => queryURL("source", bucket.key),
+                text: (bucket) => Source.getSource(bucket.key).name,
+            },
 
-            return key;
+            width: {
+                agg: {
+                    range: {
+                        field: "dimensions.width",
+                        ranges: [
+                            { to: 99 },
+                            { from: 100, to: 199 },
+                            { from: 200, to: 299 },
+                            { from: 300, to: 399 },
+                            { from: 400, to: 499 },
+                            { from: 500, to: 599 },
+                            { from: 600, to: 699 },
+                            { from: 700, to: 799 },
+                            { from: 800, to: 899 },
+                            { from: 900, to: 999 },
+                            { from: 1000, to: 1249 },
+                            { from: 1250, to: 1599 },
+                            { from: 1500, to: 1749 },
+                            { from: 1750, to: 1999 },
+                            { from: 2000 },
+                        ],
+                    },
+                },
+                name: (res) => res.locals.gettext("Width (mm)"),
+                url: (bucket) => queryURL({
+                    widthMin: bucket.from,
+                    widthMax: bucket.to,
+                }),
+                text: (bucket) => bucket.to ?
+                    `${bucket.from || 0}-${bucket.to}` :
+                    `${bucket.from}+`,
+            },
+
+            height: {
+                agg: {
+                    range: {
+                        field: "dimensions.height",
+                        ranges: [
+                            { to: 99 },
+                            { from: 100, to: 199 },
+                            { from: 200, to: 299 },
+                            { from: 300, to: 399 },
+                            { from: 400, to: 499 },
+                            { from: 500, to: 599 },
+                            { from: 600, to: 699 },
+                            { from: 700, to: 799 },
+                            { from: 800, to: 899 },
+                            { from: 900, to: 999 },
+                            { from: 1000, to: 1249 },
+                            { from: 1250, to: 1599 },
+                            { from: 1500, to: 1749 },
+                            { from: 1750, to: 1999 },
+                            { from: 2000 },
+                        ],
+                    },
+                },
+                name: (res) => res.locals.gettext("Height (mm)"),
+                url: (bucket) => queryURL({
+                    heightMin: bucket.from,
+                    heightMax: bucket.to,
+                }),
+                text: (bucket) => bucket.to ?
+                    `${bucket.from || 0}-${bucket.to}` :
+                    `${bucket.from}+`,
+            },
         };
 
         const query = {
@@ -29,6 +107,10 @@ module.exports = (core, app) => {
             artist: req.query.artist || "",
             dateStart: req.query.dateStart,
             dateEnd: req.query.dateEnd,
+            widthMin: req.query.widthMin,
+            widthMax: req.query.widthMax,
+            heightMin: req.query.heightMin,
+            heightMax: req.query.heightMax,
         };
 
         const queryURL = function(options, value) {
@@ -169,6 +251,46 @@ module.exports = (core, app) => {
             });
         }
 
+        if (query.widthMin) {
+            matches.push({
+                range: {
+                    "dimensions.width": {
+                        gte: parseFloat(query.widthMin),
+                    },
+                },
+            });
+        }
+
+        if (query.widthMax) {
+            matches.push({
+                range: {
+                    "dimensions.width": {
+                        lte: parseFloat(query.widthMax),
+                    },
+                },
+            });
+        }
+
+        if (query.heightMin) {
+            matches.push({
+                range: {
+                    "dimensions.height": {
+                        gte: parseFloat(query.heightMin),
+                    },
+                },
+            });
+        }
+
+        if (query.heightMax) {
+            matches.push({
+                range: {
+                    "dimensions.height": {
+                        lte: parseFloat(query.heightMax),
+                    },
+                },
+            });
+        }
+
         const esQuery = {
             bool: {
                 must: matches,
@@ -179,18 +301,10 @@ module.exports = (core, app) => {
         Artwork.search(esQuery, {
             size: rows,
             from: query.start,
-            aggs: {
-                source: {
-                    terms: {
-                        field: "source",
-                    },
-                },
-                artist: {
-                    terms: {
-                        field: "artists.name.raw",
-                    },
-                },
-            },
+            aggs: Object.keys(facets).reduce((obj, name) => {
+                obj[name] = facets[name].agg;
+                return obj;
+            }, {}),
             sort: [
                 {
                     "dateCreateds.start": {
@@ -219,14 +333,14 @@ module.exports = (core, app) => {
             }));
 
             const aggregations = results.aggregations;
-            const clusters = Object.keys(aggregations).map((name) => ({
-                name: clusterNames[name],
+            const facetData = Object.keys(aggregations).map((name) => ({
+                name: facets[name].name(res),
                 buckets: aggregations[name].buckets.map((bucket) => ({
-                    text: clusterText(name, bucket.key),
-                    url: queryURL(name, bucket.key),
+                    text: facets[name].text(bucket),
+                    url: facets[name].url(bucket),
                     count: bucket.doc_count,
-                })),
-            })).filter((cluster) => cluster.buckets.length > 0);
+                })).filter((bucket) => bucket.count > 0),
+            })).filter((facet) => facet.buckets.length > 1);
 
             res.render("artworks/index", Object.assign({
                 sources: Source.getSources(),
@@ -234,7 +348,7 @@ module.exports = (core, app) => {
                 queryURL: queryURL,
                 minDate: process.env.DEFAULT_START_DATE,
                 maxDate: process.env.DEFAULT_END_DATE,
-                clusters: clusters,
+                facets: facetData,
                 images: results.hits.hits,
                 total: results.hits.total,
                 start: (results.hits.total > 0 ? query.start || 1 : 0),
