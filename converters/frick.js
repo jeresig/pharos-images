@@ -40,6 +40,7 @@ module.exports = {
         // Category ?
         // Supplemental Categories
         categories: "WorkSubject_classSubj",
+        medium: "WorkTechnique",
         objectType: "WorkMaterial_display",
         artists: {
             name: "Creator",
@@ -49,7 +50,7 @@ module.exports = {
             "WorkMeasurements_display",
             (measurement, data) => {
                 if (measurement) {
-                    return pd.parseDimension(measurement);
+                    return pd.parseDimension(measurement, true);
                 }
             },
         ],

@@ -6,7 +6,7 @@
         "source": "frick",
         "converter": "frick",
         "lang": "en",
-        "dataFiles": ["sources/frick/ITALANON_FORJOHN_FINAL.txt"],
+        "dataFiles": ["sources/frick/ItalianAnonymousDataForJohn.csv"],
         "imageDir": "sources/frick/images/"
     },
     {
