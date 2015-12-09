@@ -8,9 +8,9 @@ const pd = require("parse-dimensions");
 
 module.exports = {
     propMap: {
-        id: "BibRecordNumberLong",
+        id: "bibRecordNumberLong",
         url: [
-            "BibRecordNumberLong",
+            "bibRecordNumberLong",
             (id) => {
                 // The ID is actually missing the last number
                 // (although it's not always a number!)
@@ -19,7 +19,7 @@ module.exports = {
                 return `http://arcade.nyarc.org/record=${id}~S7`;
             },
         ],
-        title: "WorkTitle",
+        title: "Title",
         dateCreateds: [
             "WorkDate_earliestDate",
             (earliest, data) => {
@@ -37,8 +37,6 @@ module.exports = {
                 return yr.parse(data.Creator_datesDisplay);
             },
         ],
-        // Category ?
-        // Supplemental Categories
         categories: "WorkSubject_classSubj",
         medium: "WorkTechnique",
         objectType: "WorkMaterial_display",
@@ -56,12 +54,13 @@ module.exports = {
         ],
         collections: {
             city: "WorkLocation_city",
-            name: "WorkLocation_collection",
+            name: "Collection",
         },
         images: {
-            id: "Xinet_ID",
-            fileName: ["Filename",
-                (fileName, data) => fileName.replace(/\.tif$/, ".jpg")],
+            id: "ImageID",
+            fileName: ["FullPath",
+                (fileName, data) => fileName.replace(/^.*[/]/, "")
+                    .replace(/\.tif$/, ".jpg")],
         },
     },
 
