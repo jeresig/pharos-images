@@ -124,21 +124,16 @@ module.exports = {
         fileStreams[0]
             .pipe(csv({
                 objectMode: true,
-                delimiter: "\t",
-                newline: "\r",
+                delimiter: ",",
+                newline: "\n",
                 columns: true,
             }))
             .on("data", (data) => {
-                const newData = {};
-
-                for (const prop in data) {
-                    const cleanProp = prop.replace(/\s*\*?$/, "");
-                    newData[cleanProp] = data[prop].replace(/\\N/g, "");
-                }
-
-                const result = this.searchByProps(newData, this.propMap);
-                if (result.id) {
-                    results.push(result);
+                if (data.bibRecordNumberLong) {
+                    const result = this.searchByProps(data, this.propMap);
+                    if (result.id) {
+                        results.push(result);
+                    }
                 }
             })
             .on("end", () => {
