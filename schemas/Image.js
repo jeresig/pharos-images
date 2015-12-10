@@ -27,10 +27,4 @@ module.exports = (core) => new core.db.schema({
     // Dimension of the image, in pixels
     width: Number,
     height: Number,
-
-    // Similar images (as determined by Pastec)
-    similarImages: [{
-        id: String,
-        score: Number,
-    }],
 });

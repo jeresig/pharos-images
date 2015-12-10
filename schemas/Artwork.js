@@ -245,37 +245,36 @@ module.exports = (core) => {
                 }, {});
 
                 if (matches.length === 0) {
-                    callback();
-
-                } else {
-                    const query = matches.map((match) => ({
-                        "images.imageName": match.id,
-                    }));
-
-                    core.models.Artwork.find({$or: query}, (err, artworks) => {
-                        if (err) {
-                            return callback(err);
-                        }
-
-                        artwork.similarArtworks = artworks
-                            .filter((similar) => similar._id !== artwork._id)
-                            .map((similar) => {
-                                const imageScores = similar.images.map(
-                                    (image) => scores[image.imageName] || 0);
-
-                                return {
-                                    artwork: similar._id,
-                                    images: similar.images.map(
-                                        (image) => image.imageName),
-                                    score: imageScores.reduce((a, b) => a + b),
-                                    source: similar.source,
-                                };
-                            })
-                            .sort((a, b) => b.score - a.score);
-
-                        callback();
-                    });
+                    return callback();
                 }
+
+                const query = matches.map((match) => ({
+                    "images.imageName": match.id,
+                }));
+
+                core.models.Artwork.find({$or: query}, (err, artworks) => {
+                    if (err) {
+                        return callback(err);
+                    }
+
+                    artwork.similarArtworks = artworks
+                        .filter((similar) => similar._id !== artwork._id)
+                        .map((similar) => {
+                            const imageScores = similar.images.map(
+                                (image) => scores[image.imageName] || 0);
+
+                            return {
+                                artwork: similar._id,
+                                images: similar.images.map(
+                                    (image) => image.imageName),
+                                score: imageScores.reduce((a, b) => a + b),
+                                source: similar.source,
+                            };
+                        })
+                        .sort((a, b) => b.score - a.score);
+
+                    callback();
+                });
             });
         },
     };
