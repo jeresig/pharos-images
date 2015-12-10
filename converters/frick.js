@@ -23,7 +23,7 @@ module.exports = {
         dateCreateds: [
             "WorkDate_earliestDate",
             (earliest, data) => {
-                if (earliest || data.WorkDate_latestDate) {
+                if (earliest && data.WorkDate_latestDate) {
                     return {
                         start: parseFloat(earliest),
                         end: parseFloat(data.WorkDate_latestDate),
