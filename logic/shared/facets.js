@@ -92,5 +92,51 @@ module.exports = (core, app) => {
                 `${bucket.from || 0}-${bucket.to}` :
                 `${bucket.from}+`,
         },
+
+        date: {
+            agg: (query) => {
+                let ranges = [
+                    { to: 999 },
+                    { from: 1000, to: 1099 },
+                    { from: 1100, to: 1199 },
+                    { from: 1200, to: 1299 },
+                    { from: 1300, to: 1399 },
+                    { from: 1400, to: 1499 },
+                    { from: 1500, to: 1599 },
+                    { from: 1600, to: 1699 },
+                    { from: 1700, to: 1799 },
+                    { from: 1800, to: 1899 },
+                    { from: 1900 },
+                ];
+
+                const start = parseFloat(query.dateStart);
+                const end = parseFloat(query.dateEnd);
+
+                if (start && end && end - start < 300) {
+                    ranges = [];
+                    for (let year = start; year < end; year += 10) {
+                        ranges.push({
+                            from: year,
+                            to: year + 9,
+                        });
+                    }
+                }
+
+                return {
+                    range: {
+                        field: "dateCreateds.years",
+                        ranges: ranges,
+                    },
+                };
+            },
+            name: (res) => res.locals.gettext("Date"),
+            url: (res, bucket) => res.locals.searchURL({
+                dateStart: bucket.from,
+                dateEnd: bucket.to,
+            }),
+            text: (res, bucket) => bucket.to ?
+                `${bucket.from || 0}-${bucket.to}` :
+                `${bucket.from}+`,
+        },
     };
 };

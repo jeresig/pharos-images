@@ -28,7 +28,8 @@ module.exports = (core, app) => {
         // Construct the facets that will be put in to Elasticsearch
         // (called aggregations)
         const aggregations = Object.keys(facets).reduce((obj, name) => {
-            obj[name] = facets[name].agg;
+            const agg = facets[name].agg;
+            obj[name] = (typeof agg === "function" ? agg(query) : agg);
             return obj;
         }, {});
 
