@@ -279,5 +279,30 @@ module.exports = (core) => {
         },
     };
 
+    // We generate a list of years in which the artwork exists, in order
+    // to improve querying inside Elasticsearch
+    const updateYearRanges = function(next) {
+        this.dateCreateds.forEach((range) => {
+            if (!range.start || !range.end || range.start > range.end) {
+                return next();
+            }
+
+            // NOTE(jeresig): This will get much better once generators
+            // are available in Node!
+            const years = [];
+
+            for (let year = range.start; year <= range.end; year += 1) {
+                years.push(year);
+            }
+
+            range.years = years;
+        });
+
+        next();
+    };
+
+    Artwork.pre("save", updateYearRanges);
+    Artwork.pre("update", updateYearRanges);
+
     return Artwork;
 };
