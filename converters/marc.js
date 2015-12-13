@@ -6,6 +6,8 @@ const marc = require("marcjs");
 const yr = require("yearrange");
 const pd = require("parse-dimensions");
 
+const trim = (str) => str.replace(/[.,]$/, "");
+
 module.exports = {
     propMap: {
         id: ["001"],
@@ -15,12 +17,17 @@ module.exports = {
                 `holdingsInfo?bibId=${id}`,
         ],
         bibID: ["004"],
-        title: ["245", ["a"]],
-        dateCreateds: ["260", ["c"], (results) => yr.parse(results[0])],
+        title: ["245", ["a"], (results) => trim(results[0])],
+        dateCreateds: ["260", ["c"], (results) => yr.parse(trim(results[0]))],
         categories: [
             "650",
-            ["a", "y", "z"],
-            (results) => results.filter((name) => !!name).join(", "),
+            ["a", "x", "y", "z"],
+            (results) => results.filter((name) => !!name).join(", ").map(trim),
+        ],
+        depictions: [
+            "600",
+            ["a", "c"],
+            (results) => results.filter((name) => !!name).join(", ").map(trim),
         ],
         medium: ["300", ["a"]],
         artists: [
@@ -28,11 +35,11 @@ module.exports = {
             ["a", "d"],
             (results) => {
                 const data = {
-                    name: results[0],
+                    name: trim(results[0]),
                 };
 
                 if (results[1]) {
-                    data.dates = yr.parse(results[1]);
+                    data.dates = yr.parse(trim(results[1]));
                 }
 
                 return data;
@@ -43,12 +50,12 @@ module.exports = {
             ["c"],
             // Flip the results, assume height is first
             (results) => (results[0] &&
-                pd.parseDimensions(results[0], true)),
+                pd.parseDimensions(trim(results[0]), true)),
         ],
         collections: [
             "710",
             ["a"],
-            (results) => (results[0] && {name: results[0]}),
+            (results) => (results[0] && {name: trim(results[0])}),
         ],
         images: [
             "856",
@@ -81,6 +88,9 @@ module.exports = {
 
                     if (!item[id].subfields) {
                         result[name] = item[id];
+                        if (lookup[1]) {
+                            result[name] = lookup[1](result[name]);
+                        }
                         continue;
                     }
 
@@ -132,6 +142,7 @@ module.exports = {
 
         bibReader.on("data", (record) => {
             const result = this.parseRecord(record);
+            result.categories = result.categories.concat(result.depictions);
             result.images = [];
             bibs[result.id] = result;
         });
