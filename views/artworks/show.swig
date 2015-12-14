@@ -28,7 +28,7 @@
     </div>
     <div class="details col-md-6">
         <p class="row artist">
-            <strong class="col-md-3 right">{{ gettext("Artist:") }}</strong>
+            <strong class="col-md-3 right">{{ gettext("Artist") }}</strong>
             <span class="col-md-9">
             {% for name in artwork.artists %}
                 {% if name.artist %}
@@ -43,19 +43,19 @@
         </p>
         {% if artwork.title %}
             <p class="row title">
-                <strong class="col-md-3 right">{{ gettext("Title:") }}</strong>
+                <strong class="col-md-3 right">{{ gettext("Title") }}</strong>
                 <span class="col-md-9">{{ artwork.title }}</span>
             </p>
         {% endif %}
         {% if artwork.dateCreated %}
             <p class="row date">
-                <strong class="col-md-3 right">{{ gettext("Date:") }}</strong>
+                <strong class="col-md-3 right">{{ gettext("Date") }}</strong>
                 <span class="col-md-9">{{ getDate(artwork.dateCreated) }}</span>
             </p>
         {% endif %}
         {% if artwork.dimensions.length > 0 %}
             <p class="row date">
-                <strong class="col-md-3 right">{{ gettext("Dimensions:") }}</strong>
+                <strong class="col-md-3 right">{{ gettext("Dimensions") }}</strong>
                 <span class="col-md-9">
                     {% for dimension in artwork.dimensions %}
                         {{ getDimension(dimension) }}<br/>
@@ -63,21 +63,21 @@
                 </span>
             </p>
         {% endif %}
-        {% if artwork.medium %}
-            <p class="row medium">
-                <strong class="col-md-3 right">{{ gettext("Medium:") }}</strong>
-                <span class="col-md-9">{{ artwork.medium }}</span>
-            </p>
-        {% endif %}
         {% if artwork.objectType %}
             <p class="row objectType">
-                <strong class="col-md-3 right">{{ gettext("Type:") }}</strong>
+                <strong class="col-md-3 right">{{ gettext("Type") }}</strong>
                 <span class="col-md-9">{{ artwork.objectType }}</span>
+            </p>
+        {% endif %}
+        {% if artwork.medium %}
+            <p class="row medium">
+                <strong class="col-md-3 right">{{ gettext("Medium") }}</strong>
+                <span class="col-md-9">{{ artwork.medium }}</span>
             </p>
         {% endif %}
         {% if artwork.categories.length > 0 %}
             <p class="row categories">
-                <strong class="col-md-3 right">{{ gettext("Categories:") }}</strong>
+                <strong class="col-md-3 right">{{ gettext("Categories") }}</strong>
                 <span class="col-md-9">
                     {% for category in artwork.categories %}
                         {{ category }}<br/>
@@ -87,7 +87,7 @@
         {% endif %}
         {% if artwork.collections.length > 0 %}
             <p class="row categories">
-                <strong class="col-md-3 right">{{ gettext("Collection:") }}</strong>
+                <strong class="col-md-3 right">{{ gettext("Collection") }}</strong>
                 <span class="col-md-9">
                     {% for collection in artwork.collections %}
                         {{ collection.name }}<br/>
@@ -102,9 +102,9 @@
             <p class="row details">
                 <strong class="col-md-3 right">
                     {% if artwork.getSource().commercial %}
-                        <small>{{ gettext("Details &amp;&nbsp;Prices:") }}</small>
+                        <small>{{ gettext("Details &amp;&nbsp;Prices") }}</small>
                     {% else %}
-                        {{ gettext("Details:") }}
+                        {{ gettext("Details") }}
                     {% endif %}
                 </strong>
                 <span class="col-md-9">
@@ -126,14 +126,14 @@
 
         {% if artwork.getSource().inactive %}
             <p class="row source">
-                <strong class="col-md-3 right">{{ gettext("Source:") }}</strong>
+                <strong class="col-md-3 right">{{ gettext("Source") }}</strong>
                 <span class="col-md-9"><a href="{{ URL(artwork.getSource()) }}"
                     title="{{ fullName(artwork.getSource()) }}">
                     {{ fullName(artwork.getSource()) }}</a></span>
             </p>
         {% else %}
             <p class="row source">
-                <strong class="col-md-3 right">{{ gettext("Source:") }}</strong>
+                <strong class="col-md-3 right">{{ gettext("Source") }}</strong>
                 <span class="col-md-9"><a href="{{ artwork.getSource().url }}">
                     {% if artwork.getSource().linkText %}
                         {{ artwork.getSource().linkText }}
