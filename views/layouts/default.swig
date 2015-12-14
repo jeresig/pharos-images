@@ -48,6 +48,11 @@
 
             <div id="header-navbar" class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
+                    <li>
+                        <a href="{{ URL("/search") }}">
+                            {{ gettext("Browse All") }}
+                        </a>
+                    </li>
                     <li class="dropdown">
                         <a href="" class="dropdown-toggle"
                             data-toggle="dropdown" role="button"
