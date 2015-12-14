@@ -26,9 +26,14 @@ module.exports = (core, app) => {
                 }
             }
 
-            if (Object.keys(params).length === 1 && "source" in params) {
-                return Source.getSource(params.source)
-                    .getURL(res.locals.lang);
+            if (Object.keys(params).length === 1) {
+                if ("source" in params) {
+                    return Source.getSource(params.source)
+                        .getURL(res.locals.lang);
+                } else if ("type" in params) {
+                    return core.urls.gen(res.locals.lang,
+                        `/type/${params.type}`);
+                }
             }
 
             return core.urls.gen(res.locals.lang,

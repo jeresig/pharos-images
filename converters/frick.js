@@ -6,6 +6,14 @@ const csv = require("csv-streamify");
 const yr = require("yearrange");
 const pd = require("parse-dimensions");
 
+const types = {
+    "#N/A": undefined,
+    "0": undefined,
+    "detached fresco": "fresco",
+    "detached mosaic": "mosaic",
+    "miniature": "painting",
+};
+
 module.exports = {
     propMap: {
         id: "bibRecordNumberLong",
@@ -38,8 +46,11 @@ module.exports = {
             },
         ],
         categories: "WorkSubject_classSubj",
-        medium: "WorkTechnique",
-        objectType: "WorkMaterial_display",
+        medium: "WorkMaterial_display",
+        objectType: [
+            "WorkTechnique",
+            (type) => (type in types ? types[type] : type),
+        ],
         artists: {
             name: "Creator",
             dates: ["Creator_datesDisplay", (date) => yr.parse(date)],

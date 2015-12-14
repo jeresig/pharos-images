@@ -8,26 +8,30 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2015-12-13 04:31+0000\n"
+"POT-Creation-Date: 2015-12-14 04:13+0000\n"
 
 #: logic/artists.js:126
 msgid "Artworks by %(artist)s."
 msgstr ""
 
-#: logic/artworks.js:26
+#: logic/artworks.js:27
 msgid "Results for '%(query)s'"
 msgstr ""
 
-#: logic/artworks.js:30
+#: logic/artworks.js:31
 msgid "All Artworks"
 msgstr ""
 
-#: logic/artworks.js:34
+#: logic/artworks.js:35
 msgid "Artist '%(artist)s'"
 msgstr ""
 
-#: logic/artworks.js:40
+#: logic/artworks.js:41
 msgid "Artworks matching '%(query)s'."
+msgstr ""
+
+#: logic/artworks.js:55
+msgid "Browse all %(type)s."
 msgstr ""
 
 #: logic/sources.js:11
@@ -78,30 +82,38 @@ msgid "Sample Andrea del Sarto"
 msgstr ""
 
 #: views/artworks/index.swig:7
-msgid "Date"
+msgid "Type"
 msgstr ""
 
 #: views/artworks/index.swig:8
-msgid "Width (mm)"
+msgid "Any Type"
 msgstr ""
 
 #: views/artworks/index.swig:9
-msgid "Height (mm)"
+msgid "Date"
 msgstr ""
 
 #: views/artworks/index.swig:10
-msgid "Sources"
+msgid "Width (mm)"
 msgstr ""
 
 #: views/artworks/index.swig:11
-msgid "All Sources"
+msgid "Height (mm)"
 msgstr ""
 
 #: views/artworks/index.swig:12
-msgid "Sort"
+msgid "Source"
 msgstr ""
 
 #: views/artworks/index.swig:13
+msgid "Any Source"
+msgstr ""
+
+#: views/artworks/index.swig:14
+msgid "Sort"
+msgstr ""
+
+#: views/artworks/index.swig:15
 #: views/home/index.swig:2
 #: views/home/index.swig:3
 #: views/layouts/default.swig:1
@@ -109,17 +121,17 @@ msgstr ""
 msgid "Search"
 msgstr ""
 
-#: views/artworks/index.swig:14
+#: views/artworks/index.swig:16
 msgid "Show %(count)s more..."
 msgstr ""
 
-#: views/artworks/index.swig:15
 #: views/artworks/index.swig:17
+#: views/artworks/index.swig:19
 msgid "Previous"
 msgstr ""
 
-#: views/artworks/index.swig:16
 #: views/artworks/index.swig:18
+#: views/artworks/index.swig:20
 msgid "Next"
 msgstr ""
 

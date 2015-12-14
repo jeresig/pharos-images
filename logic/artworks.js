@@ -3,6 +3,7 @@
 module.exports = function(core, app) {
     const Artwork = core.models.Artwork;
     const search = require("./shared/search")(core, app);
+    const types = require("./shared/types");
 
     return {
         load(req, res, next, artworkName) {
@@ -39,6 +40,20 @@ module.exports = function(core, app) {
                 title: title,
                 desc: req.format(req.gettext("Artworks matching '%(query)s'."),
                     {query: query}),
+            });
+        },
+
+        byType(req, res) {
+            const type = types[req.query.type || req.params.type];
+
+            if (!type) {
+                return res.render(404);
+            }
+
+            search(req, res, {
+                title: type.name(res),
+                desc: req.format(req.gettext("Browse all %(type)s."),
+                    {type: type.name(res)}),
             });
         },
 

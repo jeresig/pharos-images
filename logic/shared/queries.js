@@ -120,6 +120,19 @@ module.exports = {
         }),
     },
 
+    type: {
+        value: (req) => req.query.type || req.params.type || "",
+        match: (query) => ({
+            match: {
+                "objectType.raw": {
+                    query: query.type,
+                    operator: "or",
+                    zero_terms_query: "all",
+                },
+            },
+        }),
+    },
+
     artist: {
         value: (req) => req.query.artist || "",
         match: (query) => ({

@@ -18,6 +18,7 @@ module.exports = function(core, app) {
 
     app.get("/search", cache(1), artworks.search);
     app.get("/artworks/:sourceId/:artworkName", artworks.show);
+    app.get("/type/:type", cache(1), artworks.byType);
 
     app.param("artworkName", artworks.load);
 

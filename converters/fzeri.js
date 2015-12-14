@@ -6,6 +6,17 @@ const libxmljs = require("libxmljs");
 
 const pd = require("parse-dimensions");
 
+const types = {
+    "dipinto": "painting",
+    "grafica": "print",
+    "mosaico": "mosaic",
+    "scultura/ arti applicate": "decorative arts",
+    "arti applicate": "decorative arts",
+    "scultura": "sculpture",
+    "dipinto/ scultura": "painting",
+    "disegno": "drawing",
+};
+
 module.exports = {
     propMap: {
         id: "SERCD",
@@ -25,7 +36,18 @@ module.exports = {
             ],
         },
         medium: "MTC",
-        objectType: "OGTT",
+        objectType: [
+            "OGTT",
+            (val, getByTagName) => {
+                val = types[val] || val;
+                // Special-case frescos
+                if (val === "painting" &&
+                        /affresco/i.test(getByTagName("MTC"))) {
+                    val = "fresco";
+                }
+                return val;
+            },
+        ],
         dimensions: [
             "MISU",
             (unit, getByTagName) => {

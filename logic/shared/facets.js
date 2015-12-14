@@ -1,5 +1,7 @@
 "use strict";
 
+const types = require("./types");
+
 module.exports = (core, app) => {
     const Source = core.models.Source;
 
@@ -13,6 +15,18 @@ module.exports = (core, app) => {
             name: (res) => res.locals.gettext("Sources"),
             url: (res, bucket) => res.locals.searchURL("source", bucket.key),
             text: (res, bucket) => Source.getSource(bucket.key).name,
+        },
+
+        type: {
+            agg: {
+                terms: {
+                    field: "objectType.raw",
+                },
+            },
+            name: (res) => res.locals.gettext("Types"),
+            url: (res, bucket) => res.locals.searchURL("type", bucket.key),
+            text: (res, bucket) => (bucket.key in types ?
+                types[bucket.key].name(res) : bucket.key),
         },
 
         date: {

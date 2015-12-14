@@ -37,6 +37,15 @@
                         value="{{query.artist}}" class="form-control"/>
                 </div>
                 <div class="form-group">
+                    <label for="type" class="control-label">{{ gettext("Type") }}</label>
+                    <select name="type" style="width: 100%;" class="form-control">
+                        <option value="" selected>{{ gettext("Any Type") }}</option>
+                    {% for type in types %}
+                        <option value="{{type.id}}" {% if type.selected %} selected{% endif %}>{{type.name}}</option>
+                    {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
                     <label for="dateStart" class="control-label">{{ gettext("Date") }}</label>
                     <div class="form-inline">
                         <input type="text" name="dateStart" value="{{query.dateStart}}"
@@ -69,9 +78,9 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="source" class="control-label">{{ gettext("Sources") }}</label>
+                    <label for="source" class="control-label">{{ gettext("Source") }}</label>
                     <select name="source" style="width: 100%;" class="form-control">
-                        <option value="" selected>{{ gettext("All Sources") }}</option>
+                        <option value="" selected>{{ gettext("Any Source") }}</option>
                     {% for source in sources %}
                         <option value="{{source._id}}" {% if query.source === source._id %} selected{% endif %}>{{source.name}}</option>
                     {% endfor %}

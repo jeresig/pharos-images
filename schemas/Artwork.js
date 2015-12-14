@@ -48,7 +48,18 @@ module.exports = (core) => {
         // Date when the artwork was created (typically a rough year, or range).
         dateCreateds: [YearRange],
 
-        objectType: {type: String, es_indexed: true},
+        // The English form of the object type (e.g. painting, print)
+        objectType: {
+            type: String,
+            es_indexed: true,
+            es_type: "multi_field",
+            // A raw type to use for building aggregations in Elasticsearch
+            es_fields: {
+                name: {type: "string", index: "analyzed"},
+                raw: {type: "string", index: "not_analyzed"},
+            },
+        },
+
         medium: {type: String, es_indexed: true},
 
         collections: [Collection],

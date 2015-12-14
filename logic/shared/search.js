@@ -7,6 +7,7 @@ module.exports = (core, app) => {
     const facets = require("./facets")(core, app);
     const queries = require("./queries");
     const sorts = require("./sorts");
+    const types = require("./types");
 
     return (req, res, tmplParams) => {
         // Build the query object which will be used to construct
@@ -98,8 +99,17 @@ module.exports = (core, app) => {
                 selected: query.sort === id,
             }));
 
+            // Construct a list of the possible types, their translated
+            // names and their selected state, for the template.
+            const typeData = Object.keys(types).map((id) => ({
+                id: id,
+                name: types[id].name(res),
+                selected: query.type === id,
+            }));
+
             res.render("artworks/index", Object.assign({
                 sources: Source.getSources(),
+                types: typeData,
                 minDate: process.env.DEFAULT_START_DATE,
                 maxDate: process.env.DEFAULT_END_DATE,
                 sorts: sortData,

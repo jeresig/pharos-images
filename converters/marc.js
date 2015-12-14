@@ -6,7 +6,21 @@ const marc = require("marcjs");
 const yr = require("yearrange");
 const pd = require("parse-dimensions");
 
-const trim = (str) => str.replace(/[.,]$/, "");
+const trim = (str) => (str || "").replace(/[.,]$/, "");
+
+const types = {
+    "Painting": "painting",
+    "Frescoes": "fresco",
+    "Drawing": "drawing",
+    "Drawings": "drawing",
+    "Sculpture": "sculpture",
+    "Decorative arts": "decorative arts",
+    "Medals": "medal",
+    "Prints": "print",
+    "Photography": "photo",
+};
+
+const defaultType = "painting";
 
 module.exports = {
     propMap: {
@@ -22,14 +36,47 @@ module.exports = {
         categories: [
             "650",
             ["a", "x", "y", "z"],
-            (results) => results.filter((name) => !!name).join(", ").map(trim),
+            (results) => results.filter((name) => !!name).map(trim).join(", "),
+            (val, result) => {
+                if (result.depictions) {
+                    val = val.concat(result.depictions);
+                    delete result.depictions;
+                }
+
+                return val;
+            },
         ],
         depictions: [
             "600",
             ["a", "c"],
-            (results) => results.filter((name) => !!name).join(", ").map(trim),
+            (results) => results.filter((name) => !!name).map(trim).join(", "),
         ],
-        medium: ["300", ["a"]],
+        medium: ["300", ["a"], (results) => trim(results[0])],
+        objectType: [
+            "650",
+            ["a", "y", "z"],
+            (results) => results[1] && results[2] ? trim(results[0]) : "",
+            (val) => {
+                if (!val) {
+                    return;
+                }
+
+                val = Array.isArray(val) ? val : [val];
+                let ret;
+
+                for (let i = 0; i < val.length; i += 1) {
+                    if (types[val[i]]) {
+                        ret = types[val[i]];
+                    }
+                }
+
+                if (!ret) {
+                    ret = defaultType;
+                }
+
+                return ret;
+            },
+        ],
         artists: [
             "100",
             ["a", "d"],
@@ -130,6 +177,14 @@ module.exports = {
             }
         });
 
+        for (const name in this.propMap) {
+            const lookup = this.propMap[name];
+
+            if (lookup[3]) {
+                result[name] = lookup[3](result[name], result);
+            }
+        }
+
         return result;
     },
 
@@ -142,7 +197,6 @@ module.exports = {
 
         bibReader.on("data", (record) => {
             const result = this.parseRecord(record);
-            result.categories = result.categories.concat(result.depictions);
             result.images = [];
             bibs[result.id] = result;
         });
