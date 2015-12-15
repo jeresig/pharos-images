@@ -19,6 +19,13 @@ module.exports = (core, app) => {
             return obj;
         }, {});
 
+        const curURL = core.urls.gen(res.locals.lang, req.originalUrl);
+        const expectedURL = res.locals.searchURL(query);
+
+        if (expectedURL !== curURL) {
+            return res.redirect(expectedURL);
+        }
+
         // Generate the matches which will be fed in to Elasticsearch
         // to build the query matching
         const matches = Object.keys(queries)
