@@ -27,4 +27,12 @@ core.init(() => {
             process.exit(0);
         }
     });
+
+    process.on("uncaughtException", (err) => {
+        console.error("Exception:", err);
+
+        if (process.send) {
+            process.send("offline");
+        }
+    });
 });
