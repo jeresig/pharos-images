@@ -9,7 +9,19 @@ const env = process.env.NODE_ENV || "development";
 const rootPath = path.resolve(__dirname, "../..");
 
 module.exports = (core, app) => {
-    let CDN = (req, res) => (path) => path;
+    let CDN = (req, res) => (path, opts) => {
+        if (opts && opts.raw) {
+            return path;
+        }
+
+        if (/\.css$/.test(path)) {
+            return `<link rel="stylesheet" href="${path}"/>`;
+        } else if (/\.js$/.test(path)) {
+            return `<script src="${path}"></script>`;
+        }
+
+        throw new Error(`Unknown static file: ${path}`);
+    };
 
     if (staticBucket) {
         if (!process.env.S3_KEY) {
