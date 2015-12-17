@@ -36,8 +36,10 @@ module.exports = (core, app) => {
                 }
             }
 
+            const paramString = qs.stringify(params);
+
             return core.urls.gen(res.locals.lang,
-                `/search?${qs.stringify(params)}`);
+                `/search${paramString ? "?" : ""}${paramString}`);
         };
 
         next();
