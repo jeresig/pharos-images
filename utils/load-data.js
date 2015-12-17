@@ -102,7 +102,7 @@ const importData = (options, callback) => {
                     return callback();
                 }
 
-                artwork.addImage(imgFile, image.id, callback);
+                artwork.addImage(imgFile, callback);
             }, (err) => {
                 if (err) {
                     console.error("Error adding images:", err);

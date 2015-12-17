@@ -77,7 +77,7 @@ module.exports = (core, app) => {
 
                         upload._id = id;
 
-                        upload.addImage(file, id, (err) => {
+                        upload.addImage(file, (err) => {
                             if (err) {
                                 // TODO: Show some sort of error message
                                 console.error("Error Adding Image:", err);

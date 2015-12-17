@@ -167,7 +167,7 @@ module.exports = (core) => {
             return core.models.Source.getSource(this.source);
         },
 
-        addImage(file, id, callback) {
+        addImage(file, callback) {
             const sourceDir = this.sourceDirBase();
 
             core.images.processImage(file, sourceDir, false, (err, hash) => {
@@ -175,11 +175,8 @@ module.exports = (core) => {
                     return callback(err);
                 }
 
-                // Use the source-provided ID if it exists
-                const imageID = `${this.source}/${id || hash}`;
-
                 // Stop if the image is already in the images list
-                if (this.images.some((image) => image.imageID === imageID)) {
+                if (this.images.some((image) => image.imageName === hash)) {
                     return this.indexImage(file, hash, callback);
                 }
 
@@ -190,7 +187,6 @@ module.exports = (core) => {
 
                     this.images.push({
                         imageName: hash,
-                        imageID: imageID,
                         width: size.width,
                         height: size.height,
                     });
