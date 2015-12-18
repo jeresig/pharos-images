@@ -89,12 +89,12 @@ module.exports = {
 
     rows: {
         value: (req) => parseFloat(req.query.rows),
-        defaultValue: (req) => parseFloat(process.env.DEFAULT_ROWS),
+        defaultValue: (req) => parseFloat(process.env.DEFAULT_ROWS || "100"),
     },
 
     sort: {
         value: (req) => req.query.sort,
-        defaultValue: (req) => process.env.DEFAULT_SORT,
+        defaultValue: (req) => process.env.DEFAULT_SORT || "dateAsc",
     },
 
     filter: {

@@ -117,8 +117,8 @@ module.exports = (core, app) => {
             res.render("artworks/index", Object.assign({
                 sources: Source.getSources(),
                 types: typeData,
-                minDate: process.env.DEFAULT_START_DATE,
-                maxDate: process.env.DEFAULT_END_DATE,
+                minDate: process.env.DEFAULT_START_DATE || "",
+                maxDate: process.env.DEFAULT_END_DATE || "",
                 sorts: sortData,
                 facets: facetData,
                 artworks: results.hits.hits,

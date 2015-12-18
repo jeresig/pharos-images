@@ -2,11 +2,8 @@
 
 const path = require("path");
 
-const expressCDN = require("express-cdn");
-
 const staticBucket = process.env.S3_STATIC_BUCKET;
 const env = process.env.NODE_ENV || "development";
-const rootPath = path.resolve(__dirname, "../..");
 
 module.exports = (core, app) => {
     let CDN = (req, res) => (path, opts) => {
@@ -31,6 +28,9 @@ module.exports = (core, app) => {
         if (!process.env.S3_SECRET) {
             throw new Error("ENV S3_SECRET is undefined.");
         }
+
+        const expressCDN = require("express-cdn");
+        const rootPath = path.resolve(__dirname, "../..");
 
         CDN = expressCDN(app, {
             publicDir: `${rootPath}/public`,

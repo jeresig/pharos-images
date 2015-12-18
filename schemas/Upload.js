@@ -3,8 +3,10 @@
 module.exports = (core) => {
     const Artwork = require("./Artwork")(core);
 
+    const uploadName = "uploads";
+
     const Upload = Artwork.extend({}, {
-        collection: "uploads",
+        collection: uploadName,
     });
 
     Upload.methods.getTitle = function(locale) {
@@ -13,7 +15,25 @@ module.exports = (core) => {
     };
 
     Upload.methods.getURL = function(locale) {
-        return core.urls.gen(locale, `/uploads/${this._id}`);
+        return core.urls.gen(locale, `/${uploadName}/${this._id}`);
+    };
+
+    // We don't save the uploaded files in the index so we override this
+    // method to use `fileSimilar` to re-query every time.
+    Upload.methods.updateImageSimilarity = function(image, callback) {
+        const id = image.imageName;
+        const file = core.urls.genLocalFile(
+            `/${uploadName}/scaled/${image.imageName}.jpg`);
+
+        core.similar.fileSimilar(file, (err, matches) => {
+            if (err) {
+                return callback(err);
+            }
+
+            image.similarImages = matches.filter((match) => match.id !== id);
+
+            callback();
+        });
     };
 
     return Upload;

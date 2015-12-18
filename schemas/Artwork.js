@@ -2,10 +2,6 @@
 
 const async = require("async");
 
-const pastec = require("pastec")({
-    server: process.env.PASTEC_URL,
-});
-
 module.exports = (core) => {
     const Name = require("./Name")(core);
     const YearRange = require("./YearRange")(core);
@@ -108,44 +104,25 @@ module.exports = (core) => {
             return core.urls.gen(locale, `/artworks/${this._id}`);
         },
 
-        sourceURLBase() {
-            return process.env.BASE_DATA_URL + this.source;
-        },
-
-        sourceDirBase() {
-            return process.env.BASE_DATA_DIR + this.source;
-        },
-
         getOriginalURL(image) {
             image = image || this.images[0];
-            return `${this.sourceURLBase()}/images/${image.imageName}.jpg`;
+            return core.urls.genData(
+                `/${this.source}/images/${image.imageName}.jpg`);
         },
 
         getScaledURL(image) {
             image = image || this.images[0];
-            return `${this.sourceURLBase()}/scaled/${image.imageName}.jpg`;
+            return core.urls.genData(
+                `/${this.source}/scaled/${image.imageName}.jpg`);
         },
 
         getThumbURL(image) {
             image = image || this.images[0];
-            return `${this.sourceURLBase()}/thumbs/${image.imageName}.jpg`;
-        },
-
-        getImagePath(image) {
-            image = image || this.images[0];
-            return `${this.sourceDirBase()}/images/${image.imageName}.jpg`;
-        },
-
-        getScaledPath(image) {
-            image = image || this.images[0];
-            return `${this.sourceDirBase()}/scaled/${image.imageName}.jpg`;
+            return core.urls.genData(
+                `/${this.source}/thumbs/${image.imageName}.jpg`);
         },
 
         getTitle(locale) {
-            if (this.display_title) {
-                return this.display_title;
-            }
-
             const parts = [];
 
             if (this.artist && this.artist.artist) {
@@ -170,7 +147,7 @@ module.exports = (core) => {
         addImage(file, callback) {
             const sourceDir = this.sourceDirBase();
 
-            core.images.processImage(file, sourceDir, false, (err, hash) => {
+            core.images.processImage(file, sourceDir, (err, hash) => {
                 if (err) {
                     return callback(err);
                 }
@@ -197,16 +174,12 @@ module.exports = (core) => {
         },
 
         indexImage(file, id, callback) {
-            pastec.idIndexed(id, (err, indexed) => {
-                if (err) {
+            core.similar.idIndexed(id, (err, indexed) => {
+                if (err || indexed) {
                     return callback(err);
                 }
 
-                if (indexed) {
-                    return callback();
-                }
-
-                pastec.add(file, id, (err) => {
+                core.similar.add(file, id, (err) => {
                     // Ignore small images, we just won't index them
                     if (err && err.type === "IMAGE_SIZE_TOO_SMALL") {
                         return callback();
@@ -217,34 +190,40 @@ module.exports = (core) => {
             });
         },
 
-        syncSimilarity(callback) {
-            const artwork = this;
+        updateImageSimilarity(image, callback) {
+            const id = image.imageName;
 
-            async.mapLimit(artwork.images, 1, (image, callback) => {
-                const id = image.imageName;
+            core.similar.idIndexed(id, (err, exists) => {
+                if (err || !exists) {
+                    return callback(err);
+                }
 
-                pastec.idIndexed(id, (err, exists) => {
-                    if (err || !exists) {
+                core.similar.similar(id, (err, matches) => {
+                    if (err) {
                         return callback(err);
                     }
 
-                    pastec.similar(id, (err, matches) => {
-                        if (err) {
-                            return callback(err);
-                        }
+                    image.similarImages = matches
+                        .filter((match) => match.id !== id);
 
-                        matches = matches.filter((match) => match.id !== id);
-                        image.similarImages = matches;
-                        callback(err, matches);
-                    });
+                    callback();
                 });
-            }, (err, results) => {
+            });
+        },
+
+        syncSimilarity(callback) {
+            const artwork = this;
+
+            async.eachLimit(artwork.images, 1, (image, callback) => {
+                artwork.updateImageSimilarity(image, callback);
+            }, (err) => {
                 if (err) {
                     return callback(err);
                 }
 
                 // Calculate artwork matches before saving
-                const matches = results.filter((match) => match)
+                const matches = artwork.images
+                    .map((image) => image.similarImages || [])
                     .reduce((a, b) => a.concat(b), []);
                 const scores = matches.reduce((obj, match) => {
                     obj[match.id] = Math.max(match.score, obj[match.id] || 0);

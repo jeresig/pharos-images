@@ -8,7 +8,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2015-12-17 18:45+0000\n"
+"POT-Creation-Date: 2015-12-18 22:44+0000\n"
 
 #: logic/artists.js:126
 msgid "Artworks by %(artist)s."
@@ -43,7 +43,7 @@ msgstr ""
 msgid "No file specified."
 msgstr ""
 
-#: logic/uploads.js:101
+#: logic/uploads.js:98
 msgid "Uploaded Image"
 msgstr ""
 

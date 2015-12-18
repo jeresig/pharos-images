@@ -57,40 +57,37 @@ module.exports = (core, app) => {
             const upload = new Upload({
                 source: "uploads",
             });
+            const sourceDir = upload.sourceDirBase();
 
             handleUpload(req, (err, file) => {
                 if (err) {
                     // TODO: Show some sort of error message
                     console.error("Error Uploading Image:", err);
-                    return res.redirect(
-                        core.urls.gen(res.locals.lang, "/"));
+                    return res.redirect(res.locals.URL("/"));
                 }
 
-                core.images.processImage(file, upload.sourceDirBase(),
-                    false, (err, id) => {
+                core.images.processImage(file, sourceDir, (err, id) => {
+                    if (err) {
+                        // TODO: Show some sort of error message
+                        console.error("Error Processing Image:", err);
+                        return res.redirect(res.locals.URL("/"));
+                    }
+
+                    upload._id = id;
+
+                    upload.addImage(file, (err) => {
                         if (err) {
                             // TODO: Show some sort of error message
-                            console.error("Error Processing Image:", err);
-                            return res.redirect(
-                                core.urls.gen(res.locals.lang, "/"));
+                            console.error("Error Adding Image:", err);
+                            return res.redirect(res.locals.URL("/"));
                         }
 
-                        upload._id = id;
-
-                        upload.addImage(file, (err) => {
-                            if (err) {
-                                // TODO: Show some sort of error message
-                                console.error("Error Adding Image:", err);
-                                return res.redirect(
-                                    core.urls.gen(res.locals.lang, "/"));
-                            }
-
-                            upload.syncSimilarity(() => {
-                                upload.save(() => res.redirect(
-                                    upload.getURL(res.locals.lang)));
-                            });
+                        upload.syncSimilarity(() => {
+                            upload.save(() => res.redirect(
+                                upload.getURL(res.locals.lang)));
                         });
                     });
+                });
             });
         },
 
