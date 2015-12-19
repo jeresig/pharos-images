@@ -3,18 +3,11 @@
 {% block title %}{{ artwork.title }}{% endblock %}
 
 {% block content %}
+{% set hasSimilar = artwork.similarArtworks.length > 0 %}
 <div id="result" class="row">
-    <div class="col-md-6 col-md-offset-2 imageholder">
-        <div class="row">
-            <div class="col-xs-12">
-                <a href="{{ artwork.getOriginalURL(artwork.images[0]) }}">
-                    <img src="{{ artwork.getScaledURL(artwork.images[0]) }}"
-                        alt="{{ getTitle(artwork) }}"
-                        title="{{ getTitle(artwork) }}"
-                        class="img-responsive center-block img-thumbnail"/>
-                </a>
-            </div>
-        </div>
+    <div class="{% if hasSimilar %}col-md-9{% else %}col-md-12{% endif %} imageholder">
+        <div id="openseadragon-viewer"></div>
+        <div id="openseadragon-toolbar"></div>
         
         {% if artwork.title %}
             <h1 class="title">
@@ -27,10 +20,13 @@
             <h1 class="title">{{ getType(artwork) }}</h1>
         {% endif %}
 
+        <div class="responsive-table">
+        <table class="table">
+
         {% if artwork.artists %}
-        <p>
-            <strong>{{ gettext("Artist:") }}</strong>
-            <span>
+        <tr>
+            <th class="text-right">{{ gettext("Artist") }}</th>
+            <td>
             {% for name in artwork.artists %}
                 {% if name.artist %}
                     <a href="{{ URL(name.artist) }}"
@@ -42,161 +38,81 @@
                     </a>
                 {% endif %}<br/>
             {% endfor %}
-            </span>
-        </p>
+            </td>
+        </tr>
         {% endif %}
 
         {% if artwork.dateCreated %}
-            <p>
-                <strong>{{ gettext("Date:") }}</strong>
-                <span>
+            <tr>
+                <th class="text-right">{{ gettext("Date") }}</th>
+                <td>
                     <a href="{{ searchURL({dateStart: artwork.dateCreated.start, dateEnd: artwork.dateCreated.end}) }}">
                         {{ getDate(artwork.dateCreated) }}
                     </a>
-                </span>
-            </p>
+                </td>
+            </tr>
         {% endif %}
 
         {% if artwork.objectType %}
-            <p>
-                <a href="{{ searchURL({type: artwork.objectType}) }}">
-                    {{ artwork.objectType }}
-                </a>
-            </p>
+            <tr>
+                <th class="text-right">{{ gettext("Type") }}</th>
+                <td>
+                    <a href="{{ searchURL({type: artwork.objectType}) }}">
+                        {{ getType(artwork) }}
+                    </a>
+                </td>
+            </tr>
         {% endif %}
 
-        {% if artwork.dimensions.length > 0 %}
-            <p>
-                <strong>{{ gettext("Dimensions:") }}</strong>
-                <span>
-                    {% for dimension in artwork.dimensions %}
-                        {{ getDimension(dimension) }}<br/>
-                    {% endfor %}
-                </span>
-            </p>
-        {% endif %}
-    </div>
-    <div class="col-md-3">
-        {% if artwork.images.length > 1 %}
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <strong>{{ gettext("Additional Images") }}</strong>
-                        </div>
-                        <div class="panel-body row">
-                            {% for image in artwork.images %}
-                                {% if loop.index0 > 0 %}
-                                <div class="img col-md-6">
-                                    <a href="{{ artwork.getOriginalURL(image) }}">
-                                        <img src="{{ artwork.getThumbURL(image) }}"
-                                            alt="{{ getTitle(artwork) }}"
-                                            title="{{ getTitle(artwork) }}"
-                                            class="img-responsive"/>
-                                    </a>
-                                </div>
-                                {% endif %}
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        {% endif %}
-
-        {% if artwork.similarArtworks.length > 0 %}
-        <div class="row">
-            <div class="col-md-12">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <strong>{{ gettext("Similar Artworks") }}</strong>
-                    </div>
-                    <div class="panel-body row">
-                        {% for match in artwork.similarArtworks %}
-                            {% if match.artwork %}
-                            <div class="img col-md-12">
-                                <a href="{{ URL(match.artwork) }}">
-                                    <img src="{{ match.artwork.getThumbURL(match.artwork.images[0]) }}"
-                                        alt="{{ getTitle(match.artwork) }}"
-                                        title="{{ getTitle(match.artwork) }}"
-                                        class="img-responsive"/>
-                                </a>
-                                <div class="details">
-                                    <div class="wrap">
-                                    {% if match.artwork.dateCreated %}
-                                        <span>{{ getDate(match.artwork.dateCreated) }}</span>
-                                    {% endif %}
-                                    <a class="pull-right" href="{{ URL(match.artwork.getSource()) }}"
-                                        title="{{ fullName(match.artwork.getSource()) }}">
-                                        {{ shortName(match.artwork.getSource()) }}
-                                    </a>
-                                    </div>
-                                </div>
-                            </div>
-                            {% endif %}
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
-        </div>
-        {% endif %}
-    </div>
-    <!--
-    <div class="details col-md-6">
-        {% if artwork.dimensions.length > 0 %}
-            <p class="row date">
-                <strong class="col-md-3 text-right">{{ gettext("Dimensions") }}</strong>
-                <span class="col-md-9">
-                    {% for dimension in artwork.dimensions %}
-                        {{ getDimension(dimension) }}<br/>
-                    {% endfor %}
-                </span>
-            </p>
-        {% endif %}
-        {% if artwork.objectType %}
-            <p class="row objectType">
-                <strong class="col-md-3 text-right">{{ gettext("Type") }}</strong>
-                <span class="col-md-9">{{ artwork.objectType }}</span>
-            </p>
-        {% endif %}
         {% if artwork.medium %}
-            <p class="row medium">
-                <strong class="col-md-3 text-right">{{ gettext("Medium") }}</strong>
-                <span class="col-md-9">{{ artwork.medium }}</span>
-            </p>
+            <tr>
+                <th class="text-right">{{ gettext("Medium") }}</th>
+                <td>{{ artwork.medium }}</td>
+            </tr>
         {% endif %}
-        {% if artwork.categories.length > 0 %}
-            <p class="row categories">
-                <strong class="col-md-3 text-right">{{ gettext("Categories") }}</strong>
-                <span class="col-md-9">
-                    {% for category in artwork.categories %}
-                        {{ category }}<br/>
+
+        {% if artwork.dimensions.length > 0 %}
+            <tr>
+                <th class="text-right">{{ gettext("Dimensions") }}</th>
+                <td>
+                    {% for dimension in artwork.dimensions %}
+                        {{ getDimension(dimension) }}<br/>
                     {% endfor %}
-                </span>
-            </p>
+                </td>
+            </tr>
         {% endif %}
-        {% if artwork.collections.length > 0 %}
-            <p class="row categories">
-                <strong class="col-md-3 text-right">{{ gettext("Collection") }}</strong>
-                <span class="col-md-9">
+
+        {% if artwork.categories.length > 0 %}
+            <tr>
+                <th class="text-right">{{ gettext("Categories") }}</th>
+                <td>{{ artwork.categories|join(", ") }}</td>
+            </tr>
+        {% endif %}
+
+        {% if artwork.collections.length > 0 && artwork.collections[0].name %}
+            <tr>
+                <th class="text-right">{{ gettext("Collection") }}</th>
+                <td>
                     {% for collection in artwork.collections %}
                         {{ collection.name }}<br/>
                         {% if collection.city %}
                             {{ collection.city }}<br/>
                         {% endif %}
                     {% endfor %}
-                </span>
-            </p>
+                </td>
+            </tr>
         {% endif %}
+
         {% if artwork.url %}
-            <p class="row details">
-                <strong class="col-md-3 text-right">
+            <tr>
+                <th class="text-right">
                     {% if artwork.getSource().commercial %}
                         <small>{{ gettext("Details &amp;&nbsp;Prices") }}</small>
                     {% else %}
                         {{ gettext("Details") }}
                     {% endif %}
-                </strong>
-                <span class="col-md-9">
+                </th>
+                <td>
                     {% if artwork.getSource().inactive %}
                         <small>{{ gettext("Unfortunately the source of this artwork no longer exists.") }}</small>
                     {% elif artwork.getSource().hideLinks %}
@@ -209,21 +125,24 @@
                         <a href="{{ artwork.url }}">
                             {{ gettext("More information...") }}</a>
                     {% endif %}
-                </span>
-            </p>
+                </td>
+            </tr>
         {% endif %}
 
         {% if artwork.getSource().inactive %}
-            <p class="row source">
-                <strong class="col-md-3 text-right">{{ gettext("Source") }}</strong>
-                <span class="col-md-9"><a href="{{ URL(artwork.getSource()) }}"
-                    title="{{ fullName(artwork.getSource()) }}">
-                    {{ fullName(artwork.getSource()) }}</a></span>
-            </p>
+            <tr>
+                <th class="text-right">{{ gettext("Source") }}</th>
+                <td>
+                    <a href="{{ URL(artwork.getSource()) }}"
+                        title="{{ fullName(artwork.getSource()) }}">
+                        {{ fullName(artwork.getSource()) }}
+                    </a>
+                </td>
+            </tr>
         {% else %}
-            <p class="row source">
-                <strong class="col-md-3 text-right">{{ gettext("Source") }}</strong>
-                <span class="col-md-9"><a href="{{ artwork.getSource().url }}">
+            <tr>
+                <th class="text-right">{{ gettext("Source") }}</th>
+                <td><a href="{{ artwork.getSource().url }}">
                     {% if artwork.getSource().linkText %}
                         {{ artwork.getSource().linkText }}
                     {% else %}
@@ -232,10 +151,53 @@
                 </a><br/>
                 <small><a href="{{ URL(artwork.getSource()) }}"
                     title="{{ fullName(artwork.getSource()) }}">
-                    {{ format(gettext("Browse all %(count)s artworks..."), {count: stringNum(artwork.getSource().numArtworks)}) }}</a></small></span>
-            </p>
+                    {{ format(gettext("Browse all %(count)s artworks..."), {count: stringNum(artwork.getSource().numArtworks)}) }}</a></small></td>
+            </tr>
         {% endif %}
+
+        </table>
+        </div>
     </div>
-    -->
+    {% if hasSimilar %}
+    <div class="col-md-3">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <strong>{{ gettext("Similar Artworks") }}</strong>
+            </div>
+            <div class="panel-body row">
+                {% for match in artwork.similarArtworks %}
+                    {% if match.artwork %}
+                    <div class="img col-md-12 col-xs-6 col-sm-4">
+                        <a href="{{ URL(match.artwork) }}">
+                            <img src="{{ match.artwork.getThumbURL(match.artwork.images[0]) }}"
+                                alt="{{ getTitle(match.artwork) }}"
+                                title="{{ getTitle(match.artwork) }}"
+                                class="img-responsive center-block"/>
+                        </a>
+                        <div class="details">
+                            <div class="wrap">
+                            {% if match.artwork.dateCreated %}
+                                <span>{{ getDate(match.artwork.dateCreated) }}</span>
+                            {% endif %}
+                            <a class="pull-right" href="{{ URL(match.artwork.getSource()) }}"
+                                title="{{ fullName(match.artwork.getSource()) }}">
+                                {{ shortName(match.artwork.getSource()) }}
+                            </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
 </div>
+{{ CDN('/js/openseadragon.min.js') }}
+<script>
+(function() {
+    "use strict";
+    OpenSeadragon({{ viewerOptions|json|safe }});
+})();
+</script>
 {% endblock %}

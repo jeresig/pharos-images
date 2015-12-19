@@ -45,16 +45,32 @@ module.exports = function(core, app) {
 
             Artwork.findById(id)
                 .populate("similarArtworks.artwork")
-                .exec((err, image) => {
-                    if (err || !image) {
+                .exec((err, artwork) => {
+                    if (err || !artwork) {
                         return res.status(404).render("error", {
                             title: req.gettext("Artwork not found."),
                         });
                     }
 
+                    const viewerOptions = {
+                        // TODO(jeresig): Prefix this with the right CDN URL
+                        prefixUrl: "/images/openseadragon/",
+                        id: "openseadragon-viewer",
+                        toolbar: "openseadragon-toolbar",
+                        autoHideControls: true,
+                        sequenceMode: true,
+                        showReferenceStrip: artwork.images.length > 1,
+                        referenceStripScroll: "horizontal",
+                        tileSources: artwork.images.map((image) => ({
+                            type: "image",
+                            url: artwork.getOriginalURL(image),
+                        })),
+                    };
+
                     res.render("artwork", {
-                        title: image.getTitle(req.lang),
-                        artwork: image,
+                        title: artwork.getTitle(req.lang),
+                        artwork: artwork,
+                        viewerOptions,
                     });
                 });
         },

@@ -131,3 +131,16 @@
 .facet .extra-facets {
     display: none;
 }
+
+/*
+ * Styling for the OpenSeadragon viewer
+ */
+#openseadragon-toolbar {
+    height: 33px;
+    width: 100%;
+}
+
+#openseadragon-viewer {
+    height: 400px;
+    width: 100%;
+}
