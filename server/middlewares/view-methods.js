@@ -2,6 +2,7 @@
 
 const urls = require("../../lib/urls")();
 const locales = require("../../config/locales.json");
+const types = require("../../logic/shared/types");
 
 module.exports = (req, res, next) => {
     const methods = {
@@ -70,6 +71,11 @@ module.exports = (req, res, next) => {
             const unit = item.unit || "mm";
             return [item.width, unit, " x ", item.height, unit,
                 item.label ? ` (${item.label})` : ""].join("");
+        },
+
+        getType(item) {
+            const type = types[item.objectType];
+            return type ? type.name(req) : item.objectType;
         },
 
         // Format a number using commas

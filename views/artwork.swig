@@ -17,8 +17,16 @@
         </div>
         
         {% if artwork.title %}
-            <h1 class="title">{{ artwork.title }}</h1>
+            <h1 class="title">
+                {% if artwork.objectType %}
+                    {{ getType(artwork) }}:
+                {% endif %}
+                {{ artwork.title }}
+            </h1>
+        {% elif artwork.objectType %}
+            <h1 class="title">{{ getType(artwork) }}</h1>
         {% endif %}
+
         {% if artwork.artists %}
         <p>
             <strong>{{ gettext("Artist:") }}</strong>
