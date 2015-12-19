@@ -19,40 +19,44 @@
 
         <h3>{{ gettext("Search by Image:") }}</h3>
         <p>{{ gettext("Upload a picture of an artwork to find similar artworks across multiple collections.") }}</p>
-        
-        <form action="/upload" method="POST" enctype="multipart/form-data" class="upload">
-            {% if qsLocale() %}
-                <input type="hidden" name="lang" value="{{ lang }}"/>
-            {% endif %}
 
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">{{ gettext("Upload an Image") }}</h3>
-                </div>
-                <div class="panel-body">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">{{ gettext("Upload an Image") }}</h3>
+            </div>
+            <div class="panel-body">
+                <form action="/file-upload" method="POST" enctype="multipart/form-data">
+                    {% if qsLocale() %}
+                        <input type="hidden" name="lang" value="{{ lang }}"/>
+                    {% endif %}
                     <div class="form-inline">
                         <div class="form-group">
                             <input type="file" id="file" name="file" class="form-control" />
                         </div>
                         <input type="submit" value="{{ gettext("Search by Image") }}" class="btn btn-primary" />
                     </div>
-                </div>
+                </form>
             </div>
+        </div>
 
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">{{ gettext("Paste Image URL") }}</h3>
-                </div>
-                <div class="panel-body">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">{{ gettext("Paste Image URL") }}</h3>
+            </div>
+            <div class="panel-body">
+                <form action="/url-upload" method="POST">
+                    {% if qsLocale() %}
+                        <input type="hidden" name="lang" value="{{ lang }}"/>
+                    {% endif %}
                     <div class="form-inline">
                         <div class="form-group">
                             <input type="text" id="url" name="url" value="http://" class="form-control" />
                         </div>
                         <input type="submit" value="{{ gettext("Search by Image") }}" class="btn btn-primary" />
                     </div>
-                </div>
+                </form>
             </div>
-        </form>
+        </div>
 
         <h3>{{ gettext("Browse by Collection:") }}</h3>
 

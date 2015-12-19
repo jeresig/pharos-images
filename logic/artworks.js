@@ -15,14 +15,25 @@ module.exports = function(core, app) {
             const type = types[req.query.type || req.params.type];
 
             if (!type) {
-                return res.render(404);
+                return res.status(404).render("error", {
+                    title: req.gettext("Type not found."),
+                });
             }
 
             search(req, res);
         },
 
         bySource(req, res) {
-            const source = Source.getSource(res.params.source);
+            let source;
+
+            try {
+                source = Source.getSource(req.params.source);
+
+            } catch (e) {
+                return res.status(404).render("error", {
+                    title: req.gettext("Source not found."),
+                });
+            }
 
             search(req, res, {
                 url: source.url,
@@ -36,7 +47,7 @@ module.exports = function(core, app) {
                 .populate("similarArtworks.artwork")
                 .exec((err, image) => {
                     if (err || !image) {
-                        return res.render(404, {
+                        return res.status(404).render("error", {
                             title: req.gettext("Artwork not found."),
                         });
                     }

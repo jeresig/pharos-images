@@ -122,6 +122,10 @@ module.exports = (core) => {
                 `/${this.source}/thumbs/${image.imageName}.jpg`);
         },
 
+        sourceDirBase() {
+            return core.urls.genLocalFile(this.source._id || this.source);
+        },
+
         getTitle(locale) {
             const parts = [];
 

@@ -5,82 +5,89 @@ const formidable = require("formidable");
 module.exports = (core, app) => {
     const Upload = core.models.Upload;
 
-    const handleUpload = function(req, callback) {
-        const form = new formidable.IncomingForm();
-        form.encoding = "utf-8";
-        form.maxFieldsSize = process.env.MAX_UPLOAD_SIZE;
+    const handleUpload = (req, res, next) => (err, file) => {
+        if (err) {
+            return next(err);
+        }
 
-        form.parse(req, (err, fields, files) => {
-            // NOTE: Is the query string also handled by formidable?
-            const url = fields.url || req.query.url;
+        // TODO: Add in uploader's user name (once those exist)
+        const upload = new Upload({
+            source: "uploads",
+        });
+        const sourceDir = upload.sourceDirBase();
 
-            if (files && files.file) {
-                callback(null, files.file.path);
+        core.images.processImage(file, sourceDir, (err, id) => {
+            if (err) {
+                console.error(err);
+                return next(new Error(
+                    req.gettext("Error processing image.")));
+            }
 
-            } else if (url) {
-                // Handle the user accidentally hitting enter
-                if (url === "http://") {
-                    return callback({
-                        err: req.gettext("No file specified."),
-                    });
+            upload._id = id;
+
+            upload.addImage(file, (err) => {
+                if (err) {
+                    console.error(err);
+                    return next(new Error(
+                        req.gettext("Error adding image.")));
                 }
 
-                core.images.download(url, callback);
-
-            } else {
-                callback({err: req.gettext("No file specified.")});
-            }
+                upload.syncSimilarity(() => {
+                    upload.save(() => res.redirect(
+                        upload.getURL(req.lang)));
+                });
+            });
         });
     };
 
     return {
-        searchUpload(req, res) {
-            // TODO: Add in uploader's user name (once those exist)
-            const upload = new Upload({
-                source: "uploads",
-            });
-            const sourceDir = upload.sourceDirBase();
+        urlUpload(req, res, next) {
+            const url = req.query.url;
 
-            handleUpload(req, (err, file) => {
-                if (err) {
-                    // TODO: Show some sort of error message
-                    console.error("Error Uploading Image:", err);
-                    return res.redirect(core.urls.gen(req.lang, "/"));
+            if (url) {
+                // Handle the user accidentally hitting enter
+                if (url === "http://") {
+                    return next(new Error(
+                        req.gettext("No image URL specified.")));
                 }
 
-                core.images.processImage(file, sourceDir, (err, id) => {
-                    if (err) {
-                        // TODO: Show some sort of error message
-                        console.error("Error Processing Image:", err);
-                        return res.redirect(core.urls.gen(req.lang, "/"));
-                    }
+                core.images.download(url,
+                    (err, file) => handleUpload(req, res, next)(err, file));
 
-                    upload._id = id;
+            } else {
+                next(new Error(req.gettext("No image URL specified.")));
+            }
+        },
 
-                    upload.addImage(file, (err) => {
-                        if (err) {
-                            // TODO: Show some sort of error message
-                            console.error("Error Adding Image:", err);
-                            return res.redirect(core.urls.gen(req.lang, "/"));
-                        }
+        fileUpload(req, res, next) {
+            const form = new formidable.IncomingForm();
+            form.encoding = "utf-8";
+            form.maxFieldsSize = process.env.MAX_UPLOAD_SIZE;
 
-                        upload.syncSimilarity(() => {
-                            upload.save(() => res.redirect(
-                                upload.getURL(req.lang)));
-                        });
-                    });
-                });
+            form.parse(req, (err, fields, files) => {
+                if (err) {
+                    return next(new Error(
+                        req.gettext("Error processing upload.")));
+                }
+
+                if (files && files.file && files.file.path &&
+                        files.file.size > 0) {
+                    handleUpload(req, res, next)(null, files.file.path);
+
+                } else {
+                    next(new Error(req.gettext("No image specified.")));
+                }
             });
         },
 
         show(req, res, next) {
             // TODO: Update similar matches if new image data has
             // since come in since it was last updated.
-            Upload.findById(res.param.upload)
+            Upload.findById(req.params.upload)
                 .populate("similarArtworks.artwork")
                 .exec((err, upload) => {
                     if (err || !upload) {
-                        return res.render(404, {
+                        return res.status(404).render("error", {
                             title: req.gettext("Uploaded image not found."),
                         });
                     }
@@ -94,7 +101,8 @@ module.exports = (core, app) => {
 
         routes() {
             app.get("/uploads/:upload", this.show);
-            app.post("/upload", this.searchUpload);
+            app.post("/url-upload", this.urlUpload);
+            app.post("/file-upload", this.fileUpload);
         },
     };
 };

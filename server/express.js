@@ -25,14 +25,6 @@ module.exports = (core, app) => {
     // A basic logger for tracking who is accessing the service
     app.use(morgan("dev"));
 
-    // Enable error handling and displaying of a 500 error page
-    // when an exception is thrown
-    app.set("showStackError", env === "development");
-    app.use((err, req, res, next) => {
-        console.error(err.stack);
-        res.status(500).render("500");
-    });
-
     // Configure all the paths for serving the static content on the site
     app.use(serveFavicon(`${rootPath}/public/images/favicon.png`));
     app.use(serveStatic(`${rootPath}/public`));

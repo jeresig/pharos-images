@@ -144,7 +144,7 @@ module.exports = (core, app) => ({
     },
 
     source: {
-        value: (req) => req.query.source || req.params.sourceId || "",
+        value: (req) => req.query.source || req.params.source || "",
         title: (req, query) => core.models.Source.getSource(query.source)
             .getFullName(req.lang),
         url: (req, query) => core.models.Source.getSource(query.source)
