@@ -6,39 +6,39 @@ module.exports = {
     },
 
     drawing: {
-        name: (req) => req.gettext("Drawings"),
+        name: (req) => req.gettext("Drawing"),
     },
 
     fresco: {
-        name: (req) => req.gettext("Frescoes"),
+        name: (req) => req.gettext("Fresco"),
     },
 
     medal: {
-        name: (req) => req.gettext("Medals"),
+        name: (req) => req.gettext("Medal"),
     },
 
     miniature: {
-        name: (req) => req.gettext("Miniatures"),
+        name: (req) => req.gettext("Miniature"),
     },
 
     mosaic: {
-        name: (req) => req.gettext("Mosaics"),
+        name: (req) => req.gettext("Mosaic"),
     },
 
     painting: {
-        name: (req) => req.gettext("Paintings"),
+        name: (req) => req.gettext("Painting"),
     },
 
     photo: {
-        name: (req) => req.gettext("Photos"),
+        name: (req) => req.gettext("Photo"),
     },
 
     print: {
-        name: (req) => req.gettext("Prints"),
+        name: (req) => req.gettext("Print"),
     },
 
     sculpture: {
-        name: (req) => req.gettext("Sculptures"),
+        name: (req) => req.gettext("Sculpture"),
     },
 
     "stained glass": {

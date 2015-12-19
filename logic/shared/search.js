@@ -146,7 +146,7 @@ module.exports = (core, app) => {
                 }).filter((crumb) => crumb.name);
             }
 
-            res.render("artworks/index", Object.assign({
+            res.render("search", Object.assign({
                 title,
                 breadcrumbs,
                 sources: Source.getSources(),

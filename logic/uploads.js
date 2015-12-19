@@ -34,24 +34,6 @@ module.exports = (core, app) => {
     };
 
     return {
-        load(req, res, next, id) {
-            Upload.findById(id).exec((err, upload) => {
-                if (err) {
-                    return next(err);
-                }
-
-                if (!upload) {
-                    console.log("not found");
-                    return next(new Error("not found"));
-                }
-
-                upload.populate("similarArtworks.artwork", (err) => {
-                    req.upload = upload;
-                    next();
-                });
-            });
-        },
-
         searchUpload(req, res) {
             // TODO: Add in uploader's user name (once those exist)
             const upload = new Upload({
@@ -91,13 +73,23 @@ module.exports = (core, app) => {
             });
         },
 
-        show(req, res) {
+        show(req, res, next) {
             // TODO: Update similar matches if new image data has
             // since come in since it was last updated.
-            res.render("uploads/show", {
-                title: req.gettext("Uploaded Image"),
-                artwork: req.upload,
-            });
+            Upload.findById(res.param.upload)
+                .populate("similarArtworks.artwork")
+                .exec((err, upload) => {
+                    if (err || !upload) {
+                        return res.render(404, {
+                            title: req.gettext("Uploaded image not found."),
+                        });
+                    }
+
+                    res.render("upload", {
+                        title: req.gettext("Uploaded Image"),
+                        artwork: upload,
+                    });
+                });
         },
     };
 };

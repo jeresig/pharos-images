@@ -7,7 +7,7 @@ module.exports = (core) => {
     return {
         index(req, res) {
             Artwork.count((err, total) => {
-                res.render("home/index", {
+                res.render("home", {
                     sources: Source.getSources(),
                     total: total,
                 });

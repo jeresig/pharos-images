@@ -1,4 +1,4 @@
-{% extends "../layouts/default.swig" %}
+{% extends "page.swig" %}
 
 {% block title %}{{ artwork.title }}{% endblock %}
 

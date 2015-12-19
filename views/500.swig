@@ -1,4 +1,4 @@
-{% extends "layouts/default.swig" %}
+{% extends "page.swig" %}
 
 {% block title %}{{ gettext("Internal error occurred.") }}{% endblock %}
 

@@ -2,26 +2,11 @@
 
 module.exports = function(core, app) {
     const Artwork = core.models.Artwork;
+    const Source = core.models.Source;
     const search = require("./shared/search")(core, app);
     const types = require("./shared/types");
 
     return {
-        load(req, res, next, artworkName) {
-            Artwork.findById(`${req.params.sourceId}/${artworkName}`)
-                .populate("similarArtworks.artwork")
-                .exec((err, image) => {
-                    if (err) {
-                        return next(err);
-                    }
-                    if (!image) {
-                        console.log("not found");
-                        return next(new Error("not found"));
-                    }
-                    req.image = image;
-                    next();
-                });
-        },
-
         search,
 
         byType(req, res) {
@@ -34,11 +19,31 @@ module.exports = function(core, app) {
             search(req, res);
         },
 
-        show(req, res) {
-            res.render("artworks/show", {
-                title: req.image.getTitle(req.lang),
-                artwork: req.image,
+        bySource(req, res) {
+            const source = Source.getSource(res.params.source);
+
+            search(req, res, {
+                url: source.url,
             });
+        },
+
+        show(req, res, next) {
+            const id = `${req.params.source}/${req.params.artworkName}`;
+
+            Artwork.findById(id)
+                .populate("similarArtworks.artwork")
+                .exec((err, image) => {
+                    if (err || !image) {
+                        return res.render(404, {
+                            title: req.gettext("Artwork not found."),
+                        });
+                    }
+
+                    res.render("artwork", {
+                        title: image.getTitle(req.lang),
+                        artwork: image,
+                    });
+                });
         },
     };
 };

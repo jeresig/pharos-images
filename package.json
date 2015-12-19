@@ -11,7 +11,7 @@
     "stop": "naught stop",
     "dev": "supervisor -i node_modules,old,locales,converters,sources,public server.js",
     "extract-i18n-js": "jsxgettext --keyword=format --keyword=gettext -L javascript --output-dir=./translations --output=messages.pot logic/*.js schemas/*.js server/*.js lib/*.js",
-    "extract-i18n-views": "jsxgettext --join-existing --keyword=format --keyword=gettext -L swig --output-dir=./translations --output=messages.pot views/*.swig views/*/*.swig",
+    "extract-i18n-views": "jsxgettext --join-existing --keyword=format --keyword=gettext -L swig --output-dir=./translations --output=messages.pot views/*.swig",
     "extract-i18n": "npm run extract-i18n-js && npm run extract-i18n-views && git add translations/messages.pot",
     "update-i18n": "tx pull -a && po2json.js -p translations/de/messages.po > translations/de/messages.json && po2json.js -p translations/it/messages.po > translations/it/messages.json"
   },

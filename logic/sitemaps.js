@@ -9,7 +9,7 @@ module.exports = function(core, app) {
 
     const renderSitemap = (res, sites) => {
         res.header("Content-Type", "application/xml");
-        res.render("sitemaps/show", {
+        res.render("sitemap-results", {
             sites: sites,
         });
     };
@@ -30,7 +30,7 @@ module.exports = function(core, app) {
                 }
 
                 res.header("Content-Type", "application/xml");
-                res.render("sitemaps/index", {
+                res.render("sitemap-index", {
                     sitemaps: sitemaps,
                 });
             });
