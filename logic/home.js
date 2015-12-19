@@ -1,8 +1,10 @@
 "use strict";
 
-module.exports = (core) => {
+module.exports = (core, app) => {
     const Source = core.models.Source;
     const Artwork = core.models.Artwork;
+
+    const cache = require("../server/middlewares/cache");
 
     return {
         index(req, res) {
@@ -12,6 +14,10 @@ module.exports = (core) => {
                     total: total,
                 });
             });
+        },
+
+        routes() {
+            app.get("/", cache(1), this.index);
         },
     };
 };

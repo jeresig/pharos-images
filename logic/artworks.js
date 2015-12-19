@@ -3,6 +3,8 @@
 module.exports = function(core, app) {
     const Artwork = core.models.Artwork;
     const Source = core.models.Source;
+
+    const cache = require("../server/middlewares/cache");
     const search = require("./shared/search")(core, app);
     const types = require("./shared/types");
 
@@ -44,6 +46,13 @@ module.exports = function(core, app) {
                         artwork: image,
                     });
                 });
+        },
+
+        routes() {
+            app.get("/search", cache(1), this.search);
+            app.get("/artworks/:source/:artworkName", this.show);
+            app.get("/type/:type", cache(1), this.byType);
+            app.get("/source/:source", cache(1), this.bySource);
         },
     };
 };

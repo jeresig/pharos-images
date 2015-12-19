@@ -36,7 +36,7 @@ module.exports = function(core, app) {
             });
         },
 
-        search: function(req, res) {
+        search(req, res) {
             Artwork.find()
                 .limit(numPerMap)
                 .skip(req.params.start)
@@ -50,7 +50,7 @@ module.exports = function(core, app) {
                 });
         },
 
-        sources: function(req, res) {
+        sources(req, res) {
             Source.find({}).exec((err, sources) => {
                 const sites = sources.map((source) => ({
                     url: source.getURL(req.lang),
@@ -65,7 +65,7 @@ module.exports = function(core, app) {
             });
         },
 
-        artists: function(req, res) {
+        artists(req, res) {
             Artist.find({}).exec((err, artists) => {
                 const sites = artists.map((artist) => ({
                     url: artist.getURL(req.lang),
@@ -73,6 +73,13 @@ module.exports = function(core, app) {
 
                 renderSitemap(res, sites);
             });
+        },
+
+        routes() {
+            app.get("/sitemap.xml", this.index);
+            app.get("/sitemap-sources.xml", this.sources);
+            app.get("/sitemap-artists.xml", this.artists);
+            app.get("/sitemap-search-:start.xml", this.search);
         },
     };
 };

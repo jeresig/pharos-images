@@ -91,5 +91,10 @@ module.exports = (core, app) => {
                     });
                 });
         },
+
+        routes() {
+            app.get("/uploads/:upload", this.show);
+            app.post("/upload", this.searchUpload);
+        },
     };
 };

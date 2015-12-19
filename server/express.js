@@ -27,7 +27,7 @@ module.exports = (core, app) => {
 
     // Enable error handling and displaying of a 500 error page
     // when an exception is thrown
-    app.set("showStackError", true);
+    app.set("showStackError", env === "development");
     app.use((err, req, res, next) => {
         console.error(err.stack);
         res.status(500).render("500");
