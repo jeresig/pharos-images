@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ lang }}" dir="{{ lang_dir }}" class="{{ getSiteCategory() }}">
+<html lang="{{ lang }}" dir="{{ lang_dir }}">
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
     <meta http-equiv="content-language" content="{{ lang }}"/>
@@ -57,14 +57,14 @@
                         <a href="" class="dropdown-toggle"
                             data-toggle="dropdown" role="button"
                             aria-expanded="false">
-                            <img src="{{ CDN("/images/" + curLocale() + ".png", {"raw": true}) }}"
-                                alt="{{ getLocaleName(curLocale()) }}" />
-                            {{ getLocaleName(curLocale()) }}
+                            <img src="{{ CDN("/images/" + lang + ".png", {"raw": true}) }}"
+                                alt="{{ getLocaleName(lang) }}" />
+                            {{ getLocaleName(lang) }}
                             <span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu" role="menu">
                             {% for locale in getLocales() %}
-                                {% if locale !== curLocale() %}
+                                {% if locale !== lang %}
                                 <li>
                                     <a href="{{ getOtherURL(locale) }}">
                                         <img src="{{ CDN("/images/" + locale + ".png", {"raw": true}) }}"

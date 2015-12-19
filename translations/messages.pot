@@ -8,34 +8,10 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2015-12-18 22:44+0000\n"
+"POT-Creation-Date: 2015-12-19 03:46+0000\n"
 
 #: logic/artists.js:126
 msgid "Artworks by %(artist)s."
-msgstr ""
-
-#: logic/artworks.js:27
-msgid "Results for '%(query)s'"
-msgstr ""
-
-#: logic/artworks.js:31
-msgid "All Artworks"
-msgstr ""
-
-#: logic/artworks.js:35
-msgid "Artist '%(artist)s'"
-msgstr ""
-
-#: logic/artworks.js:41
-msgid "Artworks matching '%(query)s'."
-msgstr ""
-
-#: logic/artworks.js:55
-msgid "Browse all %(type)s."
-msgstr ""
-
-#: logic/sources.js:11
-msgid "Artworks at the %(source)s."
 msgstr ""
 
 #: logic/uploads.js:24
@@ -129,12 +105,17 @@ msgid "Show %(count)s more..."
 msgstr ""
 
 #: views/artworks/index.swig:17
+#: views/artworks/index.swig:18
+msgid "Remove %(query)s"
+msgstr ""
+
 #: views/artworks/index.swig:19
+#: views/artworks/index.swig:21
 msgid "Previous"
 msgstr ""
 
-#: views/artworks/index.swig:18
 #: views/artworks/index.swig:20
+#: views/artworks/index.swig:22
 msgid "Next"
 msgstr ""
 
@@ -147,8 +128,7 @@ msgid "Date:"
 msgstr ""
 
 #: views/artworks/show.swig:3
-#: views/artworks/show.swig:6
-msgid "Dimensions"
+msgid "Dimensions:"
 msgstr ""
 
 #: views/artworks/show.swig:4
@@ -158,6 +138,10 @@ msgstr ""
 #: views/artworks/show.swig:5
 #: views/uploads/show.swig:3
 msgid "Similar Artworks"
+msgstr ""
+
+#: views/artworks/show.swig:6
+msgid "Dimensions"
 msgstr ""
 
 #: views/artworks/show.swig:8

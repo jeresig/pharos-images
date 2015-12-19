@@ -3,10 +3,12 @@
 {% block content %}
 
 <div class="row">
-    <h1 class="col-md-12">{{ title }}</h1>
-    {% if url %}
-        <p class="col-md-12"><a href="{{ url }}">{{ url }}</a></p>
-    {% endif %}
+    <div class="col-xs-12">
+        <h1>{{ title }}</h1>
+        {% if url %}
+            <p><a href="{{ url }}">{{ url }}</a></p>
+        {% endif %}
+    </div>
 </div>
 
 <div class="row results-wrap">
@@ -136,6 +138,26 @@
     </div>
 
     <div class="results-main col-sm-9 col-sm-pull-3">
+        {% if breadcrumbs.length > 0 %}
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="btn-group" role="group">
+                    {% for crumb in breadcrumbs %}
+                        <a href="{{ crumb.url }}"
+                            class="btn btn-default btn-xs"
+                            title="{{ format(gettext("Remove %(query)s"), {query: crumb.name}) }}">
+                            <span class="glyphicon glyphicon-remove-sign" style="vertical-align: -1px;" aria-hidden="true"></span>
+                            <span aria-hidden="true">{{ crumb.name }}</span>
+                            <span class="sr-only">
+                                {{ format(gettext("Remove %(query)s"), {query: crumb.name}) }}
+                            </span>
+                        </a>
+                    {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
         <nav>
             <ul class="pager">
                 {% if prev %}
@@ -160,11 +182,12 @@
         <div class="row">
         {% for artwork in artworks %}
             <div class="img col-xs-6 col-sm-4 col-md-3">
-                <a class="img" href="{{ URL(artwork) }}"
+                <a href="{{ URL(artwork) }}"
                     title="{{ getTitle(artwork) }}">
                     <img src="{{ artwork.getThumbURL() }}"
                         alt="{{ getTitle(artwork) }}"
-                        title="{{ getTitle(artwork) }}"/>
+                        title="{{ getTitle(artwork) }}"
+                        class="img-responsive"/>
                 </a>
                 <div class="details">
                     <div class="wrap">

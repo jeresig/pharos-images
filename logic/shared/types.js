@@ -2,46 +2,46 @@
 
 module.exports = {
     "decorative arts": {
-        name: (res) => res.locals.gettext("Decorative Arts"),
+        name: (req) => req.gettext("Decorative Arts"),
     },
 
     drawing: {
-        name: (res) => res.locals.gettext("Drawings"),
+        name: (req) => req.gettext("Drawings"),
     },
 
     fresco: {
-        name: (res) => res.locals.gettext("Frescoes"),
+        name: (req) => req.gettext("Frescoes"),
     },
 
     medal: {
-        name: (res) => res.locals.gettext("Medals"),
+        name: (req) => req.gettext("Medals"),
     },
 
     miniature: {
-        name: (res) => res.locals.gettext("Miniatures"),
+        name: (req) => req.gettext("Miniatures"),
     },
 
     mosaic: {
-        name: (res) => res.locals.gettext("Mosaics"),
+        name: (req) => req.gettext("Mosaics"),
     },
 
     painting: {
-        name: (res) => res.locals.gettext("Paintings"),
+        name: (req) => req.gettext("Paintings"),
     },
 
     photo: {
-        name: (res) => res.locals.gettext("Photos"),
+        name: (req) => req.gettext("Photos"),
     },
 
     print: {
-        name: (res) => res.locals.gettext("Prints"),
+        name: (req) => req.gettext("Prints"),
     },
 
     sculpture: {
-        name: (res) => res.locals.gettext("Sculptures"),
+        name: (req) => req.gettext("Sculptures"),
     },
 
     "stained glass": {
-        name: (res) => res.locals.gettext("Stained Glass"),
+        name: (req) => req.gettext("Stained Glass"),
     },
 };

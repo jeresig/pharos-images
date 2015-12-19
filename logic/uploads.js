@@ -63,14 +63,14 @@ module.exports = (core, app) => {
                 if (err) {
                     // TODO: Show some sort of error message
                     console.error("Error Uploading Image:", err);
-                    return res.redirect(res.locals.URL("/"));
+                    return res.redirect(core.urls.gen(req.lang, "/"));
                 }
 
                 core.images.processImage(file, sourceDir, (err, id) => {
                     if (err) {
                         // TODO: Show some sort of error message
                         console.error("Error Processing Image:", err);
-                        return res.redirect(res.locals.URL("/"));
+                        return res.redirect(core.urls.gen(req.lang, "/"));
                     }
 
                     upload._id = id;
@@ -79,12 +79,12 @@ module.exports = (core, app) => {
                         if (err) {
                             // TODO: Show some sort of error message
                             console.error("Error Adding Image:", err);
-                            return res.redirect(res.locals.URL("/"));
+                            return res.redirect(core.urls.gen(req.lang, "/"));
                         }
 
                         upload.syncSimilarity(() => {
                             upload.save(() => res.redirect(
-                                upload.getURL(res.locals.lang)));
+                                upload.getURL(req.lang)));
                         });
                     });
                 });

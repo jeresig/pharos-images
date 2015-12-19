@@ -80,10 +80,6 @@
     margin-bottom: 15px;
 }
 
-.img img {
-    width: 100%;
-}
-
 .img .details {
     background: rgba(0, 0, 0, 0.5);
     text-align: left;

@@ -16,10 +16,11 @@
             <div class="row">
             {% for image in artwork.images %}
                 <div class="img col-md-3">
-                    <a class="img" href="{{ artwork.getOriginalURL(image) }}">
+                    <a href="{{ artwork.getOriginalURL(image) }}">
                         <img src="{{ artwork.getThumbURL(image) }}"
                             alt="{{ getTitle(artwork) }}"
-                            title="{{ getTitle(artwork) }}"/>
+                            title="{{ getTitle(artwork) }}"
+                            class="img-responsive"/>
                     </a>
                 </div>
             {% endfor %}
@@ -37,10 +38,11 @@
             {% for match in artwork.similarArtworks %}
                 {% if match.artwork %}
                 <div class="img col-md-3">
-                    <a class="img" href="{{ URL(match.artwork) }}">
+                    <a href="{{ URL(match.artwork) }}">
                         <img src="{{ match.artwork.getThumbURL(match.artwork.images[0]) }}"
                             alt="{{ getTitle(match.artwork) }}"
-                            title="{{ getTitle(match.artwork) }}"/>
+                            title="{{ getTitle(match.artwork) }}"
+                            class="img-responsive"/>
                     </a>
                     <div class="details">
                         <div class="wrap">

@@ -16,26 +16,8 @@ module.exports = (req, res, next) => {
             return locales[locale];
         },
 
-        getSiteCategory() {
-            if (req.path.indexOf("/source") === 0) {
-                return "sources";
-            } else if (req.path.indexOf("/artist") === 0) {
-                return "artists";
-            } else if (req.path.indexOf("/about") === 0) {
-                return "about";
-            } else if (!req.path || req.path === "/") {
-                return "home";
-            }
-
-            return "search";
-        },
-
         getOtherURL(locale) {
             return urls.gen(locale, req.path);
-        },
-
-        curLocale() {
-            return res.locals.lang;
         },
 
         qsLocale() {
@@ -44,12 +26,12 @@ module.exports = (req, res, next) => {
 
         URL(path) {
             return path.getURL ?
-                path.getURL(res.locals.lang) :
-                urls.gen(res.locals.lang, path);
+                path.getURL(req.lang) :
+                urls.gen(req.lang, path);
         },
 
         fullName(item) {
-            const locale = res.locals.lang;
+            const locale = req.lang;
             return item.getFullName ?
                 item.getFullName(locale) :
                 locale === "ja" && item.kanji || item.name || item;
@@ -57,12 +39,12 @@ module.exports = (req, res, next) => {
 
         shortName(item) {
             if (item && item.getShortName) {
-                return item.getShortName(res.locals.lang);
+                return item.getShortName(req.lang);
             }
         },
 
         getTitle(item) {
-            return item.getTitle(res.locals.lang);
+            return item.getTitle(req.lang);
         },
 
         getDate(item) {
@@ -99,6 +81,10 @@ module.exports = (req, res, next) => {
     };
 
     Object.assign(res.locals, methods);
+
+    req.numRange = (bucket) => bucket.to ?
+        `${bucket.from || 0}-${bucket.to}` :
+        `${bucket.from}+`;
 
     next();
 };

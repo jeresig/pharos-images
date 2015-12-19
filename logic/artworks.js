@@ -22,26 +22,7 @@ module.exports = function(core, app) {
                 });
         },
 
-        search(req, res) {
-            const query = req.query.filter;
-            let title = req.format(req.gettext("Results for '%(query)s'"),
-                {query: query || "*"});
-
-            if (!query) {
-                title = req.gettext("All Artworks");
-            }
-
-            if (req.query.artist) {
-                title = req.format(req.gettext("Artist '%(artist)s'"),
-                    {artist: req.query.artist});
-            }
-
-            search(req, res, {
-                title: title,
-                desc: req.format(req.gettext("Artworks matching '%(query)s'."),
-                    {query: query}),
-            });
-        },
+        search,
 
         byType(req, res) {
             const type = types[req.query.type || req.params.type];
@@ -50,16 +31,12 @@ module.exports = function(core, app) {
                 return res.render(404);
             }
 
-            search(req, res, {
-                title: type.name(res),
-                desc: req.format(req.gettext("Browse all %(type)s."),
-                    {type: type.name(res)}),
-            });
+            search(req, res);
         },
 
         show(req, res) {
             res.render("artworks/show", {
-                title: req.image.getTitle(res.locals.lang),
+                title: req.image.getTitle(req.lang),
                 artwork: req.image,
             });
         },

@@ -4,13 +4,14 @@
 
 {% block content %}
 <div id="result" class="row">
-    <div class="col-md-6 col-md-offset-3 imageholder">
+    <div class="col-md-6 col-md-offset-2 imageholder">
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-xs-12">
                 <a href="{{ artwork.getOriginalURL(artwork.images[0]) }}">
                     <img src="{{ artwork.getScaledURL(artwork.images[0]) }}"
                         alt="{{ getTitle(artwork) }}"
-                        title="{{ getTitle(artwork) }}"/>
+                        title="{{ getTitle(artwork) }}"
+                        class="img-responsive center-block img-thumbnail"/>
                 </a>
             </div>
         </div>
@@ -40,7 +41,11 @@
         {% if artwork.dateCreated %}
             <p>
                 <strong>{{ gettext("Date:") }}</strong>
-                <span>{{ getDate(artwork.dateCreated) }}</span>
+                <span>
+                    <a href="{{ searchURL({dateStart: artwork.dateCreated.start, dateEnd: artwork.dateCreated.end}) }}">
+                        {{ getDate(artwork.dateCreated) }}
+                    </a>
+                </span>
             </p>
         {% endif %}
 
@@ -54,8 +59,8 @@
 
         {% if artwork.dimensions.length > 0 %}
             <p>
-                <strong class="col-md-3 text-right">{{ gettext("Dimensions") }}</strong>
-                <span class="col-md-9">
+                <strong>{{ gettext("Dimensions:") }}</strong>
+                <span>
                     {% for dimension in artwork.dimensions %}
                         {{ getDimension(dimension) }}<br/>
                     {% endfor %}
@@ -75,10 +80,11 @@
                             {% for image in artwork.images %}
                                 {% if loop.index0 > 0 %}
                                 <div class="img col-md-6">
-                                    <a class="img" href="{{ artwork.getOriginalURL(image) }}">
+                                    <a href="{{ artwork.getOriginalURL(image) }}">
                                         <img src="{{ artwork.getThumbURL(image) }}"
                                             alt="{{ getTitle(artwork) }}"
-                                            title="{{ getTitle(artwork) }}"/>
+                                            title="{{ getTitle(artwork) }}"
+                                            class="img-responsive"/>
                                     </a>
                                 </div>
                                 {% endif %}
@@ -100,10 +106,11 @@
                         {% for match in artwork.similarArtworks %}
                             {% if match.artwork %}
                             <div class="img col-md-12">
-                                <a class="img" href="{{ URL(match.artwork) }}">
+                                <a href="{{ URL(match.artwork) }}">
                                     <img src="{{ match.artwork.getThumbURL(match.artwork.images[0]) }}"
                                         alt="{{ getTitle(match.artwork) }}"
-                                        title="{{ getTitle(match.artwork) }}"/>
+                                        title="{{ getTitle(match.artwork) }}"
+                                        class="img-responsive"/>
                                 </a>
                                 <div class="details">
                                     <div class="wrap">

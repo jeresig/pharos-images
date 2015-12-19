@@ -18,15 +18,13 @@ module.exports = function(core, app) {
         index(req, res) {
             Artwork.count().exec((err, total) => {
                 const sitemaps = [
-                    {url: core.urls.gen(res.locals.lang,
-                        "/sitemap-sources.xml") },
-                    {url: core.urls.gen(res.locals.lang,
-                        "/sitemap-artists.xml") },
+                    {url: core.urls.gen(req.lang, "/sitemap-sources.xml") },
+                    {url: core.urls.gen(req.lang, "/sitemap-artists.xml") },
                 ];
 
                 for (let i = 0; i < total; i += numPerMap) {
                     sitemaps.push({
-                        url: core.urls.gen(res.locals.lang,
+                        url: core.urls.gen(req.lang,
                             `/sitemap-search-${i}.xml`),
                     });
                 }
@@ -44,7 +42,7 @@ module.exports = function(core, app) {
                 .skip(req.params.start)
                 .exec((err, images) => {
                     const sites = images.map((item) => ({
-                        url: item.getURL(res.locals.lang),
+                        url: item.getURL(req.lang),
                         image: item.file,
                     }));
 
@@ -55,12 +53,12 @@ module.exports = function(core, app) {
         sources: function(req, res) {
             Source.find({}).exec((err, sources) => {
                 const sites = sources.map((source) => ({
-                    url: source.getURL(res.locals.lang),
+                    url: source.getURL(req.lang),
                 }));
 
                 // Add in the Index Page
                 sites.push({
-                    url: core.urls.gen(res.locals.lang, "/"),
+                    url: core.urls.gen(req.lang, "/"),
                 });
 
                 renderSitemap(res, sites);
@@ -70,7 +68,7 @@ module.exports = function(core, app) {
         artists: function(req, res) {
             Artist.find({}).exec((err, artists) => {
                 const sites = artists.map((artist) => ({
-                    url: artist.getURL(res.locals.lang),
+                    url: artist.getURL(req.lang),
                 }));
 
                 renderSitemap(res, sites);

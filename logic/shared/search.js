@@ -5,7 +5,7 @@ module.exports = (core, app) => {
     const Source = core.models.Source;
 
     const facets = require("./facets")(core, app);
-    const queries = require("./queries");
+    const queries = require("./queries")(core, app);
     const sorts = require("./sorts");
     const types = require("./types");
 
@@ -19,8 +19,8 @@ module.exports = (core, app) => {
             return obj;
         }, {});
 
-        const curURL = core.urls.gen(res.locals.lang, req.originalUrl);
-        const expectedURL = res.locals.searchURL(query);
+        const curURL = core.urls.gen(req.lang, req.originalUrl);
+        const expectedURL = req.searchURL(query);
 
         if (expectedURL !== curURL) {
             return res.redirect(expectedURL);
@@ -59,29 +59,29 @@ module.exports = (core, app) => {
             }
 
             // Expose the query object to the templates and to the
-            // searchURL method.
+            // searchURL and paramFilter methods.
             res.locals.query = query;
 
             // The number of the last item in this result set
             const end = query.start + results.hits.hits.length;
 
             // The link to the previous page of search results
-            const prevLink = (query.start > 0 && res.locals.searchURL({
+            const prevLink = (query.start > 0 && req.searchURL({
                 start: (query.start - query.rows > 0 ?
                     (query.start - query.rows) : ""),
             }));
 
             // The link to the next page of the search results
             const nextLink = (end < results.hits.total &&
-                res.locals.searchURL({start: query.start + query.rows}));
+                req.searchURL({start: query.start + query.rows}));
 
             // Construct a nicer form of the facet data to feed in to
             // the templates
             const facetData = Object.keys(facets).map((name) => ({
-                name: facets[name].name(res),
+                name: facets[name].name(req),
                 buckets: results.aggregations[name].buckets.map((bucket) => ({
-                    text: facets[name].text(res, bucket),
-                    url: facets[name].url(res, bucket),
+                    text: facets[name].text(req, bucket),
+                    url: facets[name].url(req, bucket),
                     count: bucket.doc_count,
                 })).filter((bucket) => bucket.count > 0),
             }))
@@ -102,7 +102,7 @@ module.exports = (core, app) => {
             // names and their selected state, for the template.
             const sortData = Object.keys(sorts).map((id) => ({
                 id: id,
-                name: sorts[id].name(res),
+                name: sorts[id].name(req),
                 selected: query.sort === id,
             }));
 
@@ -110,11 +110,45 @@ module.exports = (core, app) => {
             // names and their selected state, for the template.
             const typeData = Object.keys(types).map((id) => ({
                 id: id,
-                name: types[id].name(res),
+                name: types[id].name(req),
                 selected: query.type === id,
             }));
 
+            // Figure out the title of the results
+            let title = req.gettext("Search Results");
+            const params = req.paramFilter(query);
+
+            if (params.primary.length === 1 &&
+                    queries[params.primary[0]].title) {
+                title = queries[params.primary[0]].title(req, query);
+            } else if (params.primary.length === 0) {
+                title = req.gettext("All Artworks");
+            }
+
+            // Compute the breadcrumbs
+            let breadcrumbs = [];
+
+            if (params.primary.length > 1) {
+                breadcrumbs = params.primary.map((param) => {
+                    const getTitle = queries[param].title;
+                    const rmQuery = Object.assign({}, query);
+                    rmQuery[param] = null;
+
+                    // If the param has a pair, remove that too
+                    if (queries[param].pair) {
+                        rmQuery[queries[param].pair] = null;
+                    }
+
+                    return {
+                        name: getTitle && getTitle(req, query),
+                        url: req.searchURL(rmQuery),
+                    };
+                }).filter((crumb) => crumb.name);
+            }
+
             res.render("artworks/index", Object.assign({
+                title,
+                breadcrumbs,
                 sources: Source.getSources(),
                 types: typeData,
                 minDate: process.env.DEFAULT_START_DATE || "",
@@ -124,7 +158,7 @@ module.exports = (core, app) => {
                 artworks: results.hits.hits,
                 total: results.hits.total,
                 start: (results.hits.total > 0 ? query.start + 1 : 0),
-                end: end,
+                end,
                 prev: prevLink,
                 next: nextLink,
             }, tmplParams));

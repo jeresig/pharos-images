@@ -1,5 +1,8 @@
 "use strict";
 
+const types = require("./types");
+
+// NOTE(jeresig): There has got to be a better way to handle this.
 const dateMatch = (query) => {
     const start = query.dateStart || -10000;
     const end = query.dateEnd || (new Date).getYear() + 1900;
@@ -81,24 +84,57 @@ const dateMatch = (query) => {
     };
 };
 
-module.exports = {
+const dateFormat = (req, query) => {
+    const range = req.numRange({
+        from: query.dateStart,
+        to: query.dateEnd,
+    });
+
+    return req.format(req.gettext("Dates: %(range)s"), {range});
+};
+
+const widthFormat = (req, query) => {
+    const range = req.numRange({
+        from: query.widthMin,
+        to: query.widthMax,
+    });
+
+    return req.format(req.gettext("Width (mm): %(range)s"), {range});
+};
+
+const heightFormat = (req, query) => {
+    const range = req.numRange({
+        from: query.heightMin,
+        to: query.heightMax,
+    });
+
+    return req.format(req.gettext("Height (mm): %(range)s"), {range});
+};
+
+module.exports = (core, app) => ({
     start: {
         value: (req) => parseFloat(req.query.start),
         defaultValue: (req) => 0,
+        secondary: true,
     },
 
     rows: {
         value: (req) => parseFloat(req.query.rows),
         defaultValue: (req) => parseFloat(process.env.DEFAULT_ROWS || "100"),
+        secondary: true,
     },
 
     sort: {
         value: (req) => req.query.sort,
         defaultValue: (req) => process.env.DEFAULT_SORT || "dateAsc",
+        secondary: true,
     },
 
     filter: {
         value: (req) => req.query.filter,
+        title: (req, query) => req.format(
+            req.gettext("Query: '%(query)s'"),
+                {query: query.filter || "*"}),
         match: (query) => ({
             query_string: {
                 query: query.filter || "*",
@@ -109,6 +145,10 @@ module.exports = {
 
     source: {
         value: (req) => req.query.source || req.params.sourceId || "",
+        title: (req, query) => core.models.Source.getSource(query.source)
+            .getFullName(req.lang),
+        url: (req, query) => core.models.Source.getSource(query.source)
+            .getURL(req.lang),
         match: (query) => ({
             match: {
                 source: {
@@ -122,6 +162,8 @@ module.exports = {
 
     type: {
         value: (req) => req.query.type || req.params.type || "",
+        title: (req, query) => types[query.type].name(req),
+        url: (req, query) => core.urls.gen(req.lang, `/type/${query.type}`),
         match: (query) => ({
             match: {
                 "objectType.raw": {
@@ -135,6 +177,8 @@ module.exports = {
 
     artist: {
         value: (req) => req.query.artist || "",
+        title: (req, query) => req.format(
+            req.gettext("Artist: %(artist)s"), {artist: query.artist}),
         match: (query) => ({
             multi_match: {
                 fields: ["artists.*"],
@@ -146,12 +190,16 @@ module.exports = {
     },
 
     dateStart: {
+        pair: "dateEnd",
         value: (req) => req.query.dateStart,
+        title: dateFormat,
         match: dateMatch,
     },
 
     dateEnd: {
+        pair: "dateStart",
         value: (req) => req.query.dateEnd,
+        title: dateFormat,
         match: (query) => {
             if (!query.dateStart) {
                 return dateMatch(query);
@@ -160,7 +208,9 @@ module.exports = {
     },
 
     widthMin: {
+        pair: "widthMax",
         value: (req) => req.query.widthMin,
+        title: widthFormat,
         match: (query) => ({
             range: {
                 "dimensions.width": {
@@ -171,7 +221,9 @@ module.exports = {
     },
 
     widthMax: {
+        pair: "widthMin",
         value: (req) => req.query.widthMax,
+        title: widthFormat,
         match: (query) => ({
             range: {
                 "dimensions.width": {
@@ -182,7 +234,9 @@ module.exports = {
     },
 
     heightMin: {
+        pair: "heightMax",
         value: (req) => req.query.heightMin,
+        title: heightFormat,
         match: (query) => ({
             range: {
                 "dimensions.height": {
@@ -193,7 +247,9 @@ module.exports = {
     },
 
     heightMax: {
+        pair: "heightMin",
         value: (req) => req.query.heightMax,
+        title: heightFormat,
         match: (query) => ({
             range: {
                 "dimensions.height": {
@@ -202,4 +258,4 @@ module.exports = {
             },
         }),
     },
-};
+});
