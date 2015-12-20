@@ -57,7 +57,7 @@
                 <h3 class="panel-title">{{ gettext("Paste Image URL") }}</h3>
             </div>
             <div class="panel-body">
-                <form action="/url-upload" method="POST">
+                <form action="/url-upload" method="GET">
                     {% if qsLocale() %}
                         <input type="hidden" name="lang" value="{{ lang }}"/>
                     {% endif %}

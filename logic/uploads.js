@@ -52,19 +52,13 @@ module.exports = (core, app) => {
         urlUpload(req, res, next) {
             const url = req.query.url;
 
-            if (url) {
-                // Handle the user accidentally hitting enter
-                if (url === "http://") {
-                    return next(new Error(
-                        req.gettext("No image URL specified.")));
-                }
-
-                core.images.download(url,
-                    (err, file) => handleUpload(req, res, next)(err, file));
-
-            } else {
-                next(new Error(req.gettext("No image URL specified.")));
+            // Handle the user accidentally hitting enter
+            if (!url || url === "http://") {
+                return next(new Error(req.gettext("No image URL specified.")));
             }
+
+            core.images.download(url,
+                (err, file) => handleUpload(req, res, next)(err, file));
         },
 
         fileUpload(req, res, next) {
@@ -109,7 +103,7 @@ module.exports = (core, app) => {
 
         routes() {
             app.get("/uploads/:upload", this.show);
-            app.post("/url-upload", this.urlUpload);
+            app.get("/url-upload", this.urlUpload);
             app.post("/file-upload", this.fileUpload);
         },
     };
