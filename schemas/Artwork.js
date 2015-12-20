@@ -158,7 +158,7 @@ module.exports = (core) => {
 
                 // Stop if the image is already in the images list
                 if (this.images.some((image) => image.imageName === hash)) {
-                    return this.indexImage(file, hash, callback);
+                    return callback();
                 }
 
                 core.images.getSize(file, (err, size) => {
@@ -172,7 +172,7 @@ module.exports = (core) => {
                         height: size.height,
                     });
 
-                    this.indexImage(file, hash, callback);
+                    callback(null, hash);
                 });
             });
         },
@@ -197,21 +197,15 @@ module.exports = (core) => {
         updateImageSimilarity(image, callback) {
             const id = image.imageName;
 
-            core.similar.idIndexed(id, (err, exists) => {
-                if (err || !exists) {
+            core.similar.similar(id, (err, matches) => {
+                if (err || !matches) {
                     return callback(err);
                 }
 
-                core.similar.similar(id, (err, matches) => {
-                    if (err) {
-                        return callback(err);
-                    }
+                image.similarImages = matches
+                    .filter((match) => match.id !== id);
 
-                    image.similarImages = matches
-                        .filter((match) => match.id !== id);
-
-                    callback();
-                });
+                callback();
             });
         },
 

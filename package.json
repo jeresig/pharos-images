@@ -41,7 +41,6 @@
     "express-session": "^1.12.1",
     "farmhash": "^1.1.0",
     "formidable": "^1.0.17",
-    "global-tunnel": "^1.2.0",
     "gm": "^1.18.1",
     "graceful-fs": "^4.1.2",
     "i18n-abide": "0.0.23",

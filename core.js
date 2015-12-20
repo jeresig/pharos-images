@@ -4,20 +4,8 @@
 require("dotenv").load();
 
 const fs = require("fs");
-const url = require("url");
 const path = require("path");
 const async = require("async");
-
-// Proxy all HTTP requests through a proxy, if one is specified
-if (process.env.HTTP_PROXY) {
-    const globalTunnel = require("global-tunnel");
-    const proxy = url.parse(process.env.HTTP_PROXY);
-
-    globalTunnel.initialize({
-        host: proxy.host,
-        port: proxy.port || 80,
-    });
-}
 
 const core = {};
 

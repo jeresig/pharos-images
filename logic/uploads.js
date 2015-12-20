@@ -14,9 +14,8 @@ module.exports = (core, app) => {
         const upload = new Upload({
             source: "uploads",
         });
-        const sourceDir = upload.sourceDirBase();
 
-        core.images.processImage(file, sourceDir, (err, id) => {
+        upload.addImage(file, (err, id) => {
             if (err) {
                 console.error(err);
                 return next(new Error(
@@ -32,17 +31,9 @@ module.exports = (core, app) => {
 
                 upload._id = id;
 
-                upload.addImage(file, (err) => {
-                    if (err) {
-                        console.error(err);
-                        return next(new Error(
-                            req.gettext("Error adding image.")));
-                    }
-
-                    upload.syncSimilarity(() => {
-                        upload.save(() => res.redirect(
-                            upload.getURL(req.lang)));
-                    });
+                upload.syncSimilarity(() => {
+                    upload.save(() => res.redirect(
+                        upload.getURL(req.lang)));
                 });
             });
         });
