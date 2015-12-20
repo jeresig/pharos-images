@@ -59,7 +59,7 @@
                 </div>
                 <div class="row">
                     <div class="form-group col-xs-6 col-sm-12 col-lg-6">
-                        <label for="widthMin" class="control-label">{{ gettext("Width (mm)") }}</label>
+                        <label for="widthMin" class="control-label">{{ format(gettext("Width (%(unit)s)"), {unit: getUnit()}) }}</label>
                         <div class="form-inline">
                             <input type="text" name="widthMin" value="{{query.widthMin}}"
                                 placeholder="10" class="form-control size-control"/>
@@ -69,7 +69,7 @@
                         </div>
                     </div>
                     <div class="form-group col-xs-6 col-sm-12 col-lg-6">
-                        <label for="heightMin" class="control-label">{{ gettext("Height (mm)") }}</label>
+                        <label for="heightMin" class="control-label">{{ format(gettext("Height (%(unit)s)"), {unit: getUnit()}) }}</label>
                         <div class="form-inline">
                             <input type="text" name="heightMin" value="{{query.heightMin}}"
                                 placeholder="10" class="form-control size-control"/>

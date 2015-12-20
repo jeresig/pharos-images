@@ -1,5 +1,7 @@
 "use strict";
 
+const pd = require("parse-dimensions");
+
 const types = require("./types");
 
 module.exports = (core, app) => ({
@@ -105,12 +107,23 @@ module.exports = (core, app) => ({
                 ],
             },
         },
-        name: (req) => req.gettext("Width (mm)"),
-        url: (req, bucket) => req.searchURL({
-            widthMin: bucket.from,
-            widthMax: bucket.to,
-        }),
-        text: (req, bucket) => req.numRange(bucket),
+        name: (req) => req.gettext("Width"),
+        url: (req, bucket) => {
+            const unit = req.unit();
+            return req.searchURL({
+                widthMin: pd.convertNumber(bucket.from, "mm", unit),
+                widthMax: pd.convertNumber(bucket.to, "mm", unit),
+                unit,
+            });
+        },
+        text: (req, bucket) => {
+            const unit = req.unit();
+            return req.numRange({
+                from: pd.convertNumber(bucket.from, "mm", unit),
+                to: pd.convertNumber(bucket.to, "mm", unit),
+                unit,
+            });
+        },
     },
 
     height: {
@@ -136,11 +149,22 @@ module.exports = (core, app) => ({
                 ],
             },
         },
-        name: (req) => req.gettext("Height (mm)"),
-        url: (req, bucket) => req.searchURL({
-            heightMin: bucket.from,
-            heightMax: bucket.to,
-        }),
-        text: (req, bucket) => req.numRange(bucket),
+        name: (req) => req.gettext("Height"),
+        url: (req, bucket) => {
+            const unit = req.unit();
+            return req.searchURL({
+                heightMin: pd.convertNumber(bucket.from, "mm", unit),
+                heightMax: pd.convertNumber(bucket.to, "mm", unit),
+                unit,
+            });
+        },
+        text: (req, bucket) => {
+            const unit = req.unit();
+            return req.numRange({
+                from: pd.convertNumber(bucket.from, "mm", unit),
+                to: pd.convertNumber(bucket.to, "mm", unit),
+                unit,
+            });
+        },
     },
 });

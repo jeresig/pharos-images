@@ -1,5 +1,7 @@
 "use strict";
 
+const pd = require("parse-dimensions");
+
 const types = require("./types");
 
 // NOTE(jeresig): There has got to be a better way to handle this.
@@ -94,21 +96,25 @@ const dateFormat = (req, query) => {
 };
 
 const widthFormat = (req, query) => {
+    const unit = req.unit();
     const range = req.numRange({
         from: query.widthMin,
         to: query.widthMax,
+        unit,
     });
 
-    return req.format(req.gettext("Width (mm): %(range)s"), {range});
+    return req.format(req.gettext("Width: %(range)s"), {range});
 };
 
 const heightFormat = (req, query) => {
+    const unit = req.unit();
     const range = req.numRange({
         from: query.heightMin,
         to: query.heightMax,
+        unit,
     });
 
-    return req.format(req.gettext("Height (mm): %(range)s"), {range});
+    return req.format(req.gettext("Height: %(range)s"), {range});
 };
 
 module.exports = (core, app) => ({
@@ -214,7 +220,8 @@ module.exports = (core, app) => ({
         match: (query) => ({
             range: {
                 "dimensions.width": {
-                    gte: parseFloat(query.widthMin),
+                    gte: pd.convertNumber(
+                        parseFloat(query.widthMax), query.unit, "mm"),
                 },
             },
         }),
@@ -227,7 +234,8 @@ module.exports = (core, app) => ({
         match: (query) => ({
             range: {
                 "dimensions.width": {
-                    lte: parseFloat(query.widthMax),
+                    lte: pd.convertNumber(
+                        parseFloat(query.widthMax), query.unit, "mm"),
                 },
             },
         }),
@@ -240,7 +248,8 @@ module.exports = (core, app) => ({
         match: (query) => ({
             range: {
                 "dimensions.height": {
-                    gte: parseFloat(query.heightMin),
+                    gte: pd.convertNumber(
+                        parseFloat(query.heightMin), query.unit, "mm"),
                 },
             },
         }),
@@ -253,9 +262,16 @@ module.exports = (core, app) => ({
         match: (query) => ({
             range: {
                 "dimensions.height": {
-                    lte: parseFloat(query.heightMax),
+                    lte: pd.convertNumber(
+                        parseFloat(query.heightMax), query.unit, "mm"),
                 },
             },
         }),
+    },
+
+    unit: {
+        value: (req) => req.query.unit,
+        defaultValue: (req) => req.defaultUnit(),
+        secondary: true,
     },
 });

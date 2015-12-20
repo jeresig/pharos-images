@@ -1,5 +1,7 @@
 "use strict";
 
+const pd = require("parse-dimensions");
+
 const urls = require("../../lib/urls")();
 const locales = require("../../config/locales.json");
 const types = require("../../logic/shared/types");
@@ -70,10 +72,11 @@ module.exports = (req, res, next) => {
         },
 
         getDimension(item) {
-            // TODO: Use locale to show ft vs. cm
-            const unit = item.unit || "mm";
-            return [item.width, unit, " x ", item.height, unit,
-                item.label ? ` (${item.label})` : ""].join("");
+            // TODO: Use locale to show in vs. cm
+            const dimension = pd.convertDimension(item, req.unit());
+            const unit = dimension.unit;
+            return [dimension.width, unit, " x ", dimension.height, unit,
+                dimension.label ? ` (${dimension.label})` : ""].join("");
         },
 
         getType(item) {
@@ -87,13 +90,20 @@ module.exports = (req, res, next) => {
             num = (typeof num === "number" ? num : "");
             return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         },
+
+        getUnit() {
+            return req.unit();
+        },
     };
 
     Object.assign(res.locals, methods);
 
     req.numRange = (bucket) => bucket.to ?
-        `${bucket.from || 0}-${bucket.to}` :
-        `${bucket.from}+`;
+        `${bucket.from || 0}-${bucket.to}${bucket.unit || ""}` :
+        `${bucket.from}${bucket.unit || ""}+`;
+
+    req.defaultUnit = () => process.env.DEFAULT_UNIT || "cm";
+    req.unit = () => req.query.unit || req.defaultUnit();
 
     next();
 };
