@@ -67,6 +67,10 @@ module.exports = function(core, app) {
                         })),
                     };
 
+                    // Sort the similar artworks by score
+                    artwork.similarArtworks = artwork.similarArtworks
+                        .sort((a, b) => b.score - a.score);
+
                     res.render("artwork", {
                         title: artwork.getTitle(req.lang),
                         artwork: artwork,
