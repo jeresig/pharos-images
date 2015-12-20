@@ -221,7 +221,7 @@ module.exports = (core, app) => ({
             range: {
                 "dimensions.width": {
                     gte: pd.convertNumber(
-                        parseFloat(query.widthMax), query.unit, "mm"),
+                        parseFloat(query.widthMin), query.unit, "mm"),
                 },
             },
         }),
