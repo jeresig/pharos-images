@@ -6,19 +6,24 @@
 {% set hasSimilar = artwork.similarArtworks.length > 0 %}
 <div id="result" class="row">
     <div class="{% if hasSimilar %}col-md-9{% else %}col-md-12{% endif %} imageholder">
-        <div id="openseadragon-viewer"></div>
-        <div id="openseadragon-toolbar"></div>
-        
-        {% if artwork.title %}
-            <h1 class="title">
-                {% if artwork.objectType %}
-                    {{ getType(artwork) }}:
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                {% if artwork.title %}
+                    <h1 class="panel-title">
+                        {% if artwork.objectType %}
+                            {{ getType(artwork) }}:
+                        {% endif %}
+                        {{ artwork.title }}
+                    </h1>
+                {% elif artwork.objectType %}
+                    <h1 class="panel-title">{{ getType(artwork) }}</h1>
                 {% endif %}
-                {{ artwork.title }}
-            </h1>
-        {% elif artwork.objectType %}
-            <h1 class="title">{{ getType(artwork) }}</h1>
-        {% endif %}
+            </div>
+            <div class="panel-body">
+                <div id="openseadragon-viewer"></div>
+                <div id="openseadragon-toolbar"></div>
+            </div>
+        </div>
 
         <div class="responsive-table">
         <table class="table">
@@ -162,7 +167,7 @@
     <div class="col-md-3">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <strong>{{ gettext("Similar Artworks") }}</strong>
+                {{ gettext("Similar Artworks") }}
             </div>
             <div class="panel-body row">
                 {% for match in artwork.similarArtworks %}
@@ -176,13 +181,12 @@
                         </a>
                         <div class="details">
                             <div class="wrap">
-                            {% if match.artwork.dateCreated %}
-                                <span>{{ getDate(match.artwork.dateCreated) }}</span>
-                            {% endif %}
-                            <a class="pull-right" href="{{ URL(match.artwork.getSource()) }}"
-                                title="{{ fullName(match.artwork.getSource()) }}">
-                                {{ shortName(match.artwork.getSource()) }}
-                            </a>
+                                <span>{{ format(gettext("Score: %(score)s"), {score: match.score}) }}</span>
+
+                                <a class="pull-right" href="{{ URL(match.artwork.getSource()) }}"
+                                    title="{{ fullName(match.artwork.getSource()) }}">
+                                    {{ shortName(match.artwork.getSource()) }}
+                                </a>
                             </div>
                         </div>
                     </div>

@@ -23,18 +23,26 @@ module.exports = (core, app) => {
                     req.gettext("Error processing image.")));
             }
 
-            upload._id = id;
-
-            upload.addImage(file, (err) => {
-                if (err) {
-                    console.error(err);
-                    return next(new Error(
-                        req.gettext("Error adding image.")));
+            // Check to see if image already exists and redirect
+            // if it does.
+            Upload.findById(id, (err, existing) => {
+                if (existing) {
+                    return res.redirect(existing.getURL(req.lang));
                 }
 
-                upload.syncSimilarity(() => {
-                    upload.save(() => res.redirect(
-                        upload.getURL(req.lang)));
+                upload._id = id;
+
+                upload.addImage(file, (err) => {
+                    if (err) {
+                        console.error(err);
+                        return next(new Error(
+                            req.gettext("Error adding image.")));
+                    }
+
+                    upload.syncSimilarity(() => {
+                        upload.save(() => res.redirect(
+                            upload.getURL(req.lang)));
+                    });
                 });
             });
         });
@@ -94,7 +102,7 @@ module.exports = (core, app) => {
 
                     res.render("upload", {
                         title: req.gettext("Uploaded Image"),
-                        artwork: upload,
+                        upload: upload,
                     });
                 });
         },

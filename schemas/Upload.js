@@ -23,7 +23,7 @@ module.exports = (core) => {
     Upload.methods.updateImageSimilarity = function(image, callback) {
         const id = image.imageName;
         const file = core.urls.genLocalFile(
-            `/${uploadName}/scaled/${image.imageName}.jpg`);
+            `./${uploadName}/scaled/${image.imageName}.jpg`);
 
         core.similar.fileSimilar(file, (err, matches) => {
             if (err) {

@@ -8,6 +8,11 @@
     top: -10px;
 }
 
+.navbar-form {
+    margin-right: -15px;
+    padding-right: 0;
+}
+
 /*
  * Styling for the home page splash.
  */
@@ -131,6 +136,7 @@
 /*
  * Styling for the OpenSeadragon viewer
  */
+
 #openseadragon-toolbar {
     height: 33px;
     width: 100%;
