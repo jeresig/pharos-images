@@ -9,6 +9,9 @@ module.exports = (req, res, next) => {
         SITE_NAME: process.env.SITE_NAME,
         SITE_NAME_SHORT: process.env.SITE_NAME_SHORT,
 
+        // An option to disable indexing of the entire site
+        noIndex: !!process.env.NO_INDEX,
+
         getLocales() {
             return Object.keys(locales);
         },

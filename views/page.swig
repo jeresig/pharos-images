@@ -5,6 +5,9 @@
     <meta http-equiv="content-language" content="{{ lang }}"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    {% if noIndex %}
+        <meta name="robots" content="noindex"/>
+    {% endif %}
     <link rel="icon" href="{{ CDN("/images/favicon.png", {"raw": true}) }}" type="image/x-icon"/>
     <title>{% if title %}
         {{ title }} - {{ SITE_NAME_SHORT }}: {{ SITE_NAME }}
@@ -17,11 +20,11 @@
     <meta name="twitter:card" content="photo">
     <meta name="twitter:url" content="{{ URL(artwork) }}">
     <meta name="twitter:title" content="{{ getTitle(artwork) }}">
-    <meta name="twitter:image" content="{{ artwork.getScaledURL(artwork.images[0]) }}">
+    <meta name="twitter:image" content="{{ artwork.getScaledURL() }}">
     <meta property="og:title" content="{{ getTitle(artwork) }}"/>
     <meta property="og:type" content="article"/>
     <meta property="og:url" content="{{ URL(artwork) }}"/>
-    <meta property="og:image" content="{{ artwork.getScaledURL(artwork.images[0]) }}"/>
+    <meta property="og:image" content="{{ artwork.getScaledURL() }}"/>
     <meta property="og:site_name" content="{{ SITE_NAME }}"/>
     {% endif %}
 

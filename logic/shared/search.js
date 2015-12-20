@@ -161,6 +161,8 @@ module.exports = (core, app) => {
                 end,
                 prev: prevLink,
                 next: nextLink,
+                // Don't index the search results
+                noIndex: true,
             }, tmplParams));
         });
     };
