@@ -57,7 +57,7 @@
     "mongoose-version": "^0.2.4",
     "morgan": "^1.6.1",
     "naught": "^1.6.0",
-    "parse-dimensions": "0.0.4",
+    "parse-dimensions": "0.0.5",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
     "pastec": "0.0.5",

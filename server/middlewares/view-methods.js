@@ -72,11 +72,11 @@ module.exports = (req, res, next) => {
         },
 
         getDimension(item) {
-            // TODO: Use locale to show in vs. cm
+            const label = item.label;
             const dimension = pd.convertDimension(item, req.unit());
             const unit = dimension.unit;
             return [dimension.width, unit, " x ", dimension.height, unit,
-                dimension.label ? ` (${dimension.label})` : ""].join("");
+                label ? ` (${label})` : ""].join("");
         },
 
         getType(item) {
