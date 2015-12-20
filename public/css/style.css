@@ -22,15 +22,11 @@
     left: 0;
 }
 
-.home-splash .splash-contents {
-    display: none;
-}
-
-.home .home-splash {
+.home-splash {
     height: 275px;
 }
 
-.home .home-splash .splash-contents {
+.home-splash .splash-contents {
     display: block;
     position: relative;
     margin: 0 auto;
@@ -40,16 +36,16 @@
 }
 
 @media (max-width: 768px) {
-    .home .home-splash .splash-contents {
+    .home-splash .splash-contents {
         width: auto;
     }
 }
 
-.home .home-splash img {
+.home-splash img {
     float: left;
 }
 
-.home .home-splash h1 {
+.home-splash h1 {
     display: block;
     position: absolute;
     width: 225px;
@@ -60,7 +56,7 @@
     text-align: left;
 }
 
-.home .home-splash-offset {
+.home-splash-offset {
     margin-top: 220px;
 }
 

@@ -2,6 +2,19 @@
 
 {% block title %}{{ SITE_NAME }}{% endblock %}
 
+{% block splash %}
+<div class="home-splash">
+    <div class="splash-contents">
+        <img src="{{ CDN("/images/lighthouse.md.png", {"raw": true}) }}"
+            alt="{{ SITE_NAME_SHORT }}" width="200" height="203"
+            class="hidden-xs"/>
+        <h1>{{ SITE_NAME_SHORT }}<br>{{ SITE_NAME }}</h1>
+    </div>
+</div>
+
+<div class="home-splash-offset"></div>
+{% endblock %}
+
 {% block content %}
 <div class="home-contents row">
     <div class="col-sm-8 col-sm-offset-2 upload-box">
