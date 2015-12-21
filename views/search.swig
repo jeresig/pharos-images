@@ -52,7 +52,7 @@
                     <div class="form-inline">
                         <input type="text" name="dateStart" value="{{query.dateStart}}"
                             placeholder="{{minDate}}" class="form-control date-control"/>
-                        &hyphen;
+                        &mdash;
                         <input type="text" name="dateEnd" value="{{query.dateEnd}}"
                             placeholder="{{maxDate}}" class="form-control date-control"/>
                     </div>
@@ -63,7 +63,7 @@
                         <div class="form-inline">
                             <input type="text" name="widthMin" value="{{query.widthMin}}"
                                 placeholder="10" class="form-control size-control"/>
-                            &hyphen;
+                            &mdash;
                             <input type="text" name="widthMax" value="{{query.widthMax}}"
                                 placeholder="200" class="form-control size-control"/>
                         </div>
@@ -73,7 +73,7 @@
                         <div class="form-inline">
                             <input type="text" name="heightMin" value="{{query.heightMin}}"
                                 placeholder="10" class="form-control size-control"/>
-                            &hyphen;
+                            &mdash;
                             <input type="text" name="heightMax" value="{{query.heightMax}}"
                                 placeholder="200" class="form-control size-control"/>
                         </div>
