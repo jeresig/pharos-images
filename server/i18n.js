@@ -24,9 +24,8 @@ module.exports = (core, app) => {
         Object.assign(res.locals, res.tmpLocals);
 
         // Set the locale based upon the ?lang= query string
-        if (req.query.lang) {
-            res.locals.setLocale(req.query.lang);
-        }
+        // TODO: Check sub-domain for language
+        res.locals.setLocale(req.query.lang || "en");
 
         next();
     });
