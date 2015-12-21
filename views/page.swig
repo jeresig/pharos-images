@@ -56,6 +56,7 @@
                             {{ gettext("Browse All") }}
                         </a>
                     </li>
+                    <!--
                     <li class="dropdown">
                         <a href="" class="dropdown-toggle"
                             data-toggle="dropdown" role="button"
@@ -79,6 +80,7 @@
                             {% endfor %}
                         </ul>
                     </li>
+                    -->
                 </ul>
 
                 <form action="{{ URL("/search") }}" method="GET"
