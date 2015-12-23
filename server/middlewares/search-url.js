@@ -6,7 +6,7 @@ module.exports = (core, app) => {
     const queries = require("../../logic/shared/queries")(core, app);
 
     return (req, res, next) => {
-        req.paramFilter = (options) => {
+        req.paramFilter = (options, keepSecondary) => {
             // TODO: Use something instead of res.locals.query
             const all = Object.assign({}, res.locals.query, options);
             const primary = [];
@@ -14,7 +14,8 @@ module.exports = (core, app) => {
 
             for (const param in all) {
                 if (!all[param] || (queries[param].defaultValue &&
-                        all[param] === queries[param].defaultValue(req))) {
+                        all[param] === queries[param].defaultValue(req)) ||
+                        !keepSecondary && queries[param].secondary) {
                     delete all[param];
                 } else if (queries[param].secondary) {
                     secondary[param] = all[param];
@@ -31,15 +32,8 @@ module.exports = (core, app) => {
             };
         };
 
-        res.locals.searchURL = req.searchURL = (options, value) => {
-            if (typeof options === "string") {
-                const tmp = {};
-                tmp[options] = value;
-                options = tmp;
-            }
-
-            const params = req.paramFilter(options);
-
+        res.locals.searchURL = req.searchURL = (options, keepSecondary) => {
+            const params = req.paramFilter(options, keepSecondary);
             let queryString = qs.stringify(params.all);
             let url = core.urls.gen(req.lang, "/search");
 

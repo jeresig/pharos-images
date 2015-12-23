@@ -12,7 +12,7 @@ module.exports = (core, app) => ({
             },
         },
         name: (req) => req.gettext("Source"),
-        url: (req, bucket) => req.searchURL("source", bucket.key),
+        url: (req, bucket) => req.searchURL({source: bucket.key}),
         text: (req, bucket) =>
             core.models.Source.getSource(bucket.key).name,
     },
@@ -24,7 +24,7 @@ module.exports = (core, app) => ({
             },
         },
         name: (req) => req.gettext("Type"),
-        url: (req, bucket) => req.searchURL("type", bucket.key),
+        url: (req, bucket) => req.searchURL({type: bucket.key}),
         text: (req, bucket) => (bucket.key in types ?
             types[bucket.key].name(req) : bucket.key),
     },
@@ -80,7 +80,7 @@ module.exports = (core, app) => ({
             },
         },
         name: (req) => req.gettext("Artist"),
-        url: (req, bucket) => req.searchURL("artist", bucket.key),
+        url: (req, bucket) => req.searchURL({artist: bucket.key}),
         text: (req, bucket) => bucket.key,
     },
 

@@ -43,7 +43,7 @@
     "formidable": "^1.0.17",
     "gm": "^1.18.1",
     "graceful-fs": "^4.1.2",
-    "i18n-abide": "jeresig/i18n-abide#allow-set-default",
+    "i18n-abide": "https://github.com/jeresig/i18n-abide#allow-set-default",
     "imageinfo": "^1.0.4",
     "jsonld": "^0.4.2",
     "kerberos": "0.0.17",

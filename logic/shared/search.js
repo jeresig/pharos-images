@@ -20,7 +20,7 @@ module.exports = (core, app) => {
         }, {});
 
         const curURL = core.urls.gen(req.lang, req.originalUrl);
-        const expectedURL = req.searchURL(query);
+        const expectedURL = req.searchURL(query, true);
 
         if (expectedURL !== curURL) {
             return res.redirect(expectedURL);
@@ -69,11 +69,11 @@ module.exports = (core, app) => {
             const prevLink = (query.start > 0 && req.searchURL({
                 start: (query.start - query.rows > 0 ?
                     (query.start - query.rows) : ""),
-            }));
+            }, true));
 
             // The link to the next page of the search results
             const nextLink = (end < results.hits.total &&
-                req.searchURL({start: query.start + query.rows}));
+                req.searchURL({start: query.start + query.rows}, true));
 
             // Construct a nicer form of the facet data to feed in to
             // the templates
