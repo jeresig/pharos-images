@@ -41,6 +41,9 @@
                     <a href="{{ searchURL({artist: name.name}) }}">
                         {{ name.name }}
                     </a>
+                    {% if name.pseudonym %}
+                        (<a href="{{ searchURL({artist: name.pseudonym}) }}">{{ name.pseudonym }}</a>)
+                    {% endif %}
                 {% endif %}<br/>
             {% endfor %}
             </td>
