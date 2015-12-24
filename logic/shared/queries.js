@@ -274,4 +274,43 @@ module.exports = (core, app) => ({
         defaultValue: (req) => req.defaultUnit(),
         secondary: true,
     },
+
+    hasLink: {
+        value: (req) => req.query.hasLink || "",
+        title: (req, query) => req.gettext("Links to Another Artwork"),
+        match: (query) => ({
+            range: {
+                "similarArtworks.score": {
+                    gte: 1,
+                },
+            },
+        }),
+    },
+
+    hasExternalLink: {
+        value: (req) => req.query.hasExternalLink || "",
+        title: (req, query) => req.gettext("Links to an External Artwork"),
+        match: (query) => ({
+            match: {
+                "similarArtworks.source": {
+                    query: core.models.Source.getSources().map((source) =>
+                        source._id).filter((id) => id !== query.source),
+                    operator: "or",
+                },
+            },
+        }),
+    },
+
+    hasInternalLink: {
+        value: (req) => req.query.hasInternalLink || "",
+        title: (req, query) => req.gettext("Links to an Internal Artwork"),
+        match: (query) => ({
+            match: {
+                "similarArtworks.source": {
+                    query: query.source,
+                    operator: "or",
+                },
+            },
+        }),
+    },
 });
