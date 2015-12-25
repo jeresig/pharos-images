@@ -8,14 +8,15 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2015-12-24 21:41+0000\n"
+"POT-Creation-Date: 2015-12-25 15:10+0000\n"
+
+#: logic/admin.js:15
+#: logic/artworks.js:34
+msgid "Source not found."
+msgstr ""
 
 #: logic/artworks.js:19
 msgid "Type not found."
-msgstr ""
-
-#: logic/artworks.js:34
-msgid "Source not found."
 msgstr ""
 
 #: logic/artworks.js:51
@@ -49,6 +50,22 @@ msgstr ""
 
 #: server/routes.js:30
 msgid "Page Not Found"
+msgstr ""
+
+#: views/admin.swig:1
+msgid "Browse Artworks"
+msgstr ""
+
+#: views/admin.swig:2
+msgid "Links to Another Artwork"
+msgstr ""
+
+#: views/admin.swig:3
+msgid "Links to an External Artwork"
+msgstr ""
+
+#: views/admin.swig:4
+msgid "Links to an Internal Artwork"
 msgstr ""
 
 #: views/artwork.swig:1
