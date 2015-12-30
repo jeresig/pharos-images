@@ -6,7 +6,7 @@
         "source": "frick",
         "converter": "frick",
         "lang": "en",
-        "dataFiles": ["sources/frick/ItalianAnonymousDataForJohn.csv"],
+        "dataFiles": ["sources/frick/GAS_12_28_2015_cleaned.csv"],
         "imageDir": "sources/frick/images/"
     },
     {

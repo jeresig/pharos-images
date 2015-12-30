@@ -13,6 +13,12 @@ const argparser = new ArgumentParser({
         "it in to the database for future traversal.",
 });
 
+argparser.addArgument(["--dry-run"], {
+    help: "Perform a dry run on the import.",
+    action: "storeTrue",
+    dest: "dryRun",
+});
+
 argparser.addArgument(["source"], {
     help: "The name of source of the data (e.g. 'frick' or 'fzeri').",
 });
@@ -78,13 +84,14 @@ const importData = (options, callback) => {
                 }
             }
 
+            const creating = !artwork;
             const images = data.images;
             delete data.images;
 
-            if (artwork) {
-                artwork.set(data);
-            } else {
+            if (creating) {
                 artwork = new Artwork(data);
+            } else {
+                artwork.set(data);
             }
 
             async.mapLimit(images, 2, (image, callback) => {
@@ -126,6 +133,13 @@ const importData = (options, callback) => {
                         artworkID: data._id,
                     });
 
+                    return callback();
+                }
+
+                if (args.dryRun) {
+                    console.log(JSON.stringify(artwork._diff, null, "    "));
+                    console.log(JSON.stringify(artwork.toObject({
+                        transform: true})));
                     return callback();
                 }
 

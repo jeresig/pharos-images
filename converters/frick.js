@@ -135,7 +135,7 @@ module.exports = {
         fileStreams[0]
             .pipe(csv({
                 objectMode: true,
-                delimiter: ",",
+                delimiter: "\t",
                 newline: "\n",
                 columns: true,
             }))

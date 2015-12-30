@@ -52,6 +52,7 @@
     "method-override": "^2.3.5",
     "mongoosastic": "^3.6.0",
     "mongoose": "^4.3.4",
+    "mongoose-diff": "inxilpro/mongoose-diff",
     "mongoose-schema-extend": "^0.2.0",
     "mongoose-user": "0.0.1",
     "mongoose-version": "^0.2.4",
