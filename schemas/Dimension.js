@@ -7,4 +7,6 @@ module.exports = (core) => new core.db.schema({
     depth: {type: Number, es_indexed: true},
     label: String,
     unit: {type: String, es_indexed: true},
+}, {
+    _id: false,
 });

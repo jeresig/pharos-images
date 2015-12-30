@@ -26,4 +26,6 @@ module.exports = (core) => new core.db.schema({
         id: String,
         score: Number,
     }],
+}, {
+    _id: false,
 });

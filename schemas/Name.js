@@ -51,4 +51,6 @@ module.exports = (core) => new core.db.schema({
 
     // Is this work attributed to an artist
     attributed: Boolean,
+}, {
+    _id: false,
 });

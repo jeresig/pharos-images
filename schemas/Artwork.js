@@ -156,6 +156,8 @@ module.exports = (core) => {
                     return callback(err);
                 }
 
+                hash = hash.toString();
+
                 // Stop if the image is already in the images list
                 if (this.images.some((image) => image.imageName === hash)) {
                     return callback();
