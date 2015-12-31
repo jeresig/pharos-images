@@ -179,6 +179,22 @@ module.exports = (core) => {
             });
         },
 
+        addImages(images, callback) {
+            async.mapLimit(images, 2, (imgFile, callback) => {
+                this.addImage(imgFile, (err, id) => {
+                    if (err) {
+                        return callback(err);
+                    }
+
+                    if (id) {
+                        return this.indexImage(imgFile, id, callback);
+                    }
+
+                    callback();
+                });
+            }, callback);
+        },
+
         indexImage(file, id, callback) {
             core.similar.idIndexed(id, (err, indexed) => {
                 if (err || indexed) {
@@ -287,8 +303,7 @@ module.exports = (core) => {
         next();
     };
 
-    Artwork.pre("save", updateYearRanges);
-    Artwork.pre("update", updateYearRanges);
+    Artwork.pre("validate", updateYearRanges);
 
     return Artwork;
 };

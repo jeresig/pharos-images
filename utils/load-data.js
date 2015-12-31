@@ -3,7 +3,6 @@
 const fs = require("fs");
 const path = require("path");
 
-const async = require("async");
 const ArgumentParser = require("argparse").ArgumentParser;
 
 const core = require("../core");
@@ -85,8 +84,29 @@ const importData = (options, callback) => {
             }
 
             const creating = !artwork;
-            const images = data.images;
+            const images = data.images.map((image) => {
+                const fileName = image.fileName.replace(/^.*[\/]/, "");
+                return path.resolve(options.imageDir, fileName);
+            }).filter((imgFile) => {
+                if (!fs.existsSync(imgFile)) {
+                    missingImages.push({
+                        fileName: path.basename(imgFile),
+                        artworkID: data._id,
+                    });
+                    return false;
+                }
+
+                return true;
+            });
             delete data.images;
+
+            if (images.length === 0) {
+                emptyArtworks.push({
+                    artworkID: data._id,
+                });
+
+                return callback();
+            }
 
             if (creating) {
                 artwork = new Artwork(data);
@@ -94,70 +114,33 @@ const importData = (options, callback) => {
                 artwork.set(data);
             }
 
-            async.mapLimit(images, 2, (image, callback) => {
-                const fileName = image.fileName.replace(/^.*[\/]/, "");
-                const imgFile = path.resolve(options.imageDir, fileName);
-
-                if (!fileName || !fs.existsSync(imgFile)) {
-                    console.log("Missing Image:", fileName);
-
-                    missingImages.push({
-                        fileName: fileName,
-                        artworkID: data._id,
-                    });
-
-                    return callback();
-                }
-
-                artwork.addImage(imgFile, (err, id) => {
-                    if (err) {
-                        return callback(err);
+            artwork.validate((err) => {
+                artwork.saveImages(images, (err) => {
+                    if (args.dryRun) {
+                        console.log(JSON.stringify(artwork._diff,
+                            null, "    "));
+                        console.log(JSON.stringify(artwork.toObject({
+                            transform: true})));
+                        return callback();
                     }
 
-                    if (id) {
-                        return artwork.indexImage(imgFile, id, callback);
-                    }
+                    console.log("Saving Artwork...", artwork._id);
 
-                    callback();
-                });
-            }, (err) => {
-                if (err) {
-                    console.error("Error adding images:", err);
-                    return callback(err);
-                }
-
-                if (artwork.images.length === 0) {
-                    console.log("Empty Artwork:", data._id);
-
-                    emptyArtworks.push({
-                        artworkID: data._id,
-                    });
-
-                    return callback();
-                }
-
-                if (args.dryRun) {
-                    console.log(JSON.stringify(artwork._diff, null, "    "));
-                    console.log(JSON.stringify(artwork.toObject({
-                        transform: true})));
-                    return callback();
-                }
-
-                console.log("Saving Artwork...", artwork._id);
-
-                artwork.save((err) => {
-                    if (err) {
-                        console.error("Error saving:", err);
-                    }
-
-                    // Make sure we wait until the data is fully indexed before
-                    // continuing, otherwise we may lose some information!
-                    artwork.on("es-indexed", (err, res) => {
+                    artwork.save((err) => {
                         if (err) {
-                            console.error("Error indexing:", err);
+                            console.error("Error saving:", err);
                         }
 
-                        callback(err);
+                        // Make sure we wait until the data is fully indexed
+                        // before continuing, otherwise we may lose some
+                        // information!
+                        artwork.on("es-indexed", (err, res) => {
+                            if (err) {
+                                console.error("Error indexing:", err);
+                            }
+
+                            callback(err);
+                        });
                     });
                 });
             });
