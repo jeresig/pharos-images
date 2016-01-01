@@ -115,7 +115,15 @@ const importData = (options, callback) => {
             }
 
             artwork.validate((err) => {
+                if (err) {
+                    return callback(err);
+                }
+
                 artwork.saveImages(images, (err) => {
+                    if (err) {
+                        return callback(err);
+                    }
+
                     if (args.dryRun) {
                         console.log(JSON.stringify(artwork._diff,
                             null, "    "));

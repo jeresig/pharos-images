@@ -180,7 +180,7 @@ module.exports = (core) => {
         },
 
         addImages(images, callback) {
-            async.mapLimit(images, 2, (imgFile, callback) => {
+            async.mapLimit(images, 1, (imgFile, callback) => {
                 this.addImage(imgFile, (err, id) => {
                     if (err) {
                         return callback(err);
