@@ -119,7 +119,7 @@ const importData = (options, callback) => {
                     return callback(err);
                 }
 
-                artwork.saveImages(images, (err) => {
+                artwork.addImages(images, (err) => {
                     if (err) {
                         return callback(err);
                     }
