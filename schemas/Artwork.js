@@ -1,5 +1,8 @@
 "use strict";
 
+const fs = require("fs");
+const path = require("path");
+
 const async = require("async");
 
 module.exports = (core) => {
@@ -276,6 +279,70 @@ module.exports = (core) => {
                         .sort((a, b) => b.score - a.score);
 
                     callback();
+                });
+            });
+        },
+    };
+
+    Artwork.statics = {
+        fromData(data, callback) {
+            // Keep track of important statistics
+            const warnings = [];
+
+            Artwork.findById(data._id, (err, artwork) => {
+                if (err) {
+                    return callback(err);
+                }
+
+                Object.keys(data).forEach((key) => {
+                    const schemaPath = Artwork.schema.path(key);
+
+                    if (!schemaPath) {
+                        return callback(new Error(`Unknown key: ${key}`));
+                    }
+
+                    if (Array.isArray(schemaPath.options.type) &&
+                            data[key] && !Array.isArray(data[key])) {
+                        data[key] = [data[key]];
+                    }
+                });
+
+                const creating = !artwork;
+                const images = data.images.filter((imgFile) => {
+                    if (!fs.existsSync(imgFile)) {
+                        warnings.push({
+                            fileName: path.basename(imgFile),
+                            artworkID: data._id,
+                        });
+                        return false;
+                    }
+
+                    return true;
+                });
+                delete data.images;
+
+                if (images.length === 0) {
+                    warnings.push({
+                        artworkID: data._id,
+                    });
+
+                    return callback();
+                }
+
+                if (creating) {
+                    artwork = new Artwork(data);
+                } else {
+                    artwork.set(data);
+                }
+
+                artwork.validate((err) => {
+                    if (err) {
+                        return callback(err);
+                    }
+
+                    artwork.addImages(images, (err) => {
+                        callback(err, artwork);
+                    });
                 });
             });
         },
