@@ -59,7 +59,7 @@ module.exports = {
                 }
             },
         ],
-        collections: {
+        locations: {
             name: "LDCN",
             country: "PVCS",
             city: "PVCC",
@@ -73,12 +73,7 @@ module.exports = {
         },
         images: {
             every: "FOTO",
-            data: {
-                id: "@sercdf",
-                fileName: [".", function(val) {
-                    return val.replace(/^.*\//, "");
-                }],
-            },
+            data: (val) => val.replace(/^.*[/]/, ""),
         },
     },
 
@@ -93,6 +88,10 @@ module.exports = {
                     node.text());
             }
         };
+
+        if (typeof propMap === "function") {
+            return propMap(root.text());
+        }
 
         for (const propName in propMap) {
             let searchValue = propMap[propName];

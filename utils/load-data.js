@@ -61,10 +61,8 @@ const importData = (options, callback) => {
         data.lang = options.lang;
         data.source = options.source;
 
-        data.images = data.images.map((image) => {
-            const fileName = image.fileName.replace(/^.*[\/]/, "");
-            return path.resolve(options.imageDir, fileName);
-        });
+        data.images = data.images.map((fileName) =>
+            path.resolve(options.imageDir, fileName));
 
         Artwork.fromData(data, (err, artwork) => {
             if (err) {

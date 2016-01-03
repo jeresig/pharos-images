@@ -63,16 +63,12 @@ module.exports = {
                 }
             },
         ],
-        collections: {
+        locations: {
             city: "WorkLocation_city",
             name: "Collection",
         },
-        images: {
-            id: "ImageID",
-            fileName: ["FullPath",
-                (fileName, data) => fileName.replace(/^.*[/]/, "")
-                    .replace(/\.tif$/, ".jpg")],
-        },
+        images: ["FullPath", (fileName) => fileName.replace(/^.*[/]/, "")
+            .replace(/\.tif$/, ".jpg")],
     },
 
     searchByProps(row, propMap) {

@@ -3,3 +3,4 @@ data
 .env
 logs
 naught.pid
+migrations/.migrate

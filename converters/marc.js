@@ -99,7 +99,7 @@ module.exports = {
             (results) => (results[0] &&
                 pd.parseDimensions(trim(results[0]), true)),
         ],
-        collections: [
+        locations: [
             "710",
             ["a"],
             (results) => (results[0] && {name: trim(results[0])}),
@@ -107,13 +107,7 @@ module.exports = {
         images: [
             "856",
             ["u"],
-            (results) => {
-                const fileName = results[0].replace(/^.*\//, "");
-                return {
-                    id: fileName.replace(/\.jpg$/, ""),
-                    fileName: fileName,
-                };
-            },
+            (results) => results[0].replace(/^.*[/]/, ""),
         ],
     },
 
@@ -208,7 +202,6 @@ module.exports = {
                 const result = this.parseRecord(record);
 
                 if (result.bibID in bibs) {
-                    result.images.id = result.id;
                     bibs[result.bibID].images.push(result.images);
                 }
             });

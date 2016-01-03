@@ -9,34 +9,136 @@ module.exports = (core) => {
     const Name = require("./Name")(core);
     const YearRange = require("./YearRange")(core);
     const Dimension = require("./Dimension")(core);
-    const Collection = require("./Collection")(core);
-    const Image = require("./Image")(core);
 
     const Artwork = new core.db.schema({
-        // UUID of the image (Format: SOURCE/IMAGEMD5)
-        _id: String,
+        // UUID of the image (Format: SOURCE/ID)
+        _id: {
+            type: String,
+            validate: (v) => /^\w+\/.+$/.test(v),
+            es_indexed: true,
+        },
 
-        // Collection ID
-        id: String,
+        // Source ID
+        id: {
+            type: String,
+            required: true,
+            es_indexed: true,
+        },
 
         // The date that this item was created
-        created: {type: Date, "default": Date.now},
+        created: {
+            type: Date,
+            default: Date.now,
+        },
 
         // The date that this item was updated
         modified: Date,
 
         // The source of the image.
-        source: {type: String, ref: "Source", es_indexed: true},
+        // NOTE(jeresig): It'd be nice to validate and ensure that the source
+        // is one that actually exists.
+        source: {
+            type: String,
+            es_indexed: true,
+            required: true,
+        },
 
         // The language of the page from where the data is being extracted. This
         // will influence how extracted text is handled.
-        lang: String,
+        lang: {
+            type: String,
+            required: true,
+            // NOTE(jeresig): Need to find a way to update this dynamically.
+            enum: ["en", "it", "de"],
+        },
 
         // A link to the artwork at its source
-        url: {type: String},
+        // TODO(jeresig): Use a better URL validator.
+        url: {
+            type: String,
+            required: true,
+            validate: (v) => /^https?:\/\/.*/.test(v),
+        },
+
+        // The images associated with the artwork
+        images: {
+            type: [{
+                // The hash of the image file contents
+                _id: {
+                    type: String,
+                    es_indexed: true,
+                    required: true,
+                },
+
+                // TODO(jeresig): Remove this after migration to _id
+                imageName: {
+                    type: String,
+                    es_indexed: true,
+                    required: true,
+                },
+
+                // The date that this item was created
+                created: {
+                    type: Date,
+                    default: Date.now,
+                },
+
+                // The date that this item was updated
+                modified: {
+                    type: Date,
+                    es_indexed: true,
+                },
+
+                // Full URL of the original page from where the image came.
+                url: String,
+
+                // Width of the image, in pixels
+                // NOTE(jeresig): Min image dimensions should be move to a
+                // central settings location.
+                width: {
+                    type: Number,
+                    required: true,
+                    // TODO(jeresig): Turn this in to a warning.
+                    //min: 150,
+                },
+
+                // Height of the image, in pixels
+                height: {
+                    type: Number,
+                    required: true,
+                    // TODO(jeresig): Turn this in to a warning.
+                    //min: 150,
+                },
+
+                // Similar images (as determined by image similarity)
+                similarImages: [{
+                    // The ID of the visually similar
+                    _id: {
+                        type: String,
+                        required: true,
+                    },
+
+                    // TODO(jeresig): Remove this after migration to _id
+                    id: {
+                        type: String,
+                        required: true,
+                    },
+
+                    // The similarity score between the images
+                    score: {
+                        type: Number,
+                        min: 1,
+                    },
+                }],
+            }],
+            required: true,
+        },
 
         // The title of the artwork.
-        title: {type: String, es_indexed: true},
+        title: {
+            type: String,
+            es_indexed: true,
+        },
 
         // A list of artist names extracted from the page.
         artists: [Name],
@@ -44,10 +146,16 @@ module.exports = (core) => {
         // The size of the artwork (e.g. 100mm x 200mm)
         dimensions: [Dimension],
 
-        // Date when the artwork was created (typically a rough year, or range).
+        // Date ranges when the artwork was created or modified.
+        dates: [YearRange],
+
+        // TODO(jeresig): Remove after move to dates
         dateCreateds: [YearRange],
 
         // The English form of the object type (e.g. painting, print)
+        // NOTE(jeresig): We could require that the object type be of one of a
+        // the pre-specified types in the types file, but that feels overly
+        // restrictive, better to just warn them instead.
         objectType: {
             type: String,
             es_indexed: true,
@@ -59,20 +167,67 @@ module.exports = (core) => {
             },
         },
 
-        medium: {type: String, es_indexed: true},
+        // The medium of the artwork (e.g. "watercolor")
+        medium: {
+            type: String,
+            es_indexed: true,
+        },
 
-        collections: [Collection],
+        // TODO(jeresig): Remove this once locations exist
+        collections: [{
+            _id: false,
+            country: {type: String, es_indexed: true},
+            city: {type: String, es_indexed: true},
+            name: {type: String, es_indexed: true},
+        }],
 
-        categories: [String],
+        // Locations where the artwork is stored
+        locations: [{
+            _id: false,
+            country: {type: String, es_indexed: true},
+            city: {type: String, es_indexed: true},
+            name: {type: String, es_indexed: true},
+        }],
 
-        images: [Image],
+        // Categories classifying the artwork
+        categories: {
+            type: [String],
+            es_indexed: true,
+        },
 
-        // Computed by looking at the results of similarImages
+        // Computed by looking at the results of images.similarImages
         similarArtworks: [{
-            artwork: {type: String, ref: "Artwork"},
-            imageNames: [String],
-            score: {type: Number, es_indexed: true},
-            source: {type: String, es_indexed: true},
+            _id: String,
+
+            artwork: {
+                type: String,
+                ref: "Artwork",
+                required: true,
+            },
+
+            images: {
+                type: [String],
+                required: true,
+            },
+
+            // TODO(jeresig): Remove after move to images
+            imageNames: {
+                type: [String],
+                required: true,
+            },
+
+            source: {
+                type: String,
+                es_indexed: true,
+                required: true,
+            },
+
+            score: {
+                type: Number,
+                es_indexed: true,
+                required: true,
+                min: 1,
+            },
         }],
     });
 
@@ -290,6 +445,8 @@ module.exports = (core) => {
             const warnings = [];
 
             Artwork.findById(data._id, (err, artwork) => {
+                const creating = !artwork;
+
                 if (err) {
                     return callback(err);
                 }
@@ -298,7 +455,8 @@ module.exports = (core) => {
                     const schemaPath = Artwork.schema.path(key);
 
                     if (!schemaPath) {
-                        return callback(new Error(`Unknown key: ${key}`));
+                        warnings.push(`Unknown column: ${key}`);
+                        return;
                     }
 
                     if (Array.isArray(schemaPath.options.type) &&
@@ -307,26 +465,21 @@ module.exports = (core) => {
                     }
                 });
 
-                const creating = !artwork;
-                const images = data.images.filter((imgFile) => {
+                const images = (data.images || []).filter((imgFile) => {
                     if (!fs.existsSync(imgFile)) {
-                        warnings.push({
-                            fileName: path.basename(imgFile),
-                            artworkID: data._id,
-                        });
+                        warnings.push(
+                            `Image file not found: ${path.basename(imgFile)}`);
                         return false;
                     }
 
                     return true;
                 });
+
+                // We handle the setting of images separately
                 delete data.images;
 
                 if (images.length === 0) {
-                    warnings.push({
-                        artworkID: data._id,
-                    });
-
-                    return callback();
+                    return callback(new Error(`No images found.`));
                 }
 
                 if (creating) {
@@ -347,30 +500,6 @@ module.exports = (core) => {
             });
         },
     };
-
-    // We generate a list of years in which the artwork exists, in order
-    // to improve querying inside Elasticsearch
-    const updateYearRanges = function(next) {
-        (this.dateCreateds || []).forEach((range) => {
-            if (!range.start || !range.end || range.start > range.end) {
-                return;
-            }
-
-            // NOTE(jeresig): This will get much better once generators
-            // are available in Node!
-            const years = [];
-
-            for (let year = range.start; year <= range.end; year += 1) {
-                years.push(year);
-            }
-
-            range.years = years;
-        });
-
-        next();
-    };
-
-    Artwork.pre("validate", updateYearRanges);
 
     return Artwork;
 };
