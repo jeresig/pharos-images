@@ -9,6 +9,7 @@ module.exports = (core) => {
     const Name = require("./Name")(core);
     const YearRange = require("./YearRange")(core);
     const Dimension = require("./Dimension")(core);
+    const Location = require("./Location")(core);
 
     const Artwork = new core.db.schema({
         // UUID of the image (Format: SOURCE/ID)
@@ -174,20 +175,10 @@ module.exports = (core) => {
         },
 
         // TODO(jeresig): Remove this once locations exist
-        collections: [{
-            _id: false,
-            country: {type: String, es_indexed: true},
-            city: {type: String, es_indexed: true},
-            name: {type: String, es_indexed: true},
-        }],
+        collections: [Location],
 
         // Locations where the artwork is stored
-        locations: [{
-            _id: false,
-            country: {type: String, es_indexed: true},
-            city: {type: String, es_indexed: true},
-            name: {type: String, es_indexed: true},
-        }],
+        locations: [Location],
 
         // Categories classifying the artwork
         categories: {

@@ -7,6 +7,8 @@ exports.up = (next) => {
     core.init(() => {
         Artwork.find({}, {}, {timeout: true}).stream()
             .on("data", function(artwork) {
+                this.pause();
+
                 console.log(`Migrating ${artwork._id}...`);
 
                 artwork.images.forEach((image) => {
@@ -21,14 +23,18 @@ exports.up = (next) => {
                     similar.images = similar.imageNames;
                 });
 
+                artwork.collections.forEach((collection) => {
+                    delete collection._id;
+                });
+
                 artwork.dates = artwork.dateCreateds;
                 artwork.locations = artwork.collections;
 
-                this.pause();
-                console.log("saving...");
                 artwork.save((err) => {
                     if (err) {
-                        console.err(artwork._id, err);
+                        console.error(artwork._id,
+                            JSON.stringify(err, null, "    "));
+                        return;
                     }
 
                     this.resume();

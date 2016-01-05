@@ -67,6 +67,7 @@ module.exports = (core) => {
     // Dynamically generate the _id attribute
     Name.pre("validate", function(next) {
         this._id = this.original || this.name;
+        next();
     });
 
     return Name;

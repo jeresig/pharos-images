@@ -52,8 +52,8 @@ module.exports = (core) => {
 
     // Dynamically generate the _id attribute
     YearRange.pre("validate", function(next) {
-        this._id = this.original ||
-            (this.start || this.end ? this.start + this.end : "");
+        this._id = this.original || [this.start, this.end].join(",");
+        next();
     });
 
     return YearRange;
