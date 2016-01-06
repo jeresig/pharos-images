@@ -422,6 +422,7 @@ module.exports = (core) => {
                                 source: similar.source,
                             };
                         })
+                        .filter((similar) => similar.score > 0)
                         .sort((a, b) => b.score - a.score);
 
                     callback();

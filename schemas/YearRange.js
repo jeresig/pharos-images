@@ -34,7 +34,7 @@ module.exports = (core) => {
     // to improve querying inside Elasticsearch
     YearRange.pre("validate", function(next) {
         if (!this.start || !this.end || this.start > this.end) {
-            return;
+            return next();
         }
 
         // NOTE(jeresig): This will get much better once generators

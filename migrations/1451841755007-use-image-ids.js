@@ -23,9 +23,9 @@ exports.up = (next) => {
                     similar.images = similar.imageNames;
                 });
 
-                artwork.collections.forEach((collection) => {
-                    delete collection._id;
-                });
+                // Remove collections that don't have any useful data
+                artwork.collections = artwork.collections
+                    .filter((item) => item.name || item.city || item.country);
 
                 artwork.dates = artwork.dateCreateds;
                 artwork.locations = artwork.collections;
