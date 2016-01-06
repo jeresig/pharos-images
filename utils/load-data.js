@@ -66,14 +66,17 @@ const importData = (options, callback) => {
 
         Artwork.fromData(data, (err, artwork) => {
             if (err) {
-                return callback(err);
+                console.log("Error with artwork:", err);
+                return callback();
             }
 
             if (args.dryRun) {
-                console.log(JSON.stringify(artwork._diff,
-                    null, "    "));
-                console.log(JSON.stringify(artwork.toObject({
-                    transform: true})));
+                if (artwork._diff) {
+                    console.log("Updating", artwork._id,
+                        JSON.stringify(artwork._diff, null, "    "));
+                    //console.log(JSON.stringify(artwork.toObject({
+                    //    transform: true})));
+                }
                 return callback();
             }
 

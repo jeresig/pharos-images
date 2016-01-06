@@ -436,7 +436,7 @@ module.exports = (core) => {
             // Keep track of important statistics
             const warnings = [];
 
-            Artwork.findById(data._id, (err, artwork) => {
+            core.models.Artwork.findById(data._id, (err, artwork) => {
                 const creating = !artwork;
 
                 if (err) {
@@ -444,7 +444,7 @@ module.exports = (core) => {
                 }
 
                 Object.keys(data).forEach((key) => {
-                    const schemaPath = Artwork.schema.path(key);
+                    const schemaPath = Artwork.path(key);
 
                     if (!schemaPath) {
                         warnings.push(`Unknown column: ${key}`);
@@ -475,7 +475,7 @@ module.exports = (core) => {
                 }
 
                 if (creating) {
-                    artwork = new Artwork(data);
+                    artwork = new core.models.Artwork(data);
                 } else {
                     artwork.set(data);
                 }

@@ -53,7 +53,7 @@ module.exports = {
         ],
         artists: {
             name: "Creator",
-            dates: ["Creator_datesDisplay", (date) => yr.parse(date)],
+            //dates: ["Creator_datesDisplay", (date) => yr.parse(date)],
         },
         dimensions: [
             "WorkMeasurements_display",
@@ -61,12 +61,23 @@ module.exports = {
                 if (measurement) {
                     return pd.parseDimension(measurement, true);
                 }
+                return [];
             },
         ],
-        locations: {
-            city: "WorkLocation_city",
-            name: "Collection",
-        },
+        locations: ["Collection", (name, data) => {
+            const city = data.WorkLocation_city;
+            if (name || city) {
+                const data = {};
+                if (name) {
+                    data.name = name;
+                }
+                if (city) {
+                    data.city = city;
+                }
+                return data;
+            }
+            return [];
+        }],
         images: ["FullPath", (fileName) => fileName.replace(/^.*[/]/, "")
             .replace(/\.tif$/, ".jpg")],
     },
