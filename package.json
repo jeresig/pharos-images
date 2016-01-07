@@ -46,6 +46,7 @@
     "graceful-fs": "^4.1.2",
     "i18n-abide": "https://github.com/jeresig/i18n-abide#allow-set-default",
     "imageinfo": "^1.0.4",
+    "jsondiffpatch": "^0.1.38",
     "jsonld": "^0.4.2",
     "kerberos": "0.0.17",
     "libxmljs": "^0.16.1",

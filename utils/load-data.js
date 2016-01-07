@@ -4,6 +4,7 @@ const fs = require("fs");
 const path = require("path");
 
 const ArgumentParser = require("argparse").ArgumentParser;
+const jsondiffpatch = require("jsondiffpatch");
 
 const core = require("../core");
 
@@ -71,9 +72,12 @@ const importData = (options, callback) => {
             }
 
             if (args.dryRun) {
-                if (artwork._diff) {
+                if (artwork.isNew) {
+                    console.log("Creating", artwork._id);
+
+                } else if (artwork._diff) {
                     console.log("Updating", artwork._id,
-                        JSON.stringify(artwork._diff, null, "    "));
+                        jsondiffpatch.formatters.console.format(artwork._diff));
                     //console.log(JSON.stringify(artwork.toObject({
                     //    transform: true})));
                 }

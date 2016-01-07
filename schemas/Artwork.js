@@ -318,6 +318,7 @@ module.exports = (core) => {
                     }
 
                     this.images.push({
+                        _id: hash,
                         imageName: hash,
                         width: size.width,
                         height: size.height,
@@ -480,12 +481,12 @@ module.exports = (core) => {
                     artwork.set(data);
                 }
 
-                artwork.validate((err) => {
+                artwork.addImages(images, (err) => {
                     if (err) {
                         return callback(err);
                     }
 
-                    artwork.addImages(images, (err) => {
+                    artwork.validate((err) => {
                         callback(err, artwork);
                     });
                 });
