@@ -271,10 +271,6 @@ module.exports = (core) => {
                 `/${this.source}/thumbs/${image.imageName}.jpg`);
         },
 
-        sourceDirBase() {
-            return core.urls.genLocalFile(this.source._id || this.source);
-        },
-
         getTitle(locale) {
             const parts = [];
 
@@ -298,34 +294,16 @@ module.exports = (core) => {
         },
 
         addImage(file, callback) {
-            const sourceDir = this.sourceDirBase();
+            const source = this.getSource();
 
-            core.images.processImage(file, sourceDir, (err, hash) => {
-                if (err) {
-                    return callback(err);
-                }
-
-                hash = hash.toString();
-
+            source.getImage(file, (err, image) => {
                 // Stop if the image is already in the images list
-                if (this.images.some((image) => image.imageName === hash)) {
+                if (this.images.some((match) => image._id === match._id)) {
                     return callback();
                 }
 
-                core.images.getSize(file, (err, size) => {
-                    if (err) {
-                        return callback(err);
-                    }
-
-                    this.images.push({
-                        _id: hash,
-                        imageName: hash,
-                        width: size.width,
-                        height: size.height,
-                    });
-
-                    callback(null, hash);
-                });
+                this.images.push(image);
+                callback();
             });
         },
 

@@ -1,5 +1,7 @@
 "use strict";
 
+const path = require("path");
+
 const async = require("async");
 
 module.exports = (core) => {
@@ -28,6 +30,10 @@ module.exports = (core) => {
             return core.urls.gen(locale, `/source/${this._id}`);
         },
 
+        getDirBase() {
+            return core.urls.genLocalFile(this._id);
+        },
+
         getFullName: function(locale) {
             return locale === "ja" && this.nameKanji || this.name;
         },
@@ -40,6 +46,87 @@ module.exports = (core) => {
             Artwork.count({source: this._id}, (err, num) => {
                 this.numArtworks = num || 0;
                 callback(err);
+            });
+        },
+
+        getImage(file, callback) {
+            const fileName = path.basename(file);
+            const _id = `${this._id}/${fileName}`;
+
+            core.models.UploadedImage.findById(_id, callback);
+        },
+
+        processImage(file, callback) {
+            const fileName = path.basename(file);
+            const _id = `${this._id}/${fileName}`;
+            const sourceDir = this.getDirBase();
+            const warnings = [];
+
+            core.models.Image.findById(_id, (err, image) => {
+                const creating = !image;
+
+                core.images.processImage(file, sourceDir, (err, hash) => {
+                    if (err) {
+                        return callback(new Error(
+                            "There was an error processing the image. " +
+                            "Perhaps it is malformed in some way."
+                        ));
+                    }
+
+                    hash = hash.toString();
+
+                    // The same image was uploaded, we can just skip the rest
+                    if (!creating && hash === image.hash) {
+                        return callback(null, image);
+                    }
+
+                    core.images.getSize(file, (err, size) => {
+                        if (err) {
+                            return callback(new Error(
+                                "There was an error getting the dimensions " +
+                                "of the image."
+                            ));
+                        }
+
+                        const width = size.width;
+                        const height = size.height;
+
+                        if (width === 0 || height === 0) {
+                            return callback(new Error("The image is empty."));
+                        }
+
+                        const data = {
+                            _id,
+                            source: this._id,
+                            fileName,
+                            hash,
+                            width,
+                            height,
+                        };
+
+                        if (creating) {
+                            image = new core.models.Image(data);
+
+                        } else {
+                            warnings.push(
+                                "A new version of the image was uploaded, " +
+                                "replacing the old one."
+                            );
+
+                            image.set(data);
+                        }
+
+                        if (width < 150 || height < 150) {
+                            warnings.push(
+                                "The image is too small to work with the " +
+                                "image similarity algorithm. It must be " +
+                                "at least 150px on each side."
+                            );
+                        }
+
+                        image.save(callback);
+                    });
+                });
             });
         },
     };
