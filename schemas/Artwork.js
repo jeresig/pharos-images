@@ -10,6 +10,7 @@ module.exports = (core) => {
     const YearRange = require("./YearRange")(core);
     const Dimension = require("./Dimension")(core);
     const Location = require("./Location")(core);
+    const Image = require("./Image")(core);
 
     const Artwork = new core.db.schema({
         // UUID of the image (Format: SOURCE/ID)
@@ -63,75 +64,7 @@ module.exports = (core) => {
 
         // The images associated with the artwork
         images: {
-            type: [{
-                // The hash of the image file contents
-                _id: {
-                    type: String,
-                    es_indexed: true,
-                    required: true,
-                },
-
-                // TODO(jeresig): Remove this after migration to _id
-                imageName: {
-                    type: String,
-                    es_indexed: true,
-                    required: true,
-                },
-
-                // The date that this item was created
-                created: {
-                    type: Date,
-                    default: Date.now,
-                },
-
-                // The date that this item was updated
-                modified: {
-                    type: Date,
-                    es_indexed: true,
-                },
-
-                // Full URL of the original page from where the image came.
-                url: String,
-
-                // Width of the image, in pixels
-                // NOTE(jeresig): Min image dimensions should be move to a
-                // central settings location.
-                width: {
-                    type: Number,
-                    required: true,
-                    // TODO(jeresig): Turn this in to a warning.
-                    //min: 150,
-                },
-
-                // Height of the image, in pixels
-                height: {
-                    type: Number,
-                    required: true,
-                    // TODO(jeresig): Turn this in to a warning.
-                    //min: 150,
-                },
-
-                // Similar images (as determined by image similarity)
-                similarImages: [{
-                    // The ID of the visually similar
-                    _id: {
-                        type: String,
-                        required: true,
-                    },
-
-                    // TODO(jeresig): Remove this after migration to _id
-                    id: {
-                        type: String,
-                        required: true,
-                    },
-
-                    // The similarity score between the images
-                    score: {
-                        type: Number,
-                        min: 1,
-                    },
-                }],
-            }],
+            type: [Image],
             required: true,
         },
 
