@@ -177,7 +177,7 @@
                     {% if match.artwork %}
                     <div class="img col-md-12 col-xs-6 col-sm-4">
                         <a href="{{ URL(match.artwork) }}">
-                            <img src="{{ match.artwork.getThumbURL(match.artwork.images[0]) }}"
+                            <img src="{{ match.artwork.getThumbURL() }}"
                                 alt="{{ getTitle(match.artwork) }}"
                                 title="{{ getTitle(match.artwork) }}"
                                 class="img-responsive center-block"/>

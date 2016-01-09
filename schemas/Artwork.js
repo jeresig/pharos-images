@@ -10,7 +10,6 @@ module.exports = (core) => {
     const YearRange = require("./YearRange")(core);
     const Dimension = require("./Dimension")(core);
     const Location = require("./Location")(core);
-    const Image = require("./Image")(core);
 
     const Artwork = new core.db.schema({
         // UUID of the image (Format: SOURCE/ID)
@@ -62,9 +61,17 @@ module.exports = (core) => {
             validate: (v) => /^https?:\/\/.*/.test(v),
         },
 
+        // A hash to use to render an image representing the artwork
+        defaultImageHash: {
+            type: String,
+            required: true,
+        },
+
         // The images associated with the artwork
         images: {
             type: [Image],
+            // TODO: Move to this.
+            //type: [{type: String, ref: "Image"}],
             required: true,
         },
 
@@ -186,22 +193,9 @@ module.exports = (core) => {
             return core.urls.gen(locale, `/artworks/${this._id}`);
         },
 
-        getOriginalURL(image) {
-            image = image || this.images[0];
+        getThumbURL() {
             return core.urls.genData(
-                `/${this.source}/images/${image.imageName}.jpg`);
-        },
-
-        getScaledURL(image) {
-            image = image || this.images[0];
-            return core.urls.genData(
-                `/${this.source}/scaled/${image.imageName}.jpg`);
-        },
-
-        getThumbURL(image) {
-            image = image || this.images[0];
-            return core.urls.genData(
-                `/${this.source}/thumbs/${image.imageName}.jpg`);
+                `/${this.source}/thumbs/${this.defaultImageHash}.jpg`);
         },
 
         getTitle(locale) {
@@ -231,7 +225,7 @@ module.exports = (core) => {
 
             source.getImage(file, (err, image) => {
                 // Stop if the image is already in the images list
-                if (this.images.some((match) => image._id === match._id)) {
+                if (this.images.indexOf(image._id) >= 0) {
                     return callback();
                 }
 
@@ -329,7 +323,7 @@ module.exports = (core) => {
                             return {
                                 artwork: similar._id,
                                 images: similar.images.map(
-                                    (image) => image.imageName),
+                                    (image) => image._id),
                                 score: imageScores.reduce((a, b) => a + b),
                                 source: similar.source,
                             };

@@ -44,6 +44,7 @@ module.exports = function(core, app) {
             const id = `${req.params.source}/${req.params.artworkName}`;
 
             Artwork.findById(id)
+                .populate("images")
                 .populate("similarArtworks.artwork")
                 .exec((err, artwork) => {
                     if (err || !artwork) {
@@ -63,7 +64,7 @@ module.exports = function(core, app) {
                         referenceStripScroll: "horizontal",
                         tileSources: artwork.images.map((image) => ({
                             type: "image",
-                            url: artwork.getOriginalURL(image),
+                            url: image.getOriginalURL(),
                         })),
                     };
 
