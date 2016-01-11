@@ -28,7 +28,7 @@ module.exports = (core) => {
             required: true,
         },
 
-        // The name of the file (e.g. `foo.jpg`)
+        // The name of the original file (e.g. `foo.jpg`)
         fileName: {
             type: String,
             required: true,
