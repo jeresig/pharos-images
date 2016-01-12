@@ -25,7 +25,6 @@ module.exports = (core) => {
         // TODO: Migrate away from this.
         imageName: {
             type: String,
-            required: true,
         },
 
         // The name of the original file (e.g. `foo.jpg`)
