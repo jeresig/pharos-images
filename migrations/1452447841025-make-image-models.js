@@ -28,7 +28,7 @@ const genHashes = (callback) => {
                     return callback();
                 }
 
-                mapping[`${source.source}/${hash}`] = image;
+                mapping[hash] = image;
                 callback();
             });
         }, callback);
@@ -43,18 +43,24 @@ const loadImages = (callback) => {
             console.log(`Migrating ${artwork._id}...`);
 
             async.eachLimit(artwork.images, 1, (image, callback) => {
-                const _id = `${artwork.source}/${image._id}`;
-                const fileName = mapping[_id];
+                const fileName = mapping[image._id];
+                const _id = `${artwork.source}/${fileName}`;
+                const date = artwork.created;
 
                 if (!fileName) {
                     console.error("No file found:", _id);
                     return callback();
                 }
 
+                // TODO: Re-map _ids in similarImages
+                // TODO: Figure out extra id in similarImages
+                // TODO: Generate artwork.imageRefs
+                // TODO: Update syncSimilarity to get the true image ID
+
                 const newImage = new Image({
                     _id,
-                    created: new Date(),
-                    modified: new Date(),
+                    created: date,
+                    modified: date,
                     source: artwork.source,
                     fileName,
                     hash: image._id,

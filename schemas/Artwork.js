@@ -76,6 +76,12 @@ module.exports = (core) => {
             required: true,
         },
 
+        // The images associated with the artwork
+        imageRefs: {
+            type: [{type: String, ref: "Image"}],
+            required: true,
+        },
+
         // The title of the artwork.
         title: {
             type: String,
