@@ -19,8 +19,8 @@ const genHashes = (callback) => {
 
         console.log(`Processing ${source.name}...`);
 
-        async.eachLimit(images, 2, (image, callback) => {
-            const file = path.resolve(source.imageDir, image);
+        async.eachLimit(images, 2, (fileName, callback) => {
+            const file = path.resolve(source.imageDir, fileName);
 
             core.images.hashImage(file, (err, hash) => {
                 if (err) {
@@ -28,7 +28,10 @@ const genHashes = (callback) => {
                     return callback();
                 }
 
-                mapping[hash] = image;
+                mapping[hash] = {
+                    _id: `${source._id}/${fileName}`,
+                    fileName,
+                };
                 callback();
             });
         }, callback);
@@ -42,8 +45,10 @@ const loadImages = (callback) => {
 
             console.log(`Migrating ${artwork._id}...`);
 
+            artwork.imageRefs = [];
+
             async.eachLimit(artwork.images, 1, (image, callback) => {
-                const fileName = mapping[image._id];
+                const fileName = mapping[image._id].fileName;
                 const _id = `${artwork.source}/${fileName}`;
                 const date = artwork.created;
 
@@ -52,9 +57,6 @@ const loadImages = (callback) => {
                     return callback();
                 }
 
-                // TODO: Re-map _ids in similarImages
-                // TODO: Figure out extra id in similarImages
-                // TODO: Generate artwork.imageRefs
                 // TODO: Update syncSimilarity to get the true image ID
 
                 const newImage = new Image({
@@ -66,8 +68,13 @@ const loadImages = (callback) => {
                     hash: image._id,
                     width: image.width,
                     height: image.height,
-                    similarImages: image.similarImages,
+                    similarImages: image.similarImages.map((similar) => ({
+                        _id: mapping[similar._id]._id,
+                        score: similar.score,
+                    })),
                 });
+
+                artwork.imageRefs.push(_id);
 
                 newImage.save((err) => {
                     if (err) {
@@ -75,7 +82,9 @@ const loadImages = (callback) => {
                     }
                     callback();
                 });
-            }, () => this.resume());
+            }, () => {
+                artwork.save(() => this.resume());
+            });
         })
         .on("close", callback);
 };
