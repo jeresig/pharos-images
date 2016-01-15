@@ -257,43 +257,11 @@ module.exports = (core) => {
             }, callback);
         },
 
-        indexImage(file, id, callback) {
-            core.similar.idIndexed(id, (err, indexed) => {
-                if (err || indexed) {
-                    return callback(err);
-                }
-
-                core.similar.add(file, id, (err) => {
-                    // Ignore small images, we just won't index them
-                    if (err && err.type === "IMAGE_SIZE_TOO_SMALL") {
-                        return callback();
-                    }
-
-                    return callback(err);
-                });
-            });
-        },
-
-        updateImageSimilarity(image, callback) {
-            const id = image.imageName;
-
-            core.similar.similar(id, (err, matches) => {
-                if (err || !matches) {
-                    return callback(err);
-                }
-
-                image.similarImages = matches
-                    .filter((match) => match.id !== id);
-
-                callback();
-            });
-        },
-
         syncSimilarity(callback) {
             const artwork = this;
 
             async.eachLimit(artwork.images, 1, (image, callback) => {
-                artwork.updateImageSimilarity(image, callback);
+                image.updateSimilarity(callback);
             }, (err) => {
                 if (err) {
                     return callback(err);
