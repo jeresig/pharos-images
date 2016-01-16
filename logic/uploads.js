@@ -10,6 +10,8 @@ module.exports = (core, app) => {
             return next(err);
         }
 
+        // TODO: Need to generate a new Image() model
+
         // TODO: Add in uploader's user name (once those exist)
         const upload = new Upload({
             source: "uploads",
@@ -31,7 +33,7 @@ module.exports = (core, app) => {
 
                 upload._id = id;
 
-                upload.syncSimilarity(() => {
+                upload.updateSimilarity(() => {
                     upload.save(() => res.redirect(
                         upload.getURL(req.lang)));
                 });

@@ -3,8 +3,6 @@
 const fs = require("fs");
 const path = require("path");
 
-const async = require("async");
-
 module.exports = (core) => {
     const Name = require("./Name")(core);
     const YearRange = require("./YearRange")(core);
@@ -227,87 +225,56 @@ module.exports = (core) => {
             return core.models.Source.getSource(this.source);
         },
 
-        addImage(file, callback) {
-            const source = this.getSource();
+        addImage(image) {
+            // Stop if the image is already in the images list
+            if (this.images.indexOf(image._id) >= 0) {
+                return;
+            }
 
-            source.getImage(file, (err, image) => {
-                // Stop if the image is already in the images list
-                if (this.images.indexOf(image._id) >= 0) {
-                    return callback();
-                }
-
-                this.images.push(image);
-                callback();
-            });
+            this.images.push(image);
         },
 
-        addImages(images, callback) {
-            async.mapLimit(images, 1, (imgFile, callback) => {
-                this.addImage(imgFile, (err, id) => {
-                    if (err) {
-                        return callback(err);
-                    }
+        updateSimilarity(callback) {
+            // Calculate artwork matches before saving
+            const matches = this.images
+                .map((image) => image.similarImages || [])
+                .reduce((a, b) => a.concat(b), []);
+            const scores = matches.reduce((obj, match) => {
+                obj[match.id] = Math.max(match.score, obj[match.id] || 0);
+                return obj;
+            }, {});
 
-                    if (id) {
-                        return this.indexImage(imgFile, id, callback);
-                    }
+            if (matches.length === 0) {
+                return callback();
+            }
 
-                    callback();
-                });
-            }, callback);
-        },
+            const query = matches.map((match) => ({
+                "images.imageName": match.id,
+            }));
 
-        syncSimilarity(callback) {
-            const artwork = this;
-
-            async.eachLimit(artwork.images, 1, (image, callback) => {
-                image.updateSimilarity(callback);
-            }, (err) => {
+            core.models.Artwork.find({$or: query}, (err, artworks) => {
                 if (err) {
                     return callback(err);
                 }
 
-                // Calculate artwork matches before saving
-                const matches = artwork.images
-                    .map((image) => image.similarImages || [])
-                    .reduce((a, b) => a.concat(b), []);
-                const scores = matches.reduce((obj, match) => {
-                    obj[match.id] = Math.max(match.score, obj[match.id] || 0);
-                    return obj;
-                }, {});
+                this.similarArtworks = artworks
+                    .filter((similar) => similar._id !== this._id)
+                    .map((similar) => {
+                        const imageScores = similar.images.map(
+                            (image) => scores[image.imageName] || 0);
 
-                if (matches.length === 0) {
-                    return callback();
-                }
+                        return {
+                            artwork: similar._id,
+                            images: similar.images.map(
+                                (image) => image._id),
+                            score: imageScores.reduce((a, b) => a + b),
+                            source: similar.source,
+                        };
+                    })
+                    .filter((similar) => similar.score > 0)
+                    .sort((a, b) => b.score - a.score);
 
-                const query = matches.map((match) => ({
-                    "images.imageName": match.id,
-                }));
-
-                core.models.Artwork.find({$or: query}, (err, artworks) => {
-                    if (err) {
-                        return callback(err);
-                    }
-
-                    artwork.similarArtworks = artworks
-                        .filter((similar) => similar._id !== artwork._id)
-                        .map((similar) => {
-                            const imageScores = similar.images.map(
-                                (image) => scores[image.imageName] || 0);
-
-                            return {
-                                artwork: similar._id,
-                                images: similar.images.map(
-                                    (image) => image._id),
-                                score: imageScores.reduce((a, b) => a + b),
-                                source: similar.source,
-                            };
-                        })
-                        .filter((similar) => similar.score > 0)
-                        .sort((a, b) => b.score - a.score);
-
-                    callback();
-                });
+                callback();
             });
         },
     };
