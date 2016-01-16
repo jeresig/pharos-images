@@ -135,5 +135,98 @@ module.exports = (core) => {
         },
     };
 
+    Image.statics = {
+        fromFile(batch, file, callback) {
+            const fileName = path.basename(file);
+            const source = batch.source;
+            const _id = `${source}/${fileName}`;
+            const sourceDir = Source.getSource(source).getDirBase();
+            const warnings = [];
+
+            this.findById(_id, (err, image) => {
+                const creating = !image;
+
+                core.images.processImage(file, sourceDir, (err, hash) => {
+                    if (err) {
+                        return callback(new Error(
+                            "There was an error processing the image. " +
+                            "Perhaps it is malformed in some way."
+                        ));
+                    }
+
+                    hash = hash.toString();
+
+                    // The same image was uploaded, we can just skip the rest
+                    if (!creating && hash === image.hash) {
+                        return callback(null, image);
+                    }
+
+                    core.images.getSize(file, (err, size) => {
+                        if (err) {
+                            return callback(new Error(
+                                "There was an error getting the dimensions " +
+                                "of the image."
+                            ));
+                        }
+
+                        const width = size.width;
+                        const height = size.height;
+
+                        if (width === 0 || height === 0) {
+                            return callback(new Error("The image is empty."));
+                        }
+
+                        const data = {
+                            _id,
+                            batch: batch._id,
+                            source,
+                            fileName,
+                            hash,
+                            width,
+                            height,
+                        };
+
+                        if (creating) {
+                            image = new core.models.Image(data);
+
+                        } else {
+                            warnings.push(
+                                "A new version of the image was uploaded, " +
+                                "replacing the old one."
+                            );
+
+                            image.set(data);
+                        }
+
+                        if (width < 150 || height < 150) {
+                            warnings.push(
+                                "The image is too small to work with the " +
+                                "image similarity algorithm. It must be " +
+                                "at least 150px on each side."
+                            );
+                        }
+
+                        image.validate((err) => {
+                            if (err) {
+                                // TODO: Convert validation error into something
+                                // useful.
+                                return callback(err);
+                            }
+
+                            image.save((err, image) => {
+                                if (err) {
+                                    return callback(new Error(
+                                        "Error saving image to the database."));
+                                }
+
+                                callback(null, image, warnings);
+                            });
+                        });
+                    });
+                });
+            });
+        },
+    };
+
     return Image;
 };

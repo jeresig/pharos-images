@@ -62,9 +62,6 @@ const importData = (options, callback) => {
         data.lang = options.lang;
         data.source = options.source;
 
-        data.images = data.images.map((fileName) =>
-            path.resolve(options.imageDir, fileName));
-
         Artwork.fromData(data, (err, artwork) => {
             if (err) {
                 console.log("Error with artwork:", err);

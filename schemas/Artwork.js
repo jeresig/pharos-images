@@ -1,7 +1,6 @@
 "use strict";
 
-const fs = require("fs");
-const path = require("path");
+const async = require("async");
 
 module.exports = (core) => {
     const Name = require("./Name")(core);
@@ -285,11 +284,12 @@ module.exports = (core) => {
             const warnings = [];
 
             core.models.Artwork.findById(data._id, (err, artwork) => {
-                const creating = !artwork;
-
                 if (err) {
-                    return callback(err);
+                    return callback(new Error(
+                        "Error locating existing artwork."));
                 }
+
+                const creating = !artwork;
 
                 Object.keys(data).forEach((key) => {
                     const schemaPath = Artwork.path(key);
@@ -305,36 +305,50 @@ module.exports = (core) => {
                     }
                 });
 
-                const images = (data.images || []).filter((imgFile) => {
-                    if (!fs.existsSync(imgFile)) {
-                        warnings.push(
-                            `Image file not found: ${path.basename(imgFile)}`);
-                        return false;
+                async.mapLimit(data.images || [], 2, (fileName, callback) => {
+                    const _id = `${data.source}/${fileName}`;
+
+                    Image.findById(_id, (err, image) => {
+                        if (err) {
+                            return callback(err);
+                        }
+
+                        if (!image) {
+                            warnings.push(`Image file not found: ${fileName}`);
+                        }
+
+                        callback(null, _id);
+                    });
+                }, (err, images) => {
+                    if (err) {
+                        return callback(new Error(
+                            "Error accessing image data."));
                     }
 
-                    return true;
-                });
+                    // Filter out any missing images
+                    images = images.filter((image) => !!image);
 
-                // We handle the setting of images separately
-                delete data.images;
+                    // We handle the setting of images separately
+                    delete data.images;
 
-                if (images.length === 0) {
-                    return callback(new Error(`No images found.`));
-                }
+                    if (images.length === 0) {
+                        return callback(new Error(`No images found.`));
+                    }
 
-                if (creating) {
-                    artwork = new core.models.Artwork(data);
-                } else {
-                    artwork.set(data);
-                }
-
-                artwork.addImages(images, (err) => {
-                    if (err) {
-                        return callback(err);
+                    if (creating) {
+                        artwork = new core.models.Artwork(data);
+                    } else {
+                        artwork.set(data);
                     }
 
                     artwork.validate((err) => {
-                        callback(err, artwork);
+                        if (err) {
+                            // TODO: Convert validation error into something
+                            // useful.
+                            return callback(err);
+                        }
+
+                        callback(null, artwork, warnings);
                     });
                 });
             });
