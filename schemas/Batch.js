@@ -81,36 +81,36 @@ module.exports = (core) => {
             required: true,
         },
 
-        // The images associated with the batch upload
-        images: {
-            type: [{type: String, ref: "Image"}],
-            required: true,
-        },
+        results: [{
+            // The id of the result (equal to the fileName)
+            _id: String,
 
-        // Errors
-        errors: [{
+            // The status of the batch upload
+            status: {
+                type: String,
+                enum: states.map((state) => state.id),
+                required: true,
+            },
+
+            // The name of the file being processed
             fileName: {
                 type: String,
                 required: true,
             },
 
+            // The image record (optional, if the image file has errors)
+            image: {
+                type: [{type: String, ref: "Image"}],
+            },
+
+            // An optional error associated with the file
             error: {
                 type: String,
-                required: true,
-            },
-        }],
-
-        // Warnings
-        warnings: [{
-            fileName: {
-                type: String,
-                required: true,
             },
 
             // An array of string warnings
             warnings: [{
                 type: String,
-                required: true,
             }],
         }],
     });
@@ -166,7 +166,11 @@ module.exports = (core) => {
                 status: "started",
             });
 
-            batch.save(callback);
+            batch.save((err) => {
+                if (err) {
+                    return callback(new Error("Error saving uploaded file."));
+                }
+            });
         },
     };
 
