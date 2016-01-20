@@ -99,19 +99,13 @@ module.exports = (core) => {
             },
 
             // The image record (optional, if the image file has errors)
-            image: {
-                type: [{type: String, ref: "Image"}],
-            },
+            image: {type: String, ref: "Image"},
 
             // An optional error associated with the file
-            error: {
-                type: String,
-            },
+            error: String,
 
             // An array of string warnings
-            warnings: [{
-                type: String,
-            }],
+            warnings: [String],
         }],
     });
 
@@ -120,38 +114,81 @@ module.exports = (core) => {
             return Source.getSource(this.source);
         },
 
-        updateSimilarity(callback) {
-            async.eachLimit(this.images, 1, (image, callback) => {
-                this.updateSimilarity(callback);
-            }, callback);
+        processImages(callback) {
+            callback();
         },
 
         indexSimilarity(callback) {
-            async.eachLimit(this.images, 1, (image, callback) => {
-                this.indexSimilarity(callback);
-            }, callback);
+            this.status = "similarity.index.started";
+            this.modified = new Date();
+            this.save(() => {
+                async.eachLimit(this.results, 1, (result, callback) => {
+                    if (result.image &&
+                            result.status === "similarity.index.started") {
+                        result.image.indexSimilarity(() => {
+                            result.status = "similarity.index.completed";
+                            this.modified = new Date();
+                            this.save(callback);
+                        });
+                    } else {
+                        callback();
+                    }
+                }, () => {
+                    this.status = "similarity.index.completed";
+                    this.modified = new Date();
+                    this.save(callback);
+                });
+            });
+        },
+
+        syncSimilarity(callback) {
+            this.status = "similarity.sync.started";
+            this.modified = new Date();
+            this.save(() => {
+                async.eachLimit(this.results, 1, (result, callback) => {
+                    if (result.image &&
+                            result.status === "similarity.sync.started") {
+                        result.image.updateSimilarity(() => {
+                            result.image.save(() => {
+                                result.status = "similarity.sync.completed";
+                                result.modified = new Date();
+                                result.save(callback);
+                            });
+                        });
+                    } else {
+                        callback();
+                    }
+                }, () => {
+                    this.status = "similarity.sync.completed";
+                    this.modified = new Date();
+                    this.save(callback);
+                });
+            });
         },
 
         addImage(file, callback) {
             const fileName = path.basename(file);
 
             Image.fromFile(this, file, (err, image, warnings) => {
+                const result = {
+                    _id: fileName,
+                    status: "started",
+                    fileName,
+                };
+
                 if (err) {
-                    this.errors.push({
-                        fileName,
-                        error: err.message,
-                    });
+                    result.error = err.message;
 
                 } else {
                     if (warnings) {
-                        this.warnings.push({
-                            fileName,
-                            warnings,
-                        });
+                        result.warnings = warnings;
                     }
 
-                    this.images.push(image._id);
+                    result.image = image._id;
                 }
+
+                // Add the result
+                this.results.push(result);
 
                 this.save(callback);
             });
