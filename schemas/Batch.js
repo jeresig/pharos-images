@@ -1,5 +1,7 @@
 "use strict";
 
+const os = require("os");
+const fs = require("fs");
 const path = require("path");
 
 const async = require("async");
@@ -12,7 +14,9 @@ module.exports = (core) => {
         {
             id: "started",
             name: (req) => req.gettext("Uploaded."),
-            autoAdvance: true,
+            advance(batch, callback) {
+                batch.processImages(callback);
+            },
         },
         {
             id: "process.started",
@@ -21,7 +25,9 @@ module.exports = (core) => {
         {
             id: "process.completed",
             name: (req) => req.gettext("Processing Completed."),
-            autoAdvance: true,
+            advance(batch, callback) {
+                batch.indexSimilarity(callback);
+            },
         },
         {
             id: "similarity.index.started",
@@ -30,7 +36,9 @@ module.exports = (core) => {
         {
             id: "similarity.index.completed",
             name: (req) => req.gettext("Similarity indexed."),
-            autoAdvance: true,
+            advance(batch, callback) {
+                batch.syncSimilarity(callback);
+            },
         },
         {
             id: "similarity.sync.started",
@@ -39,7 +47,9 @@ module.exports = (core) => {
         {
             id: "similarity.sync.completed",
             name: (req) => req.gettext("Similarity synced."),
-            autoAdvance: true,
+            advance(batch, callback) {
+                batch.finishUp(callback);
+            },
         },
         {
             id: "completed",
@@ -64,6 +74,13 @@ module.exports = (core) => {
 
         // The source that the image is associated with
         source: {
+            type: String,
+            required: true,
+        },
+
+        // The location of the uploaded zip file
+        // (temporary, deleted after processing)
+        zipFile: {
             type: String,
             required: true,
         },
@@ -193,21 +210,51 @@ module.exports = (core) => {
                 this.save(callback);
             });
         },
+
+        advance(callback) {
+            const state = states.filter((state) => state.id === this.state)[0];
+
+            if (!state.advance) {
+                return process.nextTick(callback);
+            }
+
+            state.advance(this, callback);
+        },
     };
 
     Batch.statics = {
         fromUpload(source, file, fileName, callback) {
-            const batch = new core.models.Batch({
-                source,
-                fileName,
-                status: "started",
-            });
+            let errored = false;
+            const zipFile = path.join(os.tmpdir(),
+                `${(new Date).getTime()}.zip`);
 
-            batch.save((err) => {
-                if (err) {
-                    return callback(new Error("Error saving uploaded file."));
-                }
-            });
+            file
+                .pipe(fs.createWriteStream(zipFile))
+                .on("error", () => {
+                    errored = true;
+                    callback(new Error("Error saving uploaded file."));
+                })
+                .on("close", () => {
+                    if (errored) {
+                        return;
+                    }
+
+                    const batch = new core.models.Batch({
+                        source,
+                        zipFile,
+                        fileName,
+                        status: "started",
+                    });
+
+                    batch.save((err) => {
+                        if (err) {
+                            return callback(
+                                new Error("Error saving uploaded file."));
+                        }
+
+                        callback();
+                    });
+                });
         },
     };
 
