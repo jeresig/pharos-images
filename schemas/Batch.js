@@ -5,6 +5,7 @@ const fs = require("fs");
 const path = require("path");
 
 const async = require("async");
+const unzip = require("unzip2");
 
 module.exports = (core) => {
     const Image = core.models.Image;
@@ -57,6 +58,8 @@ module.exports = (core) => {
         },
     ];
 
+    const possibleStates = states.map((state) => state.id).concat("error");
+
     const Batch = new core.db.schema({
         // An ID for the batch
         _id: core.db.schema.Types.ObjectId,
@@ -91,21 +94,24 @@ module.exports = (core) => {
             required: true,
         },
 
-        // The status of the batch upload
-        status: {
+        // The state of the batch upload
+        state: {
             type: String,
-            enum: states.map((state) => state.id),
+            enum: possibleStates,
             required: true,
         },
+
+        // An error message, if the state is set to "error"
+        error: "String",
 
         results: [{
             // The id of the result (equal to the fileName)
             _id: String,
 
-            // The status of the batch upload
-            status: {
+            // The state of the batch upload
+            state: {
                 type: String,
-                enum: states.map((state) => state.id),
+                enum: possibleStates,
                 required: true,
             },
 
@@ -132,64 +138,63 @@ module.exports = (core) => {
         },
 
         processImages(callback) {
-            callback();
-        },
+            const zipFile = fs.createReadStream(this.zipFile);
+            const files = [];
+            const extractDir = path.join(os.tmpdir(), (new Date).getTime());
 
-        indexSimilarity(callback) {
-            this.status = "similarity.index.started";
-            this.modified = new Date();
-            this.save(() => {
-                async.eachLimit(this.results, 1, (result, callback) => {
-                    if (result.image &&
-                            result.status === "similarity.index.started") {
-                        result.image.indexSimilarity(() => {
-                            result.status = "similarity.index.completed";
-                            this.modified = new Date();
-                            this.save(callback);
-                        });
-                    } else {
-                        callback();
-                    }
-                }, () => {
-                    this.status = "similarity.index.completed";
-                    this.modified = new Date();
-                    this.save(callback);
-                });
+            fs.mkdir(extractDir, () => {
+                zipFile
+                    .pipe(unzip.Parse())
+                    .on("entry", (entry) => {
+                        const fileName = path.basename(entry.path);
+                        const outFileName = path.join(extractDir, fileName);
+
+                        // Ignore things that aren't files (e.g. directories)
+                        // Ignore files that don't end with .jpe?g
+                        // Ignore files that start with '.'
+                        if (entry.type !== "File" ||
+                                !/.+\.jpe?g$/i.test(fileName) ||
+                                fileName.indexOf(".") === 0) {
+                            return entry.autodrain();
+                        }
+
+                        // Don't attempt to add files that already exist
+                        if (files.indexOf(fileName) >= 0) {
+                            return entry.autodrain();
+                        }
+
+                        files.push(fileName);
+                        entry.pipe(fs.createWriteStream(outFileName));
+                    })
+                    .on("error", (err) => {
+                        throw err;
+                    })
+                    .on("close", (err) => {
+                        if (err) {
+                            return callback(
+                                new Error("Error opening zip file."));
+                        }
+
+                        if (files.length === 0) {
+                            return callback(
+                                new Error("Zip file has no images in it."));
+                        }
+
+                        // Import all of the files as images
+                        async.eachLimit(files, 1, (file, callback) => {
+                            this.addResult(file, callback);
+                        }, callback);
+                    });
             });
         },
 
-        syncSimilarity(callback) {
-            this.status = "similarity.sync.started";
-            this.modified = new Date();
-            this.save(() => {
-                async.eachLimit(this.results, 1, (result, callback) => {
-                    if (result.image &&
-                            result.status === "similarity.sync.started") {
-                        result.image.updateSimilarity(() => {
-                            result.image.save(() => {
-                                result.status = "similarity.sync.completed";
-                                result.modified = new Date();
-                                result.save(callback);
-                            });
-                        });
-                    } else {
-                        callback();
-                    }
-                }, () => {
-                    this.status = "similarity.sync.completed";
-                    this.modified = new Date();
-                    this.save(callback);
-                });
-            });
-        },
-
-        addImage(file, callback) {
+        addResult(file, callback) {
             const fileName = path.basename(file);
 
             Image.fromFile(this, file, (err, image, warnings) => {
                 const result = {
                     _id: fileName,
-                    status: "started",
+                    state: "started",
                     fileName,
                 };
 
@@ -211,14 +216,60 @@ module.exports = (core) => {
             });
         },
 
+        indexSimilarity(callback) {
+            async.eachLimit(this.results, 1, (result, callback) => {
+                if (result.image &&
+                        result.state === "similarity.index.started") {
+                    result.image.indexSimilarity(() => {
+                        result.image.save(callback);
+                    });
+                } else {
+                    callback();
+                }
+            }, callback);
+        },
+
+        syncSimilarity(callback) {
+            async.eachLimit(this.results, 1, (result, callback) => {
+                if (result.image &&
+                        result.state === "similarity.sync.started") {
+                    result.image.updateSimilarity(() => {
+                        result.image.save(callback);
+                    });
+                } else {
+                    callback();
+                }
+            }, callback);
+        },
+
+        saveState(state, callback) {
+            this.state = state;
+            this.modified = new Date();
+            this.save(callback);
+        },
+
         advance(callback) {
-            const state = states.filter((state) => state.id === this.state)[0];
+            const curStatePos = states.find((state) => state.id === this.state);
+            const state = states[curStatePos];
+            const nextState = states[curStatePos + 1];
 
             if (!state.advance) {
                 return process.nextTick(callback);
             }
 
-            state.advance(this, callback);
+            this.saveState(state.id, () => {
+                state.advance(this, (err) => {
+                    // If there was an error then we save the error message and
+                    // set the state of the batch to "error" to avoid retries.
+                    if (err) {
+                        this.error = err.message;
+                        return this.saveState("error", callback);
+                    }
+
+                    // Advance to the next state
+                    this.saveState(nextState, callback);
+                });
+            });
         },
     };
 
@@ -243,7 +294,7 @@ module.exports = (core) => {
                         source,
                         zipFile,
                         fileName,
-                        status: "started",
+                        state: "started",
                     });
 
                     batch.save((err) => {
@@ -255,6 +306,24 @@ module.exports = (core) => {
                         callback();
                     });
                 });
+        },
+
+        advance(callback) {
+            const Batch = core.models.Batch;
+
+            Batch.find({
+                state: {
+                    $nin: ["completed", "error"],
+                },
+            }, (err, batches) => {
+                if (err) {
+                    return callback(err);
+                }
+
+                async.eachLimit(batches, 1, (batch, callback) => {
+                    batch.advance(callback);
+                }, callback);
+            });
         },
     };
 
