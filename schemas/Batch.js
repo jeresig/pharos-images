@@ -309,21 +309,29 @@ module.exports = (core) => {
         },
 
         advance(callback) {
-            const Batch = core.models.Batch;
+            core.models.Batch
+                .find({
+                    state: {
+                        $nin: ["completed", "error"],
+                    },
+                })
+                .populate("results.image")
+                .stream()
+                .on("data", function(batch) {
+                    this.pause();
 
-            Batch.find({
-                state: {
-                    $nin: ["completed", "error"],
-                },
-            }, (err, batches) => {
-                if (err) {
-                    return callback(err);
-                }
+                    console.log(`Advancing batch ${batch._id}...`);
 
-                async.eachLimit(batches, 1, (batch, callback) => {
-                    batch.advance(callback);
-                }, callback);
-            });
+                    batch.advance(() => this.resume());
+                })
+                .on("close", callback);
+        },
+
+        startAdvancing() {
+            const advance = () => this.advance(() =>
+                setTimeout(advance, 10000));
+
+            advance();
         },
     };
 
