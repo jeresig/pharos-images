@@ -242,32 +242,52 @@ module.exports = (core) => {
             }, callback);
         },
 
+        finishUp(callback) {
+            // NOTE(jeresig): Currently nothing needs to be done to finish up
+            // the batch, other than moving it to the "completed" state.
+            process.nextTick(callback);
+        },
+
         saveState(state, callback) {
             this.state = state;
             this.modified = new Date();
             this.save(callback);
         },
 
-        advance(callback) {
-            const curStatePos = states.find((state) => state.id === this.state);
-            const state = states[curStatePos];
-            const nextState = states[curStatePos + 1];
+        getCurState() {
+            return states[states.find((state) => state.id === this.state)];
+        },
 
-            if (!state.advance) {
+        getNextState() {
+            return states[states.indexOf(this.getCurState()) + 1];
+        },
+
+        canAdvance() {
+            return !!this.getCurState().advance;
+        },
+
+        advance(callback) {
+            const state = this.getCurState();
+            const nextState = this.getNextState();
+
+            if (!this.canAdvance()) {
                 return process.nextTick(callback);
             }
 
-            this.saveState(state.id, () => {
-                state.advance(this, (err) => {
-                    // If there was an error then we save the error message and
-                    // set the state of the batch to "error" to avoid retries.
-                    if (err) {
-                        this.error = err.message;
-                        return this.saveState("error", callback);
-                    }
+            this.populate("results.images", () => {
+                this.saveState(state.id, () => {
+                    state.advance(this, (err) => {
+                        // If there was an error then we save the error message
+                        // and set the state of the batch to "error" to avoid
+                        // retries.
+                        if (err) {
+                            this.error = err.message;
+                            return this.saveState("error", callback);
+                        }
 
-                    // Advance to the next state
-                    this.saveState(nextState, callback);
+                        // Advance to the next state
+                        this.saveState(nextState.id, callback);
+                    });
                 });
             });
         },
@@ -314,17 +334,31 @@ module.exports = (core) => {
                     state: {
                         $nin: ["completed", "error"],
                     },
-                })
-                .populate("results.image")
-                .stream()
-                .on("data", function(batch) {
-                    this.pause();
+                }, (err, batches) => {
+                    const queues = {};
 
-                    console.log(`Advancing batch ${batch._id}...`);
+                    batches
+                        .filter((batch) => batch.canAdvance())
+                        .forEach((batch) => {
+                            if (!queues[batch.state]) {
+                                queues[batch.state] = [];
+                            }
 
-                    batch.advance(() => this.resume());
-                })
-                .on("close", callback);
+                            queues[batch.state].push(batch);
+                        });
+
+                    // Run all the queues in parallel
+                    async.each(Object.keys(queues), (queueName, callback) => {
+                        const queue = queues[queueName];
+
+                        // But do each queue in series
+                        async.eachLimit(queue, 1, (batch, callback) => {
+                            console.log(`Advancing ${batch._id} to ` +
+                                `${batch.getNextState()}...`);
+                            batch.advance(callback);
+                        }, callback);
+                    }, callback);
+                });
         },
 
         startAdvancing() {
