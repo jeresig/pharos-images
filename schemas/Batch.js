@@ -7,6 +7,9 @@ const path = require("path");
 const async = require("async");
 const unzip = require("unzip2");
 
+// How often batches should be advanced
+const ADVANCE_RATE = 10000;
+
 module.exports = (core) => {
     const Image = core.models.Image;
     const Source = core.models.Source;
@@ -294,40 +297,6 @@ module.exports = (core) => {
     };
 
     Batch.statics = {
-        fromUpload(source, file, fileName, callback) {
-            let errored = false;
-            const zipFile = path.join(os.tmpdir(),
-                `${(new Date).getTime()}.zip`);
-
-            file
-                .pipe(fs.createWriteStream(zipFile))
-                .on("error", () => {
-                    errored = true;
-                    callback(new Error("Error saving uploaded file."));
-                })
-                .on("close", () => {
-                    if (errored) {
-                        return;
-                    }
-
-                    const batch = new core.models.Batch({
-                        source,
-                        zipFile,
-                        fileName,
-                        state: "started",
-                    });
-
-                    batch.save((err) => {
-                        if (err) {
-                            return callback(
-                                new Error("Error saving uploaded file."));
-                        }
-
-                        callback();
-                    });
-                });
-        },
-
         advance(callback) {
             core.models.Batch
                 .find({
@@ -335,6 +304,10 @@ module.exports = (core) => {
                         $nin: ["completed", "error"],
                     },
                 }, (err, batches) => {
+                    if (err || !batches) {
+                        return callback(err);
+                    }
+
                     const queues = {};
 
                     batches
@@ -363,7 +336,7 @@ module.exports = (core) => {
 
         startAdvancing() {
             const advance = () => this.advance(() =>
-                setTimeout(advance, 10000));
+                setTimeout(advance, ADVANCE_RATE));
 
             advance();
         },

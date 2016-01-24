@@ -1,7 +1,5 @@
 "use strict";
 
-const path = require("path");
-
 const async = require("async");
 
 module.exports = (core) => {
@@ -47,13 +45,6 @@ module.exports = (core) => {
                 this.numArtworks = num || 0;
                 callback(err);
             });
-        },
-
-        getImage(file, callback) {
-            const fileName = path.basename(file);
-            const _id = `${this._id}/${fileName}`;
-
-            core.models.Image.findById(_id, callback);
         },
     };
 
