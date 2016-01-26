@@ -294,6 +294,15 @@ module.exports = (core) => {
                 });
             });
         },
+
+        getFilteredResults() {
+            return {
+                images: this.results.filter((result) => result.image),
+                errors: this.results.filter((result) => result.error),
+                warnings: this.results
+                    .filter((result) => result.warnings.length !== 0),
+            };
+        },
     };
 
     Batch.statics = {

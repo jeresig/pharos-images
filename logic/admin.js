@@ -8,6 +8,7 @@ module.exports = function(core, app) {
 
     return {
         admin(req, res) {
+            // TODO(jeresig): Only allow certain users to view this page
             let source;
 
             try {
@@ -19,9 +20,15 @@ module.exports = function(core, app) {
                 });
             }
 
-            res.render("admin", {
-                source,
-            });
+            Batch
+                .find({source: source._id})
+                .sort({created: "desc"})
+                .exec((err, batches) => {
+                    res.render("admin", {
+                        source,
+                        batches,
+                    });
+                });
         },
 
         uploadBatch(req, res, next) {
@@ -73,7 +80,7 @@ module.exports = function(core, app) {
                     // TODO: Come up with a beter redirect
                     // TODO: Display a message stating that the upload
                     // was successful.
-                    res.redirect(`/admin/${source._id}`);
+                    res.redirect(`/source/${source._id}/admin`);
                 });
             });
         },

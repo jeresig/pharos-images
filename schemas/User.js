@@ -4,6 +4,7 @@ const bcrypt = require("bcrypt");
 
 module.exports = (core) => {
     const User = new core.db.schema({
+        _id: core.db.schema.Types.ObjectId,
         name: {type: String, default: ""},
         email: {type: String, default: ""},
         hashed_password: {type: String, default: ""},
