@@ -81,3 +81,57 @@
 </div>
 {% endif %}
 {% endblock %}
+
+<h2>Upload Data</h2>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">{{ gettext("Upload a JSON Data File") }}</h3>
+    </div>
+    <div class="panel-body">
+        <form action="/sources/{{source._id}}/upload-data" method="POST" enctype="multipart/form-data">
+            {% if qsLocale() %}
+                <input type="hidden" name="lang" value="{{ lang }}"/>
+            {% endif %}
+            <div class="form-inline">
+                <div class="form-group">
+                    <input type="file" id="file" name="file" class="form-control" />
+                </div>
+                <input type="submit" value="{{ gettext("Upload JSON File") }}" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if datas.length > 0 %}
+<div class="responsive-table">
+<table class="table">
+    <tr>
+        <th>{{ gettext("JSON File Name") }}</th>
+        <th>{{ gettext("Last Updated") }}</th>
+        <th>{{ gettext("Status") }}</th>
+        <th>{{ gettext("Records") }}</th>
+        <th>{{ gettext("Errors") }}</th>
+        <th>{{ gettext("Warnings") }}</th>
+    </tr>
+    {% for data in datas %}
+    <tr>
+        <td>{{ data.fileName }}</td>
+        <td>{{ data.modified }}</td>
+        {% if data.state === "error" %}
+        <td colspan="4">
+            {{ format(gettext("Error: %(error)s"), {error: data.error}) }}
+        </td>
+        {% else %}
+        {% set results = data.getFilteredResults() %}
+        <td>{{ data.state }}</td>
+        <td>{{ results.images.length }}</td>
+        <td>{{ results.errors.length }}</td>
+        <td>{{ results.warnings.length }}</td>
+        {% endif %}
+    </tr>
+    {% endfor %}
+</table>
+</div>
+{% endif %}
+{% endblock %}

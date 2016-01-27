@@ -5,9 +5,10 @@ const formidable = require("formidable");
 module.exports = function(core, app) {
     const Source = core.models.Source;
     const Batch = core.models.Batch;
+    const Data = core.models.Data;
 
     return {
-        admin(req, res) {
+        admin(req, res, next) {
             // TODO(jeresig): Only allow certain users to view this page
             let source;
 
@@ -20,15 +21,18 @@ module.exports = function(core, app) {
                 });
             }
 
-            Batch
-                .find({source: source._id})
-                .sort({created: "desc"})
-                .exec((err, batches) => {
-                    res.render("admin", {
-                        source,
-                        batches,
-                    });
+            Promise.all([
+                Batch.find({source: source._id}).sort({created: "desc"}).exec(),
+                Data.find({source: source._id}).sort({created: "desc"}).exec(),
+            ]).then((batches, datas) => {
+                res.render("admin", {
+                    source,
+                    batches,
+                    datas,
                 });
+            }).catch((err) => {
+                next(new Error(req.gettext("Error retrieving records.")));
+            });
         },
 
         uploadBatch(req, res, next) {
