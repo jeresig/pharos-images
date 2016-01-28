@@ -277,7 +277,7 @@ module.exports = (core) => {
                 return process.nextTick(callback);
             }
 
-            this.populate("results.images", () => {
+            this.populate("results.image", () => {
                 this.saveState(state.id, () => {
                     state.advance(this, (err) => {
                         // If there was an error then we save the error message
