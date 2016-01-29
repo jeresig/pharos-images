@@ -7,13 +7,14 @@ const ADVANCE_RATE = 10000;
 
 module.exports = (core) => {
     const Source = core.models.Source;
+    const Artwork = core.models.Artwork;
 
     const states = [
         {
             id: "started",
             name: (req) => req.gettext("Uploaded."),
             advance(batch, callback) {
-                //batch.processImages(callback);
+                //batch.processArtworks(callback);
             },
         },
         {
@@ -123,6 +124,37 @@ module.exports = (core) => {
     });
 
     Data.methods = {
+        processArtworks(callback) {
+            const changed = {};
+
+            async.eachLimit(this.results, 1, (result, callback) => {
+                Artwork.fromData(result.data, (err, artwork, warnings) => {
+                    if (err) {
+                        result.result = "error";
+                        result.error = err.message;
+                        return callback();
+                    }
+
+                    if (artwork.isNew) {
+                        result.result = "created";
+                    } else {
+                        result.result = "changed";
+                        result.diff = artwork._diff;
+                        changed[artwork._id] = true;
+                    }
+
+                    result.warnings = warnings || [];
+                    result.artwork = artwork;
+                    callback();
+                });
+            }, () => {
+                // TODO: Find artworks that need to be deleted
+                callback();
+            });
+        },
+
+        importArtworks() {},
+
         getSource() {
             return Source.getSource(this.source);
         },

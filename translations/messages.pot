@@ -8,7 +8,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2016-01-28 04:26+0000\n"
+"POT-Creation-Date: 2016-01-29 02:25+0000\n"
 
 #: logic/admin.js:20
 #: logic/admin.js:47
@@ -66,17 +66,17 @@ msgid "Uploaded Image"
 msgstr ""
 
 #: schemas/Batch.js:20
-#: schemas/Data.js:14
+#: schemas/Data.js:15
 msgid "Uploaded."
 msgstr ""
 
 #: schemas/Batch.js:27
-#: schemas/Data.js:21
+#: schemas/Data.js:22
 msgid "Processing..."
 msgstr ""
 
 #: schemas/Batch.js:31
-#: schemas/Data.js:25
+#: schemas/Data.js:26
 msgid "Processing Completed."
 msgstr ""
 
@@ -97,15 +97,15 @@ msgid "Similarity synced."
 msgstr ""
 
 #: schemas/Batch.js:60
-#: schemas/Data.js:42
+#: schemas/Data.js:43
 msgid "Completed."
 msgstr ""
 
-#: schemas/Data.js:31
+#: schemas/Data.js:32
 msgid "Importing data..."
 msgstr ""
 
-#: schemas/Data.js:35
+#: schemas/Data.js:36
 msgid "Data imported."
 msgstr ""
 

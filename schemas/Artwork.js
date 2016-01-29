@@ -332,7 +332,7 @@ module.exports = (core) => {
                     delete data.images;
 
                     if (images.length === 0) {
-                        return callback(new Error(`No images found.`));
+                        return callback(new Error("No images found."));
                     }
 
                     if (creating) {
