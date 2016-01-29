@@ -125,7 +125,7 @@ module.exports = (core) => {
 
     Data.methods = {
         processArtworks(callback) {
-            const changed = {};
+            const incomingIDs = {};
 
             async.eachLimit(this.results, 1, (result, callback) => {
                 Artwork.fromData(result.data, (err, artwork, warnings) => {
@@ -137,19 +137,37 @@ module.exports = (core) => {
 
                     if (artwork.isNew) {
                         result.result = "created";
+
                     } else {
                         result.result = "changed";
                         result.diff = artwork._diff;
-                        changed[artwork._id] = true;
+                        incomingIDs[artwork._id] = true;
+                        result.artwork = artwork._id;
                     }
 
                     result.warnings = warnings || [];
-                    result.artwork = artwork;
                     callback();
                 });
             }, () => {
-                // TODO: Find artworks that need to be deleted
-                callback();
+                // Find artworks that need to be deleted
+                Artwork.find({source: this.source})
+                    .lean().distinct("_id")
+                    .exec((err, ids) => {
+                        ids.forEach((id) => {
+                            if (id in incomingIDs) {
+                                return;
+                            }
+
+                            this.results.push({
+                                _id: id,
+                                artwork: id,
+                                result: "deleted",
+                                state: "process.completed",
+                            });
+                        });
+
+                        callback();
+                    });
             });
         },
 
