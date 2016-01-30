@@ -14,7 +14,7 @@ module.exports = (core) => {
             id: "started",
             name: (req) => req.gettext("Uploaded."),
             advance(batch, callback) {
-                //batch.processArtworks(callback);
+                batch.processArtworks(callback);
             },
         },
         {
@@ -26,6 +26,7 @@ module.exports = (core) => {
             name: (req) => req.gettext("Processing Completed."),
             // NOTE(jeresig): Do not auto-advance to importing the data
             // we want the user to make the call on the results.
+            // batch.importArtworks(callback);
         },
         {
             id: "import.started",
@@ -171,7 +172,25 @@ module.exports = (core) => {
             });
         },
 
-        importArtworks() {},
+        importArtworks(callback) {
+            async.eachLimit(this.results, 1, (result, callback) => {
+                if (result.result === "created" ||
+                        result.result === "changed") {
+                    Artwork.fromData(result.data, (err, artwork) => {
+                        artwork.save(callback);
+                    });
+                } else if (result.result === "deleted") {
+                    result.artwork.remove(callback);
+                } else {
+                    process.nextTick(callback);
+                }
+            }, callback);
+        },
+
+        abandon(callback) {
+            this.error = "Data import abandoned.";
+            this.saveState("error", callback);
+        },
 
         getSource() {
             return Source.getSource(this.source);
