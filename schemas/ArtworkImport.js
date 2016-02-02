@@ -55,7 +55,7 @@ module.exports = (core) => {
         // How the record is being changed
         result: {
             type: String,
-            enum: ["created", "changed", "deleted", "error"],
+            enum: ["created", "changed", "deleted", "error", "unknown"],
             required: true,
         },
 
