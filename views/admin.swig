@@ -35,7 +35,7 @@
         <h3 class="panel-title">{{ gettext("Upload a Zip File of Images") }}</h3>
     </div>
     <div class="panel-body">
-        <form action="/sources/{{source._id}}/upload-batch" method="POST" enctype="multipart/form-data">
+        <form action="/sources/{{source._id}}/upload-images" method="POST" enctype="multipart/form-data">
             {% if qsLocale() %}
                 <input type="hidden" name="lang" value="{{ lang }}"/>
             {% endif %}
@@ -49,7 +49,7 @@
     </div>
 </div>
 
-{% if batches.length > 0 %}
+{% if imageImport.length > 0 %}
 <div class="responsive-table">
 <table class="table">
     <tr>
@@ -60,7 +60,7 @@
         <th>{{ gettext("Errors") }}</th>
         <th>{{ gettext("Warnings") }}</th>
     </tr>
-    {% for batch in batches %}
+    {% for batch in imageImport %}
     <tr>
         <td>{{ batch.fileName }}</td>
         <td>{{ batch.modified }}</td>
@@ -103,7 +103,7 @@
     </div>
 </div>
 
-{% if datas.length > 0 %}
+{% if artworkImport.length > 0 %}
 <div class="responsive-table">
 <table class="table">
     <tr>
@@ -114,17 +114,17 @@
         <th>{{ gettext("Errors") }}</th>
         <th>{{ gettext("Warnings") }}</th>
     </tr>
-    {% for data in datas %}
+    {% for batch in artworkImport %}
     <tr>
-        <td>{{ data.fileName }}</td>
-        <td>{{ data.modified }}</td>
-        {% if data.state === "error" %}
+        <td>{{ batch.fileName }}</td>
+        <td>{{ batch.modified }}</td>
+        {% if batch.state === "error" %}
         <td colspan="4">
-            {{ format(gettext("Error: %(error)s"), {error: data.error}) }}
+            {{ format(gettext("Error: %(error)s"), {error: batch.error}) }}
         </td>
         {% else %}
-        {% set results = data.getFilteredResults() %}
-        <td>{{ data.state }}</td>
+        {% set results = batch.getFilteredResults() %}
+        <td>{{ batch.state }}</td>
         <td>{{ results.images.length }}</td>
         <td>{{ results.errors.length }}</td>
         <td>{{ results.warnings.length }}</td>
