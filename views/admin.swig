@@ -35,13 +35,13 @@
         <h3 class="panel-title">{{ gettext("Upload a Zip File of Images") }}</h3>
     </div>
     <div class="panel-body">
-        <form action="/sources/{{source._id}}/upload-images" method="POST" enctype="multipart/form-data">
+        <form action="/source/{{source._id}}/upload-images" method="POST" enctype="multipart/form-data">
             {% if qsLocale() %}
                 <input type="hidden" name="lang" value="{{ lang }}"/>
             {% endif %}
             <div class="form-inline">
                 <div class="form-group">
-                    <input type="file" id="file" name="file" class="form-control" />
+                    <input type="file" name="zipFiled" class="form-control" />
                 </div>
                 <input type="submit" value="{{ gettext("Upload Zip File") }}" class="btn btn-primary" />
             </div>
@@ -80,7 +80,6 @@
 </table>
 </div>
 {% endif %}
-{% endblock %}
 
 <h2>Upload Data</h2>
 
@@ -89,13 +88,13 @@
         <h3 class="panel-title">{{ gettext("Upload a JSON Data File") }}</h3>
     </div>
     <div class="panel-body">
-        <form action="/sources/{{source._id}}/upload-data" method="POST" enctype="multipart/form-data">
+        <form action="/source/{{source._id}}/upload-data" method="POST" enctype="multipart/form-data">
             {% if qsLocale() %}
                 <input type="hidden" name="lang" value="{{ lang }}"/>
             {% endif %}
             <div class="form-inline">
                 <div class="form-group">
-                    <input type="file" id="file" name="file" class="form-control" />
+                    <input type="file" name="dataField" class="form-control" />
                 </div>
                 <input type="submit" value="{{ gettext("Upload JSON File") }}" class="btn btn-primary" />
             </div>

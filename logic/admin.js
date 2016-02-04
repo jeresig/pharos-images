@@ -29,7 +29,10 @@ module.exports = function(core, app) {
                     .sort({created: "desc"}).exec(),
                 ArtworkImport.find({source: source._id})
                     .sort({created: "desc"}).exec(),
-            ]).then((imageImport, artworkImport) => {
+            ]).then((results) => {
+                const imageImport = results[0];
+                const artworkImport = results[1];
+
                 res.render("admin", {
                     source,
                     imageImport,
@@ -89,12 +92,12 @@ module.exports = function(core, app) {
                     // TODO: Come up with a beter redirect
                     // TODO: Display a message stating that the upload
                     // was successful.
-                    res.redirect(`/source/${source._id}/admin`);
+                    res.redirect(`/source/${source}/admin`);
                 });
             });
         },
 
-        uploadData(res, req, next) {
+        uploadData(req, res, next) {
             // TODO(jeresig): Only allow certain users to upload batches
             const source = req.params.source;
 
@@ -124,8 +127,8 @@ module.exports = function(core, app) {
                         new Error(req.gettext("No data file specified.")));
                 }
 
-                const dataFile = dataFile.path;
-                const fileName = dataFile.name;
+                const dataFile = dataField.path;
+                const fileName = dataField.name;
                 const results = [];
 
                 fs.createReadStream(dataFile)
@@ -136,9 +139,10 @@ module.exports = function(core, app) {
                             result: "unknown",
                         });
                     })
-                    .on("error", () => {
+                    .on("error", (err) => {
                         this.destroy();
                         // TODO(jeresig): Transmit useful error message back
+                        console.error(err);
                         next(new Error("Error reading data from the file."));
                     })
                     .on("end", () => {
@@ -151,6 +155,7 @@ module.exports = function(core, app) {
 
                         batch.save((err) => {
                             if (err) {
+                                console.error(err);
                                 return next(new Error(
                                     req.gettext("Error saving data file.")));
                             }
@@ -158,7 +163,7 @@ module.exports = function(core, app) {
                             // TODO: Come up with a beter redirect
                             // TODO: Display a message stating that the upload
                             // was successful.
-                            res.redirect(`/source/${source._id}/admin`);
+                            res.redirect(`/source/${source}/admin`);
                         });
                     });
             });

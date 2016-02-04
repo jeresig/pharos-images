@@ -10,8 +10,8 @@ module.exports = (core) => {
     const ImportResult = require("./ImportResult")(core);
 
     const Import = new core.db.schema({
-        // An ID for the import
-        _id: core.db.schema.Types.ObjectId,
+        // An ID for the import, based on the source and time
+        _id: String,
 
         // The date that this batch was created
         created: {
@@ -50,7 +50,6 @@ module.exports = (core) => {
 
         saveState(state, callback) {
             this.state = state;
-            this.modified = new Date();
             this.save(callback);
         },
 
@@ -148,6 +147,18 @@ module.exports = (core) => {
             advance();
         },
     };
+
+    Import.pre("save", function(next) {
+        // Always updated the modified time on every save
+        this.modified = new Date();
+
+        // Create the ID if one hasn't been set before
+        if (!this._id) {
+            this._id = `${this.source}/${Date.now()}`;
+        }
+
+        next();
+    });
 
     return Import;
 };
