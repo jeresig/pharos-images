@@ -90,7 +90,7 @@ module.exports = (core) => {
         results: [ImageImportResult],
     });
 
-    ImageImport.methods = {
+    Object.assign(ImageImport.methods, {
         getStates() {
             return states;
         },
@@ -202,7 +202,7 @@ module.exports = (core) => {
 
         // TODO(jeresig): Sync similarity to the other images that are "linked"
         // to in the similarity results.
-    };
+    });
 
     return ImageImport;
 };

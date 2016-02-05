@@ -71,7 +71,7 @@
         {% else %}
         {% set results = batch.getFilteredResults() %}
         <td>{{ batch.state }}</td>
-        <td>{{ results.images.length }}</td>
+        <td>{{ results.models.length }}</td>
         <td>{{ results.errors.length }}</td>
         <td>{{ results.warnings.length }}</td>
         {% endif %}
@@ -116,15 +116,15 @@
     {% for batch in artworkImport %}
     <tr>
         <td>{{ batch.fileName }}</td>
-        <td>{{ batch.modified }}</td>
+        <td>{{ prettyDate(batch.modified) }}</td>
         {% if batch.state === "error" %}
         <td colspan="4">
             {{ format(gettext("Error: %(error)s"), {error: batch.error}) }}
         </td>
         {% else %}
         {% set results = batch.getFilteredResults() %}
-        <td>{{ batch.state }}</td>
-        <td>{{ results.images.length }}</td>
+        <td>{{ batchState(batch) }}</td>
+        <td>{{ results.models.length }}</td>
         <td>{{ results.errors.length }}</td>
         <td>{{ results.warnings.length }}</td>
         {% endif %}

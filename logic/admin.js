@@ -4,6 +4,7 @@ const fs = require("fs");
 
 const formidable = require("formidable");
 const JSONStream = require("JSONStream");
+const prettyDate = require("pretty-date");
 
 module.exports = function(core, app) {
     const Source = core.models.Source;
@@ -37,6 +38,8 @@ module.exports = function(core, app) {
                     source,
                     imageImport,
                     artworkImport,
+                    batchState: (batch) => batch.getCurState().name(req),
+                    prettyDate: (date) => prettyDate.format(date),
                 });
             }).catch((err) => {
                 next(new Error(req.gettext("Error retrieving records.")));

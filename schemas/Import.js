@@ -54,8 +54,7 @@ module.exports = (core) => {
         },
 
         getCurState() {
-            const states = this.getStates();
-            return states[states.find((state) => state.id === this.state)];
+            return this.getStates().find((state) => state.id === this.state);
         },
 
         getNextState() {

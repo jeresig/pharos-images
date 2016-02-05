@@ -79,7 +79,7 @@ module.exports = (core) => {
         results: [ArtworkImportResult],
     });
 
-    ArtworkImport.methods = {
+    Object.assign(ArtworkImport.methods, {
         getStates() {
             return states;
         },
@@ -151,7 +151,7 @@ module.exports = (core) => {
             this.error = "Data import abandoned.";
             this.saveState("error", callback);
         },
-    };
+    });
 
     return ArtworkImport;
 };
