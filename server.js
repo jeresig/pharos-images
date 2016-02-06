@@ -35,4 +35,8 @@ core.init(() => {
             process.send("offline");
         }
     });
+
+    // Automatically advance the different data importers
+    core.models.ArtworkImport.startAdvancing();
+    core.models.ImageImport.startAdvancing();
 });

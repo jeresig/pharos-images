@@ -3,7 +3,7 @@
 const async = require("async");
 
 // How often batches should be advanced
-const ADVANCE_RATE = 10000;
+const ADVANCE_RATE = 5000;
 
 module.exports = (core) => {
     const Source = core.models.Source;
@@ -74,8 +74,8 @@ module.exports = (core) => {
                 return process.nextTick(callback);
             }
 
-            this.populate("results.model", () => {
-                this.saveState(state.id, () => {
+            this.populate("results.model", (err) => {
+                this.saveState(nextState.id, (err) => {
                     state.advance(this, (err) => {
                         // If there was an error then we save the error message
                         // and set the state of the batch to "error" to avoid
@@ -86,6 +86,7 @@ module.exports = (core) => {
                         }
 
                         // Advance to the next state
+                        const nextState = this.getNextState();
                         this.saveState(nextState.id, callback);
                     });
                 });
@@ -108,8 +109,8 @@ module.exports = (core) => {
                 state: {
                     $nin: ["completed", "error"],
                 },
-            }, (err, batches) => {
-                if (err || !batches) {
+            }).exec((err, batches) => {
+                if (err || !batches || batches.length === 0) {
                     return callback(err);
                 }
 
@@ -132,7 +133,7 @@ module.exports = (core) => {
                     // But do each queue in series
                     async.eachLimit(queue, 1, (batch, callback) => {
                         console.log(`Advancing ${batch._id} to ` +
-                            `${batch.getNextState()}...`);
+                            `${batch.getNextState().id}...`);
                         batch.advance(callback);
                     }, callback);
                 }, callback);

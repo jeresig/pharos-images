@@ -5,7 +5,6 @@ const async = require("async");
 module.exports = (core) => {
     const Artwork = core.models.Artwork;
     const Import = require("./Import")(core);
-    const ImportResult = require("./ImportResult")(core);
 
     const states = [
         {
@@ -45,29 +44,6 @@ module.exports = (core) => {
         },
     ];
 
-    const ArtworkImportResult = ImportResult.extend({
-        // The data record
-        data: {
-            type: Object,
-            required: true,
-        },
-
-        // How the record is being changed
-        result: {
-            type: String,
-            enum: ["created", "changed", "deleted", "error", "unknown"],
-            required: true,
-        },
-
-        // The artwork which was affected by this data (optional, empty
-        // if the record has errors)
-        model: {type: String, ref: "Artwork"},
-
-        // A diff of what data changed (optional, only if the record
-        // has no errors and previously existed)
-        diff: {type: Object},
-    });
-
     const ArtworkImport = Import.extend({
         // The name of the original file (e.g. `foo.json`)
         fileName: {
@@ -76,7 +52,7 @@ module.exports = (core) => {
         },
 
         // The results of the import
-        results: [ArtworkImportResult],
+        results: [{}],
     });
 
     Object.assign(ArtworkImport.methods, {
@@ -120,9 +96,10 @@ module.exports = (core) => {
 
                             this.results.push({
                                 _id: id,
-                                artwork: id,
+                                model: id,
                                 result: "deleted",
                                 state: "process.completed",
+                                data: {},
                             });
                         });
 
