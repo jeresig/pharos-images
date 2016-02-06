@@ -178,8 +178,14 @@ module.exports = (core) => {
             async.eachLimit(this.results, 1, (result, callback) => {
                 if (result.model &&
                         result.state === "similarity.index.started") {
-                    result.model.indexSimilarity(() => {
-                        result.model.save(callback);
+                    Image.findById(result.model, (err, image) => {
+                        if (err) {
+                            return callback(err);
+                        }
+
+                        image.indexSimilarity(() => {
+                            image.save(callback);
+                        });
                     });
                 } else {
                     callback();
@@ -191,8 +197,14 @@ module.exports = (core) => {
             async.eachLimit(this.results, 1, (result, callback) => {
                 if (result.model &&
                         result.state === "similarity.sync.started") {
-                    result.model.updateSimilarity(() => {
-                        result.model.save(callback);
+                    Image.findById(result.model, (err, image) => {
+                        if (err) {
+                            return callback(err);
+                        }
+
+                        image.updateSimilarity(() => {
+                            image.save(callback);
+                        });
                     });
                 } else {
                     callback();

@@ -74,21 +74,19 @@ module.exports = (core) => {
                 return process.nextTick(callback);
             }
 
-            this.populate("results.model", (err) => {
-                this.saveState(nextState.id, (err) => {
-                    state.advance(this, (err) => {
-                        // If there was an error then we save the error message
-                        // and set the state of the batch to "error" to avoid
-                        // retries.
-                        if (err) {
-                            this.error = err.message;
-                            return this.saveState("error", callback);
-                        }
+            this.saveState(nextState.id, (err) => {
+                state.advance(this, (err) => {
+                    // If there was an error then we save the error message
+                    // and set the state of the batch to "error" to avoid
+                    // retries.
+                    if (err) {
+                        this.error = err.message;
+                        return this.saveState("error", callback);
+                    }
 
-                        // Advance to the next state
-                        const nextState = this.getNextState();
-                        this.saveState(nextState.id, callback);
-                    });
+                    // Advance to the next state
+                    const nextState = this.getNextState();
+                    this.saveState(nextState.id, callback);
                 });
             });
         },
@@ -98,7 +96,7 @@ module.exports = (core) => {
                 models: this.results.filter((result) => result.model),
                 errors: this.results.filter((result) => result.error),
                 warnings: this.results
-                    .filter((result) => result.warnings.length !== 0),
+                    .filter((result) => (result.warnings || []).length !== 0),
             };
         },
     };
@@ -109,7 +107,7 @@ module.exports = (core) => {
                 state: {
                     $nin: ["completed", "error"],
                 },
-            }).exec((err, batches) => {
+            }).select("_id state").exec((err, batches) => {
                 if (err || !batches || batches.length === 0) {
                     return callback(err);
                 }
@@ -132,9 +130,12 @@ module.exports = (core) => {
 
                     // But do each queue in series
                     async.eachLimit(queue, 1, (batch, callback) => {
-                        console.log(`Advancing ${batch._id} to ` +
-                            `${batch.getNextState().id}...`);
-                        batch.advance(callback);
+                        // We now load the complete batch with all fields intact
+                        this.findById(batch._id, (err, batch) => {
+                            console.log(`Advancing ${batch._id} to ` +
+                                `${batch.getNextState().id}...`);
+                            batch.advance(callback);
+                        });
                     }, callback);
                 }, callback);
             });

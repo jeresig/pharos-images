@@ -56,6 +56,10 @@ module.exports = (core) => {
     });
 
     Object.assign(ArtworkImport.methods, {
+        url() {
+            return `/source/${this.source}/artworks/${this._id}`;
+        },
+
         getStates() {
             return states;
         },
@@ -115,9 +119,10 @@ module.exports = (core) => {
                         artwork.save(callback);
                     });
                 } else if (result.result === "changed") {
-                    result.model.set(result.data).save(callback);
+                    Artwork.findByIdAndUpdate(result.model, result.data,
+                        callback);
                 } else if (result.result === "deleted") {
-                    result.model.remove(callback);
+                    Artwork.findByIdAndRemove(result.model, callback);
                 } else {
                     process.nextTick(callback);
                 }
@@ -127,6 +132,20 @@ module.exports = (core) => {
         abandon(callback) {
             this.error = "Data import abandoned.";
             this.saveState("error", callback);
+        },
+
+        getFilteredResults() {
+            return {
+                created: this.results.filter(
+                    (result) => result.result === "created"),
+                changed: this.results.filter(
+                    (result) => result.result === "changed"),
+                deleted: this.results.filter(
+                    (result) => result.result === "deleted"),
+                errors: this.results.filter((result) => result.error),
+                warnings: this.results
+                    .filter((result) => (result.warnings || []).length !== 0),
+            };
         },
     });
 

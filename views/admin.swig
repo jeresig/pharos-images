@@ -28,7 +28,7 @@
     </li>
 </ul>
 
-<h2>Upload Images</h2>
+<h2>{{ gettext("Upload Images") }}</h2>
 
 <div class="panel panel-default">
     <div class="panel-heading">
@@ -53,7 +53,7 @@
 <div class="responsive-table">
 <table class="table">
     <tr>
-        <th>{{ gettext("Zip File Name") }}</th>
+        <th>{{ gettext("File Name") }}</th>
         <th>{{ gettext("Last Updated") }}</th>
         <th>{{ gettext("Status") }}</th>
         <th>{{ gettext("Images") }}</th>
@@ -81,7 +81,7 @@
 </div>
 {% endif %}
 
-<h2>Upload Data</h2>
+<h2>{{ gettext("Upload Artwork Metadata") }}</h2>
 
 <div class="panel panel-default">
     <div class="panel-heading">
@@ -106,25 +106,39 @@
 <div class="responsive-table">
 <table class="table">
     <tr>
-        <th>{{ gettext("JSON File Name") }}</th>
+        <th>{{ gettext("File Name") }}</th>
         <th>{{ gettext("Last Updated") }}</th>
         <th>{{ gettext("Status") }}</th>
-        <th>{{ gettext("Records") }}</th>
+        <th>{{ gettext("Created") }}</th>
+        <th>{{ gettext("Updated") }}</th>
+        <th>{{ gettext("Deleted") }}</th>
         <th>{{ gettext("Errors") }}</th>
         <th>{{ gettext("Warnings") }}</th>
     </tr>
     {% for batch in artworkImport %}
     <tr>
-        <td>{{ batch.fileName }}</td>
+        <td>
+            <a href="{{ batch.url() }}">{{ batch.fileName }}</a>
+        </td>
         <td>{{ prettyDate(batch.modified) }}</td>
         {% if batch.state === "error" %}
-        <td colspan="4">
+        <td colspan="6">
             {{ format(gettext("Error: %(error)s"), {error: batch.error}) }}
         </td>
         {% else %}
         {% set results = batch.getFilteredResults() %}
-        <td>{{ batchState(batch) }}</td>
-        <td>{{ results.models.length }}</td>
+        <td>
+            {% if batch.state === "process.completed" %}
+                <a href="{{ batch.url() }}" class="btn btn-success btn-xs">
+                    {{ gettext("Finalize Import") }}
+                </a>
+            {% else %}
+                {{ batchState(batch) }}
+            {% endif %}
+        </td>
+        <td>{{ results.created.length }}</td>
+        <td>{{ results.changed.length }}</td>
+        <td>{{ results.deleted.length }}</td>
         <td>{{ results.errors.length }}</td>
         <td>{{ results.warnings.length }}</td>
         {% endif %}
