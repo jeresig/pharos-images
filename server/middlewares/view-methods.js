@@ -54,8 +54,8 @@ module.exports = (req, res, next) => {
         },
 
         getDate(item) {
-            if (item.dateCreated) {
-                return locales.getDate(item.dateCreated);
+            if (item.date) {
+                return locales.getDate(item.date);
             }
 
             if (item.original) {

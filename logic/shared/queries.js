@@ -14,7 +14,7 @@ const dateMatch = (query) => {
             must: [
                 {
                     range: {
-                        "dateCreateds.start": {
+                        "dates.start": {
                             lte: parseFloat(start),
                         },
                     },
@@ -22,7 +22,7 @@ const dateMatch = (query) => {
 
                 {
                     range: {
-                        "dateCreateds.end": {
+                        "dates.end": {
                             gte: parseFloat(start),
                         },
                     },
@@ -36,7 +36,7 @@ const dateMatch = (query) => {
             must: [
                 {
                     range: {
-                        "dateCreateds.start": {
+                        "dates.start": {
                             lte: parseFloat(end),
                         },
                     },
@@ -44,7 +44,7 @@ const dateMatch = (query) => {
 
                 {
                     range: {
-                        "dateCreateds.end": {
+                        "dates.end": {
                             gte: parseFloat(end),
                         },
                     },
@@ -58,7 +58,7 @@ const dateMatch = (query) => {
             must: [
                 {
                     range: {
-                        "dateCreateds.start": {
+                        "dates.start": {
                             gte: parseFloat(start),
                         },
                     },
@@ -66,7 +66,7 @@ const dateMatch = (query) => {
 
                 {
                     range: {
-                        "dateCreateds.end": {
+                        "dates.end": {
                             lte: parseFloat(end),
                         },
                     },

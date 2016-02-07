@@ -50,12 +50,12 @@
         </tr>
         {% endif %}
 
-        {% if artwork.dateCreated %}
+        {% if artwork.date %}
             <tr>
                 <th class="text-right">{{ gettext("Date") }}</th>
                 <td>
-                    <a href="{{ searchURL({dateStart: artwork.dateCreated.start, dateEnd: artwork.dateCreated.end}) }}">
-                        {{ getDate(artwork.dateCreated) }}
+                    <a href="{{ searchURL({dateStart: artwork.date.start, dateEnd: artwork.date.end}) }}">
+                        {{ getDate(artwork.date) }}
                     </a>
                 </td>
             </tr>
@@ -97,11 +97,11 @@
             </tr>
         {% endif %}
 
-        {% if artwork.collections.length > 0 && artwork.collections[0].name %}
+        {% if artwork.locations.length > 0 && artwork.locations[0].name %}
             <tr>
-                <th class="text-right">{{ gettext("Collection") }}</th>
+                <th class="text-right">{{ gettext("Location") }}</th>
                 <td>
-                    {% for collection in artwork.collections %}
+                    {% for location in artwork.locations %}
                         {{ collection.name }}<br/>
                         {% if collection.city %}
                             {{ collection.city }}<br/>

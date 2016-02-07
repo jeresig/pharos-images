@@ -191,8 +191,8 @@
                 </a>
                 <div class="details">
                     <div class="wrap">
-                        {% if artwork.dateCreated %}
-                            <span>{{ getDate(artwork.dateCreated) }}</span>
+                        {% if artwork.date %}
+                            <span>{{ getDate(artwork.date) }}</span>
                         {% endif %}
 
                         {% if artwork.artist %}

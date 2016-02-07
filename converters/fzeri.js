@@ -26,7 +26,7 @@ module.exports = {
                 `decorator=layout_S2&apply=true&tipo_scheda=OA&id=${val}`,
         ],
         title: "SGTI",
-        dateCreateds: {
+        dates: {
             label: "DTZG",
             start: ["DTSI", (val) => parseFloat(val)],
             end: ["DTSF", (val) => parseFloat(val)],

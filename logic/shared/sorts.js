@@ -5,12 +5,12 @@ module.exports = {
         name: (req) => req.gettext("Date, newest first"),
         sort: [
             {
-                "dateCreateds.start": {
+                "dates.start": {
                     "order": "asc",
                 },
             },
             {
-                "dateCreateds.end": {
+                "dates.end": {
                     "order": "asc",
                 },
             },
@@ -21,12 +21,12 @@ module.exports = {
         name: (req) => req.gettext("Date, oldest first"),
         sort: [
             {
-                "dateCreateds.end": {
+                "dates.end": {
                     "order": "desc",
                 },
             },
             {
-                "dateCreateds.start": {
+                "dates.start": {
                     "order": "desc",
                 },
             },

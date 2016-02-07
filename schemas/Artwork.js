@@ -94,9 +94,6 @@ module.exports = (core) => {
         // Date ranges when the artwork was created or modified.
         dates: [YearRange],
 
-        // TODO(jeresig): Remove after move to dates
-        dateCreateds: [YearRange],
-
         // The English form of the object type (e.g. painting, print)
         // NOTE(jeresig): We could require that the object type be of one of a
         // the pre-specified types in the types file, but that feels overly
@@ -117,9 +114,6 @@ module.exports = (core) => {
             type: String,
             es_indexed: true,
         },
-
-        // TODO(jeresig): Remove this once locations exist
-        collections: [Location],
 
         // Locations where the artwork is stored
         locations: [Location],
@@ -166,16 +160,16 @@ module.exports = (core) => {
         }],
     });
 
-    Artwork.virtual("dateCreated")
+    Artwork.virtual("date")
         .get(function() {
-            return this.dateCreateds[0];
+            return this.dates[0];
         })
         .set(function(date) {
-            if (this.dateCreateds[0]) {
-                this.dateCreateds[0].remove();
+            if (this.dates[0]) {
+                this.dates[0].remove();
             }
             if (date && typeof date !== "string") {
-                this.dateCreateds.push(date);
+                this.dates.push(date);
             }
         });
 

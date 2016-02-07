@@ -32,7 +32,7 @@ module.exports = {
         ],
         bibID: ["004"],
         title: ["245", ["a"], (results) => trim(results[0])],
-        dateCreateds: ["260", ["c"], (results) => yr.parse(trim(results[0]))],
+        dates: ["260", ["c"], (results) => yr.parse(trim(results[0]))],
         categories: [
             "650",
             ["a", "x", "y", "z"],

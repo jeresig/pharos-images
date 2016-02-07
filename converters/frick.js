@@ -28,7 +28,7 @@ module.exports = {
             },
         ],
         title: "Title",
-        dateCreateds: [
+        dates: [
             "WorkDate_earliestDate",
             (earliest, data) => {
                 if (earliest && data.WorkDate_latestDate) {

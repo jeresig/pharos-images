@@ -59,7 +59,7 @@ module.exports = (core, app) => ({
 
             return {
                 range: {
-                    field: "dateCreateds.years",
+                    field: "dates.years",
                     ranges: ranges,
                 },
             };
