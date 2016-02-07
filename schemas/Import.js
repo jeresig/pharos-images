@@ -90,15 +90,6 @@ module.exports = (core) => {
                 });
             });
         },
-
-        getFilteredResults() {
-            return {
-                models: this.results.filter((result) => result.model),
-                errors: this.results.filter((result) => result.error),
-                warnings: this.results
-                    .filter((result) => (result.warnings || []).length !== 0),
-            };
-        },
     };
 
     Import.statics = {

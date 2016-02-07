@@ -10,7 +10,6 @@ const unzip = require("unzip2");
 module.exports = (core) => {
     const Image = core.models.Image;
     const Import = require("./Import")(core);
-    const ImportResult = require("./ImportResult")(core);
 
     const states = [
         {
@@ -61,17 +60,6 @@ module.exports = (core) => {
         },
     ];
 
-    const ImageImportResult = ImportResult.extend({
-        // The name of the file being processed
-        fileName: {
-            type: String,
-            required: true,
-        },
-
-        // The image record (optional, if the image file has errors)
-        model: {type: String, ref: "Image"},
-    });
-
     const ImageImport = Import.extend({
         // The location of the uploaded zip file
         // (temporary, deleted after processing)
@@ -87,10 +75,14 @@ module.exports = (core) => {
         },
 
         // The results of the import
-        results: [ImageImportResult],
+        results: [{}],
     });
 
     Object.assign(ImageImport.methods, {
+        url() {
+            return `/source/${this.source}/import?images=${this._id}`;
+        },
+
         getStates() {
             return states;
         },
@@ -194,6 +186,8 @@ module.exports = (core) => {
         },
 
         syncSimilarity(callback) {
+            // TODO(jeresig): Sync similarity to the other images that are
+            // "linked" to in the similarity results.
             async.eachLimit(this.results, 1, (result, callback) => {
                 if (result.model &&
                         result.state === "similarity.sync.started") {
@@ -212,8 +206,14 @@ module.exports = (core) => {
             }, callback);
         },
 
-        // TODO(jeresig): Sync similarity to the other images that are "linked"
-        // to in the similarity results.
+        getFilteredResults() {
+            return {
+                models: this.results.filter((result) => result.model),
+                errors: this.results.filter((result) => result.error),
+                warnings: this.results
+                    .filter((result) => (result.warnings || []).length !== 0),
+            };
+        },
     });
 
     return ImageImport;

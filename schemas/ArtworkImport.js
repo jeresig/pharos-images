@@ -57,7 +57,7 @@ module.exports = (core) => {
 
     Object.assign(ArtworkImport.methods, {
         url() {
-            return `/source/${this.source}/artworks/${this._id}`;
+            return `/source/${this.source}/import?artworks=${this._id}`;
         },
 
         getStates() {
@@ -79,10 +79,10 @@ module.exports = (core) => {
                         result.result = "created";
 
                     } else {
-                        result.result = "changed";
                         result.diff = artwork._diff;
                         incomingIDs[artwork._id] = true;
                         result.model = artwork._id;
+                        result.result = result.diff ? "changed" : "unchanged";
                     }
 
                     result.warnings = warnings || [];
