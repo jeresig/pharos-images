@@ -33,6 +33,12 @@ module.exports = (core) => {
         // The date that this item was updated
         modified: Date,
 
+        // The most recent batch in which the artwork data was uploaded
+        batch: {
+            type: core.db.schema.Types.ObjectId,
+            ref: "ArtworkImport",
+        },
+
         // The source of the image.
         // NOTE(jeresig): It'd be nice to validate and ensure that the source
         // is one that actually exists.

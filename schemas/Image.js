@@ -23,7 +23,10 @@ module.exports = (core) => {
         // The most recent batch in which the image was uploaded
         // NOTE(jeresig): This is not required as the image could have
         // been uploaded for use in a search.
-        batch: core.db.schema.Types.ObjectId,
+        batch: {
+            type: core.db.schema.Types.ObjectId,
+            ref: "ImageImport",
+        },
 
         // The source that the image is associated with
         source: {

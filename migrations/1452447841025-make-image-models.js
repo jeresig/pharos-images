@@ -8,12 +8,46 @@ const async = require("async");
 const core = require("../core");
 const Artwork = core.models.Artwork;
 const Image = core.models.Image;
+const ArtworkImport = core.models.ArtworkImport;
+const ImageImport = core.models.ImageImport;
+
+const sources = require("../config/data.sources.json");
 
 const mapping = {};
+const artworkBatches = {};
+const imageBatches = {};
+
+const genBatches = (callback) => {
+    sources.forEach((source) => {
+        source = source.source;
+
+        artworkBatches[source] = new ArtworkImport({
+            source,
+            fileName: `${source}.json`,
+            state: "completed",
+            results: [],
+        });
+
+        imageBatches[source] = new ImageImport({
+            source,
+            zipFile: `/tmp/${source}.zip`,
+            fileName: `${source}.zip`,
+            state: "completed",
+            results: [],
+        });
+    });
+};
+
+const saveBatches = (callback) => {
+    async.eachLimit(sources, (source, callback) => {
+        source = source.source;
+
+        artworkBatches[source].save(() =>
+            imageBatches[source].save(callback));
+    }, callback);
+};
 
 const genHashes = (callback) => {
-    const sources = require("../config/data.sources.json");
-
     async.eachLimit(sources, 1, (source, callback) => {
         const images = fs.readdirSync(source.imageDir);
 
@@ -43,13 +77,15 @@ const loadImages = (callback) => {
         .on("data", function(artwork) {
             this.pause();
 
+            const source = artwork.source;
+
             console.log(`Migrating ${artwork._id}...`);
 
             artwork.imageRefs = [];
 
             async.eachLimit(artwork.images, 1, (image, callback) => {
                 const fileName = mapping[image._id].fileName;
-                const _id = `${artwork.source}/${fileName}`;
+                const _id = `${source}/${fileName}`;
                 const date = artwork.created;
 
                 if (!fileName) {
@@ -63,7 +99,7 @@ const loadImages = (callback) => {
                     _id,
                     created: date,
                     modified: date,
-                    source: artwork.source,
+                    source,
                     fileName,
                     hash: image._id,
                     width: image.width,
@@ -76,6 +112,16 @@ const loadImages = (callback) => {
 
                 artwork.imageRefs.push(_id);
 
+                const batch = imageBatches[source];
+
+                batch.results.push({
+                    _id: image._id,
+                    model: image._id,
+                    state: "completed",
+                    fileName,
+                });
+
+                newImage.batch = batch._id;
                 newImage.save((err) => {
                     if (err) {
                         console.error("Error saving:", err);
@@ -83,6 +129,17 @@ const loadImages = (callback) => {
                     callback();
                 });
             }, () => {
+                const batch = artworkBatches[source];
+
+                batch.results.push({
+                    _id: artwork._id,
+                    model: artwork._id,
+                    result: "created",
+                    state: "completed",
+                    data: {},
+                });
+
+                artwork.batch = batch._id;
                 artwork.save(() => this.resume());
             });
         })
@@ -91,8 +148,10 @@ const loadImages = (callback) => {
 
 exports.up = (next) => {
     core.init(() => {
-        genHashes(() =>
-            loadImages(() => next));
+        genBatches(() =>
+            genHashes(() =>
+                loadImages(() =>
+                    saveBatches(() => next))));
     });
 };
 
