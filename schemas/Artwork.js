@@ -35,7 +35,7 @@ module.exports = (core) => {
 
         // The most recent batch in which the artwork data was uploaded
         batch: {
-            type: core.db.schema.Types.ObjectId,
+            type: String,
             ref: "ArtworkImport",
         },
 

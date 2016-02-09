@@ -24,7 +24,7 @@ module.exports = (core) => {
         // NOTE(jeresig): This is not required as the image could have
         // been uploaded for use in a search.
         batch: {
-            type: core.db.schema.Types.ObjectId,
+            type: String,
             ref: "ImageImport",
         },
 

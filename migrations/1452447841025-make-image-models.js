@@ -22,6 +22,7 @@ const genBatches = (callback) => {
         source = source.source;
 
         artworkBatches[source] = new ArtworkImport({
+            _id: `${source}/${Date.now()}`,
             source,
             fileName: `${source}.json`,
             state: "completed",
@@ -29,6 +30,7 @@ const genBatches = (callback) => {
         });
 
         imageBatches[source] = new ImageImport({
+            _id: `${source}/${Date.now()}`,
             source,
             zipFile: `/tmp/${source}.zip`,
             fileName: `${source}.zip`,
@@ -148,10 +150,10 @@ const loadImages = (callback) => {
 
 exports.up = (next) => {
     core.init(() => {
-        genBatches(() =>
-            genHashes(() =>
-                loadImages(() =>
-                    saveBatches(() => next))));
+        genBatches();
+        genHashes(() =>
+            loadImages(() =>
+                saveBatches(() => next)));
     });
 };
 

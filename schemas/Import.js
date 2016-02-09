@@ -7,7 +7,6 @@ const ADVANCE_RATE = 5000;
 
 module.exports = (core) => {
     const Source = core.models.Source;
-    const ImportResult = require("./ImportResult")(core);
 
     const Import = new core.db.schema({
         // An ID for the import, based on the source and time
@@ -40,7 +39,7 @@ module.exports = (core) => {
         error: "String",
 
         // The results of the import
-        results: [ImportResult],
+        results: [{}],
     });
 
     Import.methods = {

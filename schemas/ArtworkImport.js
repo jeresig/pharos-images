@@ -50,9 +50,6 @@ module.exports = (core) => {
             type: String,
             required: true,
         },
-
-        // The results of the import
-        results: [{}],
     });
 
     Object.assign(ArtworkImport.methods, {
