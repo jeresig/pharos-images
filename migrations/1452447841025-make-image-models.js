@@ -112,6 +112,10 @@ const loadImages = (callback) => {
                     })),
                 });
 
+                if (!artwork.defaultImageHash) {
+                    artwork.defaultImageHash = newImage.hash;
+                }
+
                 artwork.imageRefs.push(_id);
 
                 const batch = imageBatches[source];
@@ -142,7 +146,13 @@ const loadImages = (callback) => {
                 });
 
                 artwork.batch = batch._id;
-                artwork.save(() => this.resume());
+                artwork.save((err) => {
+                    if (err) {
+                        console.log("Error saving:", err);
+                    }
+
+                    this.resume();
+                });
             });
         })
         .on("close", callback);

@@ -73,7 +73,7 @@ module.exports = (core) => {
 
         // The images associated with the artwork
         images: {
-            type: [Image],
+            type: [{}],
             // TODO: Move to this.
             //type: [{type: String, ref: "Image"}],
             required: true,
