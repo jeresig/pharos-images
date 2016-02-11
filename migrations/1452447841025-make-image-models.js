@@ -65,7 +65,7 @@ const genHashes = (callback) => {
                 }
 
                 mapping[hash] = {
-                    _id: `${source._id}/${fileName}`,
+                    _id: `${source.source}/${fileName}`,
                     fileName,
                 };
                 callback();
