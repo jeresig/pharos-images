@@ -18,6 +18,8 @@ const artworkBatches = {};
 const imageBatches = {};
 
 const genBatches = (callback) => {
+    console.log("Generating Batches...");
+
     sources.forEach((source) => {
         source = source.source;
 
@@ -38,14 +40,30 @@ const genBatches = (callback) => {
             results: [],
         });
     });
+
+    saveBatches(callback);
 };
 
 const saveBatches = (callback) => {
-    async.eachLimit(sources, (source, callback) => {
+    console.log("Saving batches...");
+
+    async.eachLimit(sources, 1, (source, callback) => {
         source = source.source;
 
-        artworkBatches[source].save(() =>
-            imageBatches[source].save(callback));
+        artworkBatches[source].save((err) => {
+            if (err) {
+                console.error(err);
+                return callback(err);
+            }
+
+            imageBatches[source].save((err) => {
+                if (err) {
+                    console.error(err);
+                }
+
+                callback(err);
+            });
+        });
     }, callback);
 };
 
@@ -160,10 +178,10 @@ const loadImages = (callback) => {
 
 exports.up = (next) => {
     core.init(() => {
-        genBatches();
-        genHashes(() =>
-            loadImages(() =>
-                saveBatches(() => next)));
+        genBatches(() =>
+            genHashes(() =>
+                loadImages(() =>
+                    saveBatches(next))));
     });
 };
 
