@@ -73,9 +73,7 @@ module.exports = (core) => {
 
         // The images associated with the artwork
         images: {
-            type: [{}],
-            // TODO: Move to this.
-            //type: [{type: String, ref: "Image"}],
+            type: [{type: String, ref: "Image"}],
             required: true,
         },
 
@@ -141,12 +139,6 @@ module.exports = (core) => {
             },
 
             images: {
-                type: [String],
-                required: true,
-            },
-
-            // TODO(jeresig): Remove after move to images
-            imageNames: {
                 type: [String],
                 required: true,
             },
