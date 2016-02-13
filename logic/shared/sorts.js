@@ -2,7 +2,7 @@
 
 module.exports = {
     dateAsc: {
-        name: (req) => req.gettext("Date, newest first"),
+        name: (req) => req.gettext("Date, earliest first"),
         sort: [
             {
                 "dates.start": {
@@ -18,7 +18,7 @@ module.exports = {
     },
 
     dateDesc: {
-        name: (req) => req.gettext("Date, oldest first"),
+        name: (req) => req.gettext("Date, latest first"),
         sort: [
             {
                 "dates.end": {
