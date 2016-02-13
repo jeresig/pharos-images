@@ -35,8 +35,14 @@
                 <div class="form-group">
                     <label for="artist" class="control-label">{{ gettext("Artist") }}</label>
                     <input type="text" name="artist"
-                        placeholder="{{ gettext("Sample Andrea del Sarto") }}"
+                        placeholder="{{ gettext("Sample: Andrea del Sarto") }}"
                         value="{{query.artist}}" class="form-control"/>
+                </div>
+                <div class="form-group">
+                    <label for="location" class="control-label">{{ gettext("Location") }}</label>
+                    <input type="text" name="location"
+                        placeholder="{{ gettext("Sample: Louvre") }}"
+                        value="{{query.location}}" class="form-control"/>
                 </div>
                 <div class="form-group">
                     <label for="type" class="control-label">{{ gettext("Type") }}</label>

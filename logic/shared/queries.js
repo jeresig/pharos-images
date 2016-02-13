@@ -166,6 +166,22 @@ module.exports = (core, app) => ({
         }),
     },
 
+    location: {
+        value: (req) => req.query.location,
+        title: (req, query) => req.format(
+            req.gettext("Location: '%(query)s'"),
+                {query: query.location || "*"}),
+        match: (query) => ({
+            match: {
+                "locations.name": {
+                    query: query.location,
+                    operator: "and",
+                    zero_terms_query: "all",
+                },
+            },
+        }),
+    },
+
     type: {
         value: (req) => req.query.type || req.params.type || "",
         title: (req, query) => types[query.type].name(req),

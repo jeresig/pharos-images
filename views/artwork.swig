@@ -102,9 +102,9 @@
                 <th class="text-right">{{ gettext("Location") }}</th>
                 <td>
                     {% for location in artwork.locations %}
-                        {{ collection.name }}<br/>
-                        {% if collection.city %}
-                            {{ collection.city }}<br/>
+                        <a href="{{ searchURL({location: location.name}) }}">{{ location.name }}</a><br/>
+                        {% if location.city %}
+                            {{ location.city }}<br/>
                         {% endif %}
                     {% endfor %}
                 </td>

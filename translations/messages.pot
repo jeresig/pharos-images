@@ -8,7 +8,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2016-02-13 17:44+0000\n"
+"POT-Creation-Date: 2016-02-13 18:11+0000\n"
 
 #: logic/admin.js:24
 #: logic/admin.js:59
@@ -222,12 +222,12 @@ msgid "Artist"
 msgstr ""
 
 #: views/artwork.swig:2
-#: views/search.swig:9
+#: views/search.swig:11
 msgid "Date"
 msgstr ""
 
 #: views/artwork.swig:3
-#: views/search.swig:7
+#: views/search.swig:9
 msgid "Type"
 msgstr ""
 
@@ -244,6 +244,7 @@ msgid "Categories"
 msgstr ""
 
 #: views/artwork.swig:7
+#: views/search.swig:7
 msgid "Location"
 msgstr ""
 
@@ -271,7 +272,7 @@ msgstr ""
 
 #: views/artwork.swig:13
 #: views/artwork.swig:14
-#: views/search.swig:12
+#: views/search.swig:14
 msgid "Source"
 msgstr ""
 
@@ -297,7 +298,7 @@ msgstr ""
 #: views/home.swig:3
 #: views/page.swig:2
 #: views/page.swig:3
-#: views/search.swig:15
+#: views/search.swig:17
 msgid "Search"
 msgstr ""
 
@@ -354,45 +355,49 @@ msgid "Sample: christ or cristo"
 msgstr ""
 
 #: views/search.swig:6
-msgid "Sample Andrea del Sarto"
+msgid "Sample: Andrea del Sarto"
 msgstr ""
 
 #: views/search.swig:8
-msgid "Any Type"
+msgid "Sample: Louvre"
 msgstr ""
 
 #: views/search.swig:10
+msgid "Any Type"
+msgstr ""
+
+#: views/search.swig:12
 msgid "Width (%(unit)s)"
 msgstr ""
 
-#: views/search.swig:11
+#: views/search.swig:13
 msgid "Height (%(unit)s)"
 msgstr ""
 
-#: views/search.swig:13
+#: views/search.swig:15
 msgid "Any Source"
 msgstr ""
 
-#: views/search.swig:14
+#: views/search.swig:16
 msgid "Sort"
 msgstr ""
 
-#: views/search.swig:16
+#: views/search.swig:18
 msgid "Show %(count)s more..."
 msgstr ""
 
-#: views/search.swig:17
-#: views/search.swig:18
+#: views/search.swig:19
+#: views/search.swig:20
 msgid "Remove %(query)s"
 msgstr ""
 
-#: views/search.swig:19
 #: views/search.swig:21
+#: views/search.swig:23
 msgid "Previous"
 msgstr ""
 
-#: views/search.swig:20
 #: views/search.swig:22
+#: views/search.swig:24
 msgid "Next"
 msgstr ""
 
