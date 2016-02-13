@@ -123,10 +123,10 @@ module.exports = (core) => {
         locations: [Location],
 
         // Categories classifying the artwork
-        categories: {
-            type: [String],
+        categories: [{
+            type: String,
             es_indexed: true,
-        },
+        }],
 
         // Computed by looking at the results of images.similarImages
         similarArtworks: [{

@@ -93,7 +93,11 @@
         {% if artwork.categories.length > 0 %}
             <tr>
                 <th class="text-right">{{ gettext("Categories") }}</th>
-                <td>{{ artwork.categories|join(", ") }}</td>
+                <td>
+                    {% for category in artwork.categories %}
+                        <a href="{{ searchURL({filter: category}) }}">{{ category }}</a>{% if !loop.last %}, {% endif %}
+                    {% endfor %}
+                </td>
             </tr>
         {% endif %}
 

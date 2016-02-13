@@ -1,5 +1,10 @@
 "use strict";
 
+/*
+ * Run this to delete the existing index.
+ *   curl -XDELETE 'http://127.0.0.1:9200/artworks'
+ */
+
 const core = require("../core");
 
 const Artwork = core.models.Artwork;
