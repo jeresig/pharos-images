@@ -134,15 +134,19 @@
 }
 
 /*
- * Styling for the OpenSeadragon viewer
+ * Styling for the Bootstrap Carousel
  */
 
-#openseadragon-toolbar {
-    height: 33px;
-    width: 100%;
+.carousel-control {
+    background: rgba(0, 0, 0, 0.5) !important;
+    width: 50px !important;
 }
-
-#openseadragon-viewer {
-    height: 400px;
-    width: 100%;
+.carousel-control .icon-prev, .carousel-control .glyphicon-chevron-left {
+    left: 16px !important;
+}
+.carousel-control .icon-next, .carousel-control .glyphicon-chevron-right {
+    right: 16px !important;
+}
+.carousel-indicators {
+    bottom: 0 !important;
 }

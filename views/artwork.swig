@@ -20,8 +20,38 @@
                 {% endif %}
             </div>
             <div class="panel-body">
-                <div id="openseadragon-viewer"></div>
-                <div id="openseadragon-toolbar"></div>
+                {% set carouselId = artwork._id.replace("/", "-") %}
+                <div id="{{ carouselId }}" class="carousel" data-interval="0">
+                    <div class="carousel-inner" role="listbox">
+                    {% for image in artwork.images %}
+                        <div class="item{% if loop.first %} active{% endif %}">
+                            <a href="{{ image.getOriginalURL() }}">
+                                <img src="{{ image.getScaledURL() }}"
+                                    alt="{{ getTitle(artwork) }}"
+                                    title="{{ getTitle(artwork) }}"
+                                    class="img-responsive center-block"/>
+                            </a>
+                        </div>
+                    {% endfor %}
+                    </div>
+
+                    {% if artwork.images.length > 1 %}
+                    <ol class="carousel-indicators">
+                    {% for image in artwork.images %}
+                        <li data-target="#{{ carouselId }}" data-slide-to="{{ loop.index0 }}"{% if loop.first %} class="active"{% endif %}></li>
+                    {% endfor %}
+                    </ol>
+
+                    <a class="left carousel-control" href="#{{ carouselId }}" role="button" data-slide="prev">
+                        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                        <span class="sr-only">{{ gettext("Previous") }}</span>
+                    </a>
+                    <a class="right carousel-control" href="#{{ carouselId }}" role="button" data-slide="next">
+                        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                        <span class="sr-only">{{ gettext("Next") }}</span>
+                    </a>
+                    {% endif %}
+                </div>
             </div>
         </div>
 
@@ -204,11 +234,12 @@
     </div>
     {% endif %}
 </div>
-{{ CDN('/js/openseadragon.min.js') }}
+{% endblock %}
+
+{% block script %}
 <script>
-(function() {
-    "use strict";
-    OpenSeadragon({{ viewerOptions|json|safe }});
-})();
+$(function() {
+    $(".carousel").carousel();
+});
 </script>
 {% endblock %}
