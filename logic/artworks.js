@@ -1,5 +1,7 @@
 "use strict";
 
+const async = require("async");
+
 module.exports = function(core, app) {
     const Artwork = core.models.Artwork;
     const Source = core.models.Source;
@@ -41,6 +43,7 @@ module.exports = function(core, app) {
         },
 
         show(req, res, next) {
+            const compare = ("compare" in req.query);
             const id = `${req.params.source}/${req.params.artworkName}`;
 
             Artwork.findById(id)
@@ -53,30 +56,32 @@ module.exports = function(core, app) {
                         });
                     }
 
-                    const viewerOptions = {
-                        // TODO(jeresig): Prefix this with the right CDN URL
-                        prefixUrl: "/images/openseadragon/",
-                        id: "openseadragon-viewer",
-                        toolbar: "openseadragon-toolbar",
-                        autoHideControls: true,
-                        sequenceMode: true,
-                        showReferenceStrip: artwork.images.length > 1,
-                        referenceStripScroll: "horizontal",
-                        tileSources: artwork.images.map((image) => ({
-                            type: "image",
-                            url: image.getOriginalURL(),
-                        })),
-                    };
+                    const title = artwork.getTitle(req.lang);
 
                     // Sort the similar artworks by score
                     artwork.similarArtworks = artwork.similarArtworks
                         .sort((a, b) => b.score - a.score);
 
-                    res.render("artwork", {
-                        title: artwork.getTitle(req.lang),
-                        artwork: artwork,
-                        viewerOptions,
-                    });
+                    if (compare) {
+                        async.eachLimit(artwork.similarArtworks, 4,
+                            (similar, callback) => {
+                                similar.artwork.populate("images", callback);
+                            }, () => {
+                                res.render("artwork", {
+                                    title,
+                                    noIndex: true,
+                                    artworks: [artwork]
+                                        .concat(artwork.similarArtworks
+                                            .map((similar) => similar.artwork)),
+                                });
+                            });
+                    } else {
+                        res.render("artwork", {
+                            title,
+                            artworks: [artwork],
+                            similar: artwork.similarArtworks,
+                        });
+                    }
                 });
         },
 

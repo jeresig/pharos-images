@@ -8,12 +8,12 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2016-02-13 21:57+0000\n"
+"POT-Creation-Date: 2016-02-14 04:16+0000\n"
 
 #: logic/admin.js:24
 #: logic/admin.js:59
 #: logic/admin.js:113
-#: logic/artworks.js:34
+#: logic/artworks.js:36
 msgid "Source not found."
 msgstr ""
 
@@ -45,11 +45,11 @@ msgstr ""
 msgid "Error saving data file."
 msgstr ""
 
-#: logic/artworks.js:19
+#: logic/artworks.js:21
 msgid "Type not found."
 msgstr ""
 
-#: logic/artworks.js:52
+#: logic/artworks.js:55
 msgid "Artwork not found."
 msgstr ""
 
@@ -261,43 +261,42 @@ msgid "Location"
 msgstr ""
 
 #: views/artwork.swig:10
-msgid "Details &amp;&nbsp;Prices"
-msgstr ""
-
-#: views/artwork.swig:11
 msgid "Details"
 msgstr ""
 
-#: views/artwork.swig:12
+#: views/artwork.swig:11
 msgid "Unfortunately the source of this artwork no longer exists."
 msgstr ""
 
-#: views/artwork.swig:13
+#: views/artwork.swig:12
 msgid ""
 "There is no way to link to this artwork on the source site. Please visit "
 "the source and search for the artwork there."
 msgstr ""
 
-#: views/artwork.swig:14
+#: views/artwork.swig:13
 msgid "More information..."
 msgstr ""
 
-#: views/artwork.swig:15
-#: views/artwork.swig:16
+#: views/artwork.swig:14
 #: views/search.swig:14
 msgid "Source"
 msgstr ""
 
-#: views/artwork.swig:17
+#: views/artwork.swig:15
 msgid "Browse all %(count)s artworks..."
 msgstr ""
 
-#: views/artwork.swig:18
+#: views/artwork.swig:16
+msgid "Compare Artworks"
+msgstr ""
+
+#: views/artwork.swig:17
 #: views/upload.swig:2
 msgid "Similar Artworks"
 msgstr ""
 
-#: views/artwork.swig:19
+#: views/artwork.swig:18
 #: views/upload.swig:4
 msgid "Score: %(score)s"
 msgstr ""

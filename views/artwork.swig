@@ -3,11 +3,14 @@
 {% block title %}{{ artwork.title }}{% endblock %}
 
 {% block content %}
-{% set hasSimilar = artwork.similarArtworks.length > 0 %}
 <div id="result" class="row">
-    <div class="{% if hasSimilar %}col-md-9{% else %}col-md-12{% endif %} imageholder">
-        <div class="panel panel-default">
-            <div class="panel-heading">
+    <div class="{% if similar.length > 0 %}col-md-9{% else %}col-md-12{% endif %} imageholder">
+        <div class="responsive-table">
+        <table class="table table-hover">
+        <tr>
+            <th></th>
+            {% for artwork in artworks %}
+            <th class="col-xs-{{ Math.max(Math.round(12 / artworks.length), 3) }}">
                 {% if artwork.title %}
                     <h1 class="panel-title">
                         {% if artwork.objectType %}
@@ -18,8 +21,13 @@
                 {% elif artwork.objectType %}
                     <h1 class="panel-title">{{ getType(artwork) }}</h1>
                 {% endif %}
-            </div>
-            <div class="panel-body">
+            </th>
+            {% endfor %}
+        </tr>
+        <tr>
+            <td></td>
+            {% for artwork in artworks %}
+            <td>
                 {% set carouselId = artwork._id.replace("/", "-") %}
                 <div id="{{ carouselId }}" class="carousel" data-interval="0">
                     <div class="carousel-inner" role="listbox">
@@ -52,15 +60,14 @@
                     </a>
                     {% endif %}
                 </div>
-            </div>
-        </div>
+            </td>
+            {% endfor %}
+        </tr>
 
-        <div class="responsive-table">
-        <table class="table">
-
-        {% if artwork.artists %}
+        {% if compare || artworks[0].artists %}
         <tr>
             <th class="text-right">{{ gettext("Artist") }}</th>
+            {% for artwork in artworks %}
             <td>
             {% for name in artwork.artists %}
                 {% if name.artist %}
@@ -77,63 +84,75 @@
                 {% endif %}<br/>
             {% endfor %}
             </td>
+            {% endfor %}
         </tr>
         {% endif %}
 
-        {% if artwork.date %}
+        {% if compare || artworks[0].date %}
             <tr>
                 <th class="text-right">{{ gettext("Date") }}</th>
+                {% for artwork in artworks %}
                 <td>
                     <a href="{{ searchURL({dateStart: artwork.date.start, dateEnd: artwork.date.end}) }}">
                         {{ getDate(artwork.date) }}
                     </a>
                 </td>
+                {% endfor %}
             </tr>
         {% endif %}
 
-        {% if artwork.objectType %}
+        {% if compare || artworks[0].objectType %}
             <tr>
                 <th class="text-right">{{ gettext("Type") }}</th>
+                {% for artwork in artworks %}
                 <td>
                     <a href="{{ searchURL({type: artwork.objectType}) }}">
                         {{ getType(artwork) }}
                     </a>
                 </td>
+                {% endfor %}
             </tr>
         {% endif %}
 
-        {% if artwork.medium %}
+        {% if compare || artworks[0].medium %}
             <tr>
                 <th class="text-right">{{ gettext("Medium") }}</th>
+                {% for artwork in artworks %}
                 <td>{{ artwork.medium }}</td>
+                {% endfor %}
             </tr>
         {% endif %}
 
-        {% if artwork.dimensions.length > 0 %}
+        {% if compare || artworks[0].dimensions.length > 0 %}
             <tr>
                 <th class="text-right">{{ gettext("Dimensions") }}</th>
+                {% for artwork in artworks %}
                 <td>
                     {% for dimension in artwork.dimensions %}
                         {{ getDimension(dimension) }}<br/>
                     {% endfor %}
                 </td>
+                {% endfor %}
             </tr>
         {% endif %}
 
-        {% if artwork.categories.length > 0 %}
+        {% if compare || artworks[0].categories.length > 0 %}
             <tr>
                 <th class="text-right">{{ gettext("Categories") }}</th>
+                {% for artwork in artworks %}
                 <td>
                     {% for category in artwork.categories %}
                         <a href="{{ searchURL({filter: category}) }}">{{ category }}</a>{% if !loop.last %}, {% endif %}
                     {% endfor %}
                 </td>
+                {% endfor %}
             </tr>
         {% endif %}
 
-        {% if artwork.locations.length > 0 && artwork.locations[0].name %}
+        {% if compare || artworks[0].locations.length > 0 && artworks[0].locations[0].name %}
             <tr>
                 <th class="text-right">{{ gettext("Location") }}</th>
+                {% for artwork in artworks %}
                 <td>
                     {% for location in artwork.locations %}
                         <a href="{{ searchURL({location: location.name}) }}">{{ location.name }}</a><br/>
@@ -142,18 +161,16 @@
                         {% endif %}
                     {% endfor %}
                 </td>
+                {% endfor %}
             </tr>
         {% endif %}
 
-        {% if artwork.url %}
+        {% if compare || artworks[0].url %}
             <tr>
                 <th class="text-right">
-                    {% if artwork.getSource().commercial %}
-                        <small>{{ gettext("Details &amp;&nbsp;Prices") }}</small>
-                    {% else %}
-                        {{ gettext("Details") }}
-                    {% endif %}
+                    {{ gettext("Details") }}
                 </th>
+                {% for artwork in artworks %}
                 <td>
                     {% if artwork.getSource().inactive %}
                         <small>{{ gettext("Unfortunately the source of this artwork no longer exists.") }}</small>
@@ -168,23 +185,23 @@
                             {{ gettext("More information...") }}</a>
                     {% endif %}
                 </td>
+                {% endfor %}
             </tr>
         {% endif %}
 
-        {% if artwork.getSource().inactive %}
-            <tr>
-                <th class="text-right">{{ gettext("Source") }}</th>
-                <td>
-                    <a href="{{ URL(artwork.getSource()) }}"
-                        title="{{ fullName(artwork.getSource()) }}">
-                        {{ fullName(artwork.getSource()) }}
-                    </a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <th class="text-right">{{ gettext("Source") }}</th>
-                <td><a href="{{ artwork.getSource().url }}">
+        <tr>
+            <th class="text-right">{{ gettext("Source") }}</th>
+            {% for artwork in artworks %}
+            {% if artwork.getSource().inactive %}
+            <td>
+                <a href="{{ URL(artwork.getSource()) }}"
+                    title="{{ fullName(artwork.getSource()) }}">
+                    {{ fullName(artwork.getSource()) }}
+                </a>
+            </td>
+            {% else %}
+            <td>
+                <a href="{{ artwork.getSource().url }}">
                     {% if artwork.getSource().linkText %}
                         {{ artwork.getSource().linkText }}
                     {% else %}
@@ -193,21 +210,26 @@
                 </a><br/>
                 <small><a href="{{ URL(artwork.getSource()) }}"
                     title="{{ fullName(artwork.getSource()) }}">
-                    {{ format(gettext("Browse all %(count)s artworks..."), {count: stringNum(artwork.getSource().numArtworks)}) }}</a></small></td>
-            </tr>
-        {% endif %}
-
+                    {{ format(gettext("Browse all %(count)s artworks..."), {count: stringNum(artwork.getSource().numArtworks)}) }}</a></small>
+            </td>
+            {% endif %}
+            {% endfor %}
+        </tr>
         </table>
         </div>
     </div>
-    {% if hasSimilar %}
+    {% if similar.length > 0 %}
     <div class="col-md-3">
+        <a href="?compare" class="btn btn-success btn-block" style="margin-bottom: 20px;">
+            {{ gettext("Compare Artworks") }}
+        </a>
+
         <div class="panel panel-default">
             <div class="panel-heading">
                 {{ gettext("Similar Artworks") }}
             </div>
             <div class="panel-body row">
-                {% for match in artwork.similarArtworks %}
+                {% for match in similar %}
                     {% if match.artwork %}
                     <div class="img col-md-12 col-xs-6 col-sm-4">
                         <a href="{{ URL(match.artwork) }}">
