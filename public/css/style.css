@@ -150,3 +150,17 @@
 .carousel-indicators {
     bottom: 0 !important;
 }
+
+/*
+ * Styling for the metadata view.
+ */
+
+.table > tbody > tr.plain > th,
+.table > tbody > tr.plain > td {
+    border-top: none;
+}
+
+.table > tbody > tr.plain:hover > th,
+.table > tbody > tr.plain:hover > td {
+    background: #fff;
+}

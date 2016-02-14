@@ -7,24 +7,25 @@
     <div class="{% if similar.length > 0 %}col-md-9{% else %}col-md-12{% endif %} imageholder">
         <div class="responsive-table">
         <table class="table table-hover">
-        <tr>
+        <tr class="plain">
             <th></th>
             {% for artwork in artworks %}
-            <th class="col-xs-{{ Math.max(Math.round(12 / artworks.length), 3) }}">
+            <th class="col-xs-{{ Math.max(Math.round(12 / artworks.length), 3) }} text-center">
+                <h1 class="panel-title">
                 {% if artwork.title %}
-                    <h1 class="panel-title">
-                        {% if artwork.objectType %}
-                            {{ getType(artwork) }}:
-                        {% endif %}
-                        {{ artwork.title }}
-                    </h1>
+                    {% if artwork.objectType %}
+                        {{ getType(artwork) }}:
+                    {% endif %}
+                    {{ artwork.title }}
                 {% elif artwork.objectType %}
-                    <h1 class="panel-title">{{ getType(artwork) }}</h1>
+                    {{ getType(artwork) }}
                 {% endif %}
+                </h1>
             </th>
             {% endfor %}
         </tr>
-        <tr>
+
+        <tr class="plain">
             <td></td>
             {% for artwork in artworks %}
             <td>
