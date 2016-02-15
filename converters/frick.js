@@ -15,6 +15,10 @@ const types = {
 };
 
 module.exports = {
+    files: [
+        "A UTF-8 encoded tab-separated values file (.tsv).",
+    ],
+
     propMap: {
         id: "bibRecordNumberLong",
         url: [

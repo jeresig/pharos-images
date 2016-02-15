@@ -28,22 +28,23 @@
     </li>
 </ul>
 
-<h2>{{ gettext("Upload Images") }}</h2>
-
 <div class="panel panel-default">
     <div class="panel-heading">
-        <h3 class="panel-title">{{ gettext("Upload a Zip File of Images") }}</h3>
+        <h3 class="panel-title">{{ gettext("Upload Images") }}</h3>
     </div>
     <div class="panel-body">
         <form action="/source/{{source._id}}/upload-images" method="POST" enctype="multipart/form-data">
             {% if qsLocale() %}
                 <input type="hidden" name="lang" value="{{ lang }}"/>
             {% endif %}
+
+            <p>{{ gettext("Upload a Zip file (.zip) of JPG images (.jpg or .jpeg). Names of images should match names provided in the artwork metadata.") }}</p>
+
             <div class="form-inline">
                 <div class="form-group">
                     <input type="file" name="zipFiled" class="form-control" />
                 </div>
-                <input type="submit" value="{{ gettext("Upload Zip File") }}" class="btn btn-primary" />
+                <input type="submit" value="{{ gettext("Upload") }}" class="btn btn-primary" />
             </div>
         </form>
     </div>
@@ -63,7 +64,7 @@
     {% for batch in imageImport %}
     <tr>
         <td>{{ batch.fileName }}</td>
-        <td>{{ batch.modified }}</td>
+        <td>{{ prettyDate(batch.modified) }}</td>
         {% if batch.state === "error" %}
         <td colspan="4">
             {{ format(gettext("Error: %(error)s"), {error: batch.error}) }}
@@ -81,22 +82,31 @@
 </div>
 {% endif %}
 
-<h2>{{ gettext("Upload Artwork Metadata") }}</h2>
-
 <div class="panel panel-default">
     <div class="panel-heading">
-        <h3 class="panel-title">{{ gettext("Upload a JSON Data File") }}</h3>
+        <h3 class="panel-title">{{ gettext("Upload Artwork Metadata") }}</h3>
     </div>
     <div class="panel-body">
         <form action="/source/{{source._id}}/upload-data" method="POST" enctype="multipart/form-data">
             {% if qsLocale() %}
                 <input type="hidden" name="lang" value="{{ lang }}"/>
             {% endif %}
+
+            <p>
+            {% if customFiles %}
+                {% for fileType in customFiles %}
+                    {{ fileType }}
+                {% endfor %}
+            {% else %}
+            {{ gettext("Upload a JSON file (.json) containing artwork metadata.") }} <a href="">{{ gettext("JSON artwork metadata documentation.") }}</a>
+            {% endif %}
+            </p>
+
             <div class="form-inline">
                 <div class="form-group">
                     <input type="file" name="dataField" class="form-control" />
                 </div>
-                <input type="submit" value="{{ gettext("Upload JSON File") }}" class="btn btn-primary" />
+                <input type="submit" value="{{ gettext("Upload") }}" class="btn btn-primary" />
             </div>
         </form>
     </div>
