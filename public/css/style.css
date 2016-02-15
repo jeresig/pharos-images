@@ -139,13 +139,16 @@
 
 .carousel-control {
     background: rgba(0, 0, 0, 0.5) !important;
-    width: 50px !important;
+    max-width: 50px !important;
+    width: 10% !important;
 }
 .carousel-control .icon-prev, .carousel-control .glyphicon-chevron-left {
-    left: 16px !important;
+    left: 0 !important;
+    width: 100% !important;
 }
 .carousel-control .icon-next, .carousel-control .glyphicon-chevron-right {
-    right: 16px !important;
+    right: 0 !important;
+    width: 100% !important;
 }
 .carousel-indicators {
     bottom: 0 !important;

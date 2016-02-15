@@ -94,9 +94,11 @@
                 <th class="text-right">{{ gettext("Date") }}</th>
                 {% for artwork in artworks %}
                 <td>
+                    {% if artwork.date %}
                     <a href="{{ searchURL({dateStart: artwork.date.start, dateEnd: artwork.date.end}) }}">
                         {{ getDate(artwork.date) }}
                     </a>
+                    {% endif %}
                 </td>
                 {% endfor %}
             </tr>
@@ -107,9 +109,11 @@
                 <th class="text-right">{{ gettext("Type") }}</th>
                 {% for artwork in artworks %}
                 <td>
+                    {% if artwork.objectType %}
                     <a href="{{ searchURL({type: artwork.objectType}) }}">
                         {{ getType(artwork) }}
                     </a>
+                    {% endif %}
                 </td>
                 {% endfor %}
             </tr>

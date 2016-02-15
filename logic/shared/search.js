@@ -55,7 +55,9 @@ module.exports = (core, app) => {
         }, (err, results) => {
             if (err) {
                 console.error(err);
-                return res.render("500");
+                return res.status(500).render("error", {
+                    title: err.message,
+                });
             }
 
             // Expose the query object to the templates and to the

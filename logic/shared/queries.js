@@ -203,7 +203,7 @@ module.exports = (core, app) => ({
             req.gettext("Artist: %(artist)s"), {artist: query.artist}),
         match: (query) => ({
             multi_match: {
-                fields: ["artists.*"],
+                fields: ["artists.name"],
                 query: query.artist,
                 operator: "and",
                 zero_terms_query: "all",

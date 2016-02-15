@@ -71,7 +71,7 @@
         </td>
         {% else %}
         {% set results = batch.getFilteredResults() %}
-        <td>{{ batch.state }}</td>
+        <td>{{ batchState(batch) }}</td>
         <td>{{ results.models.length }}</td>
         <td>{{ results.errors.length }}</td>
         <td>{{ results.warnings.length }}</td>
