@@ -1,5 +1,6 @@
 "use strict";
 
+const iconv = require("iconv-lite");
 const csv = require("csv-streamify");
 
 const types = {
@@ -35,13 +36,15 @@ const propMap = {
 
             } else if (data.WorkDate_display) {
                 return [data.WorkDate_display];
+            } else if (data.Creator_datesDisplay) {
+                return [data.Creator_datesDisplay];
             }
 
-            return [data.Creator_datesDisplay];
+            return [];
         },
     ],
     categories: ["WorkSubject_classSubj", (subject) => {
-        return [subject];
+        return subject ? [subject] : [];
     }],
     medium: "WorkMaterial_display",
     objectType: [
@@ -49,15 +52,12 @@ const propMap = {
         (type) => (type in types ? types[type] : type),
     ],
     artists: ["Creator", (name) => {
-        return [{name}];
+        return name ? [{name}] : [];
     }],
     dimensions: [
         "WorkMeasurements_display",
         (measurement, data) => {
-            if (measurement) {
-                return [measurement];
-            }
-            return [];
+            return measurement ? [measurement] : [];
         },
     ],
     locations: ["Collection", (name, data) => {
@@ -132,28 +132,35 @@ const cluster = function(rows, id, toCluster) {
     }).filter((row) => !!row);
 };
 
-// "A UTF-8 encoded tab-separated values file (.tsv)."
-module.exports = function(fileStreams, callback) {
-    const results = [];
+module.exports = {
+    files: [
+        "A tab-separated values file (.tsv).",
+    ],
 
-    fileStreams[0]
-        .pipe(csv({
-            objectMode: true,
-            delimiter: "\t",
-            newline: "\n",
-            columns: true,
-        }))
-        .on("data", (data) => {
-            if (data.bibRecordNumberLong) {
-                const result = searchByProps(data, propMap);
-                if (result.id) {
-                    result.lang = "en";
-                    results.push(result);
+    process(fileStreams, callback) {
+        const results = [];
+
+        fileStreams[0]
+            .pipe(iconv.decodeStream("macintosh"))
+            .pipe(iconv.encodeStream("utf8"))
+            .pipe(csv({
+                objectMode: true,
+                delimiter: "\t",
+                newline: "\n",
+                columns: true,
+            }))
+            .on("data", (data) => {
+                if (data.bibRecordNumberLong) {
+                    const result = searchByProps(data, propMap);
+                    if (result.id) {
+                        result.lang = "en";
+                        results.push(result);
+                    }
                 }
-            }
-        })
-        .on("error", callback)
-        .on("end", () => {
-            callback(null, cluster(results, "id", ["images"]));
-        });
+            })
+            .on("error", callback)
+            .on("end", () => {
+                callback(null, cluster(results, "id", ["images"]));
+            });
+    },
 };

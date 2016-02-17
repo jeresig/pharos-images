@@ -181,35 +181,42 @@ const parseRecord = function(record) {
     return result;
 };
 
-module.exports = function(fileStreams, callback) {
-    const bibStream = fileStreams[0];
-    const holdingStream = fileStreams[1];
+module.exports = {
+    files: [
+        "A *bibs.mrc MARC file.",
+        "A *holdings.mrc MARC file.",
+    ],
 
-    const bibs = {};
-    const bibReader = new marc.getReader(bibStream, "iso2709");
+    process(fileStreams, callback) {
+        const bibStream = fileStreams[0];
+        const holdingStream = fileStreams[1];
 
-    bibReader.on("data", (record) => {
-        const result = parseRecord(record);
-        result.lang = "en";
-        result.images = [];
-        bibs[result.id] = result;
-    });
+        const bibs = {};
+        const bibReader = new marc.getReader(bibStream, "iso2709");
 
-    bibReader.on("error", callback);
-
-    bibReader.on("end", () => {
-        const holdingReader = new marc.getReader(holdingStream, "iso2709");
-
-        holdingReader.on("data", (record) => {
+        bibReader.on("data", (record) => {
             const result = parseRecord(record);
-
-            if (result.bibID in bibs) {
-                bibs[result.bibID].images.push(result.images);
-            }
+            result.lang = "en";
+            result.images = [];
+            bibs[result.id] = result;
         });
 
-        holdingReader.on("end", () => {
-            callback(null, Object.keys(bibs).map((id) => bibs[id]));
+        bibReader.on("error", callback);
+
+        bibReader.on("end", () => {
+            const holdingReader = new marc.getReader(holdingStream, "iso2709");
+
+            holdingReader.on("data", (record) => {
+                const result = parseRecord(record);
+
+                if (result.bibID in bibs) {
+                    bibs[result.bibID].images.push(result.images);
+                }
+            });
+
+            holdingReader.on("end", () => {
+                callback(null, Object.keys(bibs).map((id) => bibs[id]));
+            });
         });
-    });
+    },
 };

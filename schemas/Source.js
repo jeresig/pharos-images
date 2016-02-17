@@ -1,5 +1,8 @@
 "use strict";
 
+const fs = require("fs");
+const path = require("path");
+
 const async = require("async");
 
 module.exports = (core) => {
@@ -10,17 +13,8 @@ module.exports = (core) => {
         _id: String,
         url: String,
         name: String,
-        nameKanji: String,
         shortName: String,
-        shortKanji: String,
-        description: String,
-        location: String,
-        types: [String],
-        estNumArtworks: Number,
-        inactive: Boolean,
-        hideLinks: Boolean,
-        linkTitle: String,
-        linkText: String,
+        converter: String,
     });
 
     Source.methods = {
@@ -32,15 +26,29 @@ module.exports = (core) => {
             return core.urls.genLocalFile(this._id);
         },
 
-        getFullName: function(locale) {
-            return locale === "ja" && this.nameKanji || this.name;
+        getFullName() {
+            return this.name;
         },
 
-        getShortName: function(locale) {
-            return locale === "ja" && this.shortKanji || this.shortName;
+        getShortName() {
+            return this.shortName;
         },
 
-        cacheNumArtworks: function(callback) {
+        getConverter() {
+            const converter = this.converter || "default";
+            const converterPath = path.resolve(__dirname,
+                `../converters/${converter}.js`);
+
+            if (!fs.existsSync(converterPath)) {
+                throw new Error(
+                    `Error: Converter file not found: ${converterPath}`);
+            }
+
+            // Import the converter module
+            return require(converterPath);
+        },
+
+        cacheNumArtworks(callback) {
             Artwork.count({source: this._id}, (err, num) => {
                 this.numArtworks = num || 0;
                 callback(err);

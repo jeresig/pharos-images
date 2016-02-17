@@ -129,15 +129,21 @@ const searchByProps = function(root, propMap) {
     return results;
 };
 
-module.exports = function(fileStreams, callback) {
-    fileStreams[0].pipe(concat((fileData) => {
-        try {
-            const xmlDoc = libxmljs.parseXml(fileData.toString("utf8"));
-            const matches = xmlDoc.find("//SCHEDA")
-                .map((node) => searchByProps(node, propMap));
-            callback(null, matches);
-        } catch (e) {
-            callback(e);
-        }
-    }));
+module.exports = {
+    files: [
+        "An fzeri_OA_*.xml XML file.",
+    ],
+
+    process(fileStreams, callback) {
+        fileStreams[0].pipe(concat((fileData) => {
+            try {
+                const xmlDoc = libxmljs.parseXml(fileData.toString("utf8"));
+                const matches = xmlDoc.find("//SCHEDA")
+                    .map((node) => searchByProps(node, propMap));
+                callback(null, matches);
+            } catch (e) {
+                callback(e);
+            }
+        }));
+    },
 };

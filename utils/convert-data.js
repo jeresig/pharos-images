@@ -20,6 +20,7 @@ const args = argparser.parseArgs();
 const sources = require("../config/data.sources.json");
 
 core.init(() => {
+    const source = core.models.Source.getSource(args.source);
     const options = sources.find((item) => item.source === args.source);
 
     if (!options) {
@@ -27,16 +28,8 @@ core.init(() => {
         process.exit(0);
     }
 
-    const converterPath = path.resolve(__dirname,
-        `../converters/${options.converter}.js`);
-
-    if (!fs.existsSync(converterPath)) {
-        console.error(`Error: Converter file not found: ${converterPath}`);
-        process.exit(0);
-    }
-
     // Import the converter module
-    const converter = require(converterPath);
+    const converter = source.getConverter();
 
     options.dataFiles = options.dataFiles.map((file) =>
         path.resolve(__dirname, "..", file));
@@ -52,7 +45,7 @@ core.init(() => {
     const fileStreams = options.dataFiles.map(
         (file) => fs.createReadStream(file));
 
-    converter(fileStreams, (err, results) => {
+    converter.process(fileStreams, (err, results) => {
         if (err) {
             console.error(err);
         } else {
