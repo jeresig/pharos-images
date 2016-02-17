@@ -24,7 +24,7 @@
         "shortName": "NGA",
         "url": "https://library.nga.gov/",
         "source": "nga",
-        "converter": "marc",
+        "converter": "nga",
         "lang": "en",
         "dataFiles": [
             "sources/nga/pharos-ngabibs.mrc",

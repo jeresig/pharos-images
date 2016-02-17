@@ -33,6 +33,17 @@ module.exports = (core) => {
             id: "import.completed",
             name: (req) => req.gettext("Data imported."),
             advance(batch, callback) {
+                batch.updateSimilarity();
+            },
+        },
+        {
+            id: "similarity.sync.started",
+            name: (req) => req.gettext("Syncing similarity..."),
+        },
+        {
+            id: "similarity.sync.completed",
+            name: (req) => req.gettext("Similarity synced."),
+            advance(batch, callback) {
                 // NOTE(jeresig): Currently nothing needs to be done to finish
                 // up the import, other than moving it to the "completed" state.
                 process.nextTick(callback);
@@ -124,6 +135,17 @@ module.exports = (core) => {
                     process.nextTick(callback);
                 }
             }, callback);
+        },
+
+        updateSimilarity(callback) {
+            // Update the similarity on all artworks, including the ones that
+            // were just added.
+            Artwork.find({}, {}, {timeout: true}).stream()
+                .on("data", function(artwork) {
+                    this.pause();
+                    artwork.updateSimilarity(() => this.resume());
+                })
+                .on("close", callback);
         },
 
         abandon(callback) {

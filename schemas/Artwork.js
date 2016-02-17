@@ -7,7 +7,6 @@ module.exports = (core) => {
     const YearRange = require("./YearRange")(core);
     const Dimension = require("./Dimension")(core);
     const Location = require("./Location")(core);
-    const Image = require("./Image")(core);
 
     const Artwork = new core.db.schema({
         // UUID of the image (Format: SOURCE/ID)
@@ -300,7 +299,7 @@ module.exports = (core) => {
                 async.mapLimit(data.images || [], 2, (fileName, callback) => {
                     const _id = `${data.source}/${fileName}`;
 
-                    Image.findById(_id, (err, image) => {
+                    core.models.Image.findById(_id, (err, image) => {
                         if (err) {
                             return callback(err);
                         }
