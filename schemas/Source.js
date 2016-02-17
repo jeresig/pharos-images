@@ -48,6 +48,14 @@ module.exports = (core) => {
             return require(converterPath);
         },
 
+        getExpectedFiles() {
+            return this.getConverter().files;
+        },
+
+        processFiles(files, callback) {
+            this.getConverter().process(files, callback);
+        },
+
         cacheNumArtworks(callback) {
             Artwork.count({source: this._id}, (err, num) => {
                 this.numArtworks = num || 0;

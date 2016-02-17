@@ -92,22 +92,18 @@
                 <input type="hidden" name="lang" value="{{ lang }}"/>
             {% endif %}
 
-            <p>
-            {% if customFiles %}
-                {% for fileType in customFiles %}
-                    {{ fileType }}
-                {% endfor %}
-            {% else %}
-            {{ gettext("Upload a JSON file (.json) containing artwork metadata.") }} <a href="">{{ gettext("JSON artwork metadata documentation.") }}</a>
-            {% endif %}
-            </p>
+            {% for file in source.getExpectedFiles() %}
+                <p>{{ file }}</p>
 
-            <div class="form-inline">
-                <div class="form-group">
-                    <input type="file" name="dataField" class="form-control" />
+                <div class="form-inline">
+                    <div class="form-group">
+                        <input type="file" name="files" class="form-control" />
+                    </div>
+                    {% if loop.last %}
+                    <input type="submit" value="{{ gettext("Upload") }}" class="btn btn-primary" />
+                    {% endif %}
                 </div>
-                <input type="submit" value="{{ gettext("Upload") }}" class="btn btn-primary" />
-            </div>
+            {% endfor %}
         </form>
     </div>
 </div>

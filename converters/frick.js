@@ -8,7 +8,6 @@ const types = {
     "0": undefined,
     "detached fresco": "fresco",
     "detached mosaic": "mosaic",
-    "miniature": "painting",
 };
 
 const propMap = {

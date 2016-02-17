@@ -3,7 +3,6 @@
 const fs = require("fs");
 
 const formidable = require("formidable");
-const JSONStream = require("JSONStream");
 const moment = require("moment");
 
 module.exports = function(core, app) {
@@ -103,10 +102,10 @@ module.exports = function(core, app) {
 
         uploadData(req, res, next) {
             // TODO(jeresig): Only allow certain users to upload batches
-            const source = req.params.source;
+            let source;
 
             try {
-                Source.getSource(source);
+                source = Source.getSource(source);
 
             } catch (e) {
                 return res.status(404).render("error", {
@@ -116,60 +115,56 @@ module.exports = function(core, app) {
 
             const form = new formidable.IncomingForm();
             form.encoding = "utf-8";
+            form.multiples = true;
             form.maxFieldsSize = process.env.MAX_UPLOAD_SIZE;
 
             form.parse(req, (err, fields, files) => {
                 if (err) {
                     return next(new Error(
-                        req.gettext("Error processing data file.")));
+                        req.gettext("Error processing data files.")));
                 }
 
-                const dataField = files && files.dataField;
+                const inputFiles = (files.files || [])
+                    .filter((file) => file.path && file.size > 0);
 
-                if (!dataField || !dataField.path || dataField.size === 0) {
+                if (inputFiles.length === 0) {
                     return next(
-                        new Error(req.gettext("No data file specified.")));
+                        new Error(req.gettext("No data files specified.")));
                 }
 
-                const dataFile = dataField.path;
-                const fileName = dataField.name;
-                const results = [];
+                const fileName = inputFiles
+                    .map((file) => file.name).join(", ");
+                const inputStreams = inputFiles
+                    .map((file) => fs.createReadStream(file.path));
 
-                fs.createReadStream(dataFile)
-                    .pipe(JSONStream.parse("*"))
-                    .on("data", (data) => {
-                        results.push({
+                source.process(inputStreams, (err, results) => {
+                    if (err) {
+                        return next(err);
+                    }
+
+                    const batch = new ArtworkImport({
+                        source: source._id,
+                        fileName,
+                        results: results.map((data) => ({
                             data,
                             result: "unknown",
-                        });
-                    })
-                    .on("error", (err) => {
-                        this.destroy();
-                        // TODO(jeresig): Transmit useful error message back
-                        console.error(err);
-                        next(new Error("Error reading data from the file."));
-                    })
-                    .on("end", () => {
-                        const batch = new ArtworkImport({
-                            source,
-                            fileName,
-                            results,
-                            state: "started",
-                        });
-
-                        batch.save((err) => {
-                            if (err) {
-                                console.error(err);
-                                return next(new Error(
-                                    req.gettext("Error saving data file.")));
-                            }
-
-                            // TODO: Come up with a beter redirect
-                            // TODO: Display a message stating that the upload
-                            // was successful.
-                            res.redirect(`/source/${source}/admin`);
-                        });
+                        })),
+                        state: "started",
                     });
+
+                    batch.save((err) => {
+                        if (err) {
+                            console.error(err);
+                            return next(new Error(
+                                req.gettext("Error saving data file.")));
+                        }
+
+                        // TODO: Come up with a beter redirect
+                        // TODO: Display a message stating that the upload
+                        // was successful.
+                        res.redirect(`/source/${source._id}/admin`);
+                    });
+                });
             });
         },
 
