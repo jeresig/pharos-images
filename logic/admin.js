@@ -105,7 +105,7 @@ module.exports = function(core, app) {
             let source;
 
             try {
-                source = Source.getSource(source);
+                source = Source.getSource(req.params.source);
 
             } catch (e) {
                 return res.status(404).render("error", {
@@ -124,7 +124,9 @@ module.exports = function(core, app) {
                         req.gettext("Error processing data files.")));
                 }
 
-                const inputFiles = (files.files || [])
+                const inputFiles = (Array.isArray(files.files) ?
+                    files.files :
+                    files.files ? [files.files] : [])
                     .filter((file) => file.path && file.size > 0);
 
                 if (inputFiles.length === 0) {
@@ -137,7 +139,7 @@ module.exports = function(core, app) {
                 const inputStreams = inputFiles
                     .map((file) => fs.createReadStream(file.path));
 
-                source.process(inputStreams, (err, results) => {
+                source.processFiles(inputStreams, (err, results) => {
                     if (err) {
                         return next(err);
                     }

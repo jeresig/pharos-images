@@ -45,7 +45,7 @@ core.init(() => {
     const fileStreams = options.dataFiles.map(
         (file) => fs.createReadStream(file));
 
-    converter.process(fileStreams, (err, results) => {
+    converter.processFiles(fileStreams, (err, results) => {
         if (err) {
             console.error(err);
         } else {

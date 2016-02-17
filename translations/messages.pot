@@ -8,7 +8,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2016-02-17 18:29+0000\n"
+"POT-Creation-Date: 2016-02-17 18:45+0000\n"
 
 #: logic/admin.js:23
 #: logic/admin.js:58
@@ -37,11 +37,11 @@ msgstr ""
 msgid "Error processing data files."
 msgstr ""
 
-#: logic/admin.js:132
+#: logic/admin.js:134
 msgid "No data files specified."
 msgstr ""
 
-#: logic/admin.js:159
+#: logic/admin.js:161
 msgid "Error saving data file."
 msgstr ""
 
