@@ -2,6 +2,9 @@
 
 const path = require("path");
 
+// How often images similarity should be checked for updates
+const UPDATE_SIMILARITY_RATE = 5000;
+
 module.exports = (core) => {
     const Source = core.models.Source;
 
@@ -66,6 +69,12 @@ module.exports = (core) => {
             type: Number,
             required: true,
             min: 1,
+        },
+
+        // Keep track of if the image needs to update its image similarity
+        needsSimilarUpdate: {
+            type: Boolean,
+            default: false,
         },
 
         // Similar images (as determined by image similarity)
@@ -234,7 +243,41 @@ module.exports = (core) => {
                 });
             });
         },
+
+        updateSimilarity(callback) {
+            core.models.Image
+                .find({needsSimilarUpdate: true}, {}, {timeout: true})
+                .stream()
+                .on("data", function(image) {
+                    this.pause();
+
+                    console.log("Updating Similarity", image._id);
+
+                    image.updateSimilarity((err) => {
+                        if (err) {
+                            console.error(err);
+                            return this.resume();
+                        }
+
+                        image.needsSimilarUpdate = false;
+                        image.save(() => this.resume());
+                    });
+                })
+                .on("close", callback);
+        },
+
+        watchUpdateSimilarity() {
+            const update = () => this.updateSimilarity(() =>
+                setTimeout(update, UPDATE_SIMILARITY_RATE));
+
+            update();
+        },
     };
+
+    Image.pre("save", function(next) {
+        // Always updated the modified time on every save
+        this.modified = new Date();
+    });
 
     return Image;
 };

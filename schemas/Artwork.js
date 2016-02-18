@@ -346,5 +346,10 @@ module.exports = (core) => {
         },
     };
 
+    Artwork.pre("save", function(next) {
+        // Always updated the modified time on every save
+        this.modified = new Date();
+    });
+
     return Artwork;
 };

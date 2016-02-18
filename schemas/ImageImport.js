@@ -183,8 +183,6 @@ module.exports = (core) => {
         },
 
         syncSimilarity(callback) {
-            // TODO(jeresig): Sync similarity to the other images that are
-            // "linked" to in the similarity results.
             async.eachLimit(this.results, 1, (result, callback) => {
                 if (result.model &&
                         result.state === "similarity.sync.started") {
@@ -200,7 +198,15 @@ module.exports = (core) => {
                 } else {
                     callback();
                 }
-            }, callback);
+            }, () => {
+                // Kick off updating the similarity of all the other images
+                // in the backgroudn.
+                Image.update(
+                    {batch: {$ne: this._id}},
+                    {needsUpdateSimilarity: true},
+                    callback
+                );
+            });
         },
 
         getFilteredResults() {
