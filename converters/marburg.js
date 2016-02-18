@@ -4,7 +4,7 @@ const concat = require("concat-stream");
 const libxmljs = require("libxmljs");
 
 const types = {
-    "dipinto": "painting",
+    "Gemälde": "painting",
     "grafica": "print",
     "mosaico": "mosaic",
     "scultura/ arti applicate": "decorative arts",
@@ -15,71 +15,53 @@ const types = {
 };
 
 const propMap = {
-    id: "SERCD",
-    url: [
-        "SERCD",
-        (val) => `http://catalogo.fondazionezeri.unibo.it/scheda.jsp?` +
-            `decorator=layout_S2&apply=true&tipo_scheda=OA&id=${val}`,
-    ],
-    title: "SGTI",
-    dates: ["DTSI", (start, getByTagName) => {
-        if (start) {
-            return [{
-                label: getByTagName("DTZG"),
-                start: parseFloat(start),
-                end: parseFloat(getByTagName("DTSF")),
-                circa: !!(getByTagName("DTSV") || getByTagName("DTSL")),
-            }];
-        }
-    }],
-    medium: "MTC",
-    objectType: [
-        "OGTT",
-        (val, getByTagName) => {
-            val = types[val] || val;
-            // Special-case frescos
-            if (val === "painting" &&
-                    /affresco/i.test(getByTagName("MTC"))) {
-                val = "fresco";
-            }
-            return val;
+    id: ["lidoRecID", (id) => id.replace(/^.*[/]/, "")],
+    url: "recordInfoLink",
+    title: "titleSet/appellationValue[@pref='preferred']",
+    // TODO: Find a better version of this
+    objectType: ["objectWorkType/term", (val) => types[val] || val],
+    dates: {
+        every: "eventDate/displayDate",
+        data: (value) => value.replace(/^um /, "ca "),
+    },
+    // NOTE(jeresig): There are multiple mediums represented, we don't have a
+    // good way to combine them.
+    medium: "termMaterialsTech//term",
+    dimensions: {
+        every: "measurementsSet",
+        data: (value, getByTagName) => {
+            return getByTagName("measurementValue") +
+                getByTagName("measurementUnit");
         },
-    ],
-    dimensions: [
-        "MISU",
-        (unit, getByTagName) => {
-            if (unit) {
-                return [`${getByTagName("MISA")}${unit} x ` +
-                    `${getByTagName("MISL")}${unit}`];
-            }
-        },
-    ],
-    locations: ["LDCN", (name, getByTagName) => {
-        if (name) {
-            return [{
-                name,
-                country: getByTagName("PVCS"),
-                city: getByTagName("PVCC"),
-            }];
-        }
-    }],
-    artists: {
-        every: "PARAGRAFO[@etichetta='AUTHOR']/RIPETIZIONE",
+    },
+    locations: {
+        every: "repositorySet",
         data: {
-            name: "AUTN",
-            pseudonym: "AUTP",
+            // TODO: Use "City" value for name if no name exists
+            name: "repositoryName/legalBodyName/appellationValue",
+            city: "repositoryLocation/namePlaceSet/appellationValue",
+            country: "partOfPlace[@politicalEntity='Staat']//appellationValue",
+        },
+    },
+    artists: {
+        every: "actorInRole",
+        data: {
+            name: "nameActorSet/appellationValue[@pref='preferred']",
         },
     },
     images: {
-        every: "FOTO",
-        data: (val) => val.replace(/^.*[/]/, ""),
+        every: "resourceRepresentation[@type='image_full']/linkResource",
+        data: (val) => `${val.replace(/^.*[/]/, "")}.jpg`,
+    },
+    categories: {
+        every: "subjectConcept/term[@pref='preferred']",
+        // TODO: Delete empty values
+        data: (val) => val,
     },
 };
 
 const searchByProps = function(root, propMap) {
-    const results = {
-        lang: "it",
-    };
+    const results = {};
 
     const getByTagName = (name) => {
         const node = root.get(`.//${name}`);
@@ -91,7 +73,7 @@ const searchByProps = function(root, propMap) {
     };
 
     if (typeof propMap === "function") {
-        return propMap(root.text());
+        return propMap(root.text(), getByTagName);
     }
 
     for (const propName in propMap) {
@@ -131,15 +113,20 @@ const searchByProps = function(root, propMap) {
 
 module.exports = {
     files: [
-        "An fzeri_OA_*.xml XML file.",
+        "A LIDO-formatted XML file.",
     ],
 
     processFiles(fileStreams, callback) {
         fileStreams[0].pipe(concat((fileData) => {
             try {
-                const xmlDoc = libxmljs.parseXml(fileData.toString("utf8"));
-                const matches = xmlDoc.find("//SCHEDA")
-                    .map((node) => searchByProps(node, propMap));
+                const xmlDoc = libxmljs.parseXml(
+                    fileData.toString("utf8").replace(/lido:/g, ""));
+                const matches = xmlDoc.find("//lido")
+                    .map((node) => searchByProps(node, propMap))
+                    .map((match) => {
+                        match.lang = "de";
+                        return match;
+                    });
                 callback(null, matches);
             } catch (e) {
                 callback(e);

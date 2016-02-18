@@ -6,7 +6,7 @@ module.exports = {
         "Upload a JSON file (.json) containing artwork metadata.",
     ],
 
-    process(files, callback) {
+    processFiles(files, callback) {
         const results = [];
 
         files[0]

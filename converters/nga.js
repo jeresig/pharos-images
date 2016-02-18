@@ -187,7 +187,7 @@ module.exports = {
         "A *holdings.mrc MARC file.",
     ],
 
-    process(fileStreams, callback) {
+    processFiles(fileStreams, callback) {
         const bibStream = fileStreams[0];
         const holdingStream = fileStreams[1];
 

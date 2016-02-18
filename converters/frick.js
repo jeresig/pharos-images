@@ -136,7 +136,7 @@ module.exports = {
         "A tab-separated values file (.tsv).",
     ],
 
-    process(fileStreams, callback) {
+    processFiles(fileStreams, callback) {
         const results = [];
 
         fileStreams[0]

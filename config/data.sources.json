@@ -31,5 +31,17 @@
             "sources/nga/pharos-ngaholdings.mrc"
         ],
         "imageDir": "sources/nga/images/"
+    },
+    {
+        "name": "Bildarchiv Foto Marburg",
+        "shortName": "Marburg",
+        "url": "http://www.bildindex.de/",
+        "source": "marburg",
+        "converter": "marburg",
+        "lang": "de",
+        "dataFiles": [
+            "sources/marburg/Pharos-OBJ-Metadata-LIDO.xml"
+        ],
+        "imageDir": "sources/marburg/images/"
     }
 ]
