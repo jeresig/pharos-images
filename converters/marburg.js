@@ -5,21 +5,29 @@ const libxmljs = require("libxmljs");
 
 const types = {
     "Gemälde": "painting",
-    "grafica": "print",
-    "mosaico": "mosaic",
-    "scultura/ arti applicate": "decorative arts",
-    "arti applicate": "decorative arts",
-    "scultura": "sculpture",
-    "dipinto/ scultura": "painting",
-    "disegno": "drawing",
+    "Malerei": "painting",
+    "Malerei?": "painting",
+    "Zeichenkunst": "drawing",
+    "Angewandte Kunst": "decorative arts",
+    "Skulptur": "sculpture",
+    "Architektur": "architecture",
+    "Altar": "sculpture",
 };
 
 const propMap = {
-    id: ["lidoRecID", (id) => id.replace(/^.*[/]/, "")],
+    id: ["recordInfoLink", (id) => id.replace(/^.*[/]obj/, "")],
     url: "recordInfoLink",
     title: "titleSet/appellationValue[@pref='preferred']",
-    // TODO: Find a better version of this
-    objectType: ["objectWorkType/term", (val) => types[val] || val],
+    objectType: [
+        "classification[@type='Gattung']/term[@addedSearchTerm='yes']",
+        (val, getByTagName) => {
+            val = val || getByTagName("classification/term") ||
+                getByTagName("objectWorkType/term[@addedSearchTerm='yes']") ||
+                getByTagName("objectWorkType/term");
+            // Return undefined for types that aren't found
+            return types[val];
+        },
+    ],
     dates: {
         every: "eventDate/displayDate",
         data: (value) => value.replace(/^um /, "ca "),
@@ -30,23 +38,48 @@ const propMap = {
     dimensions: {
         every: "measurementsSet",
         data: (value, getByTagName) => {
-            return getByTagName("measurementValue") +
-                getByTagName("measurementUnit");
+            return (getByTagName("measurementValue") +
+                getByTagName("measurementUnit")).replace(/,/g, ".");
         },
     },
     locations: {
         every: "repositorySet",
-        data: {
-            // TODO: Use "City" value for name if no name exists
-            name: "repositoryName/legalBodyName/appellationValue",
-            city: "repositoryLocation/namePlaceSet/appellationValue",
-            country: "partOfPlace[@politicalEntity='Staat']//appellationValue",
+        data: (val, getByTagName) => {
+            const city = getByTagName(
+                "repositoryLocation/namePlaceSet/appellationValue");
+            const name = getByTagName(
+                "repositoryName/legalBodyName/appellationValue") || city;
+            const country = getByTagName(
+                "partOfPlace[@politicalEntity='Staat']//appellationValue");
+            if (name || city || country) {
+                return {name, city, country};
+            }
         },
     },
     artists: {
-        every: "actorInRole",
-        data: {
-            name: "nameActorSet/appellationValue[@pref='preferred']",
+        every: "actorInRole/actor[@type='person']",
+        data: (val, getByTagName) => {
+            const name = getByTagName(
+                "nameActorSet/appellationValue[@pref='preferred']") ||
+                getByTagName("nameActorSet/appellationValue");
+            const pseudonym = getByTagName(
+                "nameActorSet/appellationValue[@pref='alternative']");
+            const startDate = getByTagName("vitalDatesActor/earliestDate");
+            const endDate = getByTagName("vitalDatesActor/latestDate");
+            let date;
+            if (startDate || endDate) {
+                date = {
+                    start: parseFloat(startDate) || undefined,
+                    end: parseFloat(endDate) || undefined,
+                };
+            }
+            if (name) {
+                return {
+                    name,
+                    pseudonym,
+                    date,
+                };
+            }
         },
     },
     images: {
@@ -55,7 +88,6 @@ const propMap = {
     },
     categories: {
         every: "subjectConcept/term[@pref='preferred']",
-        // TODO: Delete empty values
         data: (val) => val,
     },
 };
@@ -101,7 +133,8 @@ const searchByProps = function(root, propMap) {
             if (searchValue.every) {
                 const matches = root.find(`.//${searchValue.every}`);
                 results[propName] = matches.map(
-                    (node) => searchByProps(node, searchValue.data));
+                    (node) => searchByProps(node, searchValue.data))
+                    .filter((val) => !!val);
             } else {
                 results[propName] = searchByProps(root, searchValue);
             }
@@ -111,23 +144,44 @@ const searchByProps = function(root, propMap) {
     return results;
 };
 
+const combine = (root, match, props) => {
+    props.forEach((name) => {
+        root[name] = root[name].concat(match[name]);
+    });
+};
+
 module.exports = {
     files: [
         "A LIDO-formatted XML file.",
     ],
 
     processFiles(fileStreams, callback) {
+        const byId = {};
+
         fileStreams[0].pipe(concat((fileData) => {
             try {
                 const xmlDoc = libxmljs.parseXml(
                     fileData.toString("utf8").replace(/lido:/g, ""));
                 const matches = xmlDoc.find("//lido")
-                    .map((node) => searchByProps(node, propMap))
-                    .map((match) => {
-                        match.lang = "de";
-                        return match;
+                    .map((node) => searchByProps(node, propMap));
+
+                matches
+                    .forEach((match) => {
+                        if (match.id in byId) {
+                            if (match.images.length > 0) {
+                                combine(byId[match.id], match,
+                                    ["images", "dimensions", "categories"]);
+                            }
+                        } else {
+                            match.lang = "de";
+                            byId[match.id] = match;
+                        }
                     });
-                callback(null, matches);
+
+                const results = Object.keys(byId)
+                    .map((id) => byId[id])
+                    .filter((match) => match.images.length > 0);
+                callback(null, results);
             } catch (e) {
                 callback(e);
             }

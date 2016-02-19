@@ -1,6 +1,10 @@
 "use strict";
 
 module.exports = {
+    architecture: {
+        name: (req) => req.gettext("Architecture"),
+    },
+
     "decorative arts": {
         name: (req) => req.gettext("Decorative Arts"),
     },
