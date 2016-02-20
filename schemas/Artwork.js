@@ -76,16 +76,11 @@ module.exports = (core) => {
             required: true,
         },
 
-        // The images associated with the artwork
-        imageRefs: {
-            type: [{type: String, ref: "Image"}],
-            required: true,
-        },
-
         // The title of the artwork.
         title: {
             type: String,
             es_indexed: true,
+            recommended: true,
         },
 
         // A list of artist names extracted from the page.
@@ -110,6 +105,7 @@ module.exports = (core) => {
                 name: {type: "string", index: "analyzed"},
                 raw: {type: "string", index: "not_analyzed"},
             },
+            recommended: true,
         },
 
         // The medium of the artwork (e.g. "watercolor")
@@ -270,31 +266,25 @@ module.exports = (core) => {
     };
 
     Artwork.statics = {
-        fromData(data, callback) {
-            // Keep track of important statistics
-            const warnings = [];
+        fromData(data, req, callback) {
+            const lint = this.lintData(data, req);
+            const warnings = lint.warnings;
 
-            core.models.Artwork.findById(data._id, (err, artwork) => {
+            if (lint.error) {
+                return process.nextTick(() => callback(new Error(lint.error)));
+            }
+
+            data = lint.data;
+
+            const _id = `${data.source}/${data.id}`;
+
+            core.models.Artwork.findById(_id, (err, artwork) => {
                 if (err) {
                     return callback(new Error(
-                        "Error locating existing artwork."));
+                        req.gettext("Error locating existing artwork.")));
                 }
 
                 const creating = !artwork;
-
-                Object.keys(data).forEach((key) => {
-                    const schemaPath = Artwork.path(key);
-
-                    if (!schemaPath) {
-                        warnings.push(`Unknown column: ${key}`);
-                        return;
-                    }
-
-                    if (Array.isArray(schemaPath.options.type) &&
-                            data[key] && !Array.isArray(data[key])) {
-                        data[key] = [data[key]];
-                    }
-                });
 
                 async.mapLimit(data.images || [], 2, (fileName, callback) => {
                     const _id = `${data.source}/${fileName}`;
@@ -343,6 +333,96 @@ module.exports = (core) => {
                     });
                 });
             });
+        },
+
+        lintData(data, req) {
+            const internal = ["_id", "__v", "source", "created", "modified",
+                "defaultImageHash", "batch"];
+            const cleaned = {};
+            const warnings = [];
+            let error;
+
+            for (const field in data) {
+                const options = Artwork.path(field);
+
+                if (!options || internal.indexOf(field) >= 0) {
+                    warnings.push(req.format(req.gettext(
+                        "Unrecognized field `%(field)s`."), {field}));
+                    continue;
+                }
+            }
+
+            const getExpectedType = (options, value) => {
+                if (Array.isArray(options.type)) {
+                    return Array.isArray(value) ? false : "array";
+                }
+
+                if (options.type === String) {
+                    return typeof value === "string" ? false : "string";
+                }
+
+                if (options.type === Number) {
+                    return typeof value === "number" ? false : "number";
+                }
+
+                return "unknown";
+            };
+
+            for (const field in Artwork.paths) {
+                // Skip internal fields
+                if (internal.indexOf(field) >= 0) {
+                    continue;
+                }
+
+                const options = Artwork.path(field).options;
+
+                if (!data[field] || data[field].length === 0) {
+                    if (options.required) {
+                        error = req.format(req.gettext(
+                            "Required field `%(field)s` is empty."), {field});
+                        break;
+                    } else if (options.recommended) {
+                        warnings.push(req.format(req.gettext(
+                            "Recommended field `%(field)s` is empty."),
+                            {field}));
+                    }
+                } else {
+                    const expectedType = getExpectedType(options, data[field]);
+
+                    if (expectedType) {
+                        const msg = req.format(req.gettext(
+                            "`%(field)s` is the wrong type. " +
+                                "Expected a %(type)s."),
+                            {field, type: expectedType});
+
+                        if (options.required) {
+                            error = msg;
+                            break;
+                        } else {
+                            warnings.push(msg);
+                            continue;
+                        }
+                    }
+
+                    cleaned[field] = data[field];
+                    // TODO:
+                    // - Check objectType against list
+                    // - Check formatting of images (.jpg)
+                    // - Check formatting of the URLs
+                    // - Verify that sub-documents are formatted correctly
+                    // - Locations should have a name and/or city
+                    // - Dimensions can be a string or an object
+                    // - Attempt to parse dimensions string and warn
+                    //   if it fails.
+                    // - Dates can be a string or an object
+                    // - Attempt to parse date string and warn if it fails.
+                    // - Set _id (?)
+                    // - Set source (?)
+                    // - Format images as ID paths
+                }
+            }
+
+            return {data: cleaned, warnings, error};
         },
     };
 
