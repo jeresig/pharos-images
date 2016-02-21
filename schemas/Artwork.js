@@ -18,7 +18,6 @@ module.exports = (core) => {
         // UUID of the image (Format: SOURCE/ID)
         _id: {
             type: String,
-            validate: (v) => /^\w+\/.+$/.test(v),
             es_indexed: true,
         },
 
@@ -62,10 +61,10 @@ module.exports = (core) => {
             type: String,
             required: true,
             validate: (v) => Object.keys(locales).indexOf(v) >= 0,
-            validationMsg: (req) => req.format(req.gettext("lang must only " +
-                "be one of following languages: %(langs)s.", {
+            validationMsg: (req) => req.format(req.gettext("`lang` must only " +
+                "be one of following languages: %(langs)s."), {
                     langs: Object.keys(locales).join(", "),
-                })),
+                }),
         },
 
         // A link to the artwork at its source
@@ -73,7 +72,7 @@ module.exports = (core) => {
             type: String,
             required: true,
             validate: (v) => validUrl.isHttpsUri(v) || validUrl.isHttpUri(v),
-            validationMsg: (req) => req.gettext("URL must be properly-" +
+            validationMsg: (req) => req.gettext("`url` must be properly-" +
                 "formatted URL."),
         },
 
@@ -105,9 +104,6 @@ module.exports = (core) => {
             type: [Name],
             convert: (obj) => typeof obj === "string" ?
                 {name: obj} : obj,
-            validateArray: (val) => val.name,
-            validationMsg: (req) => req.gettext("Artists must have a name " +
-                "specified."),
         },
 
         // The size of the artwork (e.g. 100mm x 200mm)
@@ -205,27 +201,6 @@ module.exports = (core) => {
     Artwork.virtual("date")
         .get(function() {
             return this.dates[0];
-        })
-        .set(function(date) {
-            if (this.dates[0]) {
-                this.dates[0].remove();
-            }
-            if (date && typeof date !== "string") {
-                this.dates.push(date);
-            }
-        });
-
-    Artwork.virtual("dimension")
-        .get(function() {
-            return this.dimensions[0];
-        })
-        .set(function(dimension) {
-            if (this.dimensions[0]) {
-                this.dimensions[0].remove();
-            }
-            if (dimension && typeof dimension !== "string") {
-                this.dimensions.push(dimension);
-            }
         });
 
     Artwork.methods = {
@@ -241,32 +216,17 @@ module.exports = (core) => {
         getTitle(locale) {
             const parts = [];
 
-            if (this.artist && this.artist.artist) {
-                parts.push(`${this.artist.artist.getFullName(locale)}:`);
-            }
-
             if (this.title && /\S/.test(this.title)) {
                 parts.push(this.title);
             }
 
-            if (this.source) {
-                parts.push("-", this.getSource().getFullName(locale));
-            }
+            parts.push("-", this.getSource().getFullName(locale));
 
             return parts.join(" ");
         },
 
         getSource() {
             return core.models.Source.getSource(this.source);
-        },
-
-        addImage(image) {
-            // Stop if the image is already in the images list
-            if (this.images.indexOf(image._id) >= 0) {
-                return;
-            }
-
-            this.images.push(image);
         },
 
         updateSimilarity(callback) {
@@ -322,10 +282,6 @@ module.exports = (core) => {
             return Array.isArray(value) ? false : "array";
         }
 
-        if (options.type === String) {
-            return typeof value === "string" ? false : "string";
-        }
-
         if (options.type === Number) {
             return typeof value === "number" ? false : "number";
         }
@@ -334,11 +290,8 @@ module.exports = (core) => {
             return typeof value === "boolean" ? false : "boolean";
         }
 
-        if (typeof options.type === "object") {
-            return typeof value === "object" ? false : "object";
-        }
-
-        return "unknown";
+        // Defaults to type of String
+        return typeof value === "string" ? false : "string";
     };
 
     Artwork.statics = {
@@ -377,6 +330,7 @@ module.exports = (core) => {
                         callback(null, _id);
                     });
                 }, (err, images) => {
+                    /* istanbul ignore if */
                     if (err) {
                         return callback(new Error(req.gettext(
                             "Error accessing image data.")));
@@ -400,6 +354,7 @@ module.exports = (core) => {
                     }
 
                     artwork.validate((err) => {
+                        /* istanbul ignore if */
                         if (err) {
                             return callback(new Error(req.gettext("There " +
                                 "was an error with the data format.")));
@@ -437,25 +392,16 @@ module.exports = (core) => {
                 let value = data[field];
                 const options = schema.path(field).options;
 
-                if (value || value && value.length > 0) {
+                if (value && (value.length === undefined || value.length > 0)) {
                     const expectedType = getExpectedType(options, value);
 
                     if (expectedType) {
-                        const msg = req.format(req.gettext(
-                            "`%(field)s` is the wrong type. " +
-                                "Expected a %(type)s."),
-                            {field, type: expectedType});
+                        value = null;
+                        warnings.push(req.format(req.gettext(
+                            "`%(field)s` is the wrong type. Expected a " +
+                            "%(type)s."), {field, type: expectedType}));
 
-                        if (options.required) {
-                            error = msg;
-                            break;
-                        } else {
-                            warnings.push(msg);
-                            continue;
-                        }
-                    }
-
-                    if (Array.isArray(options.type)) {
+                    } else if (Array.isArray(options.type)) {
                         // Convert the value to its expected form, if a
                         // conversion method exists.
                         if (options.convert) {
@@ -483,11 +429,13 @@ module.exports = (core) => {
                                     options.type[0]);
 
                                 if (results.error) {
-                                    warnings.push(results.error);
+                                    warnings.push(
+                                        `\`${field}\`: ${results.error}`);
 
                                 } else {
                                     for (const warning of results.warnings) {
-                                        warnings.push(warning);
+                                        warnings.push(
+                                            `\`${field}\`: ${warning}`);
                                     }
 
                                     return results.data;
@@ -508,12 +456,6 @@ module.exports = (core) => {
                         }
 
                     } else {
-                        // Convert the value to its expected form, if a
-                        // conversion method exists.
-                        if (options.convert) {
-                            value = options.convert(value, data);
-                        }
-
                         // Validate the value
                         if (options.validate && !options.validate(value)) {
                             value = null;
@@ -522,7 +464,7 @@ module.exports = (core) => {
                     }
                 }
 
-                if (!value || data[field].length === 0) {
+                if (!value || value.length === 0) {
                     if (options.required) {
                         error = req.format(req.gettext(
                             "Required field `%(field)s` is empty."), {field});
@@ -537,7 +479,11 @@ module.exports = (core) => {
                 }
             }
 
-            return {data: cleaned, warnings, error};
+            if (error) {
+                return {error, warnings};
+            } else {
+                return {data: cleaned, warnings};
+            }
         },
     };
 

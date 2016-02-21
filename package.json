@@ -4,8 +4,8 @@
   "description": "This is the work-in-progress, open source, image database which will be used by the PHAROS art history photo archive consortium.",
   "main": "index.js",
   "scripts": {
-    "lint": "eslint lib/*.js logic/*.js logic/shared/*.js schemas/*.js server/*.js server/*/*.js utils/*.js converters/*.js *.js",
-    "test": "npm run lint",
+    "lint": "eslint lib/*.js logic/*.js logic/shared/*.js schemas/*.js server/*.js server/*/*.js utils/*.js converters/*.js tests/*.js *.js",
+    "test": "npm run lint && tap tests/*.js",
     "start": "NODE_ENV=production naught start --worker-count 2 --log ./logs/naught.log --stdout ./logs/node.log --stderr ./logs/node-error.log server.js",
     "restart": "naught deploy",
     "stop": "naught stop",
@@ -79,7 +79,8 @@
     "eslint": "^1.10.3",
     "jsxgettext": "^0.8.1",
     "migrate": "^0.2.2",
-    "pre-commit": "^1.1.2"
+    "pre-commit": "^1.1.2",
+    "tap": "^5.6.0"
   },
   "pre-commit": [
     "test",

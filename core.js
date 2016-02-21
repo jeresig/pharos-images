@@ -34,10 +34,22 @@ fs.readdirSync("schemas").forEach((file) => {
 });
 
 core.init = (callback) => {
-    async.series([
-        (callback) => core.db.connect(callback),
-        (callback) => core.models.Source.cacheSources(callback),
-    ], callback);
+    return new Promise((resolve, reject) => {
+        async.series([
+            (callback) => core.db.connect(callback),
+            (callback) => core.models.Source.cacheSources(callback),
+        ], (err) => {
+            if (callback) {
+                callback(err);
+            }
+
+            if (err) {
+                reject(err);
+            } else {
+                resolve();
+            }
+        });
+    });
 };
 
 module.exports = core;

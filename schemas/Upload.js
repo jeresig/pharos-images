@@ -18,6 +18,15 @@ module.exports = (core) => {
         return core.urls.gen(locale, `/${uploadName}/${this._id}`);
     };
 
+    Upload.methods.addImage = function(image) {
+        // Stop if the image is already in the images list
+        if (this.images.indexOf(image._id) >= 0) {
+            return;
+        }
+
+        this.images.push(image);
+    };
+
     // We don't save the uploaded files in the index so we override this
     // method to use `fileSimilar` to re-query every time.
     Upload.methods.updateImageSimilarity = function(image, callback) {

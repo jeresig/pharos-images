@@ -4,3 +4,5 @@ data
 logs
 naught.pid
 migrations/.migrate
+.nyc_output
+coverage
