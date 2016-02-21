@@ -3,6 +3,10 @@
 const async = require("async");
 const parseDimensions = require("parse-dimensions");
 const yearRange = require("yearrange");
+const validUrl = require("valid-url");
+
+const locales = require("../config/locales.json");
+const types = require("../logic/shared/types.js");
 
 module.exports = (core) => {
     const Name = require("./Name")(core);
@@ -21,6 +25,9 @@ module.exports = (core) => {
         // Source ID
         id: {
             type: String,
+            validate: (v) => /^[a-z0-9_-]+$/i.test(v),
+            validationMsg: (req) => req.gettext("IDs can only contain " +
+                "letters, numbers, underscores, and hyphens."),
             required: true,
             es_indexed: true,
         },
@@ -41,8 +48,8 @@ module.exports = (core) => {
         },
 
         // The source of the image.
-        // NOTE(jeresig): It'd be nice to validate and ensure that the source
-        // is one that actually exists.
+        // NOTE: We don't need to validate the source as it's not a
+        // user-specified property.
         source: {
             type: String,
             es_indexed: true,
@@ -54,16 +61,20 @@ module.exports = (core) => {
         lang: {
             type: String,
             required: true,
-            // NOTE(jeresig): Need to find a way to update this dynamically.
-            enum: ["en", "it", "de"],
+            validate: (v) => Object.keys(locales).indexOf(v) >= 0,
+            validationMsg: (req) => req.format(req.gettext("lang must only " +
+                "be one of following languages: %(langs)s.", {
+                    langs: Object.keys(locales).join(", "),
+                })),
         },
 
         // A link to the artwork at its source
-        // TODO(jeresig): Use a better URL validator.
         url: {
             type: String,
             required: true,
-            validate: (v) => /^https?:\/\/.*/.test(v),
+            validate: (v) => validUrl.isHttpsUri(v) || validUrl.isHttpUri(v),
+            validationMsg: (req) => req.gettext("URL must be properly-" +
+                "formatted URL."),
         },
 
         // A hash to use to render an image representing the artwork
@@ -76,6 +87,10 @@ module.exports = (core) => {
         images: {
             type: [{type: String, ref: "Image"}],
             required: true,
+            validateArray: (v) => /^\w+\/[a-z0-9_-]+\.jpe?g$/i.test(v),
+            validationMsg: (req) => req.gettext("Images must be a valid " +
+                "image file name. For example: `image.jpg`."),
+            convert: (name, data) => `${data.source}/${name}`,
         },
 
         // The title of the artwork.
@@ -86,7 +101,14 @@ module.exports = (core) => {
         },
 
         // A list of artist names extracted from the page.
-        artists: [Name],
+        artists: {
+            type: [Name],
+            convert: (obj) => typeof obj === "string" ?
+                {name: obj} : obj,
+            validateArray: (val) => val.name,
+            validationMsg: (req) => req.gettext("Artists must have a name " +
+                "specified."),
+        },
 
         // The size of the artwork (e.g. 100mm x 200mm)
         dimensions: {
@@ -94,6 +116,9 @@ module.exports = (core) => {
             convert: (obj) => typeof obj === "string" ?
                 parseDimensions.parseDimension(obj, true, "mm") :
                 parseDimensions.convertDimension(obj, "mm"),
+            validateArray: (val) => (val.width || val.height) && val.unit,
+            validationMsg: (req) => req.gettext("Dimensions must have a " +
+                "unit specified and at least a width or height."),
         },
 
         // Date ranges when the artwork was created or modified.
@@ -101,6 +126,9 @@ module.exports = (core) => {
             type: [YearRange],
             convert: (obj) => typeof obj === "string" ?
                 yearRange.parse(obj) : obj,
+            validateArray: (val) => val.start || val.end,
+            validationMsg: (req) => req.gettext("Dates must have a start or " +
+                "end specified."),
         },
 
         // The English form of the object type (e.g. painting, print)
@@ -117,6 +145,11 @@ module.exports = (core) => {
                 raw: {type: "string", index: "not_analyzed"},
             },
             recommended: true,
+            validate: (val) => Object.keys(types).indexOf(val) >= 0,
+            validationMsg: (req) => req.format(req.gettext("`objectType` " +
+                "must be one of the following types: %(types)s."), {
+                    types: Object.keys(types).join(", "),
+                }),
         },
 
         // The medium of the artwork (e.g. "watercolor")
@@ -126,7 +159,12 @@ module.exports = (core) => {
         },
 
         // Locations where the artwork is stored
-        locations: [Location],
+        locations: {
+            type: [Location],
+            validateArray: (val) => val.name || val.city,
+            validationMsg: (req) => req.gettext("Locations must have a name " +
+                "or city specified."),
+        },
 
         // Categories classifying the artwork
         categories: [{
@@ -276,6 +314,33 @@ module.exports = (core) => {
         },
     };
 
+    const internal = ["_id", "__v", "created", "modified", "defaultImageHash",
+        "batch"];
+
+    const getExpectedType = (options, value) => {
+        if (Array.isArray(options.type)) {
+            return Array.isArray(value) ? false : "array";
+        }
+
+        if (options.type === String) {
+            return typeof value === "string" ? false : "string";
+        }
+
+        if (options.type === Number) {
+            return typeof value === "number" ? false : "number";
+        }
+
+        if (options.type === Boolean) {
+            return typeof value === "boolean" ? false : "boolean";
+        }
+
+        if (typeof options.type === "object") {
+            return typeof value === "object" ? false : "object";
+        }
+
+        return "unknown";
+    };
+
     Artwork.statics = {
         fromData(data, req, callback) {
             const lint = this.lintData(data, req);
@@ -313,8 +378,8 @@ module.exports = (core) => {
                     });
                 }, (err, images) => {
                     if (err) {
-                        return callback(new Error(
-                            "Error accessing image data."));
+                        return callback(new Error(req.gettext(
+                            "Error accessing image data.")));
                     }
 
                     // Filter out any missing images
@@ -324,7 +389,8 @@ module.exports = (core) => {
                     delete data.images;
 
                     if (images.length === 0) {
-                        return callback(new Error("No images found."));
+                        return callback(new Error(req.gettext(
+                            "No images found.")));
                     }
 
                     if (creating) {
@@ -335,9 +401,8 @@ module.exports = (core) => {
 
                     artwork.validate((err) => {
                         if (err) {
-                            // TODO: Convert validation error into something
-                            // useful.
-                            return callback(err);
+                            return callback(new Error(req.gettext("There " +
+                                "was an error with the data format.")));
                         }
 
                         callback(null, artwork, warnings);
@@ -346,18 +411,15 @@ module.exports = (core) => {
             });
         },
 
-        lintData(data, req, prefix) {
-            prefix = prefix || "";
+        lintData(data, req, schema) {
+            schema = schema || Artwork;
 
-            const internal = ["_id", "__v", "source", "created", "modified",
-                "defaultImageHash", "batch"];
             const cleaned = {};
             const warnings = [];
             let error;
 
             for (const field in data) {
-                const path = prefix + field;
-                const options = Artwork.path(path);
+                const options = schema.path(field);
 
                 if (!options || internal.indexOf(field) >= 0) {
                     warnings.push(req.format(req.gettext(
@@ -366,51 +428,16 @@ module.exports = (core) => {
                 }
             }
 
-            const getExpectedType = (options, value) => {
-                if (Array.isArray(options.type)) {
-                    return Array.isArray(value) ? false : "array";
-                }
-
-                if (options.type === String) {
-                    return typeof value === "string" ? false : "string";
-                }
-
-                if (options.type === Number) {
-                    return typeof value === "number" ? false : "number";
-                }
-
-                if (typeof options.type === "object") {
-                    return typeof value === "object" ? false : "object";
-                }
-
-                return "unknown";
-            };
-
-            for (const field in Artwork.paths) {
+            for (const field in schema.paths) {
                 // Skip internal fields
                 if (internal.indexOf(field) >= 0) {
                     continue;
                 }
 
-                const options = Artwork.path(field).options;
+                let value = data[field];
+                const options = schema.path(field).options;
 
-                if (!data[field] || data[field].length === 0) {
-                    if (options.required) {
-                        error = req.format(req.gettext(
-                            "Required field `%(field)s` is empty."), {field});
-                        break;
-                    } else if (options.recommended) {
-                        warnings.push(req.format(req.gettext(
-                            "Recommended field `%(field)s` is empty."),
-                            {field}));
-                    }
-                } else {
-                    let value = data[field];
-
-                    if (options.convert && Array.isArray(value)) {
-                        value = value.map((obj) => options.convert(obj));
-                    }
-
+                if (value || value && value.length > 0) {
                     const expectedType = getExpectedType(options, value);
 
                     if (expectedType) {
@@ -428,16 +455,85 @@ module.exports = (core) => {
                         }
                     }
 
+                    if (Array.isArray(options.type)) {
+                        // Convert the value to its expected form, if a
+                        // conversion method exists.
+                        if (options.convert) {
+                            value = value.map((obj) =>
+                                options.convert(obj, data));
+                        }
+
+                        if (options.type[0].type) {
+                            value = value.filter((entry) => {
+                                const expectedType =
+                                    getExpectedType(options.type[0], entry);
+
+                                if (expectedType) {
+                                    warnings.push(req.format(req.gettext(
+                                        "`%(field)s` value is the wrong type." +
+                                            " Expected a %(type)s."),
+                                        {field, type: expectedType}));
+                                } else {
+                                    return entry;
+                                }
+                            });
+                        } else {
+                            value = value.map((entry) => {
+                                const results = this.lintData(entry, req,
+                                    options.type[0]);
+
+                                if (results.error) {
+                                    warnings.push(results.error);
+
+                                } else {
+                                    for (const warning of results.warnings) {
+                                        warnings.push(warning);
+                                    }
+
+                                    return results.data;
+                                }
+                            }).filter((entry) => !!entry);
+                        }
+
+                        // Validate the array entries
+                        if (options.validateArray) {
+                            const results = value.filter((entry) =>
+                                options.validateArray(entry));
+
+                            if (value.length !== results.length) {
+                                warnings.push(options.validationMsg(req));
+                            }
+
+                            value = results;
+                        }
+
+                    } else {
+                        // Convert the value to its expected form, if a
+                        // conversion method exists.
+                        if (options.convert) {
+                            value = options.convert(value, data);
+                        }
+
+                        // Validate the value
+                        if (options.validate && !options.validate(value)) {
+                            value = null;
+                            warnings.push(options.validationMsg(req));
+                        }
+                    }
+                }
+
+                if (!value || data[field].length === 0) {
+                    if (options.required) {
+                        error = req.format(req.gettext(
+                            "Required field `%(field)s` is empty."), {field});
+                        break;
+                    } else if (options.recommended) {
+                        warnings.push(req.format(req.gettext(
+                            "Recommended field `%(field)s` is empty."),
+                            {field}));
+                    }
+                } else {
                     cleaned[field] = value;
-                    // TODO:
-                    // - Check objectType against list
-                    // - Check formatting of images (.jpg)
-                    // - Check formatting of the URLs
-                    // - Verify that sub-documents are formatted correctly
-                    // - Locations should have a name and/or city
-                    // - Set _id (?)
-                    // - Set source (?)
-                    // - Format images as ID paths
                 }
             }
 
