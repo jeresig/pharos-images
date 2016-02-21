@@ -80,6 +80,7 @@
     "jsxgettext": "^0.8.1",
     "migrate": "^0.2.2",
     "pre-commit": "^1.1.2",
+    "sinon": "^1.17.3",
     "tap": "^5.6.0"
   },
   "pre-commit": [

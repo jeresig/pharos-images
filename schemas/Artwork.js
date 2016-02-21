@@ -487,6 +487,12 @@ module.exports = (core) => {
         },
     };
 
+    // Dynamically generate the _id attribute
+    Artwork.pre("validate", function(next) {
+        this._id = `${this.source}/${this.id}`;
+        next();
+    });
+
     Artwork.pre("save", function(next) {
         // Always updated the modified time on every save
         this.modified = new Date();
