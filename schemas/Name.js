@@ -1,5 +1,7 @@
 "use strict";
 
+const yearRange = require("yearrange");
+
 module.exports = (core) => {
     const YearRange = require("./YearRange")(core);
 
@@ -61,7 +63,11 @@ module.exports = (core) => {
         attributed: Boolean,
 
         // Date when the name was used
-        dates: [YearRange],
+        dates: {
+            type: [YearRange],
+            convert: (obj) => typeof obj === "string" ?
+                yearRange.parse(obj) : obj,
+        },
     });
 
     // Dynamically generate the _id attribute

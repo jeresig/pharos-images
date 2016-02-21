@@ -1,6 +1,8 @@
 "use strict";
 
 const async = require("async");
+const parseDimensions = require("parse-dimensions");
+const yearRange = require("yearrange");
 
 module.exports = (core) => {
     const Name = require("./Name")(core);
@@ -87,10 +89,19 @@ module.exports = (core) => {
         artists: [Name],
 
         // The size of the artwork (e.g. 100mm x 200mm)
-        dimensions: [Dimension],
+        dimensions: {
+            type: [Dimension],
+            convert: (obj) => typeof obj === "string" ?
+                parseDimensions.parseDimension(obj, true, "mm") :
+                parseDimensions.convertDimension(obj, "mm"),
+        },
 
         // Date ranges when the artwork was created or modified.
-        dates: [YearRange],
+        dates: {
+            type: [YearRange],
+            convert: (obj) => typeof obj === "string" ?
+                yearRange.parse(obj) : obj,
+        },
 
         // The English form of the object type (e.g. painting, print)
         // NOTE(jeresig): We could require that the object type be of one of a
@@ -335,7 +346,9 @@ module.exports = (core) => {
             });
         },
 
-        lintData(data, req) {
+        lintData(data, req, prefix) {
+            prefix = prefix || "";
+
             const internal = ["_id", "__v", "source", "created", "modified",
                 "defaultImageHash", "batch"];
             const cleaned = {};
@@ -343,7 +356,8 @@ module.exports = (core) => {
             let error;
 
             for (const field in data) {
-                const options = Artwork.path(field);
+                const path = prefix + field;
+                const options = Artwork.path(path);
 
                 if (!options || internal.indexOf(field) >= 0) {
                     warnings.push(req.format(req.gettext(
@@ -363,6 +377,10 @@ module.exports = (core) => {
 
                 if (options.type === Number) {
                     return typeof value === "number" ? false : "number";
+                }
+
+                if (typeof options.type === "object") {
+                    return typeof value === "object" ? false : "object";
                 }
 
                 return "unknown";
@@ -387,7 +405,13 @@ module.exports = (core) => {
                             {field}));
                     }
                 } else {
-                    const expectedType = getExpectedType(options, data[field]);
+                    let value = data[field];
+
+                    if (options.convert && Array.isArray(value)) {
+                        value = value.map((obj) => options.convert(obj));
+                    }
+
+                    const expectedType = getExpectedType(options, value);
 
                     if (expectedType) {
                         const msg = req.format(req.gettext(
@@ -404,18 +428,13 @@ module.exports = (core) => {
                         }
                     }
 
-                    cleaned[field] = data[field];
+                    cleaned[field] = value;
                     // TODO:
                     // - Check objectType against list
                     // - Check formatting of images (.jpg)
                     // - Check formatting of the URLs
                     // - Verify that sub-documents are formatted correctly
                     // - Locations should have a name and/or city
-                    // - Dimensions can be a string or an object
-                    // - Attempt to parse dimensions string and warn
-                    //   if it fails.
-                    // - Dates can be a string or an object
-                    // - Attempt to parse date string and warn if it fails.
                     // - Set _id (?)
                     // - Set source (?)
                     // - Format images as ID paths
