@@ -1,11 +1,11 @@
 "use strict";
 
-// Load in configuration options
-require("dotenv").load();
-
 const fs = require("fs");
 const path = require("path");
 const async = require("async");
+
+// Load in configuration options
+require("dotenv").load();
 
 const core = {};
 
