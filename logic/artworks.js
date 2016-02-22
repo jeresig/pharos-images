@@ -56,7 +56,7 @@ module.exports = function(core, app) {
                         });
                     }
 
-                    const title = artwork.getTitle(req.lang);
+                    const title = artwork.getTitle(req);
 
                     // Sort the similar artworks by score
                     artwork.similarArtworks = artwork.similarArtworks

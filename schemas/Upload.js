@@ -9,9 +9,8 @@ module.exports = (core) => {
         collection: uploadName,
     });
 
-    Upload.methods.getTitle = function(locale) {
-        // TODO: Find way to i18n this.
-        return "Uploaded Image";
+    Upload.methods.getTitle = function(req) {
+        return req.gettext("Uploaded Image");
     };
 
     Upload.methods.getURL = function(locale) {

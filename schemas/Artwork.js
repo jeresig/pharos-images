@@ -213,14 +213,20 @@ module.exports = (core) => {
                 `/${this.source}/thumbs/${this.defaultImageHash}.jpg`);
         },
 
-        getTitle(locale) {
+        getTitle(req) {
             const parts = [];
 
             if (this.title && /\S/.test(this.title)) {
                 parts.push(this.title);
+
+            } else if (this.objectType) {
+                parts.push(types[this.objectType].name(req));
+
+            } else {
+                parts.push(req.gettext("Artwork"));
             }
 
-            parts.push("-", this.getSource().getFullName(locale));
+            parts.push("-", this.getSource().getFullName());
 
             return parts.join(" ");
         },
@@ -305,29 +311,21 @@ module.exports = (core) => {
 
             data = lint.data;
 
-            const _id = `${data.source}/${data.id}`;
+            const artworkId = `${data.source}/${data.id}`;
 
-            core.models.Artwork.findById(_id, (err, artwork) => {
-                if (err) {
-                    return callback(new Error(
-                        req.gettext("Error locating existing artwork.")));
-                }
-
+            core.models.Artwork.findById(artworkId, (err, artwork) => {
                 const creating = !artwork;
 
-                async.mapLimit(data.images || [], 2, (fileName, callback) => {
-                    const _id = `${data.source}/${fileName}`;
-
-                    core.models.Image.findById(_id, (err, image) => {
-                        if (err) {
-                            return callback(err);
-                        }
-
+                async.mapLimit(data.images, 2, (imageId, callback) => {
+                    core.models.Image.findById(imageId, (err, image) => {
                         if (!image) {
-                            warnings.push(`Image file not found: ${fileName}`);
+                            const fileName = imageId.replace(/^\w+[/]/, "");
+                            warnings.push(req.format(req.gettext(
+                                "Image file not found: %(fileName)s"),
+                                {fileName}));
                         }
 
-                        callback(null, _id);
+                        callback(null, image);
                     });
                 }, (err, images) => {
                     /* istanbul ignore if */
@@ -339,13 +337,13 @@ module.exports = (core) => {
                     // Filter out any missing images
                     images = images.filter((image) => !!image);
 
-                    // We handle the setting of images separately
-                    delete data.images;
-
                     if (images.length === 0) {
                         return callback(new Error(req.gettext(
                             "No images found.")));
                     }
+
+                    data.defaultImageHash = images[0].hash;
+                    data.images = images.map((image) => image._id);
 
                     if (creating) {
                         artwork = new core.models.Artwork(data);
@@ -356,8 +354,8 @@ module.exports = (core) => {
                     artwork.validate((err) => {
                         /* istanbul ignore if */
                         if (err) {
-                            return callback(new Error(req.gettext("There " +
-                                "was an error with the data format.")));
+                            return callback(new Error(req.gettext(
+                                "There was an error with the data format.")));
                         }
 
                         callback(null, artwork, warnings);
@@ -493,6 +491,7 @@ module.exports = (core) => {
         next();
     });
 
+    /* istanbul ignore next */
     Artwork.pre("save", function(next) {
         // Always updated the modified time on every save
         this.modified = new Date();

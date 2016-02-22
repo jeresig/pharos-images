@@ -50,7 +50,7 @@ module.exports = (req, res, next) => {
         },
 
         getTitle(item) {
-            return item.getTitle(req.lang);
+            return item.getTitle(req);
         },
 
         getDate(item) {

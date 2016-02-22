@@ -8,7 +8,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2016-02-22 00:37+0000\n"
+"POT-Creation-Date: 2016-02-22 02:04+0000\n"
 
 #: logic/admin.js:23
 #: logic/admin.js:58
@@ -74,6 +74,7 @@ msgid "Uploaded image not found."
 msgstr ""
 
 #: logic/uploads.js:91
+#: schemas/Upload.js:13
 #: views/upload.swig:1
 msgid "Uploaded Image"
 msgstr ""
@@ -110,39 +111,43 @@ msgstr ""
 msgid "Locations must have a name or city specified."
 msgstr ""
 
-#: schemas/Artwork.js:313
-msgid "Error locating existing artwork."
+#: schemas/Artwork.js:226
+msgid "Artwork"
 msgstr ""
 
-#: schemas/Artwork.js:335
+#: schemas/Artwork.js:323
+msgid "Image file not found: %(fileName)s"
+msgstr ""
+
+#: schemas/Artwork.js:333
 msgid "Error accessing image data."
 msgstr ""
 
-#: schemas/Artwork.js:346
+#: schemas/Artwork.js:341
 msgid "No images found."
 msgstr ""
 
-#: schemas/Artwork.js:359
+#: schemas/Artwork.js:357
 msgid "There was an error with the data format."
 msgstr ""
 
-#: schemas/Artwork.js:380
+#: schemas/Artwork.js:378
 msgid "Unrecognized field `%(field)s`."
 msgstr ""
 
-#: schemas/Artwork.js:400
+#: schemas/Artwork.js:398
 msgid "`%(field)s` is the wrong type. Expected a %(type)s."
 msgstr ""
 
-#: schemas/Artwork.js:418
+#: schemas/Artwork.js:416
 msgid "`%(field)s` value is the wrong type. Expected a %(type)s."
 msgstr ""
 
-#: schemas/Artwork.js:469
+#: schemas/Artwork.js:467
 msgid "Required field `%(field)s` is empty."
 msgstr ""
 
-#: schemas/Artwork.js:473
+#: schemas/Artwork.js:471
 msgid "Recommended field `%(field)s` is empty."
 msgstr ""
 
