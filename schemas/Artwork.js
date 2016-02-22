@@ -320,16 +320,15 @@ module.exports = (core) => {
     };
 
     Artwork.statics = {
-        fromData(data, req, callback) {
-            const lint = this.lintData(data, req);
+        fromData(tmpData, req, callback) {
+            const lint = this.lintData(tmpData, req);
             const warnings = lint.warnings;
 
             if (lint.error) {
                 return process.nextTick(() => callback(new Error(lint.error)));
             }
 
-            data = lint.data;
-
+            const data = lint.data;
             const artworkId = `${data.source}/${data.id}`;
 
             core.models.Artwork.findById(artworkId, (err, artwork) => {
@@ -354,37 +353,39 @@ module.exports = (core) => {
                     }
 
                     // Filter out any missing images
-                    images = images.filter((image) => !!image);
+                    const filteredImages = images.filter((image) => !!image);
 
-                    if (images.length === 0) {
+                    if (filteredImages.length === 0) {
                         return callback(new Error(req.gettext(
                             "No images found.")));
                     }
 
-                    data.defaultImageHash = images[0].hash;
-                    data.images = images.map((image) => image._id);
+                    data.defaultImageHash = filteredImages[0].hash;
+                    data.images = filteredImages.map((image) => image._id);
+
+                    let model = artwork;
 
                     if (creating) {
-                        artwork = new core.models.Artwork(data);
+                        model = new core.models.Artwork(data);
                     } else {
-                        artwork.set(data);
+                        model.set(data);
                     }
 
-                    artwork.validate((err) => {
+                    model.validate((err) => {
                         /* istanbul ignore if */
                         if (err) {
                             return callback(new Error(req.gettext(
                                 "There was an error with the data format.")));
                         }
 
-                        callback(null, artwork, warnings);
+                        callback(null, model, warnings);
                     });
                 });
             });
         },
 
-        lintData(data, req, schema) {
-            schema = schema || Artwork;
+        lintData(data, req, optionalSchema) {
+            const schema = optionalSchema || Artwork;
 
             const cleaned = {};
             const warnings = [];
@@ -436,9 +437,10 @@ module.exports = (core) => {
                                         "`%(field)s` value is the wrong type." +
                                             " Expected a %(type)s."),
                                         {field, type: expectedType}));
-                                } else {
-                                    return entry;
+                                    return undefined;
                                 }
+
+                                return entry;
                             });
                         } else {
                             value = value.map((entry) => {
@@ -448,15 +450,15 @@ module.exports = (core) => {
                                 if (results.error) {
                                     warnings.push(
                                         `\`${field}\`: ${results.error}`);
-
-                                } else {
-                                    for (const warning of results.warnings) {
-                                        warnings.push(
-                                            `\`${field}\`: ${warning}`);
-                                    }
-
-                                    return results.data;
+                                    return undefined;
                                 }
+
+                                for (const warning of results.warnings) {
+                                    warnings.push(
+                                        `\`${field}\`: ${warning}`);
+                                }
+
+                                return results.data;
                             }).filter((entry) => !!entry);
                         }
 
@@ -498,9 +500,9 @@ module.exports = (core) => {
 
             if (error) {
                 return {error, warnings};
-            } else {
-                return {data: cleaned, warnings};
             }
+
+            return {data: cleaned, warnings};
         },
     };
 

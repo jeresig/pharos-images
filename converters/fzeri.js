@@ -36,13 +36,13 @@ const propMap = {
     objectType: [
         "OGTT",
         (val, getByTagName) => {
-            val = types[val] || val;
+            let result = types[val] || val;
             // Special-case frescos
-            if (val === "painting" &&
+            if (result === "painting" &&
                     /affresco/i.test(getByTagName("MTC"))) {
-                val = "fresco";
+                result = "fresco";
             }
-            return val;
+            return result;
         },
     ],
     dimensions: [

@@ -87,8 +87,8 @@ module.exports = (req, res, next) => {
         // Format a number using commas
         // TODO: Handle locale here, as well
         stringNum(num) {
-            num = (typeof num === "number" ? num : "");
-            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            const result = (typeof num === "number" ? num : "");
+            return result.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         },
 
         getUnit() {

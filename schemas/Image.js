@@ -171,8 +171,6 @@ module.exports = (core) => {
                         ));
                     }
 
-                    hash = hash.toString();
-
                     // The same image was uploaded, we can just skip the rest
                     if (!creating && hash === image.hash) {
                         return callback(null, image);
@@ -203,8 +201,10 @@ module.exports = (core) => {
                             height,
                         };
 
+                        let model = image;
+
                         if (creating) {
-                            image = new core.models.Image(data);
+                            model = new core.models.Image(data);
 
                         } else {
                             warnings.push(
@@ -212,7 +212,7 @@ module.exports = (core) => {
                                 "replacing the old one."
                             );
 
-                            image.set(data);
+                            model.set(data);
                         }
 
                         if (width < 150 || height < 150) {
@@ -223,20 +223,20 @@ module.exports = (core) => {
                             );
                         }
 
-                        image.validate((err) => {
+                        model.validate((err) => {
                             if (err) {
                                 // TODO: Convert validation error into something
                                 // useful.
                                 return callback(err);
                             }
 
-                            image.save((err, image) => {
+                            model.save((err, image) => {
                                 if (err) {
                                     return callback(new Error(
                                         "Error saving image to the database."));
                                 }
 
-                                callback(null, image, warnings);
+                                callback(null, model, warnings);
                             });
                         });
                     });

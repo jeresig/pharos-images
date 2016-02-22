@@ -69,12 +69,12 @@ sinon.stub(Artwork, "findById", (id, callback) => {
 
 sinon.stub(Artwork, "find", (query, callback) => {
     const matches = [];
-    const imageIds = query["$or"].map((query) => query.images);
+    const imageIds = query.$or.map((query) => query.images);
 
     for (const id in artworks) {
         const artwork = artworks[id];
 
-        if (query._id["$ne"] === id) {
+        if (query._id.$ne === id) {
             continue;
         }
 

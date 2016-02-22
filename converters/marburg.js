@@ -21,11 +21,11 @@ const propMap = {
     objectType: [
         "classification[@type='Gattung']/term[@addedSearchTerm='yes']",
         (val, getByTagName) => {
-            val = val || getByTagName("classification/term") ||
+            const result = val || getByTagName("classification/term") ||
                 getByTagName("objectWorkType/term[@addedSearchTerm='yes']") ||
                 getByTagName("objectWorkType/term");
             // Return undefined for types that aren't found
-            return types[val];
+            return types[result];
         },
     ],
     dates: {
@@ -165,18 +165,17 @@ module.exports = {
                 const matches = xmlDoc.find("//lido")
                     .map((node) => searchByProps(node, propMap));
 
-                matches
-                    .forEach((match) => {
-                        if (match.id in byId) {
-                            if (match.images.length > 0) {
-                                combine(byId[match.id], match,
-                                    ["images", "dimensions", "categories"]);
-                            }
-                        } else {
-                            match.lang = "de";
-                            byId[match.id] = match;
+                matches.forEach((match) => {
+                    if (match.id in byId) {
+                        if (match.images.length > 0) {
+                            combine(byId[match.id], match,
+                                ["images", "dimensions", "categories"]);
                         }
-                    });
+                    } else {
+                        Object.assign(match, {lang: "de"});
+                        byId[match.id] = match;
+                    }
+                });
 
                 const results = Object.keys(byId)
                     .map((id) => byId[id])

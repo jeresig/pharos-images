@@ -28,26 +28,25 @@ const propMap = {
     bibID: ["004"],
     title: ["245", ["a"], (results) => trim(results[0])],
     dates: ["260", ["c"], (results) => [trim(results[0])]],
-    categories: [
-        "650",
-        ["a", "x", "y", "z"],
-        (results) => results.filter((name) => !!name).map(trim).join(", "),
-        (val, result) => {
-            if (result.depictions) {
-                val = val.concat(result.depictions);
-                delete result.depictions;
-            }
-
-            return val;
-        },
-    ],
-    /*
     depictions: [
         "600",
         ["a", "c"],
         (results) => results.filter((name) => !!name).map(trim).join(", "),
     ],
-    */
+    categories: [
+        "650",
+        ["a", "x", "y", "z"],
+        (results) => results.filter((name) => !!name).map(trim).join(", "),
+        (val, data) => {
+            let results = val;
+
+            if (data.depictions) {
+                results = results.concat(data.depictions);
+            }
+
+            return results;
+        },
+    ],
     medium: ["300", ["a"], (results) => trim(results[0])],
     objectType: [
         "650",
@@ -58,12 +57,12 @@ const propMap = {
                 return;
             }
 
-            val = Array.isArray(val) ? val : [val];
+            const results = Array.isArray(val) ? val : [val];
             let ret;
 
-            for (let i = 0; i < val.length; i += 1) {
-                if (types[val[i]]) {
-                    ret = types[val[i]];
+            for (const result of results) {
+                if (types[result]) {
+                    ret = types[result];
                 }
             }
 
@@ -106,8 +105,8 @@ const propMap = {
     ],
 };
 
-const parseRecord = function(record) {
-    record = record.toMiJ();
+const parseRecord = function(data) {
+    const record = data.toMiJ();
 
     const result = {};
 
@@ -198,6 +197,7 @@ module.exports = {
             const result = parseRecord(record);
             result.lang = "en";
             result.images = [];
+            delete result.depictions;
             bibs[result.id] = result;
         });
 

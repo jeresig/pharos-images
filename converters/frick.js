@@ -14,10 +14,10 @@ const propMap = {
     id: "bibRecordNumberLong",
     url: [
         "bibRecordNumberLong",
-        (id) => {
+        (bibNum) => {
             // The ID is actually missing the last number
             // (although it's not always a number!)
-            id = id.replace(/^(b\d{7}).*$/, (all, match) => match);
+            const id = bibNum.replace(/^(b\d{7}).*$/, (all, match) => match);
 
             return `http://arcade.nyarc.org/record=${id}~S7`;
         },
@@ -73,8 +73,8 @@ const propMap = {
         }
         return [];
     }],
-    images: ["FullPath", (fileName) => fileName.replace(/^.*[/]/, "")
-        .replace(/\.tif$/, ".jpg")],
+    images: ["FullPath", (fileName) => [fileName.replace(/^.*[/]/, "")
+        .replace(/\.tif$/, ".jpg")]],
 };
 
 const searchByProps = function(row, propMap) {
@@ -109,25 +109,16 @@ const cluster = function(rows, id, toCluster) {
             const base = map[row[id]];
 
             toCluster.forEach((clustered) => {
-                if (Array.isArray(row[clustered])) {
-                    base[clustered] = base[clustered].concat(
-                        row[clustered]);
-                } else {
-                    base[clustered].push(row[clustered]);
-                }
+                base[clustered] = base[clustered].concat(
+                    row[clustered]);
             });
 
-        } else {
-            map[row[id]] = row;
-
-            toCluster.forEach((clustered) => {
-                if (!Array.isArray(row[clustered])) {
-                    row[clustered] = [row[clustered]];
-                }
-            });
-
-            return row;
+            return undefined;
         }
+
+        map[row[id]] = row;
+
+        return row;
     }).filter((row) => !!row);
 };
 
