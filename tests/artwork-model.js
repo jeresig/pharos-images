@@ -61,7 +61,7 @@ tap.test("getURL", {autoend: true}, (t) => {
 
 tap.test("getThumbURL", {autoend: true}, (t) => {
     t.equal(artwork.getThumbURL(),
-        "/data/test/thumbs/4567.jpg", "Check Thumb URL");
+        "http://localhost:3000/data/test/thumbs/4567.jpg", "Check Thumb URL");
 });
 
 tap.test("getTitle", {autoend: true}, (t) => {

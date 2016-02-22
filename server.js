@@ -3,6 +3,8 @@
 const express = require("express");
 const core = require("./core");
 
+const port = process.env.PORT || 3000;
+
 core.init(() => {
     const app = express();
 
@@ -14,9 +16,9 @@ core.init(() => {
     require("./server/routes")(core, app);
 
     // Start the app by listening on <port>
-    console.log(`PORT: ${process.env.PORT}`);
+    console.log(`PORT: ${port}`);
 
-    app.listen(process.env.PORT, () => {
+    app.listen(port, () => {
         if (process.send) {
             process.send("online");
         }
