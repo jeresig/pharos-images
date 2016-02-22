@@ -23,8 +23,7 @@ module.exports = (core) => {
 
     // Dynamically generate the _id attribute
     Dimension.pre("validate", function(next) {
-        this._id = this.original ||
-            (this.width || this.height ? this.width + this.height : "");
+        this._id = this.original || this.width + this.height;
         next();
     });
 

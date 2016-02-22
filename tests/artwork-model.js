@@ -31,32 +31,133 @@ const artworkData = {
     locations: [{city: "New York City"}],
 };
 
-const artwork = new Artwork(Object.assign({}, artworkData, {
-    _id: "test/1234",
-    images: ["test/foo.jpg"],
-    defaultImageHash: "4567",
-}));
+const artworks = {
+    "test/1234": new Artwork(Object.assign({}, artworkData, {
+        _id: "test/1234",
+        images: ["test/foo.jpg"],
+        defaultImageHash: "4567",
+    })),
+
+    "test/1235": new Artwork(Object.assign({}, artworkData, {
+        _id: "test/1235",
+        images: ["test/bar.jpg"],
+        defaultImageHash: "4568",
+    })),
+
+    "test/1236": new Artwork(Object.assign({}, artworkData, {
+        _id: "test/1236",
+        images: ["test/zoo.jpg", "test/zoo2.jpg", "test/zoo3.jpg"],
+        defaultImageHash: "4569",
+    })),
+
+    "test/1237": new Artwork(Object.assign({}, artworkData, {
+        _id: "test/1237",
+        images: ["test/nosimilar.jpg"],
+        defaultImageHash: "4570",
+    })),
+};
+
+const artwork = artworks["test/1234"];
 
 sinon.stub(Artwork, "findById", (id, callback) => {
-    if (id === artwork._id) {
-        process.nextTick(() => callback(null, artwork));
+    if (artworks[id]) {
+        process.nextTick(() => callback(null, artworks[id]));
     } else {
         process.nextTick(() => callback(new Error("Artwork not found.")));
     }
 });
 
-const image = new Image({
-    _id: "test/foo.jpg",
-    source: "test",
-    fileName: "foo.jpg",
-    hash: "4567",
-    width: 100,
-    height: 100,
+sinon.stub(Artwork, "find", (query, callback) => {
+    const matches = [];
+    const imageIds = query["$or"].map((query) => query.images);
+
+    for (const id in artworks) {
+        const artwork = artworks[id];
+
+        if (query._id["$ne"] === id) {
+            continue;
+        }
+
+        for (const imageId of imageIds) {
+            if (artwork.images.indexOf(imageId) >= 0) {
+                matches.push(artwork);
+                break;
+            }
+        }
+    }
+
+    process.nextTick(() => callback(null, matches));
 });
 
+const images = {
+    "test/foo.jpg": new Image({
+        _id: "test/foo.jpg",
+        source: "test",
+        fileName: "foo.jpg",
+        hash: "4567",
+        width: 100,
+        height: 100,
+        similarImages: [{_id: "test/bar.jpg", score: 10}],
+    }),
+
+    "test/bar.jpg": new Image({
+        _id: "test/bar.jpg",
+        source: "test",
+        fileName: "bar.jpg",
+        hash: "4568",
+        width: 120,
+        height: 120,
+        similarImages: [
+            {_id: "test/foo.jpg", score: 10},
+            {_id: "test/zoo2.jpg", score: 9},
+            {_id: "test/zoo.jpg", score: 8},
+        ],
+    }),
+
+    "test/zoo.jpg": new Image({
+        _id: "test/zoo.jpg",
+        source: "test",
+        fileName: "zoo.jpg",
+        hash: "4569",
+        width: 115,
+        height: 115,
+        similarImages: [{_id: "test/bar.jpg", score: 8}],
+    }),
+
+    "test/zoo2.jpg": new Image({
+        _id: "test/zoo2.jpg",
+        source: "test",
+        fileName: "zoo2.jpg",
+        hash: "4571",
+        width: 116,
+        height: 116,
+        similarImages: [{_id: "test/bar.jpg", score: 9}],
+    }),
+
+    "test/zoo3.jpg": new Image({
+        _id: "test/zoo3.jpg",
+        source: "test",
+        fileName: "zoo3.jpg",
+        hash: "4572",
+        width: 117,
+        height: 117,
+        similarImages: [],
+    }),
+
+    "test/nosimilar.jpg": new Image({
+        _id: "test/nosimilar.jpg",
+        source: "test",
+        fileName: "nosimilar.jpg",
+        hash: "4570",
+        width: 110,
+        height: 110,
+        similarImages: [],
+    }),
+};
+
 sinon.stub(Image, "findById", (id, callback) => {
-    if (id === image._id) {
-        process.nextTick(() => callback(null, image));
+    if (images[id]) {
+        process.nextTick(() => callback(null, images[id]));
     } else {
         process.nextTick(() => callback(new Error("Image not found.")));
     }
@@ -114,9 +215,10 @@ tap.test("fromData", (t) => {
             t.end();
         });
     });
+
     t.test("Existing artwork", (t) => {
         Artwork.fromData(artworkData, req, (err, value, warnings) => {
-            t.error(err, "Error should be empty");
+            t.error(err, "Error should be empty.");
             t.equal(value, artwork, "Artwork should be returned.");
             t.equal(value.defaultImageHash, "4567", "defaultImageHash is set.");
             t.equal(value.images.length, 1, "Images are set.");
@@ -132,7 +234,7 @@ tap.test("fromData", (t) => {
         });
 
         Artwork.fromData(newData, req, (err, value, warnings) => {
-            t.error(err, "Error should be empty");
+            t.error(err, "Error should be empty.");
             t.equal(value._id, "test/4567", "New artwork should be returned.");
             t.equal(value.defaultImageHash, "4567", "defaultImageHash is set.");
             t.equal(value.images.length, 1, "Images are set.");
@@ -149,7 +251,7 @@ tap.test("fromData", (t) => {
         });
 
         Artwork.fromData(newData, req, (err, value, warnings) => {
-            t.error(err, "Error should be empty");
+            t.error(err, "Error should be empty.");
             t.equal(value._id, "test/4567", "New artwork should be returned.");
             t.equal(value.defaultImageHash, "4567", "defaultImageHash is set.");
             t.equal(value.images.length, 1, "Images are set.");
@@ -181,13 +283,67 @@ tap.test("fromData", (t) => {
         });
 
         Artwork.fromData(newData, req, (err, value, warnings) => {
-            t.error(err, "Error should be empty");
+            t.error(err, "Error should be empty.");
             t.equal(value._id, "test/4567", "New artwork should be returned.");
             t.equal(value.defaultImageHash, "4567", "defaultImageHash is set.");
             t.equal(value.images.length, 1, "Images are set.");
             t.equal(value.images[0], "test/foo.jpg", "Images are set.");
             t.same(warnings, ["Image file not found: missing.jpg"],
                 "There should be a warning.");
+            t.end();
+        });
+    });
+
+    t.end();
+});
+
+tap.test("updateSimilarity", (t) => {
+    t.test("updateSimilarity", (t) => {
+        artwork.updateSimilarity((err) => {
+            t.error(err, "Error should be empty.");
+            t.equal(artwork.similarArtworks.length, 1,
+                "Correct number of matches.");
+            t.same(artwork.similarArtworks[0].toJSON(), {
+                _id: "test/1235",
+                artwork: "test/1235",
+                score: 10,
+                source: "test",
+                images: ["test/bar.jpg"],
+            }, "Check similar artwork result");
+            t.end();
+        });
+    });
+
+    t.test("updateSimilarity with two matches", (t) => {
+        const artwork = artworks["test/1235"];
+        artwork.updateSimilarity((err) => {
+            t.error(err, "Error should be empty.");
+            t.equal(artwork.similarArtworks.length, 2,
+                "Correct number of matches.");
+            t.same(artwork.similarArtworks[0].toJSON(), {
+                _id: "test/1236",
+                artwork: "test/1236",
+                score: 17,
+                source: "test",
+                images: ["test/zoo.jpg", "test/zoo2.jpg"],
+            }, "Check similar artwork result");
+            t.same(artwork.similarArtworks[1].toJSON(), {
+                _id: "test/1234",
+                artwork: "test/1234",
+                score: 10,
+                source: "test",
+                images: ["test/foo.jpg"],
+            }, "Check similar artwork result");
+            t.end();
+        });
+    });
+
+    t.test("updateSimilarity with no similar", (t) => {
+        const artwork = artworks["test/1237"];
+        artwork.updateSimilarity((err) => {
+            t.error(err, "Error should be empty.");
+            t.equal(artwork.similarArtworks.length, 0,
+                "Correct number of matches.");
             t.end();
         });
     });

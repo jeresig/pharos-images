@@ -235,47 +235,66 @@ module.exports = (core) => {
             return core.models.Source.getSource(this.source);
         },
 
+        getImages(callback) {
+            async.mapLimit(this.images, 4, (id, callback) => {
+                core.models.Image.findById(id, callback);
+            }, callback);
+        },
+
         updateSimilarity(callback) {
-            // Calculate artwork matches before saving
-            const matches = this.images
-                .map((image) => image.similarImages || [])
-                .reduce((a, b) => a.concat(b), []);
-            const scores = matches.reduce((obj, match) => {
-                obj[match.id] = Math.max(match.score, obj[match.id] || 0);
-                return obj;
-            }, {});
-
-            if (matches.length === 0) {
-                return callback();
-            }
-
-            const query = matches.map((match) => ({
-                "images.imageName": match.id,
-            }));
-
-            core.models.Artwork.find({$or: query}, (err, artworks) => {
+            this.getImages((err, images) => {
+                /* istanbul ignore if */
                 if (err) {
                     return callback(err);
                 }
 
-                this.similarArtworks = artworks
-                    .filter((similar) => similar._id !== this._id)
-                    .map((similar) => {
-                        const imageScores = similar.images.map(
-                            (image) => scores[image.imageName] || 0);
+                // Calculate artwork matches before saving
+                const matches = images
+                    .map((image) => image.similarImages)
+                    .reduce((a, b) => a.concat(b), []);
+                const scores = matches.reduce((obj, match) => {
+                    obj[match._id] = Math.max(match.score, obj[match._id] || 0);
+                    return obj;
+                }, {});
 
-                        return {
-                            artwork: similar._id,
-                            images: similar.images.map(
-                                (image) => image._id),
-                            score: imageScores.reduce((a, b) => a + b),
-                            source: similar.source,
-                        };
-                    })
-                    .filter((similar) => similar.score > 0)
-                    .sort((a, b) => b.score - a.score);
+                if (matches.length === 0) {
+                    return callback();
+                }
 
-                callback();
+                const matchIds = matches.map((match) => match._id);
+                const query = matches.map((match) => ({
+                    images: match._id,
+                }));
+
+                core.models.Artwork.find({
+                    $or: query,
+                    _id: {$ne: this._id},
+                }, (err, artworks) => {
+                    /* istanbul ignore if */
+                    if (err) {
+                        return callback(err);
+                    }
+
+                    this.similarArtworks = artworks
+                        .map((similar) => {
+                            const score = similar.images
+                                .map((image) => scores[image] || 0)
+                                .reduce((a, b) => a + b);
+
+                            return {
+                                _id: similar._id,
+                                artwork: similar._id,
+                                images: similar.images
+                                    .filter((id) => matchIds.indexOf(id) >= 0),
+                                score,
+                                source: similar.source,
+                            };
+                        })
+                        .filter((similar) => similar.score > 0)
+                        .sort((a, b) => b.score - a.score);
+
+                    callback();
+                });
             });
         },
     };

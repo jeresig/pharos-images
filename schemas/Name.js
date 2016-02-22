@@ -67,6 +67,9 @@ module.exports = (core) => {
             type: [YearRange],
             convert: (obj) => typeof obj === "string" ?
                 yearRange.parse(obj) : obj,
+            validateArray: (val) => val.start || val.end,
+            validationMsg: (req) => req.gettext("Dates must have a start or " +
+                "end specified."),
         },
     });
 

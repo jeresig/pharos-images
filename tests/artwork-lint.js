@@ -608,6 +608,36 @@ tap.test("Validation", {autoend: true}, (t) => {
         images: ["foo.jpg"],
         title: "Test",
         objectType: "painting",
+        artists: [{
+            name: "Test",
+            dates: [{circa: true}],
+        }],
+        dimensions: [{width: 123, unit: "mm"}],
+    }, req), {
+        data: {
+            id: "1234",
+            source: "nga",
+            lang: "en",
+            url: "http://google.com",
+            images: ["nga/foo.jpg"],
+            title: "Test",
+            objectType: "painting",
+            artists: [{name: "Test"}],
+            dimensions: [{width: 123, unit: "mm"}],
+        },
+        "warnings": [
+            "`artists`: Dates must have a start or end specified.",
+        ],
+    }, "dates in artists");
+
+    t.same(Artwork.lintData({
+        id: "1234",
+        source: "nga",
+        lang: "en",
+        url: "http://google.com",
+        images: ["foo.jpg"],
+        title: "Test",
+        objectType: "painting",
         artists: [{name: "Test"}],
         dimensions: [{width: 123, unit: "mm"}],
         dates: [{start: 1456, end: 1457, circa: true}],
@@ -818,4 +848,49 @@ tap.test("Conversion", {autoend: true}, (t) => {
             "Dates must have a start or end specified.",
         ],
     }, "Dates produce warnings");
+
+    t.same(Artwork.lintData({
+        id: "1234",
+        source: "nga",
+        lang: "en",
+        url: "http://google.com",
+        images: ["foo.jpg"],
+        title: "Test",
+        objectType: "painting",
+        artists: [{
+            name: "Test",
+            dates: ["ca. 1456-1457"],
+        }],
+        dimensions: [{width: 123, unit: "mm"}],
+        dates: ["ca. 1456-1457"],
+        locations: [{city: "New York City"}],
+    }, req), {
+        data: {
+            id: "1234",
+            source: "nga",
+            lang: "en",
+            url: "http://google.com",
+            images: ["nga/foo.jpg"],
+            title: "Test",
+            objectType: "painting",
+            artists: [{
+                name: "Test",
+                dates: [{
+                    start: 1456,
+                    end: 1457,
+                    circa: true,
+                    "original": "ca. 1456-1457",
+                }],
+            }],
+            dimensions: [{width: 123, unit: "mm"}],
+            dates: [{
+                start: 1456,
+                end: 1457,
+                circa: true,
+                "original": "ca. 1456-1457",
+            }],
+            locations: [{city: "New York City"}],
+        },
+        "warnings": [],
+    }, "Dates in Artists");
 });
