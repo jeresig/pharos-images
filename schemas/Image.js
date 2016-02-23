@@ -215,6 +215,7 @@ module.exports = (core) => {
 
                 images.processImage(file, sourceDir, (err, hash) => {
                     if (err) {
+                        console.error(err);
                         return callback(new Error(
                             "There was an error processing the image. " +
                             "Perhaps it is malformed in some way."
