@@ -1,9 +1,24 @@
 "use strict";
 
+const os = require("os");
+const path = require("path");
+
+const fs = require("graceful-fs");
+const request = require("request");
 const formidable = require("formidable");
+
+// The maximum number of times to try downloading an image
+const MAX_ATTEMPTS = 3;
+
+// How long to wait, in milliseconds, for the download
+const DOWNLOAD_TIMEOUT = 10000;
 
 module.exports = (core, app) => {
     const Upload = core.models.Upload;
+
+    const genTmpFile = () => {
+        return path.join(os.tmpdir(), (new Date).getTime());
+    };
 
     const handleUpload = (req, res, next) => (err, file) => {
         if (err) {
@@ -41,6 +56,38 @@ module.exports = (core, app) => {
         });
     };
 
+    const download = (imageURL, callback) => {
+        let attemptNum = 0;
+
+        const downloadImage = () => {
+            attemptNum += 1;
+
+            const tmpFile = genTmpFile();
+            const outStream = fs.createWriteStream(tmpFile);
+
+            outStream.on("finish", () => callback(null, tmpFile));
+
+            const stream = request({
+                url: imageURL,
+                timeout: DOWNLOAD_TIMEOUT,
+            });
+
+            stream.on("error", (err) => {
+                console.error("Error Downloading Image:",
+                    JSON.stringify(err));
+                if (attemptNum < MAX_ATTEMPTS) {
+                    downloadImage();
+                } else {
+                    callback(new Error("Error Downloading image."));
+                }
+            });
+
+            stream.pipe(outStream);
+        };
+
+        downloadImage();
+    };
+
     return {
         urlUpload(req, res, next) {
             const url = req.query.url;
@@ -50,8 +97,8 @@ module.exports = (core, app) => {
                 return next(new Error(req.gettext("No image URL specified.")));
             }
 
-            core.images.download(url,
-                (err, file) => handleUpload(req, res, next)(err, file));
+            download(url, (err, file) =>
+                handleUpload(req, res, next)(err, file));
         },
 
         fileUpload(req, res, next) {

@@ -78,6 +78,7 @@
     "eslint": "^2.2.0",
     "jsxgettext": "^0.8.1",
     "migrate": "^0.2.2",
+    "mock-fs": "^3.7.0",
     "pre-commit": "^1.1.2",
     "sinon": "^1.17.3",
     "tap": "^5.6.0"

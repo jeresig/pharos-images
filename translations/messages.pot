@@ -8,7 +8,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2016-02-22 16:23+0000\n"
+"POT-Creation-Date: 2016-02-23 18:19+0000\n"
 
 #: logic/admin.js:23
 #: logic/admin.js:58
@@ -53,27 +53,27 @@ msgstr ""
 msgid "Artwork not found."
 msgstr ""
 
-#: logic/uploads.js:24
+#: logic/uploads.js:39
 msgid "Error processing image."
 msgstr ""
 
-#: logic/uploads.js:50
+#: logic/uploads.js:97
 msgid "No image URL specified."
 msgstr ""
 
-#: logic/uploads.js:65
+#: logic/uploads.js:112
 msgid "Error processing upload."
 msgstr ""
 
-#: logic/uploads.js:73
+#: logic/uploads.js:120
 msgid "No image specified."
 msgstr ""
 
-#: logic/uploads.js:86
+#: logic/uploads.js:133
 msgid "Uploaded image not found."
 msgstr ""
 
-#: logic/uploads.js:91
+#: logic/uploads.js:138
 #: schemas/Upload.js:13
 #: views/upload.swig:1
 msgid "Uploaded Image"
@@ -176,26 +176,16 @@ msgid "Data imported."
 msgstr ""
 
 #: schemas/ArtworkImport.js:41
-#: schemas/ImageImport.js:46
 msgid "Syncing similarity..."
 msgstr ""
 
 #: schemas/ArtworkImport.js:45
-#: schemas/ImageImport.js:50
 msgid "Similarity synced."
 msgstr ""
 
 #: schemas/ArtworkImport.js:54
-#: schemas/ImageImport.js:59
+#: schemas/ImageImport.js:37
 msgid "Completed."
-msgstr ""
-
-#: schemas/ImageImport.js:35
-msgid "Indexing similarity..."
-msgstr ""
-
-#: schemas/ImageImport.js:39
-msgid "Similarity indexed."
 msgstr ""
 
 #: server/routes.js:30
