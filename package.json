@@ -57,7 +57,7 @@
     "mongoosastic": "^3.6.0",
     "mongoose": "^4.3.4",
     "mongoose-diff": "^0.2.0",
-    "mongoose-schema-extend": "^0.2.0",
+    "mongoose-schema-extend": "0.2.0",
     "mongoose-user": "0.0.1",
     "mongoose-version": "^0.2.4",
     "morgan": "^1.6.1",
