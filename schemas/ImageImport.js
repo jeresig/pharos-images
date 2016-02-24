@@ -8,7 +8,6 @@ const async = require("async");
 const unzip = require("unzip2");
 
 module.exports = (core) => {
-    const Image = core.models.Image;
     const Import = require("./Import")(core);
 
     const states = [
@@ -108,15 +107,30 @@ module.exports = (core) => {
                         // Import all of the files as images
                         async.eachLimit(files, 1, (file, callback) => {
                             this.addResult(file, callback);
-                        }, callback);
+                        }, (err) => {
+                            /* istanbul ignore if */
+                            if (err) {
+                                return callback(err);
+                            }
+
+                            this.setOtherSimilarityToUpdate(callback);
+                        });
                     });
             });
+        },
+
+        setOtherSimilarityToUpdate(callback) {
+            core.models.Image.update(
+                {batch: {$ne: this._id}},
+                {needsSimilarUpdate: true},
+                callback
+            );
         },
 
         addResult(file, callback) {
             const fileName = path.basename(file);
 
-            Image.fromFile(this, file, (err, image, warnings) => {
+            core.models.Image.fromFile(this, file, (err, image, warnings) => {
                 const result = {
                     _id: fileName,
                     state: "started",
@@ -139,6 +153,7 @@ module.exports = (core) => {
 
                 if (image) {
                     image.save((err) => {
+                        /* istanbul ignore if */
                         if (err) {
                             return callback(err);
                         }

@@ -139,14 +139,19 @@ module.exports = (core) => {
         },
     };
 
-    Import.pre("save", function(next) {
-        // Always updated the modified time on every save
-        this.modified = new Date();
-
+    Import.pre("validate", function(next) {
         // Create the ID if one hasn't been set before
         if (!this._id) {
             this._id = `${this.source}/${Date.now()}`;
         }
+
+        next();
+    });
+
+    /* istanbul ignore next */
+    Import.pre("save", function(next) {
+        // Always updated the modified time on every save
+        this.modified = new Date();
 
         next();
     });

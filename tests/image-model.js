@@ -18,12 +18,12 @@ const Source = core.models.Source;
 const ImageImport = core.models.ImageImport;
 
 const testFiles = {};
-
-console.log("Reading in test files...");
 const dataDir = path.resolve(__dirname, "data");
+
 fs.readdirSync(dataDir).forEach((file) => {
-    console.log(path.resolve(dataDir, file));
-    testFiles[file] = fs.readFileSync(path.resolve(dataDir, file));
+    if (file.endsWith(".jpg")) {
+        testFiles[file] = fs.readFileSync(path.resolve(dataDir, file));
+    }
 });
 
 const source = new Source({
