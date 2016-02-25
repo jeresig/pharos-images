@@ -2,14 +2,9 @@
 
 const tap = require("tap");
 
-const core = require("../core");
-const Artwork = core.models.Artwork;
-
-const req = {
-    format: (msg, fields) =>
-        msg.replace(/%\((.*?)\)s/g, (all, name) => fields[name]),
-    gettext: (msg) => msg,
-};
+const init = require("./lib/init");
+const req = init.req;
+const Artwork = init.Artwork;
 
 tap.test("Unknown Fields", {autoend: true}, (t) => {
     t.same(Artwork.lintData({
