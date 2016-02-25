@@ -78,18 +78,6 @@ sinon.stub(Image, "findById", (id, callback) => {
     process.nextTick(() => callback(null, images[id]));
 });
 
-sinon.stub(Image, "findOne", (query, callback) => {
-    let match;
-
-    if (query.hash) {
-        const id = Object.keys(images)
-            .find((id) => images[id].hash === query.hash);
-        match = images[id];
-    }
-
-    process.nextTick(() => callback(null, match));
-});
-
 sinon.stub(Image, "update", (query, update, callback) => {
     process.nextTick(callback);
 });
@@ -172,58 +160,7 @@ const images = {
     }),
 };
 
-const similar = {
-    "4567": [
-        {id: "4567", score: 100},
-        {id: "4568", score: 10},
-        {id: "NO_LONGER_EXISTS", score: 1},
-    ],
-    "4568": [
-        {id: "4568", score: 100},
-        {id: "4567", score: 10},
-        {id: "4571", score: 9},
-        {id: "4569", score: 8},
-    ],
-    "4569": [
-        {id: "4569", score: 100},
-        {id: "4568", score: 8},
-    ],
-    "4571": [
-        {id: "4571", score: 100},
-        {id: "4568", score: 9},
-    ],
-    "4572": [
-        {id: "4572", score: 100},
-    ],
-    "4570": [
-        {id: "4570", score: 100},
-    ],
-};
-
-const similarAdded = [];
-
-sinon.stub(core.similar, "similar", (hash, callback) => {
-    process.nextTick(() => callback(null, similar[hash]));
-});
-
-sinon.stub(core.similar, "idIndexed", (hash, callback) => {
-    process.nextTick(() => callback(null, !!similar[hash]));
-});
-
-sinon.stub(core.similar, "add", (file, hash, callback) => {
-    if (hash === "99998") {
-        return process.nextTick(() => callback({type: "IMAGE_SIZE_TOO_SMALL"}));
-    }
-
-    similarAdded.push({id: hash, score: 5});
-    similar[hash] = similarAdded;
-
-    process.nextTick(callback);
-});
-
 const req = {
-    format: (msg, fields) =>
-        msg.replace(/%\((.*?)\)s/g, (all, name) => fields[name]),
     gettext: (msg) => msg,
     lang: "en",
 };
