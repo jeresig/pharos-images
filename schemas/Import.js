@@ -6,8 +6,6 @@ const async = require("async");
 const ADVANCE_RATE = 5000;
 
 module.exports = (core) => {
-    const Source = core.models.Source;
-
     const Import = new core.db.schema({
         // An ID for the import, based on the source and time
         _id: String,
@@ -33,6 +31,7 @@ module.exports = (core) => {
         state: {
             type: String,
             required: true,
+            default: "started",
         },
 
         // An error message, if the state is set to "error"
@@ -44,7 +43,7 @@ module.exports = (core) => {
 
     Import.methods = {
         getSource() {
-            return Source.getSource(this.source);
+            return core.models.Source.getSource(this.source);
         },
 
         saveState(state, callback) {

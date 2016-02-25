@@ -53,8 +53,9 @@ module.exports = (core) => {
     });
 
     Object.assign(ImageImport.methods, {
-        url() {
-            return `/source/${this.source}/import?images=${this._id}`;
+        url(req) {
+            return core.urls.gen(req.lang,
+                `/source/${this.source}/import?images=${this._id}`);
         },
 
         getStates() {
@@ -64,7 +65,8 @@ module.exports = (core) => {
         processImages(callback) {
             const zipFile = fs.createReadStream(this.zipFile);
             const files = [];
-            const extractDir = path.join(os.tmpdir(), (new Date).getTime());
+            const extractDir = path.join(os.tmpdir(),
+                (new Date).getTime().toString());
 
             fs.mkdir(extractDir, () => {
                 zipFile
@@ -87,10 +89,11 @@ module.exports = (core) => {
                             return entry.autodrain();
                         }
 
-                        files.push(fileName);
+                        files.push(outFileName);
                         entry.pipe(fs.createWriteStream(outFileName));
                     })
                     .on("error", (err) => {
+                        console.log("ERROR", err);
                         throw err;
                     })
                     .on("close", (err) => {
@@ -128,9 +131,9 @@ module.exports = (core) => {
         },
 
         addResult(file, callback) {
-            const fileName = path.basename(file);
-
             core.models.Image.fromFile(this, file, (err, image, warnings) => {
+                const fileName = path.basename(file);
+
                 const result = {
                     _id: fileName,
                     state: "started",
