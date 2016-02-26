@@ -61,7 +61,11 @@ module.exports = (core) => {
         },
 
         canAdvance() {
-            return !!this.getCurState().advance;
+            const curState = this.getCurState();
+            if (!curState) {
+                return false;
+            }
+            return !!curState.advance;
         },
 
         advance(callback) {
@@ -73,6 +77,11 @@ module.exports = (core) => {
             }
 
             this.saveState(nextState.id, (err) => {
+                /* istanbul ignore if */
+                if (err) {
+                    return callback(err);
+                }
+
                 state.advance(this, (err) => {
                     // If there was an error then we save the error message
                     // and set the state of the batch to "error" to avoid
@@ -84,7 +93,11 @@ module.exports = (core) => {
 
                     // Advance to the next state
                     const nextState = this.getNextState();
-                    this.saveState(nextState.id, callback);
+                    if (nextState) {
+                        this.saveState(nextState.id, callback);
+                    } else {
+                        callback();
+                    }
                 });
             });
         },
@@ -96,7 +109,7 @@ module.exports = (core) => {
                 state: {
                     $nin: ["completed", "error"],
                 },
-            }).select("_id state").exec((err, batches) => {
+            }, "_id state", (err, batches) => {
                 if (err || !batches || batches.length === 0) {
                     return callback(err);
                 }

@@ -64,61 +64,62 @@ module.exports = (core) => {
 
         processImages(callback) {
             const zipFile = fs.createReadStream(this.zipFile);
+            let zipError;
             const files = [];
             const extractDir = path.join(os.tmpdir(),
                 (new Date).getTime().toString());
 
             fs.mkdir(extractDir, () => {
-                zipFile
-                    .pipe(unzip.Parse())
-                    .on("entry", (entry) => {
-                        const fileName = path.basename(entry.path);
-                        const outFileName = path.join(extractDir, fileName);
+                zipFile.pipe(unzip.Parse()).on("entry", (entry) => {
+                    const fileName = path.basename(entry.path);
+                    const outFileName = path.join(extractDir, fileName);
 
-                        // Ignore things that aren't files (e.g. directories)
-                        // Ignore files that don't end with .jpe?g
-                        // Ignore files that start with '.'
-                        if (entry.type !== "File" ||
-                                !/.+\.jpe?g$/i.test(fileName) ||
-                                fileName.indexOf(".") === 0) {
-                            return entry.autodrain();
-                        }
+                    // Ignore things that aren't files (e.g. directories)
+                    // Ignore files that don't end with .jpe?g
+                    // Ignore files that start with '.'
+                    if (entry.type !== "File" ||
+                            !/.+\.jpe?g$/i.test(fileName) ||
+                            fileName.indexOf(".") === 0) {
+                        return entry.autodrain();
+                    }
 
-                        // Don't attempt to add files that already exist
-                        if (files.indexOf(fileName) >= 0) {
-                            return entry.autodrain();
-                        }
+                    // Don't attempt to add files that already exist
+                    if (files.indexOf(outFileName) >= 0) {
+                        return entry.autodrain();
+                    }
 
-                        files.push(outFileName);
-                        entry.pipe(fs.createWriteStream(outFileName));
-                    })
-                    .on("error", (err) => {
-                        console.log("ERROR", err);
-                        throw err;
-                    })
-                    .on("close", (err) => {
+                    files.push(outFileName);
+                    entry.pipe(fs.createWriteStream(outFileName));
+                })
+                .on("error", function(err) {
+                    // Hack from this ticket to force the stream to close:
+                    // https://github.com/glebdmitriew/node-unzip-2/issues/8
+                    this._streamEnd = true;
+                    this._streamFinish = true;
+                    zipError = true;
+                })
+                .on("close", () => {
+                    if (zipError) {
+                        return callback(new Error("Error opening zip file."));
+                    }
+
+                    if (files.length === 0) {
+                        return callback(
+                            new Error("Zip file has no images in it."));
+                    }
+
+                    // Import all of the files as images
+                    async.eachLimit(files, 1, (file, callback) => {
+                        this.addResult(file, callback);
+                    }, (err) => {
+                        /* istanbul ignore if */
                         if (err) {
-                            return callback(
-                                new Error("Error opening zip file."));
+                            return callback(err);
                         }
 
-                        if (files.length === 0) {
-                            return callback(
-                                new Error("Zip file has no images in it."));
-                        }
-
-                        // Import all of the files as images
-                        async.eachLimit(files, 1, (file, callback) => {
-                            this.addResult(file, callback);
-                        }, (err) => {
-                            /* istanbul ignore if */
-                            if (err) {
-                                return callback(err);
-                            }
-
-                            this.setOtherSimilarityToUpdate(callback);
-                        });
+                        this.setOtherSimilarityToUpdate(callback);
                     });
+                });
             });
         },
 
@@ -136,7 +137,6 @@ module.exports = (core) => {
 
                 const result = {
                     _id: fileName,
-                    state: "started",
                     fileName,
                 };
 
@@ -144,10 +144,7 @@ module.exports = (core) => {
                     result.error = err.message;
 
                 } else {
-                    if (warnings) {
-                        result.warnings = warnings;
-                    }
-
+                    result.warnings = warnings;
                     result.model = image._id;
                 }
 

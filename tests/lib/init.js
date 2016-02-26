@@ -24,6 +24,7 @@ const ImageImport = core.models.ImageImport;
 // Data used for testing
 let source;
 let batch;
+let batches;
 let imageResultsData;
 let images;
 let image;
@@ -101,7 +102,6 @@ const genData = () => {
     imageResultsData = [
         {
             "_id": "bar.jpg",
-            "state": "started",
             "fileName": "bar.jpg",
             "warnings": [
                 "A new version of the image was uploaded, replacing the " +
@@ -111,20 +111,17 @@ const genData = () => {
         },
         {
             "_id": "corrupted.jpg",
-            "state": "started",
             "fileName": "corrupted.jpg",
             "error": "There was an error processing the image. Perhaps " +
                 "it is malformed in some way.",
         },
         {
             "_id": "empty.jpg",
-            "state": "started",
             "fileName": "empty.jpg",
             "error": "The image is empty.",
         },
         {
             "_id": "foo.jpg",
-            "state": "started",
             "fileName": "foo.jpg",
             "warnings": [
                 "A new version of the image was uploaded, replacing the " +
@@ -134,21 +131,18 @@ const genData = () => {
         },
         {
             "_id": "new1.jpg",
-            "state": "started",
             "fileName": "new1.jpg",
             "warnings": [],
             "model": "test/new1.jpg",
         },
         {
             "_id": "new2.jpg",
-            "state": "started",
             "fileName": "new2.jpg",
             "warnings": [],
             "model": "test/new2.jpg",
         },
         {
             "_id": "small.jpg",
-            "state": "started",
             "fileName": "small.jpg",
             "warnings": [
                 "The image is too small to work with the image " +
@@ -159,14 +153,13 @@ const genData = () => {
         },
         {
             "_id": "new3.jpg",
-            "state": "started",
             "fileName": "new3.jpg",
             "warnings": [],
             "model": "test/new3.jpg",
         },
     ];
 
-    const batches = [
+    batches = [
         new ImageImport({
             _id: "test/started",
             source: "test",
@@ -175,6 +168,7 @@ const genData = () => {
         }),
 
         new ImageImport({
+            _id: "test/process-started",
             source: "test",
             state: "process.started",
             zipFile: testZip,
@@ -182,6 +176,7 @@ const genData = () => {
         }),
 
         new ImageImport({
+            _id: "test/process-completed",
             source: "test",
             state: "process.completed",
             zipFile: testZip,
@@ -190,11 +185,30 @@ const genData = () => {
         }),
 
         new ImageImport({
+            _id: "test/process-completed2",
+            source: "test",
+            state: "process.completed",
+            zipFile: testZip,
+            fileName: "test.zip",
+            results: imageResultsData,
+        }),
+
+        new ImageImport({
+            _id: "test/completed",
             source: "test",
             state: "completed",
             zipFile: testZip,
             fileName: "test.zip",
             results: imageResultsData,
+        }),
+
+        new ImageImport({
+            _id: "test/error",
+            source: "test",
+            state: "error",
+            zipFile: testZip,
+            fileName: "test.zip",
+            error: "Error opening zip file.",
         }),
     ];
 
@@ -336,6 +350,19 @@ const bindStubs = () => {
         process.nextTick(() => callback(null, matches));
     });
 
+    sandbox.stub(ImageImport, "find", (query, select, callback) => {
+        process.nextTick(() => {
+            callback(null, batches.filter((batch) =>
+                (batch.state !== "error" && batch.state !== "completed")));
+        });
+    });
+
+    sandbox.stub(ImageImport, "findById", (id, callback) => {
+        process.nextTick(() => {
+            callback(null, batches.find((batch) => batch._id === id));
+        });
+    });
+
     sandbox.stub(Source, "getSources", () => [source]);
     sandbox.stub(Source.prototype, "getDirBase", function() {
         return path.resolve(process.cwd(), `sources/${this._id}`);
@@ -346,13 +373,10 @@ const bindStubs = () => {
     });
 
     sandbox.stub(Image, "findOne", (query, callback) => {
-        let match;
-
-        if (query.hash) {
-            const id = Object.keys(images)
-                .find((id) => images[id].hash === query.hash);
-            match = images[id];
-        }
+        // NOTE(jeresig): query.hash is assumed
+        const id = Object.keys(images)
+            .find((id) => images[id].hash === query.hash);
+        const match = images[id];
 
         process.nextTick(() => callback(null, match));
     });
@@ -426,6 +450,7 @@ tap.afterEach((done) => {
 
 module.exports = {
     getBatch: () => batch,
+    getBatches: () => batches,
     getImage: () => image,
     getSource: () => source,
     getArtwork: () => artwork,
@@ -437,4 +462,5 @@ module.exports = {
     Artwork,
     ImageImport,
     Source,
+    stub: sinon.stub,
 };

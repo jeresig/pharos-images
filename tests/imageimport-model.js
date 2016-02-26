@@ -1,9 +1,13 @@
 "use strict";
 
+const path = require("path");
+
 const tap = require("tap");
 
 const init = require("./lib/init");
+const stub = init.stub;
 const req = init.req;
+const ImageImport = init.ImageImport;
 
 tap.test("url", {autoend: true}, (t) => {
     const batch = init.getBatch();
@@ -47,6 +51,147 @@ tap.test("saveState", (t) => {
     });
 });
 
+tap.test("getFilteredResults", {autoend: true}, (t) => {
+    const results = init.getBatches()
+        .map((batch) => batch.getFilteredResults());
+    t.same(results[0], {
+        errors: [],
+        models: [],
+        warnings: [],
+    });
+    t.same(results[2], {
+        "errors": [
+            {
+                "_id": "corrupted.jpg",
+                "error": "There was an error processing the image. " +
+                    "Perhaps it is malformed in some way.",
+                "fileName": "corrupted.jpg",
+            },
+            {
+                "_id": "empty.jpg",
+                "error": "The image is empty.",
+                "fileName": "empty.jpg",
+            },
+        ],
+        "models": [
+            {
+                "_id": "bar.jpg",
+                "fileName": "bar.jpg",
+                "model": "test/bar.jpg",
+                "warnings": [
+                    "A new version of the image was uploaded, replacing the " +
+                        "old one.",
+                ],
+            },
+            {
+                "_id": "foo.jpg",
+                "fileName": "foo.jpg",
+                "model": "test/foo.jpg",
+                "warnings": [
+                    "A new version of the image was uploaded, replacing the " +
+                        "old one.",
+                ],
+            },
+            {
+                "_id": "new1.jpg",
+                "fileName": "new1.jpg",
+                "model": "test/new1.jpg",
+                "warnings": [],
+            },
+            {
+                "_id": "new2.jpg",
+                "fileName": "new2.jpg",
+                "model": "test/new2.jpg",
+                "warnings": [],
+            },
+            {
+                "_id": "small.jpg",
+                "fileName": "small.jpg",
+                "model": "test/small.jpg",
+                "warnings": [
+                    "The image is too small to work with the image " +
+                    "similarity algorithm. It must be at least 150px on " +
+                    "each side.",
+                ],
+            },
+            {
+                "_id": "new3.jpg",
+                "fileName": "new3.jpg",
+                "model": "test/new3.jpg",
+                "warnings": [],
+            },
+        ],
+        "warnings": [
+            {
+                "_id": "bar.jpg",
+                "fileName": "bar.jpg",
+                "model": "test/bar.jpg",
+                "warnings": [
+                    "A new version of the image was uploaded, replacing the " +
+                        "old one.",
+                ],
+            },
+            {
+                "_id": "foo.jpg",
+                "fileName": "foo.jpg",
+                "model": "test/foo.jpg",
+                "warnings": [
+                    "A new version of the image was uploaded, replacing the " +
+                        "old one.",
+                ],
+            },
+            {
+                "_id": "small.jpg",
+                "fileName": "small.jpg",
+                "model": "test/small.jpg",
+                "warnings": [
+                    "The image is too small to work with the image " +
+                    "similarity algorithm. It must be at least 150px on " +
+                    "each side.",
+                ],
+            },
+        ],
+    });
+    t.same(results[5], {
+        errors: [],
+        models: [],
+        warnings: [],
+    });
+});
+
+tap.test("validate", (t) => {
+    const testZip = path.resolve(process.cwd(), "data", "corrupted.zip");
+
+    const batch = new ImageImport({
+        _id: "test/corrupted",
+        source: "test",
+        zipFile: testZip,
+        fileName: "corrupted.zip",
+    });
+
+    batch.validate((err) => {
+        t.error(err, "Error should be empty.");
+        t.equal(batch._id, "test/corrupted", "ID should match");
+        t.end();
+    });
+});
+
+tap.test("validate", (t) => {
+    const testZip = path.resolve(process.cwd(), "data", "corrupted.zip");
+
+    const batch = new ImageImport({
+        source: "test",
+        zipFile: testZip,
+        fileName: "corrupted.zip",
+    });
+
+    batch.validate((err) => {
+        t.error(err, "Error should be empty.");
+        t.ok(batch._id, "Should have an ID.");
+        t.end();
+    });
+});
+
 tap.test("processImages", (t) => {
     const batch = init.getBatch();
     batch.processImages((err) => {
@@ -60,5 +205,182 @@ tap.test("processImages", (t) => {
         });
 
         t.end();
+    });
+});
+
+tap.test("processImages (Corrupted File)", (t) => {
+    const testZip = path.resolve(process.cwd(), "data", "corrupted.zip");
+
+    const batch = new ImageImport({
+        _id: "test/started",
+        source: "test",
+        zipFile: testZip,
+        fileName: "corrupted.zip",
+    });
+
+    batch.processImages((err) => {
+        t.ok(err, "Expecting an error");
+        t.equal(err.message, "Error opening zip file.");
+        t.end();
+    });
+});
+
+tap.test("processImages (Empty File)", (t) => {
+    const testZip = path.resolve(process.cwd(), "data", "empty.zip");
+
+    const batch = new ImageImport({
+        _id: "test/started",
+        source: "test",
+        zipFile: testZip,
+        fileName: "empty.zip",
+    });
+
+    batch.processImages((err) => {
+        t.ok(err, "Expecting an error");
+        t.equal(err.message, "Zip file has no images in it.");
+        t.end();
+    });
+});
+
+tap.test("processImages (advance, started)", (t) => {
+    const batch = init.getBatch();
+    t.equal(batch.getCurState().name(req), "Uploaded.");
+    batch.advance((err) => {
+        t.error(err, "Error should be empty.");
+
+        const expected = init.getImageResultsData();
+
+        t.equal(batch.results.length, expected.length);
+        expected.forEach((item, i) => {
+            t.same(batch.results[i], item);
+        });
+
+        t.equal(batch.state, "process.completed");
+
+        t.end();
+    });
+});
+
+tap.test("processImages (advance, process.started)", (t) => {
+    const batch = init.getBatches()[1];
+    t.equal(batch.getCurState().name(req), "Processing...");
+    batch.advance((err) => {
+        t.error(err, "Error should be empty.");
+        t.equal(batch.results.length, 0);
+        t.equal(batch.state, "process.started");
+        t.end();
+    });
+});
+
+tap.test("processImages (advance, process.completed)", (t) => {
+    const batch = init.getBatches()[2];
+    t.equal(batch.getCurState().name(req), "Processing Completed.");
+    batch.advance((err) => {
+        t.error(err, "Error should be empty.");
+
+        const expected = init.getImageResultsData();
+
+        t.equal(batch.results.length, expected.length);
+        expected.forEach((item, i) => {
+            t.same(batch.results[i], item);
+        });
+
+        t.equal(batch.state, "completed");
+
+        t.end();
+    });
+});
+
+tap.test("processImages (advance, completed)", (t) => {
+    const batch = init.getBatches()[4];
+    t.equal(batch.getCurState().name(req), "Completed.");
+    batch.advance((err) => {
+        t.error(err, "Error should be empty.");
+
+        const expected = init.getImageResultsData();
+
+        t.equal(batch.results.length, expected.length);
+        expected.forEach((item, i) => {
+            t.same(batch.results[i], item);
+        });
+
+        t.equal(batch.state, "completed");
+
+        t.end();
+    });
+});
+
+tap.test("processImages (advance, error)", (t) => {
+    const batch = init.getBatches()[5];
+    t.notOk(batch.getCurState());
+    batch.advance((err) => {
+        t.error(err, "Error should be empty.");
+        t.equal(batch.results.length, 0);
+        t.equal(batch.state, "error");
+        t.end();
+    });
+});
+
+tap.test("processImages (advance, Corrupted File)", (t) => {
+    const testZip = path.resolve(process.cwd(), "data", "corrupted.zip");
+
+    const batch = new ImageImport({
+        _id: "test/started",
+        source: "test",
+        zipFile: testZip,
+        fileName: "corrupted.zip",
+    });
+
+    stub(batch, "save", process.nextTick);
+
+    batch.advance((err) => {
+        t.error(err, "Error should be empty.");
+        t.equal(batch.error, "Error opening zip file.");
+        t.equal(batch.results.length, 0);
+        t.equal(batch.state, "error");
+        t.end();
+    });
+});
+
+tap.test("ImageImport.advance", (t) => {
+    const checkStates = (batches, states) => {
+        t.equal(batches.length, states.length);
+        for (const batch of batches) {
+            t.equal(batch.state, states.shift());
+        }
+    };
+
+    ImageImport.find({}, "", (err, batches) => {
+        checkStates(batches,
+            ["started", "process.started", "process.completed",
+                "process.completed"]);
+
+        ImageImport.advance((err) => {
+            t.error(err, "Error should be empty.");
+
+            ImageImport.find({}, "", (err, batches) => {
+                checkStates(batches, ["process.completed", "process.started"]);
+
+                ImageImport.advance((err) => {
+                    t.error(err, "Error should be empty.");
+
+                    ImageImport.find({}, "", (err, batches) => {
+                        checkStates(batches, ["process.started"]);
+
+                        // Force all batches to be completed
+                        init.getBatches()[1].state = "completed";
+
+                        ImageImport.advance((err) => {
+                            t.error(err, "Error should be empty.");
+
+                            ImageImport.find({}, "", (err, batches) => {
+                                checkStates(batches, []);
+                                t.end();
+                            });
+                        });
+                    });
+                });
+            });
+        });
     });
 });
