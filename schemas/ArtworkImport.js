@@ -3,7 +3,6 @@
 const async = require("async");
 
 module.exports = (core) => {
-    const Artwork = core.models.Artwork;
     const Import = require("./Import")(core);
 
     const states = [
@@ -73,6 +72,7 @@ module.exports = (core) => {
         },
 
         processArtworks(callback) {
+            const Artwork = core.models.Artwork;
             const incomingIDs = {};
 
             async.eachLimit(this.results, 1, (result, callback) => {
@@ -101,9 +101,9 @@ module.exports = (core) => {
                 Artwork.find({source: this.source})
                     .lean().distinct("_id")
                     .exec((err, ids) => {
-                        ids.forEach((id) => {
+                        for (const id of ids) {
                             if (id in incomingIDs) {
-                                return;
+                                continue;
                             }
 
                             this.results.push({
@@ -113,7 +113,7 @@ module.exports = (core) => {
                                 state: "process.completed",
                                 data: {},
                             });
-                        });
+                        }
 
                         callback();
                     });
@@ -121,6 +121,8 @@ module.exports = (core) => {
         },
 
         importArtworks(callback) {
+            const Artwork = core.models.Artwork;
+
             async.eachLimit(this.results, 1, (result, callback) => {
                 if (result.result === "created") {
                     Artwork.fromData(result.data, (err, artwork) => {
@@ -140,7 +142,7 @@ module.exports = (core) => {
         updateSimilarity(callback) {
             // Update the similarity on all artworks, including the ones that
             // were just added.
-            Artwork.find({}, {}, {timeout: true}).stream()
+            core.models.Artwork.find({}, {}, {timeout: true}).stream()
                 .on("data", function(artwork) {
                     this.pause();
                     artwork.updateSimilarity(() => this.resume());

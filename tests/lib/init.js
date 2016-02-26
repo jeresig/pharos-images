@@ -328,7 +328,25 @@ const bindStubs = () => {
         }
     });
 
-    sandbox.stub(Artwork, "find", (query, callback) => {
+    sandbox.stub(Artwork, "findByIdAndUpdate", (id, update, callback) => {
+        if (artworks[id]) {
+            Object.assign(artworks[id], update);
+            process.nextTick(callback);
+        } else {
+            process.nextTick(() => callback(new Error("Artwork not found.")));
+        }
+    });
+
+    sandbox.stub(Artwork, "findByIdAndRemove", (id, update, callback) => {
+        if (artworks[id]) {
+            delete artworks[id];
+            process.nextTick(callback);
+        } else {
+            process.nextTick(() => callback(new Error("Artwork not found.")));
+        }
+    });
+
+    sandbox.stub(Artwork, "find", (query, callback, extra) => {
         const matches = [];
         const imageIds = query.$or.map((query) => query.images);
 
@@ -345,6 +363,37 @@ const bindStubs = () => {
                     break;
                 }
             }
+        }
+
+        if (!callback || extra) {
+            const ret = {
+                lean: () => ret,
+                distinct: () => ret,
+                stream: () => ret,
+                on: (name, callback) => {
+                    if (name === "data") {
+                        ret._ondata = callback.bind(ret);
+                        return;
+                    }
+
+                    ret._onclose = callback.bind(ret);
+                    process.nextTick(ret._popData);
+                },
+                pause: () => ret,
+                resume: () => {
+                    process.nextTick(ret._popData);
+                },
+                _popData: () => {
+                    if (matches.length > 0) {
+                        ret._ondata(matches.shift());
+                    } else {
+                        ret._onclose();
+                    }
+                },
+                exec: (callback) =>
+                    process.nextTick(() => callback(null, matches)),
+            };
+            return ret;
         }
 
         process.nextTick(() => callback(null, matches));
