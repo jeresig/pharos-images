@@ -37,6 +37,20 @@ module.exports = (core) => {
         },
     ];
 
+    const errors = {
+        ERROR_READING_ZIP: (req) => req.gettext("Error opening zip file."),
+        ZIP_FILE_EMPTY: (req) => req.gettext("Zip file has no images in it."),
+        MALFORMED_IMAGE: (req) => req.gettext("There was an error processing " +
+            "the image. Perhaps it is malformed in some way."),
+        EMPTY_IMAGE: (req) => req.gettext("The image is empty."),
+        NEW_VERSION: (req) => req.gettext("A new version of the image was " +
+            "uploaded, replacing the old one."),
+        TOO_SMALL: (req) => req.gettext("The image is too small to work with " +
+            "the image similarity algorithm. It must be at least 150px on " +
+            "each side."),
+        ERROR_SAVING: (req) => req.gettext("Error saving image."),
+    };
+
     const ImageImport = Import.extend({
         // The location of the uploaded zip file
         // (temporary, deleted after processing)
@@ -100,12 +114,11 @@ module.exports = (core) => {
                 })
                 .on("close", () => {
                     if (zipError) {
-                        return callback(new Error("Error opening zip file."));
+                        return callback(new Error("ERROR_READING_ZIP"));
                     }
 
                     if (files.length === 0) {
-                        return callback(
-                            new Error("Zip file has no images in it."));
+                        return callback(new Error("ZIP_FILE_EMPTY"));
                     }
 
                     // Import all of the files as images
@@ -173,6 +186,13 @@ module.exports = (core) => {
                 warnings: this.results
                     .filter((result) => (result.warnings || []).length !== 0),
             };
+        },
+    });
+
+    Object.assign(ImageImport.statics, {
+        getError(err, req) {
+            const msg = errors[err];
+            return msg ? msg(req) : err;
         },
     });
 

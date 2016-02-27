@@ -147,24 +147,27 @@ module.exports = function(core, app) {
                     const batch = new ArtworkImport({
                         source: source._id,
                         fileName,
-                        results: results.map((data) => ({
-                            data,
-                            result: "unknown",
-                        })),
-                        state: "started",
                     });
 
-                    batch.save((err) => {
+                    batch.setResults(inputStreams, (err) => {
                         if (err) {
                             console.error(err);
                             return next(new Error(
                                 req.gettext("Error saving data file.")));
                         }
 
-                        // TODO: Come up with a beter redirect
-                        // TODO: Display a message stating that the upload
-                        // was successful.
-                        res.redirect(`/source/${source._id}/admin`);
+                        batch.save((err) => {
+                            if (err) {
+                                console.error(err);
+                                return next(new Error(
+                                    req.gettext("Error saving data file.")));
+                            }
+
+                            // TODO: Come up with a beter redirect
+                            // TODO: Display a message stating that the upload
+                            // was successful.
+                            res.redirect(`/source/${source._id}/admin`);
+                        });
                     });
                 });
             });

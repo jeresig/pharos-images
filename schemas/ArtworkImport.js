@@ -54,6 +54,20 @@ module.exports = (core) => {
         },
     ];
 
+    const errors = {
+        ABANDONED: (req) => req.gettext("Data import abandoned."),
+        ERROR_READING_DATA: (req) => req.gettext("Error reading data from " +
+            "provided data files."),
+    };
+
+    // TODO(jeresig): Remove this.
+    const req = {
+        format: (msg, fields) =>
+            msg.replace(/%\((.*?)\)s/g, (all, name) => fields[name]),
+        gettext: (msg) => msg,
+        lang: "en",
+    };
+
     const ArtworkImport = Import.extend({
         // The name of the original file (e.g. `foo.json`)
         fileName: {
@@ -63,12 +77,31 @@ module.exports = (core) => {
     });
 
     Object.assign(ArtworkImport.methods, {
-        url() {
-            return `/source/${this.source}/import?artworks=${this._id}`;
+        url(req) {
+            return core.urls.gen(req.lang,
+                `/source/${this.source}/import?artworks=${this._id}`);
         },
 
         getStates() {
             return states;
+        },
+
+        setResults(inputStreams, callback) {
+            const source = this.getSource();
+
+            source.processFiles(inputStreams, (err, results) => {
+                if (err) {
+                    this.error = err.message;
+                    return this.saveState("error", callback);
+                }
+
+                this.results = results.map((data) => ({
+                    data,
+                    result: "unknown",
+                }));
+
+                callback();
+            });
         },
 
         processArtworks(callback) {
@@ -76,14 +109,16 @@ module.exports = (core) => {
             const incomingIDs = {};
 
             async.eachLimit(this.results, 1, (result, callback) => {
-                Artwork.fromData(result.data, (err, artwork, warnings) => {
+                const data = Object.assign(result.data, {source: this.source});
+
+                Artwork.fromData(data, req, (err, artwork, warnings, isNew) => {
                     if (err) {
                         result.result = "error";
                         result.error = err.message;
                         return callback();
                     }
 
-                    if (artwork.isNew) {
+                    if (isNew) {
                         result.result = "created";
 
                     } else {
@@ -93,7 +128,7 @@ module.exports = (core) => {
                         result.result = result.diff ? "changed" : "unchanged";
                     }
 
-                    result.warnings = warnings || [];
+                    result.warnings = warnings;
                     callback();
                 });
             }, () => {
@@ -151,7 +186,7 @@ module.exports = (core) => {
         },
 
         abandon(callback) {
-            this.error = "Data import abandoned.";
+            this.error = "ABANDONED";
             this.saveState("error", callback);
         },
 
@@ -167,6 +202,13 @@ module.exports = (core) => {
                 warnings: this.results
                     .filter((result) => (result.warnings || []).length !== 0),
             };
+        },
+    });
+
+    Object.assign(ArtworkImport.statics, {
+        getError(err, req) {
+            const msg = errors[err];
+            return msg ? msg(req) : err;
         },
     });
 

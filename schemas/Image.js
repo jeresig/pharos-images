@@ -215,10 +215,7 @@ module.exports = (core) => {
 
                 images.processImage(file, sourceDir, (err, hash) => {
                     if (err) {
-                        return callback(new Error(
-                            "There was an error processing the image. " +
-                            "Perhaps it is malformed in some way."
-                        ));
+                        return callback(new Error("MALFORMED_IMAGE"));
                     }
 
                     // The same image was uploaded, we can just skip the rest
@@ -229,17 +226,14 @@ module.exports = (core) => {
                     images.getSize(file, (err, size) => {
                         /* istanbul ignore if */
                         if (err) {
-                            return callback(new Error(
-                                "There was an error getting the dimensions " +
-                                "of the image."
-                            ));
+                            return callback(new Error("MALFORMED_IMAGE"));
                         }
 
                         const width = size.width;
                         const height = size.height;
 
                         if (width <= 1 || height <= 1) {
-                            return callback(new Error("The image is empty."));
+                            return callback(new Error("EMPTY_IMAGE"));
                         }
 
                         const data = {
@@ -258,27 +252,18 @@ module.exports = (core) => {
                             model = new core.models.Image(data);
 
                         } else {
-                            warnings.push(
-                                "A new version of the image was uploaded, " +
-                                "replacing the old one."
-                            );
-
+                            warnings.push("NEW_VERSION");
                             model.set(data);
                         }
 
                         if (width < 150 || height < 150) {
-                            warnings.push(
-                                "The image is too small to work with the " +
-                                "image similarity algorithm. It must be " +
-                                "at least 150px on each side."
-                            );
+                            warnings.push("TOO_SMALL");
                         }
 
                         model.validate((err) => {
                             /* istanbul ignore if */
                             if (err) {
-                                return callback(new Error(
-                                    "Error saving image."));
+                                return callback(new Error("ERROR_SAVING"));
                             }
 
                             callback(null, model, warnings);

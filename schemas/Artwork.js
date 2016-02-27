@@ -378,7 +378,7 @@ module.exports = (core) => {
                                 "There was an error with the data format.")));
                         }
 
-                        callback(null, model, warnings);
+                        callback(null, model, warnings, creating);
                     });
                 });
             });
@@ -508,7 +508,9 @@ module.exports = (core) => {
 
     // Dynamically generate the _id attribute
     Artwork.pre("validate", function(next) {
-        this._id = `${this.source}/${this.id}`;
+        if (!this._id) {
+            this._id = `${this.source}/${this.id}`;
+        }
         next();
     });
 
@@ -516,6 +518,7 @@ module.exports = (core) => {
     Artwork.pre("save", function(next) {
         // Always updated the modified time on every save
         this.modified = new Date();
+        next();
     });
 
     return Artwork;

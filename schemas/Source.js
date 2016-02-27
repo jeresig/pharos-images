@@ -53,7 +53,7 @@ module.exports = (core) => {
         },
 
         processFiles(files, callback) {
-            this.getConverter().process(files, callback);
+            this.getConverter().processFiles(files, callback);
         },
 
         cacheNumArtworks(callback) {

@@ -143,7 +143,7 @@ tap.test("Image.fromFile: New Image (Empty File)", (t) => {
 
     Image.fromFile(batch, testFile, (err, image, warnings) => {
         t.ok(err, "Has error object.");
-        t.equal(err.message, "The image is empty.", "Has error message.");
+        t.equal(err.message, "EMPTY_IMAGE", "Has error message.");
         t.notOk(image, "No image object");
         t.notOk(warnings, "No warnings object.");
         t.end();
@@ -160,8 +160,7 @@ tap.test("Image.fromFile: New Image (Corrupted File)", (t) => {
 
     Image.fromFile(batch, testFile, (err, image, warnings) => {
         t.ok(err, "Has error object.");
-        t.equal(err.message, "There was an error processing the image. " +
-            "Perhaps it is malformed in some way.", "Has error message.");
+        t.equal(err.message, "MALFORMED_IMAGE", "Has error message.");
         t.notOk(image, "No image object");
         t.notOk(warnings, "No warnings object.");
         t.end();
@@ -179,9 +178,7 @@ tap.test("Image.fromFile: New Image (Small File)", (t) => {
     Image.fromFile(batch, testFile, (err, image, warnings) => {
         t.error(err, "No error should be thrown.");
         t.ok(image, "Image exists.");
-        t.same(warnings, ["The image is too small to work with the image " +
-            "similarity algorithm. It must be at least 150px on each " +
-            "side."], "One warning.");
+        t.same(warnings, ["TOO_SMALL"], "One warning.");
         t.end();
     });
 });
@@ -197,8 +194,7 @@ tap.test("Image.fromFile: Updating Image", (t) => {
     Image.fromFile(batch, testFile, (err, image, warnings) => {
         t.error(err, "No error should be thrown.");
         t.ok(image, "Image exists.");
-        t.same(warnings, ["A new version of the image was uploaded, " +
-            "replacing the old one."], "One warning.");
+        t.same(warnings, ["NEW_VERSION"], "One warning.");
         t.end();
     });
 });

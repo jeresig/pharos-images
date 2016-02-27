@@ -20,11 +20,14 @@ const Image = core.models.Image;
 const Artwork = core.models.Artwork;
 const Source = core.models.Source;
 const ImageImport = core.models.ImageImport;
+const ArtworkImport = core.models.ArtworkImport;
 
 // Data used for testing
 let source;
 let batch;
 let batches;
+let artworkBatch;
+let artworkBatches;
 let imageResultsData;
 let images;
 let image;
@@ -41,11 +44,27 @@ let sandbox;
 const testFiles = {};
 const dataDir = path.resolve(__dirname, "..", "data");
 
-fs.readdirSync(dataDir).forEach((file) => {
-    if (file.endsWith(".jpg") || file.endsWith(".zip")) {
+for (const file of fs.readdirSync(dataDir)) {
+    if (/\.\w+$/.test(file)) {
         testFiles[file] = fs.readFileSync(path.resolve(dataDir, file));
     }
-});
+}
+
+// Converters used for testing
+const converterFiles = {};
+const converterDir = path.resolve(__dirname, "..", "..", "converters");
+
+for (const file of fs.readdirSync(converterDir)) {
+    const filePath = path.resolve(converterDir, file);
+
+    // Require the file now so that other dependencies are pre-loaded
+    if (file === "default.js") {
+        require(filePath);
+    }
+
+    // However we still need to import the files
+    converterFiles[file] = fs.readFileSync(filePath);
+}
 
 const genData = () => {
     artworkData = {
@@ -65,24 +84,28 @@ const genData = () => {
     artworks = {
         "test/1234": new Artwork(Object.assign({}, artworkData, {
             _id: "test/1234",
+            id: "1234",
             images: ["test/foo.jpg"],
             defaultImageHash: "4567",
         })),
 
         "test/1235": new Artwork(Object.assign({}, artworkData, {
             _id: "test/1235",
+            id: "1235",
             images: ["test/bar.jpg"],
             defaultImageHash: "4568",
         })),
 
         "test/1236": new Artwork(Object.assign({}, artworkData, {
             _id: "test/1236",
+            id: "1236",
             images: ["test/zoo.jpg", "test/zoo2.jpg", "test/zoo3.jpg"],
             defaultImageHash: "4569",
         })),
 
         "test/1237": new Artwork(Object.assign({}, artworkData, {
             _id: "test/1237",
+            id: "1237",
             images: ["test/nosimilar.jpg"],
             defaultImageHash: "4570",
         })),
@@ -104,28 +127,25 @@ const genData = () => {
             "_id": "bar.jpg",
             "fileName": "bar.jpg",
             "warnings": [
-                "A new version of the image was uploaded, replacing the " +
-                    "old one.",
+                "NEW_VERSION",
             ],
             "model": "test/bar.jpg",
         },
         {
             "_id": "corrupted.jpg",
             "fileName": "corrupted.jpg",
-            "error": "There was an error processing the image. Perhaps " +
-                "it is malformed in some way.",
+            "error": "MALFORMED_IMAGE",
         },
         {
             "_id": "empty.jpg",
             "fileName": "empty.jpg",
-            "error": "The image is empty.",
+            "error": "EMPTY_IMAGE",
         },
         {
             "_id": "foo.jpg",
             "fileName": "foo.jpg",
             "warnings": [
-                "A new version of the image was uploaded, replacing the " +
-                    "old one.",
+                "NEW_VERSION",
             ],
             "model": "test/foo.jpg",
         },
@@ -145,9 +165,7 @@ const genData = () => {
             "_id": "small.jpg",
             "fileName": "small.jpg",
             "warnings": [
-                "The image is too small to work with the image " +
-                    "similarity algorithm. It must be at least 150px " +
-                    "on each side.",
+                "TOO_SMALL",
             ],
             "model": "test/small.jpg",
         },
@@ -208,7 +226,7 @@ const genData = () => {
             state: "error",
             zipFile: testZip,
             fileName: "test.zip",
-            error: "Error opening zip file.",
+            error: "ERROR_READING_ZIP",
         }),
     ];
 
@@ -217,6 +235,20 @@ const genData = () => {
     }
 
     batch = batches[0];
+
+    artworkBatches = [
+        new ArtworkImport({
+            _id: "test/started",
+            fileName: "data.json",
+            source: "test",
+        }),
+    ];
+
+    for (const artworkBatch of artworkBatches) {
+        sinon.stub(artworkBatch, "save", process.nextTick);
+    }
+
+    artworkBatch = artworkBatches[0];
 
     images = {
         "test/foo.jpg": new Image({
@@ -347,28 +379,38 @@ const bindStubs = () => {
     });
 
     sandbox.stub(Artwork, "find", (query, callback, extra) => {
-        const matches = [];
-        const imageIds = query.$or.map((query) => query.images);
+        let matches = [];
 
-        for (const id in artworks) {
-            const artwork = artworks[id];
+        if (query.$or) {
+            const imageIds = query.$or.map((query) => query.images);
 
-            if (query._id.$ne === id) {
-                continue;
-            }
+            for (const id in artworks) {
+                const artwork = artworks[id];
 
-            for (const imageId of imageIds) {
-                if (artwork.images.indexOf(imageId) >= 0) {
-                    matches.push(artwork);
-                    break;
+                if (query._id.$ne === id) {
+                    continue;
+                }
+
+                for (const imageId of imageIds) {
+                    if (artwork.images.indexOf(imageId) >= 0) {
+                        matches.push(artwork);
+                        break;
+                    }
                 }
             }
+        } else if (query.source) {
+            matches = Object.keys(artworks).filter((id) =>
+                artworks[id].source === query.source)
+                .map((id) => artworks[id]);
         }
 
         if (!callback || extra) {
             const ret = {
                 lean: () => ret,
-                distinct: () => ret,
+                distinct: (name) => {
+                    matches = matches.map((match) => match[name]);
+                    return ret;
+                },
                 stream: () => ret,
                 on: (name, callback) => {
                     if (name === "data") {
@@ -409,6 +451,19 @@ const bindStubs = () => {
     sandbox.stub(ImageImport, "findById", (id, callback) => {
         process.nextTick(() => {
             callback(null, batches.find((batch) => batch._id === id));
+        });
+    });
+
+    sandbox.stub(ArtworkImport, "find", (query, select, callback) => {
+        process.nextTick(() => {
+            callback(null, artworkBatches.filter((batch) =>
+                (batch.state !== "error" && batch.state !== "completed")));
+        });
+    });
+
+    sandbox.stub(ArtworkImport, "findById", (id, callback) => {
+        process.nextTick(() => {
+            callback(null, artworkBatches.find((batch) => batch._id === id));
         });
     });
 
@@ -486,6 +541,7 @@ tap.beforeEach((done) => {
             "thumbs": {},
         },
         "data": testFiles,
+        "converters": converterFiles,
     });
 
     done();
@@ -500,6 +556,8 @@ tap.afterEach((done) => {
 module.exports = {
     getBatch: () => batch,
     getBatches: () => batches,
+    getArtworkBatch: () => artworkBatch,
+    getArtworkBatches: () => artworkBatches,
     getImage: () => image,
     getSource: () => source,
     getArtwork: () => artwork,
@@ -510,6 +568,7 @@ module.exports = {
     Image,
     Artwork,
     ImageImport,
+    ArtworkImport,
     Source,
     stub: sinon.stub,
 };

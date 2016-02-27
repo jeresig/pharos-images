@@ -51,6 +51,15 @@ tap.test("saveState", (t) => {
     });
 });
 
+tap.test("getError", {autoend: true}, (t) => {
+    const errors = ["ERROR_READING_ZIP", "ZIP_FILE_EMPTY", "MALFORMED_IMAGE",
+        "EMPTY_IMAGE", "NEW_VERSION", "TOO_SMALL", "ERROR_SAVING"];
+    for (const error of errors) {
+        t.ok(ImageImport.getError(error, req), error);
+        t.notEqual(ImageImport.getError(error, req), error, error);
+    }
+});
+
 tap.test("getFilteredResults", {autoend: true}, (t) => {
     const results = init.getBatches()
         .map((batch) => batch.getFilteredResults());
@@ -63,13 +72,12 @@ tap.test("getFilteredResults", {autoend: true}, (t) => {
         "errors": [
             {
                 "_id": "corrupted.jpg",
-                "error": "There was an error processing the image. " +
-                    "Perhaps it is malformed in some way.",
+                "error": "MALFORMED_IMAGE",
                 "fileName": "corrupted.jpg",
             },
             {
                 "_id": "empty.jpg",
-                "error": "The image is empty.",
+                "error": "EMPTY_IMAGE",
                 "fileName": "empty.jpg",
             },
         ],
@@ -79,8 +87,7 @@ tap.test("getFilteredResults", {autoend: true}, (t) => {
                 "fileName": "bar.jpg",
                 "model": "test/bar.jpg",
                 "warnings": [
-                    "A new version of the image was uploaded, replacing the " +
-                        "old one.",
+                    "NEW_VERSION",
                 ],
             },
             {
@@ -88,8 +95,7 @@ tap.test("getFilteredResults", {autoend: true}, (t) => {
                 "fileName": "foo.jpg",
                 "model": "test/foo.jpg",
                 "warnings": [
-                    "A new version of the image was uploaded, replacing the " +
-                        "old one.",
+                    "NEW_VERSION",
                 ],
             },
             {
@@ -109,9 +115,7 @@ tap.test("getFilteredResults", {autoend: true}, (t) => {
                 "fileName": "small.jpg",
                 "model": "test/small.jpg",
                 "warnings": [
-                    "The image is too small to work with the image " +
-                    "similarity algorithm. It must be at least 150px on " +
-                    "each side.",
+                    "TOO_SMALL",
                 ],
             },
             {
@@ -127,8 +131,7 @@ tap.test("getFilteredResults", {autoend: true}, (t) => {
                 "fileName": "bar.jpg",
                 "model": "test/bar.jpg",
                 "warnings": [
-                    "A new version of the image was uploaded, replacing the " +
-                        "old one.",
+                    "NEW_VERSION",
                 ],
             },
             {
@@ -136,8 +139,7 @@ tap.test("getFilteredResults", {autoend: true}, (t) => {
                 "fileName": "foo.jpg",
                 "model": "test/foo.jpg",
                 "warnings": [
-                    "A new version of the image was uploaded, replacing the " +
-                        "old one.",
+                    "NEW_VERSION",
                 ],
             },
             {
@@ -145,9 +147,7 @@ tap.test("getFilteredResults", {autoend: true}, (t) => {
                 "fileName": "small.jpg",
                 "model": "test/small.jpg",
                 "warnings": [
-                    "The image is too small to work with the image " +
-                    "similarity algorithm. It must be at least 150px on " +
-                    "each side.",
+                    "TOO_SMALL",
                 ],
             },
         ],
@@ -220,7 +220,7 @@ tap.test("processImages (Corrupted File)", (t) => {
 
     batch.processImages((err) => {
         t.ok(err, "Expecting an error");
-        t.equal(err.message, "Error opening zip file.");
+        t.equal(err.message, "ERROR_READING_ZIP");
         t.end();
     });
 });
@@ -237,7 +237,7 @@ tap.test("processImages (Empty File)", (t) => {
 
     batch.processImages((err) => {
         t.ok(err, "Expecting an error");
-        t.equal(err.message, "Zip file has no images in it.");
+        t.equal(err.message, "ZIP_FILE_EMPTY");
         t.end();
     });
 });
@@ -335,7 +335,7 @@ tap.test("processImages (advance, Corrupted File)", (t) => {
 
     batch.advance((err) => {
         t.error(err, "Error should be empty.");
-        t.equal(batch.error, "Error opening zip file.");
+        t.equal(batch.error, "ERROR_READING_ZIP");
         t.equal(batch.results.length, 0);
         t.equal(batch.state, "error");
         t.end();

@@ -14,11 +14,10 @@ module.exports = {
             .on("data", (data) => {
                 results.push(data);
             })
-            .on("error", (err) => {
+            .on("error", function(err) {
                 this.destroy();
-                // TODO(jeresig): Transmit useful error message back
-                console.error(err);
-                callback(new Error("Error reading data from the file."));
+                // TODO(jeresig): Transmit more friendly error message back
+                callback(err);
             })
             .on("end", () => {
                 callback(null, results);

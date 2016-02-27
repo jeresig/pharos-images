@@ -8,7 +8,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2016-02-26 23:13+0000\n"
+"POT-Creation-Date: 2016-02-27 22:46+0000\n"
 
 #: logic/admin.js:23
 #: logic/admin.js:58
@@ -41,7 +41,8 @@ msgstr ""
 msgid "No data files specified."
 msgstr ""
 
-#: logic/admin.js:161
+#: logic/admin.js:156
+#: logic/admin.js:163
 msgid "Error saving data file."
 msgstr ""
 
@@ -186,6 +187,46 @@ msgstr ""
 #: schemas/ArtworkImport.js:53
 #: schemas/ImageImport.js:36
 msgid "Completed."
+msgstr ""
+
+#: schemas/ArtworkImport.js:58
+msgid "Data import abandoned."
+msgstr ""
+
+#: schemas/ArtworkImport.js:59
+msgid "Error reading data from provided data files."
+msgstr ""
+
+#: schemas/ImageImport.js:41
+msgid "Error opening zip file."
+msgstr ""
+
+#: schemas/ImageImport.js:42
+msgid "Zip file has no images in it."
+msgstr ""
+
+#: schemas/ImageImport.js:43
+msgid ""
+"There was an error processing the image. Perhaps it is malformed in some "
+"way."
+msgstr ""
+
+#: schemas/ImageImport.js:45
+msgid "The image is empty."
+msgstr ""
+
+#: schemas/ImageImport.js:46
+msgid "A new version of the image was uploaded, replacing the old one."
+msgstr ""
+
+#: schemas/ImageImport.js:48
+msgid ""
+"The image is too small to work with the image similarity algorithm. It must "
+"be at least 150px on each side."
+msgstr ""
+
+#: schemas/ImageImport.js:51
+msgid "Error saving image."
 msgstr ""
 
 #: server/routes.js:30
