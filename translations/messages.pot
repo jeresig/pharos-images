@@ -8,7 +8,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2016-02-27 22:51+0000\n"
+"POT-Creation-Date: 2016-02-28 15:40+0000\n"
 
 #: logic/admin.js:23
 #: logic/admin.js:58
@@ -80,76 +80,76 @@ msgstr ""
 msgid "Uploaded Image"
 msgstr ""
 
-#: schemas/Artwork.js:28
+#: schemas/Artwork.js:31
 msgid "IDs can only contain letters, numbers, underscores, and hyphens."
 msgstr ""
 
-#: schemas/Artwork.js:64
+#: schemas/Artwork.js:67
 msgid "`lang` must only be one of following languages: %(langs)s."
 msgstr ""
 
-#: schemas/Artwork.js:75
+#: schemas/Artwork.js:78
 msgid "`url` must be properly-formatted URL."
 msgstr ""
 
-#: schemas/Artwork.js:90
+#: schemas/Artwork.js:93
 msgid "Images must be a valid image file name. For example: `image.jpg`."
 msgstr ""
 
-#: schemas/Artwork.js:116
+#: schemas/Artwork.js:119
 msgid "Dimensions must have a unit specified and at least a width or height."
 msgstr ""
 
-#: schemas/Artwork.js:126
+#: schemas/Artwork.js:129
 #: schemas/Name.js:71
 msgid "Dates must have a start or end specified."
 msgstr ""
 
-#: schemas/Artwork.js:145
+#: schemas/Artwork.js:148
 msgid "`objectType` must be one of the following types: %(types)s."
 msgstr ""
 
-#: schemas/Artwork.js:161
+#: schemas/Artwork.js:164
 msgid "Locations must have a name or city specified."
 msgstr ""
 
-#: schemas/Artwork.js:226
+#: schemas/Artwork.js:229
 msgid "Artwork"
 msgstr ""
 
-#: schemas/Artwork.js:341
+#: schemas/Artwork.js:363
 msgid "Image file not found: %(fileName)s"
 msgstr ""
 
-#: schemas/Artwork.js:351
+#: schemas/Artwork.js:373
 msgid "Error accessing image data."
 msgstr ""
 
-#: schemas/Artwork.js:359
+#: schemas/Artwork.js:381
 msgid "No images found."
 msgstr ""
 
-#: schemas/Artwork.js:377
+#: schemas/Artwork.js:401
 msgid "There was an error with the data format."
 msgstr ""
 
-#: schemas/Artwork.js:398
+#: schemas/Artwork.js:427
 msgid "Unrecognized field `%(field)s`."
 msgstr ""
 
-#: schemas/Artwork.js:418
+#: schemas/Artwork.js:447
 msgid "`%(field)s` is the wrong type. Expected a %(type)s."
 msgstr ""
 
-#: schemas/Artwork.js:436
+#: schemas/Artwork.js:465
 msgid "`%(field)s` value is the wrong type. Expected a %(type)s."
 msgstr ""
 
-#: schemas/Artwork.js:488
+#: schemas/Artwork.js:517
 msgid "Required field `%(field)s` is empty."
 msgstr ""
 
-#: schemas/Artwork.js:492
+#: schemas/Artwork.js:521
 msgid "Recommended field `%(field)s` is empty."
 msgstr ""
 

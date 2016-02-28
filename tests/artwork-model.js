@@ -44,7 +44,12 @@ tap.test("getSource", {autoend: true}, (t) => {
 tap.test("date", {autoend: true}, (t) => {
     const artwork = init.getArtwork();
     t.same(artwork.date.toJSON(),
-        {start: 1456, end: 1457, circa: true, years: []},
+        {
+            _id: "ca. 1456-1457",
+            start: 1456,
+            end: 1457,
+            circa: true,
+        },
         "Get Date");
 });
 

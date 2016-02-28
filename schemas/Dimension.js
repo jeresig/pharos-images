@@ -21,9 +21,18 @@ module.exports = (core) => {
         unit: {type: String, es_indexed: true},
     });
 
+    Dimension.methods = {
+        toJSON() {
+            const obj = this.toObject();
+            delete obj.original;
+            return obj;
+        },
+    };
+
     // Dynamically generate the _id attribute
     Dimension.pre("validate", function(next) {
-        this._id = this.original || this.width + this.height;
+        this._id = this.original ||
+            [this.width, this.height, this.unit].join(",");
         next();
     });
 

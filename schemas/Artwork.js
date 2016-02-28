@@ -4,6 +4,9 @@ const async = require("async");
 const parseDimensions = require("parse-dimensions");
 const yearRange = require("yearrange");
 const validUrl = require("valid-url");
+const jdp = require("jsondiffpatch").create({
+    objectHash: (obj) => obj._id,
+});
 
 const locales = require("../config/locales.json");
 const types = require("../logic/shared/types.js");
@@ -319,6 +322,25 @@ module.exports = (core) => {
         return typeof value === "string" ? false : "string";
     };
 
+    const stripProp = (obj, name) => {
+        if (!obj) {
+            return obj;
+        }
+
+        delete obj[name];
+
+        for (const prop in obj) {
+            const value = obj[prop];
+            if (Array.isArray(value)) {
+                value.forEach((item) => stripProp(item, name));
+            } else if (typeof value === "object") {
+                stripProp(value, name);
+            }
+        }
+
+        return obj;
+    };
+
     Artwork.statics = {
         fromData(tmpData, req, callback) {
             const lint = this.lintData(tmpData, req);
@@ -364,10 +386,12 @@ module.exports = (core) => {
                     data.images = filteredImages.map((image) => image._id);
 
                     let model = artwork;
+                    let original;
 
                     if (creating) {
                         model = new core.models.Artwork(data);
                     } else {
+                        original = model.toJSON();
                         model.set(data);
                     }
 
@@ -376,6 +400,11 @@ module.exports = (core) => {
                         if (err) {
                             return callback(new Error(req.gettext(
                                 "There was an error with the data format.")));
+                        }
+
+                        if (!creating) {
+                            model.diff = stripProp(
+                                jdp.diff(original, model.toJSON()), "_id");
                         }
 
                         callback(null, model, warnings, creating);

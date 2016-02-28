@@ -12,6 +12,7 @@ const path = require("path");
 const tap = require("tap");
 const sinon = require("sinon");
 const mockfs = require("mock-fs");
+const async = require("async");
 
 const core = require("../../core");
 
@@ -75,9 +76,22 @@ const genData = () => {
         images: ["foo.jpg"],
         title: "Test",
         objectType: "painting",
-        artists: [{name: "Test"}],
-        dimensions: [{width: 123, unit: "mm"}],
-        dates: [{start: 1456, end: 1457, circa: true}],
+        artists: [{
+            name: "Test",
+            dates: [{
+                original: "ca. 1456-1457",
+                start: 1456,
+                end: 1457,
+                circa: true,
+            }],
+        }],
+        dimensions: [{width: 123, height: 130, unit: "mm"}],
+        dates: [{
+            original: "ca. 1456-1457",
+            start: 1456,
+            end: 1457,
+            circa: true,
+        }],
         locations: [{city: "New York City"}],
     };
 
@@ -110,6 +124,12 @@ const genData = () => {
             defaultImageHash: "4570",
         })),
     };
+
+    for (const id in artworks) {
+        const artwork = artworks[id];
+        artwork.validateSync();
+        artwork.isNew = false;
+    }
 
     artwork = artworks["test/1234"];
 
@@ -544,7 +564,9 @@ tap.beforeEach((done) => {
         "converters": converterFiles,
     });
 
-    done();
+    async.each(Object.keys(artworks), (id, callback) => {
+        artworks[id].validate(callback);
+    }, done);
 });
 
 tap.afterEach((done) => {

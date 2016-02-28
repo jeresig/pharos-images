@@ -122,7 +122,7 @@ module.exports = (core) => {
                         result.result = "created";
 
                     } else {
-                        result.diff = artwork._diff;
+                        result.diff = artwork.diff;
                         incomingIDs[artwork._id] = true;
                         result.model = artwork._id;
                         result.result = result.diff ? "changed" : "unchanged";

@@ -23,11 +23,11 @@
         "objectType": "painting",
         "artists": [{
             "name": "Test",
-            "dates": ["ca. 1456-1457"],
+            "dates": ["ca. 1456-1458"],
         }],
-        "dimensions": [{"width": 123, "height": 130, "unit": "mm"}],
-        "dates": ["ca. 1456-1457"],
-        "locations": [{"city": "New York City"}],
+        "dimensions": [{"width": 123, "height": 140, "unit": "mm"}],
+        "dates": ["ca. 1455-1457"],
+        "locations": [{"city": "New York City 2"}],
     },
     {
         "id": "9234",

@@ -30,6 +30,15 @@ module.exports = (core) => {
         years: [{type: Number, es_indexed: true}],
     });
 
+    YearRange.methods = {
+        toJSON() {
+            const obj = this.toObject();
+            delete obj.original;
+            delete obj.years;
+            return obj;
+        },
+    };
+
     // We generate a list of years in which the artwork exists, in order
     // to improve querying inside Elasticsearch
     YearRange.pre("validate", function(next) {
