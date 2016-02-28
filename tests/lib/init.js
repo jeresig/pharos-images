@@ -262,6 +262,21 @@ const genData = () => {
             fileName: "data.json",
             source: "test",
         }),
+        new ArtworkImport({
+            _id: "test/started",
+            fileName: "data.json",
+            source: "test",
+            state: "completed",
+            results: [],
+        }),
+        new ArtworkImport({
+            _id: "test/started",
+            fileName: "data.json",
+            source: "test",
+            state: "error",
+            error: "ABANDONED",
+            results: [],
+        }),
     ];
 
     for (const artworkBatch of artworkBatches) {
@@ -380,22 +395,9 @@ const bindStubs = () => {
         }
     });
 
-    sandbox.stub(Artwork, "findByIdAndUpdate", (id, update, callback) => {
-        if (artworks[id]) {
-            Object.assign(artworks[id], update);
-            process.nextTick(callback);
-        } else {
-            process.nextTick(() => callback(new Error("Artwork not found.")));
-        }
-    });
-
-    sandbox.stub(Artwork, "findByIdAndRemove", (id, update, callback) => {
-        if (artworks[id]) {
-            delete artworks[id];
-            process.nextTick(callback);
-        } else {
-            process.nextTick(() => callback(new Error("Artwork not found.")));
-        }
+    sandbox.stub(Artwork, "findByIdAndRemove", (id, callback) => {
+        delete artworks[id];
+        process.nextTick(callback);
     });
 
     sandbox.stub(Artwork, "find", (query, callback, extra) => {
@@ -422,6 +424,8 @@ const bindStubs = () => {
             matches = Object.keys(artworks).filter((id) =>
                 artworks[id].source === query.source)
                 .map((id) => artworks[id]);
+        } else {
+            matches = Object.keys(artworks).map((id) => artworks[id]);
         }
 
         if (!callback || extra) {
@@ -435,11 +439,12 @@ const bindStubs = () => {
                 on: (name, callback) => {
                     if (name === "data") {
                         ret._ondata = callback.bind(ret);
-                        return;
+                        return ret;
                     }
 
                     ret._onclose = callback.bind(ret);
                     process.nextTick(ret._popData);
+                    return ret;
                 },
                 pause: () => ret,
                 resume: () => {
@@ -459,6 +464,25 @@ const bindStubs = () => {
         }
 
         process.nextTick(() => callback(null, matches));
+    });
+
+    const fromData = Artwork.fromData;
+
+    sandbox.stub(Artwork, "fromData", (tmpData, req, callback) => {
+        fromData.call(Artwork, tmpData, req,
+            (err, artwork, warnings, creating) => {
+                if (artwork && !artwork.save.restore) {
+                    sandbox.stub(artwork, "save", (callback) => {
+                        if (!(artwork._id in artworks)) {
+                            artworks[artwork._id] = artwork;
+                        }
+
+                        process.nextTick(callback);
+                    });
+                }
+
+                callback(err, artwork, warnings, creating);
+            });
     });
 
     sandbox.stub(ImageImport, "find", (query, select, callback) => {
@@ -579,7 +603,6 @@ module.exports = {
     getBatch: () => batch,
     getBatches: () => batches,
     getArtworkBatch: () => artworkBatch,
-    getArtworkBatches: () => artworkBatches,
     getImage: () => image,
     getSource: () => source,
     getArtwork: () => artwork,

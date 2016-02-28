@@ -8,7 +8,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2016-02-28 15:40+0000\n"
+"POT-Creation-Date: 2016-02-28 23:26+0000\n"
 
 #: logic/admin.js:23
 #: logic/admin.js:58
@@ -195,6 +195,14 @@ msgstr ""
 
 #: schemas/ArtworkImport.js:59
 msgid "Error reading data from provided data files."
+msgstr ""
+
+#: schemas/ArtworkImport.js:61
+msgid "Error saving record."
+msgstr ""
+
+#: schemas/ArtworkImport.js:62
+msgid "Error deleting existing record."
 msgstr ""
 
 #: schemas/ImageImport.js:41

@@ -32,7 +32,7 @@ module.exports = (core) => {
             id: "import.completed",
             name: (req) => req.gettext("Data imported."),
             advance(batch, callback) {
-                batch.updateSimilarity();
+                batch.updateSimilarity(callback);
             },
         },
         {
@@ -58,6 +58,8 @@ module.exports = (core) => {
         ABANDONED: (req) => req.gettext("Data import abandoned."),
         ERROR_READING_DATA: (req) => req.gettext("Error reading data from " +
             "provided data files."),
+        ERROR_SAVING: (req) => req.gettext("Error saving record."),
+        ERROR_DELETING: (req) => req.gettext("Error deleting existing record."),
     };
 
     // TODO(jeresig): Remove this.
@@ -112,6 +114,8 @@ module.exports = (core) => {
                 const data = Object.assign(result.data, {source: this.source});
 
                 Artwork.fromData(data, req, (err, artwork, warnings, isNew) => {
+                    result.state = "process.completed";
+
                     if (err) {
                         result.result = "error";
                         result.error = err.message;
@@ -155,20 +159,64 @@ module.exports = (core) => {
             });
         },
 
+        manuallyApprove(callback) {
+            this.saveState("import.started", (err) => {
+                /* istanbul ignore if */
+                if (err) {
+                    return callback(err);
+                }
+
+                this.importArtworks((err) => {
+                    /* istanbul ignore if */
+                    if (err) {
+                        this.error = err.message;
+                        return this.saveState("error", callback);
+                    }
+
+                    // Advance to the next state
+                    this.saveState("import.completed", callback);
+                });
+            });
+        },
+
         importArtworks(callback) {
             const Artwork = core.models.Artwork;
 
             async.eachLimit(this.results, 1, (result, callback) => {
-                if (result.result === "created") {
-                    Artwork.fromData(result.data, (err, artwork) => {
-                        artwork.save(callback);
+                result.state = "import.started";
+
+                if (result.result === "created" ||
+                        result.result === "changed") {
+                    Artwork.fromData(result.data, req, (err, artwork) => {
+                        artwork.save((err) => {
+                            /* istanbul ignore if */
+                            if (err) {
+                                result.state = "error";
+                                result.error = "ERROR_SAVING";
+                            } else {
+                                result.model = artwork._id;
+                                result.state = "import.completed";
+                            }
+
+                            callback(err);
+                        });
                     });
-                } else if (result.result === "changed") {
-                    Artwork.findByIdAndUpdate(result.model, result.data,
-                        callback);
+
                 } else if (result.result === "deleted") {
-                    Artwork.findByIdAndRemove(result.model, callback);
+                    Artwork.findByIdAndRemove(result.model, (err) => {
+                        /* istanbul ignore if */
+                        if (err) {
+                            result.state = "error";
+                            result.error = "ERROR_DELETING";
+                        } else {
+                            result.state = "import.completed";
+                        }
+
+                        callback(err);
+                    });
+
                 } else {
+                    result.state = "import.completed";
                     process.nextTick(callback);
                 }
             }, callback);
