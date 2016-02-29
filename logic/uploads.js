@@ -122,7 +122,7 @@ module.exports = (core, app) => {
             });
         },
 
-        show(req, res, next) {
+        show(req, res) {
             // TODO: Update similar matches if new image data has
             // since come in since it was last updated.
             Upload.findById(req.params.upload)

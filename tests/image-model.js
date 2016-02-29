@@ -207,7 +207,7 @@ tap.test("Image.fromFile: Updating Image (files already exist)", (t) => {
 
     const testFile = path.resolve(process.cwd(), "data", "foo.jpg");
 
-    Image.fromFile(batch, testFile, (err, image, warnings) => {
+    Image.fromFile(batch, testFile, () => {
         // Run this twice to have the images be put into place already
         Image.fromFile(batch, testFile, (err, image, warnings) => {
             t.error(err, "No error should be thrown.");

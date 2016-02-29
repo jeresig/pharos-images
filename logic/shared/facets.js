@@ -4,7 +4,7 @@ const pd = require("parse-dimensions");
 
 const types = require("./types");
 
-module.exports = (core, app) => ({
+module.exports = (core) => ({
     source: {
         agg: {
             terms: {

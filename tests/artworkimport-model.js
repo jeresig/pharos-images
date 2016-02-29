@@ -168,6 +168,7 @@ tap.test("processArtworks", (t) => {
         {model: "test/1237", result: "deleted"},
     ];
     batch.setResults([fs.createReadStream(dataFile)], (err) => {
+        t.error(err);
         batch.processArtworks(() => {
             t.equal(batch.results.length, expected.length,
                 "Check number of results");
@@ -211,6 +212,7 @@ tap.test("importArtworks", (t) => {
         {model: "test/1237", result: "deleted"},
     ];
     batch.setResults([fs.createReadStream(dataFile)], (err) => {
+        t.error(err);
         batch.processArtworks(() => {
             batch.importArtworks(() => {
                 t.equal(batch.results.length, expected.length,

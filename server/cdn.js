@@ -6,7 +6,7 @@ const staticBucket = process.env.S3_STATIC_BUCKET;
 const env = process.env.NODE_ENV || "development";
 
 module.exports = (core, app) => {
-    let CDN = (req, res) => (path, opts) => {
+    let CDN = () => (path, opts) => {
         if (opts && opts.raw) {
             return path;
         }

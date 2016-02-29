@@ -117,22 +117,22 @@ const heightFormat = (req, query) => {
     return req.format(req.gettext("Height: %(range)s"), {range});
 };
 
-module.exports = (core, app) => ({
+module.exports = (core) => ({
     start: {
         value: (req) => parseFloat(req.query.start),
-        defaultValue: (req) => 0,
+        defaultValue: () => 0,
         secondary: true,
     },
 
     rows: {
         value: (req) => parseFloat(req.query.rows),
-        defaultValue: (req) => parseFloat(process.env.DEFAULT_ROWS || "100"),
+        defaultValue: () => parseFloat(process.env.DEFAULT_ROWS || "100"),
         secondary: true,
     },
 
     sort: {
         value: (req) => req.query.sort,
-        defaultValue: (req) => process.env.DEFAULT_SORT || "dateAsc",
+        defaultValue: () => process.env.DEFAULT_SORT || "dateAsc",
         secondary: true,
     },
 
@@ -293,8 +293,8 @@ module.exports = (core, app) => ({
 
     hasLink: {
         value: (req) => req.query.hasLink || "",
-        title: (req, query) => req.gettext("Links to Another Artwork"),
-        match: (query) => ({
+        title: (req) => req.gettext("Links to Another Artwork"),
+        match: () => ({
             range: {
                 "similarArtworks.score": {
                     gte: 1,
@@ -305,7 +305,7 @@ module.exports = (core, app) => ({
 
     hasExternalLink: {
         value: (req) => req.query.hasExternalLink || "",
-        title: (req, query) => req.gettext("Links to an External Artwork"),
+        title: (req) => req.gettext("Links to an External Artwork"),
         match: (query) => ({
             match: {
                 "similarArtworks.source": {
@@ -319,7 +319,7 @@ module.exports = (core, app) => ({
 
     hasInternalLink: {
         value: (req) => req.query.hasInternalLink || "",
-        title: (req, query) => req.gettext("Links to an Internal Artwork"),
+        title: (req) => req.gettext("Links to an Internal Artwork"),
         match: (query) => ({
             match: {
                 "similarArtworks.source": {

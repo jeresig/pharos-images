@@ -55,9 +55,7 @@ const propMap = {
     }],
     dimensions: [
         "WorkMeasurements_display",
-        (measurement, data) => {
-            return measurement ? [measurement] : [];
-        },
+        (measurement) => measurement ? [measurement] : [],
     ],
     locations: ["Collection", (name, data) => {
         const city = data.WorkLocation_city;

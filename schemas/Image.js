@@ -359,6 +359,7 @@ module.exports = (core) => {
     Image.pre("save", function(next) {
         // Always updated the modified time on every save
         this.modified = new Date();
+        next();
     });
 
     return Image;
