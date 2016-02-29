@@ -23,7 +23,7 @@ module.exports = (core) => {
         },
 
         getDirBase() {
-            return core.urls.genLocalFile(this._id);
+            return core.urls.genLocalFile(`sources/${this._id}`);
         },
 
         getFullName() {
@@ -39,6 +39,7 @@ module.exports = (core) => {
             const converterPath = path.resolve(__dirname,
                 `../converters/${converter}.js`);
 
+            /* istanbul ignore if */
             if (!fs.existsSync(converterPath)) {
                 throw new Error(
                     `Error: Converter file not found: ${converterPath}`);
@@ -58,8 +59,13 @@ module.exports = (core) => {
 
         cacheNumArtworks(callback) {
             Artwork.count({source: this._id}, (err, num) => {
-                this.numArtworks = num || 0;
-                callback(err);
+                /* istanbul ignore if */
+                if (err) {
+                    return callback(err);
+                }
+
+                this.numArtworks = num;
+                callback();
             });
         },
     };
@@ -82,11 +88,6 @@ module.exports = (core) => {
         },
 
         getSource(sourceName) {
-            // Return the object if it's already a Source object
-            if (sourceName && sourceName._id) {
-                return sourceName;
-            }
-
             const sources = this.getSources();
 
             for (const source of sources) {

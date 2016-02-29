@@ -4,7 +4,7 @@
 process.env.PASTEC_URL = "http://localhost:8000/";
 process.env.THUMB_SIZE = "220x220";
 process.env.SCALED_SIZE = "300x300";
-process.env.BASE_DATA_DIR = "/tmp/";
+process.env.BASE_DATA_DIR = process.cwd();
 
 const fs = require("fs");
 const path = require("path");
@@ -25,6 +25,7 @@ const ArtworkImport = core.models.ArtworkImport;
 
 // Data used for testing
 let source;
+let sources;
 let batch;
 let batches;
 let artworkBatch;
@@ -133,12 +134,22 @@ const genData = () => {
 
     artwork = artworks["test/1234"];
 
-    source = new Source({
-        _id: "test",
-        url: "http://test.com/",
-        name: "Test Source",
-        shortName: "test",
-    });
+    sources = [
+        new Source({
+            _id: "test",
+            url: "http://test.com/",
+            name: "Test Source",
+            shortName: "test",
+        }),
+        new Source({
+            _id: "test2",
+            url: "http://test2.com/",
+            name: "Test Source 2",
+            shortName: "test2",
+        }),
+    ];
+
+    source = sources[0];
 
     const testZip = path.resolve(process.cwd(), "data", "test.zip");
 
@@ -466,6 +477,13 @@ const bindStubs = () => {
         process.nextTick(() => callback(null, matches));
     });
 
+    sandbox.stub(Artwork, "count", (query, callback) => {
+        const count = Object.keys(artworks).filter((id) =>
+            artworks[id].source === query.source).length;
+
+        process.nextTick(() => callback(null, count));
+    });
+
     const fromData = Artwork.fromData;
 
     sandbox.stub(Artwork, "fromData", (tmpData, req, callback) => {
@@ -511,9 +529,8 @@ const bindStubs = () => {
         });
     });
 
-    sandbox.stub(Source, "getSources", () => [source]);
-    sandbox.stub(Source.prototype, "getDirBase", function() {
-        return path.resolve(process.cwd(), `sources/${this._id}`);
+    sandbox.stub(Source, "find", (query, callback) => {
+        process.nextTick(() => callback(null, sources));
     });
 
     sandbox.stub(Image, "findById", (id, callback) => {
@@ -588,9 +605,11 @@ tap.beforeEach((done) => {
         "converters": converterFiles,
     });
 
-    async.each(Object.keys(artworks), (id, callback) => {
-        artworks[id].validate(callback);
-    }, done);
+    Source.cacheSources(() => {
+        async.each(Object.keys(artworks), (id, callback) => {
+            artworks[id].validate(callback);
+        }, done);
+    });
 });
 
 tap.afterEach((done) => {

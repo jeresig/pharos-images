@@ -1,0 +1,72 @@
+"use strict";
+
+const path = require("path");
+
+const tap = require("tap");
+
+const init = require("./lib/init");
+const Source = init.Source;
+
+tap.test("getURL", {autoend: true}, (t) => {
+    const source = init.getSource();
+    t.equal(source.getURL("en"),
+        "http://localhost:3000/source/test", "Check 'en' URL");
+
+    t.equal(source.getURL("de"),
+        "http://localhost:3000/source/test?lang=de", "Check 'de' URL");
+});
+
+tap.test("getDirBase", {autoend: true}, (t) => {
+    const source = init.getSource();
+    const file = path.resolve(process.cwd(), "sources/test");
+    t.equal(source.getDirBase(), file);
+});
+
+tap.test("getFullName", {autoend: true}, (t) => {
+    const source = init.getSource();
+    t.equal(source.getFullName(), "Test Source");
+});
+
+tap.test("getShortName", {autoend: true}, (t) => {
+    const source = init.getSource();
+    t.equal(source.getShortName(), "test");
+});
+
+tap.test("getConverter", {autoend: true}, (t) => {
+    const source = init.getSource();
+    t.ok(source.getConverter().processFiles);
+});
+
+tap.test("getExpectedFiles", {autoend: true}, (t) => {
+    const source = init.getSource();
+    t.same(source.getExpectedFiles(), [
+        "Upload a JSON file (.json) containing artwork metadata.",
+    ]);
+});
+
+tap.test("cacheNumArtworks", (t) => {
+    const source = init.getSource();
+    source.cacheNumArtworks(() => {
+        t.equal(source.numArtworks, 4);
+        t.end();
+    });
+});
+
+tap.test("Source.cacheSources", (t) => {
+    Source.cacheSources((err, sources) => {
+        t.equal(sources[0].numArtworks, 4);
+        t.equal(sources[1].numArtworks, 0);
+        t.end();
+    });
+});
+
+tap.test("Source.getSource", (t) => {
+    const source = init.getSource();
+    Source.cacheSources(() => {
+        t.equal(Source.getSource("test"), source);
+        t.notEqual(Source.getSource("test2"), source);
+        t.throws(() => Source.getSource("unknown"),
+            new Error("Source not found: unknown"));
+        t.end();
+    });
+});
