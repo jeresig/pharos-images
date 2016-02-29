@@ -16,7 +16,7 @@ module.exports = function(core, app) {
 
     // Enable error handling and displaying of a 500 error page
     // when an exception is thrown
-    app.use((err, req, res, next) => {
+    app.use((err, req, res) => {
         console.error(err.stack);
 
         res.status(500).render("error", {
@@ -25,7 +25,7 @@ module.exports = function(core, app) {
     });
 
     // Handle missing pages
-    app.use((req, res, next) => {
+    app.use((req, res) => {
         res.status(404).render("error", {
             title: req.gettext("Page Not Found"),
         });

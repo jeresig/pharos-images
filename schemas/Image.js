@@ -211,9 +211,14 @@ module.exports = (core) => {
             const warnings = [];
 
             this.findById(_id, (err, image) => {
+                /* istanbul ignore if */
+                if (err) {
+                    return callback(new Error("ERROR_RETRIEVING"));
+                }
+
                 const creating = !image;
 
-                images.processImage(file, sourceDir, (err, hash) => {
+                this.processImage(file, sourceDir, (err, hash) => {
                     if (err) {
                         return callback(new Error("MALFORMED_IMAGE"));
                     }
@@ -223,7 +228,7 @@ module.exports = (core) => {
                         return callback(null, image, warnings);
                     }
 
-                    images.getSize(file, (err, size) => {
+                    this.getSize(file, (err, size) => {
                         /* istanbul ignore if */
                         if (err) {
                             return callback(new Error("MALFORMED_IMAGE"));
@@ -234,6 +239,10 @@ module.exports = (core) => {
 
                         if (width <= 1 || height <= 1) {
                             return callback(new Error("EMPTY_IMAGE"));
+                        }
+
+                        if (width < 150 || height < 150) {
+                            warnings.push("TOO_SMALL");
                         }
 
                         const data = {
@@ -256,10 +265,6 @@ module.exports = (core) => {
                             model.set(data);
                         }
 
-                        if (width < 150 || height < 150) {
-                            warnings.push("TOO_SMALL");
-                        }
-
                         model.validate((err) => {
                             /* istanbul ignore if */
                             if (err) {
@@ -271,6 +276,14 @@ module.exports = (core) => {
                     });
                 });
             });
+        },
+
+        processImage(sourceFile, baseDir, callback) {
+            return images.processImage(sourceFile, baseDir, callback);
+        },
+
+        getSize(fileName, callback) {
+            return images.getSize(fileName, callback);
         },
 
         indexSimilarity(callback) {
@@ -359,6 +372,7 @@ module.exports = (core) => {
     Image.pre("save", function(next) {
         // Always updated the modified time on every save
         this.modified = new Date();
+        next();
     });
 
     return Image;

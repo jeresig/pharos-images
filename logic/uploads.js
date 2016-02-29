@@ -3,6 +3,7 @@
 const os = require("os");
 const path = require("path");
 
+const async = require("async");
 const fs = require("graceful-fs");
 const request = require("request");
 const formidable = require("formidable");
@@ -15,6 +16,7 @@ const DOWNLOAD_TIMEOUT = 10000;
 
 module.exports = (core, app) => {
     const Upload = core.models.Upload;
+    const UploadImage = core.models.UploadImage;
 
     const genTmpFile = () => {
         return path.join(os.tmpdir(), (new Date).getTime());
@@ -25,28 +27,29 @@ module.exports = (core, app) => {
             return next(err);
         }
 
-        // TODO: Need to generate a new Image() model
-
-        // TODO: Add in uploader's user name (once those exist)
-        const upload = new Upload({
-            source: "uploads",
-        });
-
-        upload.addImage(file, (err, id) => {
+        UploadImage.fromFile(file, (err, image) => {
+            // TODO: Display better error message
             if (err) {
                 console.error(err);
                 return next(new Error(
                     req.gettext("Error processing image.")));
             }
 
+            const _id = image._id.replace(/\.jpg$/, "");
+
             // Check to see if image already exists and redirect
             // if it does.
-            Upload.findById(id, (err, existing) => {
+            Upload.findById(_id, (err, existing) => {
                 if (existing) {
                     return res.redirect(existing.getURL(req.lang));
                 }
 
-                upload._id = id;
+                // TODO: Add in uploader's user name (once those exist)
+                const upload = new Upload({
+                    _id,
+                    source: "uploads",
+                    images: [image._id],
+                });
 
                 upload.updateSimilarity(() => {
                     upload.save(() => res.redirect(
@@ -122,10 +125,11 @@ module.exports = (core, app) => {
             });
         },
 
-        show(req, res, next) {
+        show(req, res) {
             // TODO: Update similar matches if new image data has
             // since come in since it was last updated.
             Upload.findById(req.params.upload)
+                .populate("images")
                 .populate("similarArtworks.artwork")
                 .exec((err, upload) => {
                     if (err || !upload) {
@@ -134,10 +138,18 @@ module.exports = (core, app) => {
                         });
                     }
 
-                    res.render("upload", {
-                        title: req.gettext("Uploaded Image"),
-                        upload: upload,
-                    });
+                    async.eachLimit(upload.similarArtworks, 4,
+                        (similar, callback) => {
+                            similar.artwork.populate("images", callback);
+                        }, () => {
+                            res.render("upload", {
+                                title: upload.getTitle(req),
+                                noIndex: true,
+                                artworks: [upload]
+                                    .concat(upload.similarArtworks
+                                        .map((similar) => similar.artwork)),
+                            });
+                        });
                 });
         },
 

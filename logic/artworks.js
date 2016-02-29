@@ -42,7 +42,7 @@ module.exports = function(core, app) {
             });
         },
 
-        show(req, res, next) {
+        show(req, res) {
             const compare = ("compare" in req.query);
             const id = `${req.params.source}/${req.params.artworkName}`;
 

@@ -105,7 +105,7 @@ module.exports = (core) => {
                     files.push(outFileName);
                     entry.pipe(fs.createWriteStream(outFileName));
                 })
-                .on("error", function(err) {
+                .on("error", function() {
                     // Hack from this ticket to force the stream to close:
                     // https://github.com/glebdmitriew/node-unzip-2/issues/8
                     this._streamEnd = true;

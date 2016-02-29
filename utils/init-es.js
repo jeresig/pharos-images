@@ -12,7 +12,7 @@ const Artwork = core.models.Artwork;
 core.init(() => {
     console.log("Re-building index...");
 
-    Artwork.createMapping((err, mapping) => {
+    Artwork.createMapping((err) => {
         if (err) {
             return console.error(err);
         }
@@ -20,7 +20,7 @@ core.init(() => {
         let count = 0;
 
         Artwork.synchronize()
-            .on("data", (err, doc) => {
+            .on("data", () => {
                 count++;
                 console.log(`indexed ${count}`);
             })

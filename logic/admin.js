@@ -41,7 +41,7 @@ module.exports = function(core, app) {
                     prettyDate: (date) =>
                         moment(date).locale(req.lang).fromNow(),
                 });
-            }).catch((err) => {
+            }).catch(() => {
                 next(new Error(req.gettext("Error retrieving records.")));
             });
         },
@@ -139,35 +139,29 @@ module.exports = function(core, app) {
                 const inputStreams = inputFiles
                     .map((file) => fs.createReadStream(file.path));
 
-                source.processFiles(inputStreams, (err, results) => {
+                const batch = new ArtworkImport({
+                    source: source._id,
+                    fileName,
+                });
+
+                batch.setResults(inputStreams, (err) => {
                     if (err) {
-                        return next(err);
+                        console.error(err);
+                        return next(new Error(
+                            req.gettext("Error saving data file.")));
                     }
 
-                    const batch = new ArtworkImport({
-                        source: source._id,
-                        fileName,
-                    });
-
-                    batch.setResults(inputStreams, (err) => {
+                    batch.save((err) => {
                         if (err) {
                             console.error(err);
                             return next(new Error(
                                 req.gettext("Error saving data file.")));
                         }
 
-                        batch.save((err) => {
-                            if (err) {
-                                console.error(err);
-                                return next(new Error(
-                                    req.gettext("Error saving data file.")));
-                            }
-
-                            // TODO: Come up with a beter redirect
-                            // TODO: Display a message stating that the upload
-                            // was successful.
-                            res.redirect(`/source/${source._id}/admin`);
-                        });
+                        // TODO: Come up with a beter redirect
+                        // TODO: Display a message stating that the upload
+                        // was successful.
+                        res.redirect(`/source/${source._id}/admin`);
                     });
                 });
             });
