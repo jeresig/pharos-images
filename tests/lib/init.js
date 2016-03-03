@@ -588,21 +588,6 @@ const bindStubs = () => {
         process.nextTick(() => callback(null, uploadImages[id]));
     });
 
-    const fromUploadFile = UploadImage.fromFile;
-
-    sandbox.stub(UploadImage, "fromFile", (batch, file, callback) => {
-        fromUploadFile.call(UploadImage, batch, file, (err, image) => {
-            if (image && !image.save.restore) {
-                sandbox.stub(image, "save", (callback) => {
-                    uploadImages[image._id] = image;
-                    process.nextTick(callback);
-                });
-            }
-
-            callback(err, image);
-        });
-    });
-
     sandbox.stub(core.similar, "similar", (hash, callback) => {
         process.nextTick(() => callback(null, similar[hash]));
     });

@@ -8,7 +8,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2016-03-03 04:47+0000\n"
+"POT-Creation-Date: 2016-03-03 15:32+0000\n"
 
 #: logic/admin.js:23
 #: logic/admin.js:58
@@ -79,6 +79,7 @@ msgid "IDs can only contain letters, numbers, underscores, and hyphens."
 msgstr ""
 
 #: schemas/Artwork.js:67
+#: schemas/ArtworkData.js:28
 msgid "`lang` must only be one of following languages: %(langs)s."
 msgstr ""
 
@@ -91,19 +92,23 @@ msgid "Images must be a valid image file name. For example: `image.jpg`."
 msgstr ""
 
 #: schemas/Artwork.js:119
+#: schemas/ArtworkData.js:64
 msgid "Dimensions must have a unit specified and at least a width or height."
 msgstr ""
 
 #: schemas/Artwork.js:129
+#: schemas/ArtworkData.js:74
 #: schemas/Name.js:71
 msgid "Dates must have a start or end specified."
 msgstr ""
 
 #: schemas/Artwork.js:148
+#: schemas/ArtworkData.js:93
 msgid "`objectType` must be one of the following types: %(types)s."
 msgstr ""
 
 #: schemas/Artwork.js:164
+#: schemas/ArtworkData.js:109
 msgid "Locations must have a name or city specified."
 msgstr ""
 
