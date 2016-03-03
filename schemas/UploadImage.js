@@ -27,7 +27,8 @@ module.exports = (core) => {
         const file = this.getFilePath();
 
         core.similar.fileSimilar(file, (err, matches) => {
-            if (err || !matches) {
+            /* istanbul ignore if */
+            if (err) {
                 return callback(err);
             }
 

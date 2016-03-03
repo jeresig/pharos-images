@@ -22,6 +22,7 @@ const Artwork = core.models.Artwork;
 const Source = core.models.Source;
 const ImageImport = core.models.ImageImport;
 const ArtworkImport = core.models.ArtworkImport;
+const UploadImage = core.models.UploadImage;
 
 // Data used for testing
 let source;
@@ -33,6 +34,8 @@ let artworkBatches;
 let imageResultsData;
 let images;
 let image;
+let uploadImages;
+let uploadImage;
 let artworks;
 let artwork;
 let artworkData;
@@ -364,7 +367,26 @@ const genData = () => {
 
     image = images["test/foo.jpg"];
 
+    uploadImages = {
+        "uploads/4266906334.jpg": new UploadImage({
+            _id: "uploads/4266906334.jpg",
+            source: "uploads",
+            fileName: "4266906334.jpg",
+            hash: "4266906334",
+            width: 100,
+            height: 100,
+            similarImages: [{_id: "test/bar.jpg", score: 10}],
+        }),
+    };
+
+    uploadImage = uploadImages["uploads/4266906334.jpg"];
+
     similar = {
+        "4266906334": [
+            {id: "4567", score: 100},
+            {id: "4568", score: 10},
+            {id: "NO_LONGER_EXISTS", score: 1},
+        ],
         "4567": [
             {id: "4567", score: 100},
             {id: "4568", score: 10},
@@ -562,7 +584,32 @@ const bindStubs = () => {
         });
     });
 
+    sandbox.stub(UploadImage, "findById", (id, callback) => {
+        process.nextTick(() => callback(null, uploadImages[id]));
+    });
+
+    const fromUploadFile = UploadImage.fromFile;
+
+    sandbox.stub(UploadImage, "fromFile", (batch, file, callback) => {
+        fromUploadFile.call(UploadImage, batch, file, (err, image) => {
+            if (image && !image.save.restore) {
+                sandbox.stub(image, "save", (callback) => {
+                    uploadImages[image._id] = image;
+                    process.nextTick(callback);
+                });
+            }
+
+            callback(err, image);
+        });
+    });
+
     sandbox.stub(core.similar, "similar", (hash, callback) => {
+        process.nextTick(() => callback(null, similar[hash]));
+    });
+
+    sandbox.stub(core.similar, "fileSimilar", (file, callback) => {
+        // Cheat and just get the hash from the file name
+        const hash = path.basename(file).replace(/\..*$/, "");
         process.nextTick(() => callback(null, similar[hash]));
     });
 
@@ -601,6 +648,14 @@ tap.beforeEach((done) => {
             "scaled": {},
             "thumbs": {},
         },
+        "sources/uploads": {
+            "images": {
+                "4266906334.jpg": testFiles["4266906334.jpg"],
+                "bar.jpg": testFiles["bar.jpg"],
+            },
+            "scaled": {},
+            "thumbs": {},
+        },
         "data": testFiles,
         "converters": converterFiles,
     });
@@ -628,11 +683,13 @@ module.exports = {
     getArtworks: () => artworks,
     getArtworkData: () => artworkData,
     getImageResultsData: () => imageResultsData,
+    getUploadImage: () => uploadImage,
     req,
     Image,
     Artwork,
     ImageImport,
     ArtworkImport,
+    UploadImage,
     Source,
     stub: sinon.stub,
 };
