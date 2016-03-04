@@ -67,8 +67,8 @@ module.exports = (core) => {
     });
 
     Object.assign(ImageImport.methods, {
-        url(req) {
-            return core.urls.gen(req.lang,
+        getUrl(lang) {
+            return core.urls.gen(lang,
                 `/source/${this.source}/import?images=${this._id}`);
         },
 

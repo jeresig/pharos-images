@@ -79,8 +79,8 @@ module.exports = (core) => {
     });
 
     Object.assign(ArtworkImport.methods, {
-        url(req) {
-            return core.urls.gen(req.lang,
+        getUrl(lang) {
+            return core.urls.gen(lang,
                 `/source/${this.source}/import?artworks=${this._id}`);
         },
 

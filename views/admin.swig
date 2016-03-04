@@ -124,7 +124,7 @@
     {% for batch in artworkImport %}
     <tr>
         <td>
-            <a href="{{ batch.url() }}">{{ batch.fileName }}</a>
+            <a href="{{ URL(batch) }}">{{ batch.fileName }}</a>
         </td>
         <td>{{ prettyDate(batch.modified) }}</td>
         {% if batch.state === "error" %}
@@ -135,7 +135,7 @@
         {% set results = batch.getFilteredResults() %}
         <td>
             {% if batch.state === "process.completed" %}
-                <a href="{{ batch.url() }}" class="btn btn-success btn-xs">
+                <a href="{{ URL(batch) }}" class="btn btn-success btn-xs">
                     {{ gettext("Finalize Import") }}
                 </a>
             {% else %}
