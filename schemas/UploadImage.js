@@ -9,7 +9,14 @@ module.exports = (core) => {
 
     const uploadName = "uploads";
 
-    const UploadImage = Image.extend({}, {
+    const UploadImage = Image.extend({
+        // Source is always set to "uploads"
+        source: {
+            type: String,
+            default: uploadName,
+            required: true,
+        },
+    }, {
         collection: uploadName,
     });
 
@@ -97,7 +104,6 @@ module.exports = (core) => {
 
                     const model = new core.models.UploadImage({
                         _id,
-                        source: uploadName,
                         fileName,
                         hash,
                         width,

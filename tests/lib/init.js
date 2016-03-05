@@ -23,6 +23,7 @@ const Source = core.models.Source;
 const ImageImport = core.models.ImageImport;
 const ArtworkImport = core.models.ArtworkImport;
 const UploadImage = core.models.UploadImage;
+const Upload = core.models.Upload;
 
 // Data used for testing
 let source;
@@ -34,6 +35,7 @@ let artworkBatches;
 let imageResultsData;
 let images;
 let image;
+let upload;
 let uploadImages;
 let uploadImage;
 let artworks;
@@ -370,7 +372,6 @@ const genData = () => {
     uploadImages = {
         "uploads/4266906334.jpg": new UploadImage({
             _id: "uploads/4266906334.jpg",
-            source: "uploads",
             fileName: "4266906334.jpg",
             hash: "4266906334",
             width: 100,
@@ -380,6 +381,12 @@ const genData = () => {
     };
 
     uploadImage = uploadImages["uploads/4266906334.jpg"];
+
+    upload = new Upload({
+        _id: "4266906334",
+        images: ["uploads/4266906334.jpg"],
+        defaultImageHash: "4266906334",
+    });
 
     similar = {
         "4266906334": [
@@ -668,6 +675,7 @@ module.exports = {
     getArtworks: () => artworks,
     getArtworkData: () => artworkData,
     getImageResultsData: () => imageResultsData,
+    getUpload: () => upload,
     getUploadImage: () => uploadImage,
     req,
     Image,
