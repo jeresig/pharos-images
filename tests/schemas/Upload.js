@@ -2,7 +2,7 @@
 
 const tap = require("tap");
 
-const init = require("./lib/init");
+const init = require("../init");
 const req = init.req;
 
 tap.test("getURL", {autoend: true}, (t) => {

@@ -134,8 +134,11 @@ module.exports = (core) => {
                     async.eachLimit(queue, 1, (batch, callback) => {
                         // We now load the complete batch with all fields intact
                         this.findById(batch._id, (err, batch) => {
-                            console.log(`Advancing ${batch._id} to ` +
-                                `${batch.getNextState().id}...`);
+                            /* istanbul ignore if */
+                            if (process.env.NODE_ENV !== "test") {
+                                console.log(`Advancing ${batch._id} to ` +
+                                    `${batch.getNextState().id}...`);
+                            }
                             batch.advance(callback);
                         });
                     }, callback);

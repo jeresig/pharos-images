@@ -4,7 +4,7 @@ const path = require("path");
 
 const tap = require("tap");
 
-const init = require("./lib/init");
+const init = require("../init");
 const UploadImage = init.UploadImage;
 
 tap.test("getFilePath", {autoend: true}, (t) => {

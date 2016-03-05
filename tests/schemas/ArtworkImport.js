@@ -5,8 +5,7 @@ const path = require("path");
 
 const tap = require("tap");
 
-const init = require("./lib/init");
-//const stub = init.stub;
+const init = require("../init");
 const req = init.req;
 const ArtworkImport = init.ArtworkImport;
 

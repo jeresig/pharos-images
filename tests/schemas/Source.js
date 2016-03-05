@@ -4,7 +4,7 @@ const path = require("path");
 
 const tap = require("tap");
 
-const init = require("./lib/init");
+const init = require("../init");
 const Source = init.Source;
 
 tap.test("getURL", {autoend: true}, (t) => {

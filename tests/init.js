@@ -14,7 +14,7 @@ const sinon = require("sinon");
 const mockfs = require("mock-fs");
 const async = require("async");
 
-const core = require("../../core");
+const core = require("../core");
 
 // Models used for testing
 const Image = core.models.Image;
@@ -49,7 +49,7 @@ let sandbox;
 
 // Files used for testing
 const testFiles = {};
-const dataDir = path.resolve(__dirname, "..", "data");
+const dataDir = path.resolve(__dirname, "data");
 
 for (const file of fs.readdirSync(dataDir)) {
     if (/\.\w+$/.test(file)) {
@@ -59,7 +59,7 @@ for (const file of fs.readdirSync(dataDir)) {
 
 // Converters used for testing
 const converterFiles = {};
-const converterDir = path.resolve(__dirname, "..", "..", "converters");
+const converterDir = path.resolve(__dirname, "..", "converters");
 
 for (const file of fs.readdirSync(converterDir)) {
     const filePath = path.resolve(converterDir, file);
