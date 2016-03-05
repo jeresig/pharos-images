@@ -18,9 +18,7 @@ module.exports = (core, app) => {
     const Upload = core.models.Upload;
     const UploadImage = core.models.UploadImage;
 
-    const genTmpFile = () => {
-        return path.join(os.tmpdir(), (new Date).getTime());
-    };
+    const genTmpFile = path.join(os.tmpdir(), (new Date).getTime());
 
     const handleUpload = (req, res, next) => (err, file) => {
         if (err) {
