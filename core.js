@@ -4,8 +4,10 @@ const fs = require("fs");
 const path = require("path");
 const async = require("async");
 
-// Load in configuration options
-require("dotenv").load();
+if (process.env.NODE_ENV !== "test") {
+    // Load in configuration options
+    require("dotenv").load();
+}
 
 const core = {};
 

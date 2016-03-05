@@ -146,14 +146,12 @@ module.exports = function(core, app) {
 
                 batch.setResults(inputStreams, (err) => {
                     if (err) {
-                        console.error(err);
                         return next(new Error(
                             req.gettext("Error saving data file.")));
                     }
 
                     batch.save((err) => {
                         if (err) {
-                            console.error(err);
                             return next(new Error(
                                 req.gettext("Error saving data file.")));
                         }

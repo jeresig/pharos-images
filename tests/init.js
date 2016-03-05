@@ -15,6 +15,7 @@ const mockfs = require("mock-fs");
 const async = require("async");
 
 const core = require("../core");
+const server = require("../server/server");
 
 // Models used for testing
 const Image = core.models.Image;
@@ -71,6 +72,20 @@ for (const file of fs.readdirSync(converterDir)) {
 
     // However we still need to import the files
     converterFiles[file] = fs.readFileSync(filePath);
+}
+
+// Public files used to render the site
+const publicFiles = {};
+const publicDir = path.resolve(__dirname, "..", "public");
+
+for (const dir of fs.readdirSync(publicDir)) {
+    const dirPath = path.resolve(publicDir, dir);
+    const files = publicFiles[dir] = {};
+
+    for (const file of fs.readdirSync(dirPath)) {
+        const filePath = path.resolve(dirPath, file);
+        files[file] = fs.readFileSync(filePath);
+    }
 }
 
 const genData = () => {
@@ -621,6 +636,8 @@ const bindStubs = () => {
 
         process.nextTick(callback);
     });
+
+    sandbox.stub(core.db, "connect", process.nextTick);
 };
 
 const req = {
@@ -630,36 +647,53 @@ const req = {
     lang: "en",
 };
 
+let app;
+
 tap.beforeEach((done) => {
     genData();
     bindStubs();
 
-    mockfs({
-        "sources/test": {
-            "images": {},
-            "scaled": {},
-            "thumbs": {},
+    async.parallel([
+        (callback) => {
+            Source.cacheSources(() => {
+                async.each(Object.keys(artworks), (id, callback) => {
+                    artworks[id].validate(callback);
+                }, callback);
+            });
         },
-        "sources/uploads": {
-            "images": {
-                "4266906334.jpg": testFiles["4266906334.jpg"],
-                "bar.jpg": testFiles["bar.jpg"],
-            },
-            "scaled": {},
-            "thumbs": {},
-        },
-        "data": testFiles,
-        "converters": converterFiles,
-    });
 
-    Source.cacheSources(() => {
-        async.each(Object.keys(artworks), (id, callback) => {
-            artworks[id].validate(callback);
-        }, done);
+        (callback) => {
+            server((err, _app) => {
+                app = _app;
+                callback(err);
+            });
+        },
+    ], () => {
+        mockfs({
+            "sources/test": {
+                "images": {},
+                "scaled": {},
+                "thumbs": {},
+            },
+            "sources/uploads": {
+                "images": {
+                    "4266906334.jpg": testFiles["4266906334.jpg"],
+                    "bar.jpg": testFiles["bar.jpg"],
+                },
+                "scaled": {},
+                "thumbs": {},
+            },
+            "data": testFiles,
+            "converters": converterFiles,
+            "public": publicFiles,
+        });
+
+        done();
     });
 });
 
 tap.afterEach((done) => {
+    app.close();
     sandbox.restore();
     mockfs.restore();
     done();
@@ -685,4 +719,5 @@ module.exports = {
     UploadImage,
     Source,
     stub: sinon.stub,
+    core,
 };

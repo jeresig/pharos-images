@@ -22,8 +22,10 @@ const searchURL = require("./middlewares/search-url");
 const rootPath = path.resolve(__dirname, "..");
 
 module.exports = (core, app) => {
-    // A basic logger for tracking who is accessing the service
-    app.use(morgan("dev"));
+    if (env !== "test") {
+        // A basic logger for tracking who is accessing the service
+        app.use(morgan("dev"));
+    }
 
     // Configure all the paths for serving the static content on the site
     app.use(serveFavicon(`${rootPath}/public/images/favicon.png`));
@@ -53,14 +55,20 @@ module.exports = (core, app) => {
     app.use(cookieParser());
 
     // Track user sessions and store them in a Mongodb data store
+    let store;
+
+    if (env !== "test") {
+        store = new mongoStore({
+            mongooseConnection: core.db.mongoose.connection,
+            collection: "sessions",
+        });
+    }
+
     app.use(session({
         resave: false,
         saveUninitialized: false,
         secret: pkg.name,
-        store: new mongoStore({
-            mongooseConnection: core.db.mongoose.connection,
-            collection: "sessions",
-        }),
+        store,
     }));
 
     // Bring in the methods that will be available to the views
