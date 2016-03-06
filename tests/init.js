@@ -58,6 +58,14 @@ for (const file of fs.readdirSync(dataDir)) {
     }
 }
 
+// Views
+const viewFiles = {};
+const viewDir = path.resolve(__dirname, "..", "views");
+
+for (const file of fs.readdirSync(viewDir)) {
+    viewFiles[file] = fs.readFileSync(path.resolve(viewDir, file));
+}
+
 // Converters used for testing
 const converterFiles = {};
 const converterDir = path.resolve(__dirname, "..", "converters");
@@ -521,6 +529,38 @@ const bindStubs = () => {
         process.nextTick(() => callback(null, matches));
     });
 
+    sandbox.stub(Artwork, "search", (query, options, callback) => {
+        const matches = Object.keys(artworks).map((id) => artworks[id]);
+        const aggregations = {
+            source: {
+                buckets: [{key: "test", doc_count: 2}],
+            },
+            type: {
+                buckets: [{key: "painting", doc_count: 2}],
+            },
+            date: {
+                buckets: [{from: 1100, to: 1199, doc_count: 2}],
+            },
+            artist: {
+                buckets: [{key: "Test", doc_count: 2}],
+            },
+            width: {
+                buckets: [{from: 100, to: 199, doc_count: 2}],
+            },
+            height: {
+                buckets: [{from: 100, to: 199, doc_count: 2}],
+            },
+        };
+
+        process.nextTick(() => callback(null, {
+            aggregations,
+            hits: {
+                total: matches.length,
+                hits: matches,
+            },
+        }));
+    });
+
     sandbox.stub(Artwork, "count", (query, callback) => {
         const count = Object.keys(artworks).filter((id) =>
             artworks[id].source === query.source).length;
@@ -686,6 +726,7 @@ tap.beforeEach((done) => {
             "data": testFiles,
             "converters": converterFiles,
             "public": publicFiles,
+            "views": viewFiles,
         });
 
         done();
