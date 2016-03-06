@@ -41,17 +41,19 @@ module.exports = function(core, app) {
                     prettyDate: (date) =>
                         moment(date).locale(req.lang).fromNow(),
                 });
-            }).catch(() => {
+            })
+            /* istanbul ignore next */
+            .catch(() => {
                 next(new Error(req.gettext("Error retrieving records.")));
             });
         },
 
         uploadImages(req, res, next) {
             // TODO(jeresig): Only allow certain users to upload batches
-            const source = req.params.source;
+            let source;
 
             try {
-                Source.getSource(source);
+                source = Source.getSource(req.params.source);
 
             } catch (e) {
                 return res.status(404).render("error", {
@@ -64,6 +66,7 @@ module.exports = function(core, app) {
             form.maxFieldsSize = process.env.MAX_UPLOAD_SIZE;
 
             form.parse(req, (err, fields, files) => {
+                /* istanbul ignore if */
                 if (err) {
                     return next(new Error(
                         req.gettext("Error processing zip file.")));
@@ -76,26 +79,20 @@ module.exports = function(core, app) {
                         new Error(req.gettext("No zip file specified.")));
                 }
 
-                const zipFile = zipFile.path;
-                const fileName = zipFile.name;
+                const zipFile = zipField.path;
+                const fileName = zipField.name;
 
-                const batch = new ImageImport({
-                    source,
-                    zipFile,
-                    fileName,
-                    state: "started",
-                });
+                const batch = ImageImport.fromFile(fileName, source._id);
+                batch.zipFile = zipFile;
 
                 batch.save((err) => {
+                    /* istanbul ignore if */
                     if (err) {
                         return next(new Error(
                             req.gettext("Error saving zip file.")));
                     }
 
-                    // TODO: Come up with a beter redirect
-                    // TODO: Display a message stating that the upload
-                    // was successful.
-                    res.redirect(`/source/${source}/admin`);
+                    res.redirect(batch.getUrl(req.lang));
                 });
             });
         },
@@ -119,6 +116,7 @@ module.exports = function(core, app) {
             form.maxFieldsSize = process.env.MAX_UPLOAD_SIZE;
 
             form.parse(req, (err, fields, files) => {
+                /* istanbul ignore if */
                 if (err) {
                     return next(new Error(
                         req.gettext("Error processing data files.")));
@@ -139,27 +137,23 @@ module.exports = function(core, app) {
                 const inputStreams = inputFiles
                     .map((file) => fs.createReadStream(file.path));
 
-                const batch = new ArtworkImport({
-                    source: source._id,
-                    fileName,
-                });
+                const batch = ArtworkImport.fromFile(fileName, source._id);
 
                 batch.setResults(inputStreams, (err) => {
+                    /* istanbul ignore if */
                     if (err) {
                         return next(new Error(
                             req.gettext("Error saving data file.")));
                     }
 
                     batch.save((err) => {
+                        /* istanbul ignore if */
                         if (err) {
                             return next(new Error(
                                 req.gettext("Error saving data file.")));
                         }
 
-                        // TODO: Come up with a beter redirect
-                        // TODO: Display a message stating that the upload
-                        // was successful.
-                        res.redirect(`/source/${source._id}/admin`);
+                        res.redirect(batch.getUrl(req.lang));
                     });
                 });
             });

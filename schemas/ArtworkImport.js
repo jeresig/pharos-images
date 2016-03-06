@@ -258,6 +258,10 @@ module.exports = (core) => {
             const msg = errors[err];
             return msg ? msg(req) : err;
         },
+
+        fromFile(fileName, source) {
+            return new core.models.ArtworkImport({source, fileName});
+        },
     });
 
     return ArtworkImport;

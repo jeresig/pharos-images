@@ -600,6 +600,17 @@ const bindStubs = () => {
         });
     });
 
+    const imageImportFromFile = ImageImport.fromFile;
+
+    sandbox.stub(ImageImport, "fromFile", (fileName, source) => {
+        const batch = imageImportFromFile.call(ImageImport, fileName,
+            source);
+        if (!batch.save.restore) {
+            sandbox.stub(batch, "save", (callback) => batch.validate(callback));
+        }
+        return batch;
+    });
+
     sandbox.stub(ArtworkImport, "find", (query, select, callback) => {
         process.nextTick(() => {
             callback(null, artworkBatches.filter((batch) =>
@@ -611,6 +622,17 @@ const bindStubs = () => {
         process.nextTick(() => {
             callback(null, artworkBatches.find((batch) => batch._id === id));
         });
+    });
+
+    const artworkImportFromFile = ArtworkImport.fromFile;
+
+    sandbox.stub(ArtworkImport, "fromFile", (fileName, source) => {
+        const batch = artworkImportFromFile.call(ArtworkImport, fileName,
+            source);
+        if (!batch.save.restore) {
+            sandbox.stub(batch, "save", (callback) => batch.validate(callback));
+        }
+        return batch;
     });
 
     sandbox.stub(Source, "find", (query, callback) => {
@@ -639,7 +661,8 @@ const bindStubs = () => {
     sandbox.stub(Image, "fromFile", (batch, file, callback) => {
         fromFile.call(Image, batch, file, (err, image, warnings) => {
             if (image && !image.save.restore) {
-                sandbox.stub(image, "save", process.nextTick);
+                sandbox.stub(image, "save", (callback) =>
+                    image.validate(callback));
             }
 
             callback(err, image, warnings);
