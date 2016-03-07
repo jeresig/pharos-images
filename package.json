@@ -54,6 +54,7 @@
     "libxmljs": "^0.16.1",
     "marcjs": "^0.1.12",
     "method-override": "^2.3.5",
+    "mock-fs": "^3.8.0",
     "moment": "^2.11.2",
     "mongoosastic": "^3.6.0",
     "mongoose": "^4.3.4",

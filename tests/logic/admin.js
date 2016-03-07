@@ -142,9 +142,6 @@ tap.test("uploadImages: Corrupted Zip", (t) => {
     });
 });
 
-/*
-// Disabled until this is fixed:
-// https://github.com/tschaub/mock-fs/issues/88
 tap.test("uploadImages: Normal Zip", (t) => {
     const url = "http://localhost:3000/source/test/upload-images";
     const file = "test.zip";
@@ -167,4 +164,3 @@ tap.test("uploadImages: Normal Zip", (t) => {
         t.end();
     });
 });
-*/
