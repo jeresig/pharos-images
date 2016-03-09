@@ -12,17 +12,7 @@ module.exports = function(core, app) {
 
     return {
         admin(req, res, next) {
-            // TODO(jeresig): Only allow certain users to view this page
-            let source;
-
-            try {
-                source = Source.getSource(req.params.source);
-
-            } catch (e) {
-                return res.status(404).render("error", {
-                    title: req.gettext("Source not found."),
-                });
-            }
+            const source = req.source;
 
             Promise.all([
                 ImageImport.find({source: source._id})
@@ -48,18 +38,42 @@ module.exports = function(core, app) {
             });
         },
 
-        uploadImages(req, res, next) {
-            // TODO(jeresig): Only allow certain users to upload batches
-            let source;
+        import(req, res) {
+            if (req.query.artworks) {
+                ArtworkImport.findById(req.query.artworks, (err, batch) => {
+                    if (err || !batch) {
+                        return res.status(404).render("error", {
+                            title: req.gettext("Import not found."),
+                        });
+                    }
 
-            try {
-                source = Source.getSource(req.params.source);
+                    res.render("import-artworks", {
+                        batch,
+                    });
+                });
 
-            } catch (e) {
-                return res.status(404).render("error", {
-                    title: req.gettext("Source not found."),
+            } else if (req.query.images) {
+                ImageImport.findById(req.query.images, (err, batch) => {
+                    if (err || !batch) {
+                        return res.status(404).render("error", {
+                            title: req.gettext("Import not found."),
+                        });
+                    }
+
+                    res.render("import-images", {
+                        batch,
+                    });
+                });
+
+            } else {
+                res.status(404).render("error", {
+                    title: req.gettext("Import not found."),
                 });
             }
+        },
+
+        uploadImages(req, res, next) {
+            const source = req.source;
 
             const form = new formidable.IncomingForm();
             form.encoding = "utf-8";
@@ -98,17 +112,7 @@ module.exports = function(core, app) {
         },
 
         uploadData(req, res, next) {
-            // TODO(jeresig): Only allow certain users to upload batches
-            let source;
-
-            try {
-                source = Source.getSource(req.params.source);
-
-            } catch (e) {
-                return res.status(404).render("error", {
-                    title: req.gettext("Source not found."),
-                });
-            }
+            const source = req.source;
 
             const form = new formidable.IncomingForm();
             form.encoding = "utf-8";
@@ -160,9 +164,23 @@ module.exports = function(core, app) {
         },
 
         routes() {
+            // TODO(jeresig): Only allow certain users to access these pages
             app.get("/source/:source/admin", this.admin);
+            app.get("/source/:source/import", this.import);
             app.post("/source/:source/upload-images", this.uploadImages);
             app.post("/source/:source/upload-data", this.uploadData);
+
+            app.param("source", (req, res, next, id) => {
+                try {
+                    req.source = Source.getSource(id);
+                    next();
+
+                } catch (e) {
+                    return res.status(404).render("error", {
+                        title: req.gettext("Source not found."),
+                    });
+                }
+            });
         },
     };
 };
