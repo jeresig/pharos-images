@@ -9,9 +9,9 @@ const init = require("../init");
 const req = init.req;
 const ArtworkImport = init.ArtworkImport;
 
-tap.test("getUrl", {autoend: true}, (t) => {
+tap.test("getURL", {autoend: true}, (t) => {
     const batch = init.getArtworkBatch();
-    t.equal(batch.getUrl(req.lang),
+    t.equal(batch.getURL(req.lang),
         "http://localhost:3000/source/test/import?artworks=test/started",
         "Get URL");
 });

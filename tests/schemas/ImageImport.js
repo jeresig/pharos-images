@@ -9,9 +9,9 @@ const stub = init.stub;
 const req = init.req;
 const ImageImport = init.ImageImport;
 
-tap.test("getUrl", {autoend: true}, (t) => {
+tap.test("getURL", {autoend: true}, (t) => {
     const batch = init.getBatch();
-    t.equal(batch.getUrl(req.lang),
+    t.equal(batch.getURL(req.lang),
         "http://localhost:3000/source/test/import?images=test/started",
         "Get URL");
 });

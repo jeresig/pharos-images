@@ -3,7 +3,6 @@
 const fs = require("fs");
 
 const formidable = require("formidable");
-const moment = require("moment");
 
 module.exports = function(core, app) {
     const Source = core.models.Source;
@@ -13,6 +12,7 @@ module.exports = function(core, app) {
     return {
         admin(req, res, next) {
             const source = req.source;
+            const batchState = (batch) => batch.getCurState().name(req);
 
             Promise.all([
                 ImageImport.find({source: source._id})
@@ -27,9 +27,7 @@ module.exports = function(core, app) {
                     source,
                     imageImport,
                     artworkImport,
-                    batchState: (batch) => batch.getCurState().name(req),
-                    prettyDate: (date) =>
-                        moment(date).locale(req.lang).fromNow(),
+                    batchState,
                 });
             })
             /* istanbul ignore next */
@@ -39,6 +37,8 @@ module.exports = function(core, app) {
         },
 
         import(req, res) {
+            const batchState = (batch) => batch.getCurState().name(req);
+
             if (req.query.artworks) {
                 ArtworkImport.findById(req.query.artworks, (err, batch) => {
                     if (err || !batch) {
@@ -49,6 +49,9 @@ module.exports = function(core, app) {
 
                     res.render("import-artworks", {
                         batch,
+                        results: batch.getFilteredResults(),
+                        expanded: req.query.expanded,
+                        batchState,
                     });
                 });
 
@@ -62,6 +65,8 @@ module.exports = function(core, app) {
 
                     res.render("import-images", {
                         batch,
+                        results: batch.getFilteredResults(),
+                        batchState,
                     });
                 });
 
@@ -106,7 +111,7 @@ module.exports = function(core, app) {
                             req.gettext("Error saving zip file.")));
                     }
 
-                    res.redirect(batch.getUrl(req.lang));
+                    res.redirect(batch.getURL(req.lang));
                 });
             });
         },
@@ -157,7 +162,7 @@ module.exports = function(core, app) {
                                 req.gettext("Error saving data file.")));
                         }
 
-                        res.redirect(batch.getUrl(req.lang));
+                        res.redirect(batch.getURL(req.lang));
                     });
                 });
             });

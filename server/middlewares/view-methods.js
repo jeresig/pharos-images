@@ -1,5 +1,6 @@
 "use strict";
 
+const moment = require("moment");
 const pd = require("parse-dimensions");
 
 const urls = require("../../lib/urls")();
@@ -89,6 +90,14 @@ module.exports = (req, res, next) => {
         stringNum(num) {
             const result = (typeof num === "number" ? num : "");
             return result.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        },
+
+        relativeDate(date) {
+            return moment(date).locale(req.lang).fromNow();
+        },
+
+        fixedDate(date) {
+            return moment(date).locale(req.lang).format("LLL");
         },
 
         getUnit() {

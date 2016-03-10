@@ -64,7 +64,7 @@
     {% for batch in imageImport %}
     <tr>
         <td>{{ batch.fileName }}</td>
-        <td>{{ prettyDate(batch.modified) }}</td>
+        <td>{{ relativeDate(batch.modified) }}</td>
         {% if batch.state === "error" %}
         <td colspan="4">
             {{ format(gettext("Error: %(error)s"), {error: batch.error}) }}
@@ -126,7 +126,7 @@
         <td>
             <a href="{{ URL(batch) }}">{{ batch.fileName }}</a>
         </td>
-        <td>{{ prettyDate(batch.modified) }}</td>
+        <td>{{ relativeDate(batch.modified) }}</td>
         {% if batch.state === "error" %}
         <td colspan="6">
             {{ format(gettext("Error: %(error)s"), {error: batch.error}) }}
