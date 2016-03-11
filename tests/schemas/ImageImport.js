@@ -350,7 +350,7 @@ tap.test("ImageImport.advance", (t) => {
         }
     };
 
-    ImageImport.find({}, "", (err, batches) => {
+    ImageImport.find({}, "", {}, (err, batches) => {
         checkStates(batches,
             ["started", "process.started", "process.completed",
                 "process.completed"]);
@@ -358,13 +358,13 @@ tap.test("ImageImport.advance", (t) => {
         ImageImport.advance((err) => {
             t.error(err, "Error should be empty.");
 
-            ImageImport.find({}, "", (err, batches) => {
+            ImageImport.find({}, "", {}, (err, batches) => {
                 checkStates(batches, ["process.completed", "process.started"]);
 
                 ImageImport.advance((err) => {
                     t.error(err, "Error should be empty.");
 
-                    ImageImport.find({}, "", (err, batches) => {
+                    ImageImport.find({}, "", {}, (err, batches) => {
                         checkStates(batches, ["process.started"]);
 
                         // Force all batches to be completed
@@ -373,7 +373,7 @@ tap.test("ImageImport.advance", (t) => {
                         ImageImport.advance((err) => {
                             t.error(err, "Error should be empty.");
 
-                            ImageImport.find({}, "", (err, batches) => {
+                            ImageImport.find({}, "", {}, (err, batches) => {
                                 checkStates(batches, []);
                                 t.end();
                             });

@@ -1,5 +1,7 @@
 "use strict";
 
+const qs = require("querystring");
+
 const moment = require("moment");
 const pd = require("parse-dimensions");
 
@@ -31,10 +33,21 @@ module.exports = (req, res, next) => {
             return req.query.lang;
         },
 
-        URL(path) {
-            return path.getURL ?
+        URL(path, query) {
+            let url = path.getURL ?
                 path.getURL(req.lang) :
                 urls.gen(req.lang, path);
+
+            if (query) {
+                url = url + (url.indexOf("?") >= 0 ? "&" : "?") +
+                    qs.stringify(query);
+            }
+
+            return url;
+        },
+
+        urlFromID(id) {
+            return urls.gen(req.lang, `/artworks/${id}`);
         },
 
         fullName(item) {

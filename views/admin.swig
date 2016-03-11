@@ -115,6 +115,7 @@
         <th>{{ gettext("File Name") }}</th>
         <th>{{ gettext("Last Updated") }}</th>
         <th>{{ gettext("Status") }}</th>
+        <th>{{ gettext("Unprocessed") }}</th>
         <th>{{ gettext("Created") }}</th>
         <th>{{ gettext("Updated") }}</th>
         <th>{{ gettext("Deleted") }}</th>
@@ -128,7 +129,7 @@
         </td>
         <td>{{ relativeDate(batch.modified) }}</td>
         {% if batch.state === "error" %}
-        <td colspan="6">
+        <td colspan="7">
             {{ format(gettext("Error: %(error)s"), {error: batch.error}) }}
         </td>
         {% else %}
@@ -142,6 +143,7 @@
                 {{ batchState(batch) }}
             {% endif %}
         </td>
+        <td>{{ results.unprocessed.length }}</td>
         <td>{{ results.created.length }}</td>
         <td>{{ results.changed.length }}</td>
         <td>{{ results.deleted.length }}</td>

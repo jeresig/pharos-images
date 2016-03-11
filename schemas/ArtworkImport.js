@@ -240,6 +240,8 @@ module.exports = (core) => {
 
         getFilteredResults() {
             return {
+                unprocessed: this.results.filter(
+                    (result) => result.result === "unknown"),
                 created: this.results.filter(
                     (result) => result.result === "created"),
                 changed: this.results.filter(

@@ -16,7 +16,7 @@ module.exports = function(core, app) {
 
     return {
         index(req, res) {
-            Artwork.count().exec((err, total) => {
+            Artwork.count({}, (err, total) => {
                 const sitemaps = [
                     {url: core.urls.gen(req.lang, "/sitemap-sources.xml") },
                     {url: core.urls.gen(req.lang, "/sitemap-artists.xml") },

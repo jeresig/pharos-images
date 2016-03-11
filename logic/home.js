@@ -8,7 +8,7 @@ module.exports = (core, app) => {
 
     return {
         index(req, res) {
-            Artwork.count((err, total) => {
+            Artwork.count({}, (err, total) => {
                 res.render("home", {
                     sources: Source.getSources(),
                     total: total,

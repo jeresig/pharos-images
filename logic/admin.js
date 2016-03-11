@@ -2,7 +2,11 @@
 
 const fs = require("fs");
 
+const async = require("async");
 const formidable = require("formidable");
+const jdp = require("jsondiffpatch").create({
+    objectHash: (obj) => obj._id,
+});
 
 module.exports = function(core, app) {
     const Source = core.models.Source;
@@ -14,12 +18,18 @@ module.exports = function(core, app) {
             const source = req.source;
             const batchState = (batch) => batch.getCurState().name(req);
 
-            Promise.all([
-                ImageImport.find({source: source._id})
-                    .sort({created: "desc"}).exec(),
-                ArtworkImport.find({source: source._id})
-                    .sort({created: "desc"}).exec(),
-            ]).then((results) => {
+            async.parallel([
+                (callback) => ImageImport.find({source: source._id}, null,
+                    {sort: {created: "desc"}}, callback),
+                (callback) => ArtworkImport.find({source: source._id}, null,
+                    {sort: {created: "desc"}}, callback),
+            ], (err, results) => {
+                /* istanbul ignore if */
+                if (err) {
+                    return next(new Error(
+                        req.gettext("Error retrieving records.")));
+                }
+
                 const imageImport = results[0];
                 const artworkImport = results[1];
 
@@ -29,10 +39,6 @@ module.exports = function(core, app) {
                     artworkImport,
                     batchState,
                 });
-            })
-            /* istanbul ignore next */
-            .catch(() => {
-                next(new Error(req.gettext("Error retrieving records.")));
             });
         },
 
@@ -52,6 +58,7 @@ module.exports = function(core, app) {
                         results: batch.getFilteredResults(),
                         expanded: req.query.expanded,
                         batchState,
+                        diff: (delta) => jdp.formatters.annotated.format(delta),
                     });
                 });
 

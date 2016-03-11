@@ -587,7 +587,7 @@ const bindStubs = () => {
             });
     });
 
-    sandbox.stub(ImageImport, "find", (query, select, callback) => {
+    sandbox.stub(ImageImport, "find", (query, select, options, callback) => {
         process.nextTick(() => {
             callback(null, batches.filter((batch) =>
                 (batch.state !== "error" && batch.state !== "completed")));
@@ -606,12 +606,21 @@ const bindStubs = () => {
         const batch = imageImportFromFile.call(ImageImport, fileName,
             source);
         if (!batch.save.restore) {
-            sandbox.stub(batch, "save", (callback) => batch.validate(callback));
+            sandbox.stub(batch, "save", (callback) => batch.validate((err) => {
+                /* istanbul ignore if */
+                if (err) {
+                    callback(err);
+                }
+
+                batch.modified = new Date();
+                batches.push(batch);
+                callback(null, batch);
+            }));
         }
         return batch;
     });
 
-    sandbox.stub(ArtworkImport, "find", (query, select, callback) => {
+    sandbox.stub(ArtworkImport, "find", (query, select, options, callback) => {
         process.nextTick(() => {
             callback(null, artworkBatches.filter((batch) =>
                 (batch.state !== "error" && batch.state !== "completed")));
@@ -630,7 +639,16 @@ const bindStubs = () => {
         const batch = artworkImportFromFile.call(ArtworkImport, fileName,
             source);
         if (!batch.save.restore) {
-            sandbox.stub(batch, "save", (callback) => batch.validate(callback));
+            sandbox.stub(batch, "save", (callback) => batch.validate((err) => {
+                /* istanbul ignore if */
+                if (err) {
+                    callback(err);
+                }
+
+                batch.modified = new Date();
+                artworkBatches.push(batch);
+                callback(null, batch);
+            }));
         }
         return batch;
     });
@@ -712,7 +730,7 @@ const req = {
 
 let app;
 
-tap.beforeEach((done) => {
+const init = (done) => {
     genData();
     bindStubs();
 
@@ -754,7 +772,9 @@ tap.beforeEach((done) => {
 
         done();
     });
-});
+};
+
+tap.beforeEach(init);
 
 tap.afterEach((done) => {
     app.close();
@@ -784,4 +804,5 @@ module.exports = {
     Source,
     stub: sinon.stub,
     core,
+    init,
 };

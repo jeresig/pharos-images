@@ -109,7 +109,7 @@ module.exports = (core) => {
                 state: {
                     $nin: ["completed", "error"],
                 },
-            }, "_id state", (err, batches) => {
+            }, "_id state", {}, (err, batches) => {
                 if (err || !batches || batches.length === 0) {
                     return callback(err);
                 }

@@ -208,7 +208,7 @@ module.exports = (core) => {
 
     Artwork.methods = {
         getURL(locale) {
-            return core.urls.gen(locale, `/artworks/${this._id}`);
+            return core.models.Artwork.getURLFromID(locale, this._id);
         },
 
         getThumbURL() {
@@ -342,6 +342,10 @@ module.exports = (core) => {
     };
 
     Artwork.statics = {
+        getURLFromID(locale, id) {
+            return core.urls.gen(locale, `/artworks/${id}`);
+        },
+
         fromData(tmpData, req, callback) {
             const lint = this.lintData(tmpData, req);
             const warnings = lint.warnings;
