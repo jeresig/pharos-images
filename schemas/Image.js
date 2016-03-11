@@ -24,9 +24,6 @@ if (!process.env.SCALED_SIZE) {
     console.error("SCALED_SIZE must be specified.");
 }
 
-// How often images similarity should be checked for updates
-const UPDATE_SIMILARITY_RATE = 5000;
-
 module.exports = (core) => {
     const Image = new core.db.schema({
         // An ID for the image in the form: SOURCE/IMAGENAME
@@ -331,40 +328,6 @@ module.exports = (core) => {
                     image.save((err) => callback(err, true));
                 });
             });
-        },
-
-        watchUpdateSimilarity() {
-            const next = () => setTimeout(update, UPDATE_SIMILARITY_RATE);
-            const update = () => {
-                this.indexSimilarity((err, success) => {
-                    // If we hit an error attempt again after a small delay
-                    /* istanbul ignore if */
-                    if (err) {
-                        return next();
-                    }
-
-                    // If it worked immediately attempt to index or update
-                    // another image.
-                    if (success) {
-                        return process.nextTick(update);
-                    }
-
-                    // If nothing happened attempt to update the similarity
-                    // of an image instead.
-                    this.updateSimilarity((err, success) => {
-                        // If nothing happened then we wait to try again
-                        if (err || !success) {
-                            return next();
-                        }
-
-                        // If it worked immediately attempt to index or update
-                        // another image.
-                        process.nextTick(update);
-                    });
-                });
-            };
-
-            update();
         },
     };
 

@@ -2,9 +2,6 @@
 
 const async = require("async");
 
-// How often batches should be advanced
-const ADVANCE_RATE = 5000;
-
 module.exports = (core) => {
     const Import = new core.db.schema({
         // An ID for the import, based on the source and time
@@ -144,13 +141,6 @@ module.exports = (core) => {
                     }, callback);
                 }, callback);
             });
-        },
-
-        startAdvancing() {
-            const advance = () => this.advance(() =>
-                setTimeout(advance, ADVANCE_RATE));
-
-            advance();
         },
     };
 

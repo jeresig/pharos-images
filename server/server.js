@@ -8,6 +8,7 @@ const passport = require("./passport");
 const i18n = require("./i18n");
 const cdn = require("./cdn");
 const routes = require("./routes");
+const cron = require("./cron");
 
 module.exports = (callback) => {
     const port = process.env.PORT || 3000;
@@ -50,10 +51,8 @@ module.exports = (callback) => {
                     process.send("offline");
                 }
             });
-        }
 
-        // Automatically advance the different data importers
-        //core.models.ArtworkImport.startAdvancing();
-        //core.models.ImageImport.startAdvancing();
+            cron(core).start();
+        }
     });
 };

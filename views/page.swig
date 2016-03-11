@@ -31,6 +31,7 @@
     {{ CDN("/css/bootstrap.min.css") }}
     {{ CDN("/css/bootstrap-theme.min.css") }}
     {{ CDN("/css/style.css") }}
+    {% block style %}{% endblock %}
 </head>
 <body>
     <div class="navbar navbar-default navbar-static-top">

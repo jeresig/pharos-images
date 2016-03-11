@@ -4,9 +4,7 @@ const fs = require("fs");
 
 const async = require("async");
 const formidable = require("formidable");
-const jdp = require("jsondiffpatch").create({
-    objectHash: (obj) => obj._id,
-});
+const jdp = require("jsondiffpatch");
 
 module.exports = function(core, app) {
     const Source = core.models.Source;
@@ -58,7 +56,7 @@ module.exports = function(core, app) {
                         results: batch.getFilteredResults(),
                         expanded: req.query.expanded,
                         batchState,
-                        diff: (delta) => jdp.formatters.annotated.format(delta),
+                        diff: (delta) => jdp.formatters.html.format(delta),
                     });
                 });
 

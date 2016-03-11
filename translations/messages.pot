@@ -8,44 +8,44 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2016-03-11 03:15+0000\n"
+"POT-Creation-Date: 2016-03-11 23:51+0000\n"
 
-#: logic/admin.js:30
+#: logic/admin.js:28
 msgid "Error retrieving records."
 msgstr ""
 
-#: logic/admin.js:52
-#: logic/admin.js:69
-#: logic/admin.js:82
+#: logic/admin.js:50
+#: logic/admin.js:67
+#: logic/admin.js:80
 msgid "Import not found."
 msgstr ""
 
-#: logic/admin.js:98
+#: logic/admin.js:96
 msgid "Error processing zip file."
 msgstr ""
 
-#: logic/admin.js:105
+#: logic/admin.js:103
 msgid "No zip file specified."
 msgstr ""
 
-#: logic/admin.js:118
+#: logic/admin.js:116
 msgid "Error saving zip file."
 msgstr ""
 
-#: logic/admin.js:138
+#: logic/admin.js:136
 msgid "Error processing data files."
 msgstr ""
 
-#: logic/admin.js:148
+#: logic/admin.js:146
 msgid "No data files specified."
 msgstr ""
 
-#: logic/admin.js:162
-#: logic/admin.js:169
+#: logic/admin.js:160
+#: logic/admin.js:167
 msgid "Error saving data file."
 msgstr ""
 
-#: logic/admin.js:192
+#: logic/admin.js:190
 #: logic/artworks.js:36
 msgid "Source not found."
 msgstr ""

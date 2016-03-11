@@ -2,6 +2,10 @@
 
 {% block title %}{{ format(gettext("Data Import: %(fileName)s"), {fileName: batch.fileName}) }}{% endblock %}
 
+{% block script %}
+{{ CDN("/css/format-diff.css") }}
+{% endblock %}
+
 {% block content %}
 <h1>{{ format(gettext("Data Import: %(fileName)s"), {fileName: batch.fileName}) }}</h1>
 
