@@ -171,16 +171,12 @@ module.exports = (core) => {
                     return callback(err);
                 }
 
-                this.importArtworks((err) => {
-                    /* istanbul ignore if */
-                    if (err) {
-                        this.error = err.message;
-                        return this.saveState("error", callback);
-                    }
+                // Delay the importing of the artworks to not block the UI
+                process.nextTick(() => this.importArtworks(() => {
+                    // Ignore the result, user doesn't care.
+                }));
 
-                    // Advance to the next state
-                    this.saveState("import.completed", callback);
-                });
+                callback();
             });
         },
 
@@ -224,7 +220,16 @@ module.exports = (core) => {
                     result.state = "import.completed";
                     process.nextTick(callback);
                 }
-            }, callback);
+            }, (err) => {
+                /* istanbul ignore if */
+                if (err) {
+                    this.error = err.message;
+                    return this.saveState("error", callback);
+                }
+
+                // Advance to the next state
+                this.saveState("import.completed", callback);
+            });
         },
 
         updateSimilarity(callback) {

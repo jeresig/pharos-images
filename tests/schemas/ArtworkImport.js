@@ -438,7 +438,7 @@ tap.test("ArtworkImport.advance", (t) => {
                     checkStates(batches, ["process.completed"]);
 
                     // Need to manually move to the next step
-                    batch.manuallyApprove((err) => {
+                    batch.importArtworks((err) => {
                         t.error(err, "Error should be empty.");
 
                         ArtworkImport.find({}, "", {}, (err, batches) => {
