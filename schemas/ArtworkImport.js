@@ -84,6 +84,11 @@ module.exports = (core) => {
                 `/source/${this.source}/import?artworks=${this._id}`);
         },
 
+        getError(req) {
+            const msg = errors[this.error];
+            return msg ? msg(req) : this.error;
+        },
+
         getStates() {
             return states;
         },
@@ -256,11 +261,6 @@ module.exports = (core) => {
     });
 
     Object.assign(ArtworkImport.statics, {
-        getError(err, req) {
-            const msg = errors[err];
-            return msg ? msg(req) : err;
-        },
-
         fromFile(fileName, source) {
             return new core.models.ArtworkImport({source, fileName});
         },

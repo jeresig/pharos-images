@@ -52,11 +52,13 @@ tap.test("saveState", (t) => {
 });
 
 tap.test("getError", {autoend: true}, (t) => {
+    const batch = init.getBatch();
     const errors = ["ERROR_READING_ZIP", "ZIP_FILE_EMPTY", "MALFORMED_IMAGE",
         "EMPTY_IMAGE", "NEW_VERSION", "TOO_SMALL", "ERROR_SAVING"];
     for (const error of errors) {
-        t.ok(ImageImport.getError(error, req), error);
-        t.notEqual(ImageImport.getError(error, req), error, error);
+        batch.error = error;
+        t.ok(batch.getError(req), error);
+        t.notEqual(batch.getError(req), error, error);
     }
 });
 

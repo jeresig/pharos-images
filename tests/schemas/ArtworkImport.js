@@ -48,11 +48,13 @@ tap.test("canAdvance", {autoend: true}, (t) => {
 });
 
 tap.test("getError", {autoend: true}, (t) => {
+    const batch = init.getArtworkBatch();
     const errors = ["ABANDONED", "ERROR_READING_DATA", "ERROR_SAVING",
         "ERROR_DELETING"];
     for (const error of errors) {
-        t.ok(ArtworkImport.getError(error, req), error);
-        t.notEqual(ArtworkImport.getError(error, req), error, error);
+        batch.error = error;
+        t.ok(batch.getError(req), error);
+        t.notEqual(batch.getError(req), error, error);
     }
 });
 
@@ -97,7 +99,7 @@ tap.test("setResults (with error)", (t) => {
         t.error(err, "Error should be empty.");
         t.equal(batch.error,
             "Invalid JSON (Unexpected \"i\" at position 16 in state STOP)");
-        t.equal(ArtworkImport.getError(batch.error),
+        t.equal(batch.getError(req),
             "Invalid JSON (Unexpected \"i\" at position 16 in state STOP)");
         t.equal(batch.state, "error");
         t.equal(batch.results.length, 0, "Check number of results");

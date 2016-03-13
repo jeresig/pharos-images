@@ -12,22 +12,20 @@
 <p>{{ format(gettext("Uploaded: %(date)s"), {date: fixedDate(batch.created)}) }}</p>
 
 {% if batch.state !== "completed" %}
-<p>{{ batchState(batch) }} {{ format(gettext("Last Updated: %(date)s"), {date: relativeDate(batch.modified)}) }}</p>
+<p>{{ batchState }} {{ format(gettext("Last Updated: %(date)s"), {date: relativeDate(batch.modified)}) }}</p>
 {% endif %}
 
-<p>
 {% if batch.state === "process.completed" %}
-    <a href="{{ URL(batch) }}" class="btn btn-success">
+<p>
+    <a href="{{ URL(batch, {finalize: true}) }}" class="btn btn-success">
         {{ gettext("Finalize Import") }}
     </a>
 
-    <a href="{{ URL(batch) }}" class="btn btn-danger">
+    <a href="{{ URL(batch, {abandon: true}) }}" class="btn btn-danger">
         {{ gettext("Abandon Import") }}
     </a>
-{% else %}
-    {{ batchState(batch) }}
-{% endif %}
 </p>
+{% endif %}
 
 {% if results.unprocessed.length > 0 %}
 <h2 id="unprocessed">{{ gettext("To Be Processed") }} ({{ stringNum(results.unprocessed.length) }})</h2>

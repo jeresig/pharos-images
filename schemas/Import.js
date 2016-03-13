@@ -57,6 +57,13 @@ module.exports = (core) => {
             return states[states.indexOf(this.getCurState()) + 1];
         },
 
+        getStateName(req) {
+            const curState = this.getCurState();
+            return curState ? curState.name(req) :
+                req.format(req.gettext("Error: %(error)s"),
+                    {error: this.getError(req)});
+        },
+
         canAdvance() {
             const curState = this.getCurState();
             if (!curState) {

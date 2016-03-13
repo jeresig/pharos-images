@@ -41,8 +41,6 @@ module.exports = function(core, app) {
         },
 
         import(req, res) {
-            const batchState = (batch) => batch.getCurState().name(req);
-
             if (req.query.artworks) {
                 ArtworkImport.findById(req.query.artworks, (err, batch) => {
                     if (err || !batch) {
@@ -51,11 +49,22 @@ module.exports = function(core, app) {
                         });
                     }
 
+                    if (req.query.abandon) {
+                        return batch.abandon(() => {
+                            res.redirect(batch.getURL(req.lang));
+                        });
+
+                    } else if (req.query.finalize) {
+                        return batch.manuallyApprove(() => {
+                            res.redirect(batch.getURL(req.lang));
+                        });
+                    }
+
                     res.render("import-artworks", {
                         batch,
                         results: batch.getFilteredResults(),
                         expanded: req.query.expanded,
-                        batchState,
+                        batchState: batch.getStateName(req),
                         diff: (delta) => jdp.formatters.html.format(delta),
                     });
                 });
@@ -71,7 +80,7 @@ module.exports = function(core, app) {
                     res.render("import-images", {
                         batch,
                         results: batch.getFilteredResults(),
-                        batchState,
+                        batchState: batch.getStateName(req),
                     });
                 });
 
