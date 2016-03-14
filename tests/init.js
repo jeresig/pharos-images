@@ -454,7 +454,8 @@ const bindStubs = () => {
         if (artworks[id]) {
             process.nextTick(() => callback(null, artworks[id]));
         } else {
-            process.nextTick(() => callback(new Error("Artwork not found.")));
+            process.nextTick(() => callback(
+                new Error("Artwork not found.")));
         }
     });
 

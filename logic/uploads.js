@@ -126,19 +126,17 @@ module.exports = (core, app) => {
         show(req, res) {
             // TODO: Update similar matches if new image data has
             // since come in since it was last updated.
-            Upload.findById(req.params.upload)
-                .populate("images")
-                .populate("similarArtworks.artwork")
-                .exec((err, upload) => {
-                    if (err || !upload) {
-                        return res.status(404).render("error", {
-                            title: req.gettext("Uploaded image not found."),
-                        });
-                    }
+            Upload.findById(req.params.upload, (err, upload) => {
+                if (err || !upload) {
+                    return res.status(404).render("error", {
+                        title: req.gettext("Uploaded image not found."),
+                    });
+                }
 
+                upload.loadImages(true, () => {
                     async.eachLimit(upload.similarArtworks, 4,
                         (similar, callback) => {
-                            similar.artwork.populate("images", callback);
+                            similar.artwork.loadImages(false, callback);
                         }, () => {
                             res.render("upload", {
                                 title: upload.getTitle(req),
@@ -149,6 +147,7 @@ module.exports = (core, app) => {
                             });
                         });
                 });
+            });
         },
 
         routes() {

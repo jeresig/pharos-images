@@ -46,43 +46,43 @@ module.exports = function(core, app) {
             const compare = ("compare" in req.query);
             const id = `${req.params.source}/${req.params.artworkName}`;
 
-            Artwork.findById(id)
-                .populate("images")
-                .populate("similarArtworks.artwork")
-                .exec((err, artwork) => {
-                    if (err || !artwork) {
-                        return res.status(404).render("error", {
-                            title: req.gettext("Artwork not found."),
-                        });
-                    }
+            Artwork.findById(id, (err, artwork) => {
+                if (err || !artwork) {
+                    return res.status(404).render("error", {
+                        title: req.gettext("Artwork not found."),
+                    });
+                }
 
+                artwork.loadImages(true, () => {
+                    // TODO: Handle error loading images?
                     const title = artwork.getTitle(req);
 
                     // Sort the similar artworks by score
                     artwork.similarArtworks = artwork.similarArtworks
                         .sort((a, b) => b.score - a.score);
 
-                    if (compare) {
-                        async.eachLimit(artwork.similarArtworks, 4,
-                            (similar, callback) => {
-                                similar.artwork.populate("images", callback);
-                            }, () => {
-                                res.render("artwork", {
-                                    title,
-                                    noIndex: true,
-                                    artworks: [artwork]
-                                        .concat(artwork.similarArtworks
-                                            .map((similar) => similar.artwork)),
-                                });
-                            });
-                    } else {
-                        res.render("artwork", {
+                    if (!compare) {
+                        return res.render("artwork", {
                             title,
                             artworks: [artwork],
                             similar: artwork.similarArtworks,
                         });
                     }
+
+                    async.eachLimit(artwork.similarArtworks, 4,
+                        (similar, callback) => {
+                            similar.artwork.loadImages(false, callback);
+                        }, () => {
+                            res.render("artwork", {
+                                title,
+                                noIndex: true,
+                                artworks: [artwork]
+                                    .concat(artwork.similarArtworks
+                                        .map((similar) => similar.artwork)),
+                            });
+                        });
                 });
+            });
         },
 
         routes() {

@@ -300,6 +300,56 @@ module.exports = (core) => {
                 });
             });
         },
+
+        loadImages(loadSimilarArtworks, callback) {
+            async.parallel([
+                (callback) => {
+                    async.mapLimit(this.images, 4, (imageID, callback) => {
+                        core.models.Image.findById(imageID, (err, image) => {
+                            /* istanbul ignore if */
+                            if (err || !image) {
+                                return callback();
+                            }
+
+                            callback(null, image);
+                        });
+                    }, (err, images) => {
+                        // We filter out any invalid/un-found images
+                        // TODO: We should log out some details on when this
+                        // happens (hopefully never).
+                        this.images = images.filter((image) => !!image);
+                        callback();
+                    });
+                },
+
+                (callback) => {
+                    if (!loadSimilarArtworks) {
+                        return process.nextTick(callback);
+                    }
+
+                    async.mapLimit(this.similarArtworks, 4,
+                        (similar, callback) => {
+                            core.models.Artwork.findById(similar.artwork,
+                                (err, artwork) => {
+                                    /* istanbul ignore if */
+                                    if (err || !artwork) {
+                                        return callback();
+                                    }
+
+                                    similar.artwork = artwork;
+                                    callback(null, similar);
+                                });
+                        }, (err, similar) => {
+                            // We filter out any invalid/un-found artworks
+                            // TODO: We should log out some details on when this
+                            // happens (hopefully never).
+                            this.similarArtworks =
+                                similar.filter((similar) => !!similar);
+                            callback();
+                        });
+                },
+            ], callback);
+        },
     };
 
     const internal = ["_id", "__v", "created", "modified", "defaultImageHash",
