@@ -41,6 +41,21 @@
 {% endif %}
 {% endif %}
 
+{% if results.errors.length > 0 %}
+<h2 id="completed">{{ gettext("Errors") }} ({{ stringNum(results.errors.length) }})</h2>
+
+{% for result in results.errors %}
+    {% if expanded === "errors" || loop.index0 < 5 %}
+    <h3>{{ result.error }}</h3>
+    <pre>{{ result.data|json(4) }}</pre>
+    {% endif %}
+{% endfor %}
+
+{% if results.errors.length > 5 %}
+    <a href="{{ URL(batch, {expanded: "errors"}) }}#errors">{{ format(gettext("Show all %(count)s results..."), {count: stringNum(results.errors.length)}) }}</a>
+{% endif %}
+{% endif %}
+
 {% if results.changed.length > 0 %}
 <h2 id="changed">{% if batch.state === "completed" %}{{ gettext("Changed") }}{% else %}{{ gettext("To Be Changed") }}{% endif %} ({{ stringNum(results.changed.length) }})</h2>
 

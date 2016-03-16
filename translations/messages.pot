@@ -8,7 +8,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2016-03-14 17:46+0000\n"
+"POT-Creation-Date: 2016-03-16 03:45+0000\n"
 
 #: logic/admin.js:28
 msgid "Error retrieving records."
@@ -302,6 +302,7 @@ msgstr ""
 
 #: views/admin.swig:12
 #: views/admin.swig:24
+#: views/import-artworks.swig:9
 msgid "Errors"
 msgstr ""
 
@@ -319,7 +320,7 @@ msgid "Unprocessed"
 msgstr ""
 
 #: views/admin.swig:21
-#: views/import-artworks.swig:12
+#: views/import-artworks.swig:14
 msgid "Created"
 msgstr ""
 
@@ -328,7 +329,7 @@ msgid "Updated"
 msgstr ""
 
 #: views/admin.swig:23
-#: views/import-artworks.swig:15
+#: views/import-artworks.swig:17
 msgid "Deleted"
 msgstr ""
 
@@ -492,25 +493,26 @@ msgid "To Be Processed"
 msgstr ""
 
 #: views/import-artworks.swig:8
-#: views/import-artworks.swig:11
-#: views/import-artworks.swig:14
-#: views/import-artworks.swig:17
+#: views/import-artworks.swig:10
+#: views/import-artworks.swig:13
+#: views/import-artworks.swig:16
+#: views/import-artworks.swig:19
 msgid "Show all %(count)s results..."
 msgstr ""
 
-#: views/import-artworks.swig:9
+#: views/import-artworks.swig:11
 msgid "Changed"
 msgstr ""
 
-#: views/import-artworks.swig:10
+#: views/import-artworks.swig:12
 msgid "To Be Changed"
 msgstr ""
 
-#: views/import-artworks.swig:13
+#: views/import-artworks.swig:15
 msgid "To Be Created"
 msgstr ""
 
-#: views/import-artworks.swig:16
+#: views/import-artworks.swig:18
 msgid "To Be Deleted"
 msgstr ""
 
