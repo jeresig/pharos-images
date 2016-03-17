@@ -18,7 +18,7 @@ tap.test("getURL", {autoend: true}, (t) => {
 
 tap.test("getDirBase", {autoend: true}, (t) => {
     const source = init.getSource();
-    const file = path.resolve(process.cwd(), "sources/test");
+    const file = path.resolve(process.cwd(), "data/test");
     t.equal(source.getDirBase(), file);
 });
 
@@ -29,7 +29,7 @@ tap.test("getFullName", {autoend: true}, (t) => {
 
 tap.test("getShortName", {autoend: true}, (t) => {
     const source = init.getSource();
-    t.equal(source.getShortName(), "test");
+    t.equal(source.getShortName(), "Test");
 });
 
 tap.test("getConverter", {autoend: true}, (t) => {

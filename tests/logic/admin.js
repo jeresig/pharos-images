@@ -34,7 +34,7 @@ tap.test("uploadData: File Error", (t) => {
     const file = "default-error.json";
     const formData = {
         files: {
-            value: fs.createReadStream(path.resolve("data", file)),
+            value: fs.createReadStream(path.resolve("testData", file)),
             options: {
                 filename: file,
             },
@@ -57,7 +57,7 @@ tap.test("uploadData: Default File", (t) => {
     const file = "default.json";
     const formData = {
         files: {
-            value: fs.createReadStream(path.resolve("data", file)),
+            value: fs.createReadStream(path.resolve("testData", file)),
             options: {
                 filename: file,
             },
@@ -101,7 +101,7 @@ tap.test("uploadImages: Empty Zip", (t) => {
     const file = "empty.zip";
     const formData = {
         zipField: {
-            value: fs.createReadStream(path.resolve("data", file)),
+            value: fs.createReadStream(path.resolve("testData", file)),
             options: {
                 filename: file,
             },
@@ -124,7 +124,7 @@ tap.test("uploadImages: Corrupted Zip", (t) => {
     const file = "corrupted.zip";
     const formData = {
         zipField: {
-            value: fs.createReadStream(path.resolve("data", file)),
+            value: fs.createReadStream(path.resolve("testData", file)),
             options: {
                 filename: file,
             },
@@ -147,7 +147,7 @@ tap.test("uploadImages: Normal Zip", (t) => {
     const file = "test.zip";
     const formData = {
         zipField: {
-            value: fs.createReadStream(path.resolve("data", file)),
+            value: fs.createReadStream(path.resolve("testData", file)),
             options: {
                 filename: file,
             },

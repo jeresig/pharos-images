@@ -21,11 +21,11 @@ module.exports = (core) => {
     });
 
     const getDirBase = function() {
-        return core.urls.genLocalFile(`sources/${uploadName}`);
+        return core.urls.genLocalFile(`data/${uploadName}`);
     };
 
     UploadImage.methods.getFilePath = function() {
-        return path.resolve(getDirBase(), `./images/${this.hash}.jpg`);
+        return path.resolve(getDirBase(), `images/${this.hash}.jpg`);
     };
 
     // We don't save the uploaded files in the index so we override this

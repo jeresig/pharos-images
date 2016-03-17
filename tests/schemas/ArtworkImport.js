@@ -79,7 +79,7 @@ tap.test("abandon", (t) => {
 
 tap.test("setResults", (t) => {
     const batch = init.getArtworkBatch();
-    const dataFile = path.resolve(process.cwd(), "data", "default.json");
+    const dataFile = path.resolve(process.cwd(), "testData", "default.json");
     batch.setResults([fs.createReadStream(dataFile)], (err) => {
         t.error(err, "Error should be empty.");
         t.equal(batch.results.length, 6, "Check number of results");
@@ -94,7 +94,8 @@ tap.test("setResults", (t) => {
 
 tap.test("setResults (with error)", (t) => {
     const batch = init.getArtworkBatch();
-    const dataFile = path.resolve(process.cwd(), "data", "default-error.json");
+    const dataFile = path.resolve(process.cwd(), "testData",
+        "default-error.json");
     batch.setResults([fs.createReadStream(dataFile)], (err) => {
         t.error(err, "Error should be empty.");
         t.equal(batch.error,
@@ -109,7 +110,7 @@ tap.test("setResults (with error)", (t) => {
 
 tap.test("processArtworks", (t) => {
     const batch = init.getArtworkBatch();
-    const dataFile = path.resolve(process.cwd(), "data", "default.json");
+    const dataFile = path.resolve(process.cwd(), "testData", "default.json");
     const expected = [
         {model: "test/1234", result: "unchanged", warnings: []},
         {
@@ -187,7 +188,7 @@ tap.test("processArtworks", (t) => {
 
 tap.test("importArtworks", (t) => {
     const batch = init.getArtworkBatch();
-    const dataFile = path.resolve(process.cwd(), "data", "default.json");
+    const dataFile = path.resolve(process.cwd(), "testData", "default.json");
     const expected = [
         {model: "test/1234", result: "unchanged", warnings: []},
         {
@@ -257,8 +258,8 @@ tap.test("updateSimilarity", (t) => {
                     "score": 17,
                     "source": "test",
                     "images": [
-                        "test/zoo.jpg",
-                        "test/zoo2.jpg",
+                        "test/new1.jpg",
+                        "test/new2.jpg",
                     ],
                 },
                 {
@@ -417,7 +418,7 @@ tap.test("ArtworkImport.advance", (t) => {
     };
 
     const batch = init.getArtworkBatch();
-    const dataFile = path.resolve(process.cwd(), "data", "default.json");
+    const dataFile = path.resolve(process.cwd(), "testData", "default.json");
 
     batch.setResults([fs.createReadStream(dataFile)], (err) => {
         t.error(err, "Error should be empty.");

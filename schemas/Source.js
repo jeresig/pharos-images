@@ -23,7 +23,7 @@ module.exports = (core) => {
         },
 
         getDirBase() {
-            return core.urls.genLocalFile(`sources/${this._id}`);
+            return core.urls.genLocalFile(`data/${this._id}`);
         },
 
         getFullName() {

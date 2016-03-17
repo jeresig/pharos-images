@@ -18,7 +18,8 @@ tap.test("getURL", {autoend: true}, (t) => {
 tap.test("getThumbURL", {autoend: true}, (t) => {
     const artwork = init.getArtwork();
     t.equal(artwork.getThumbURL(),
-        "http://localhost:3000/data/test/thumbs/4567.jpg", "Check Thumb URL");
+        "http://localhost:3000/data/test/thumbs/4266906334.jpg",
+        "Check Thumb URL");
 });
 
 tap.test("getTitle", {autoend: true}, (t) => {
@@ -69,7 +70,8 @@ tap.test("Artwork.fromData: Existing artwork", (t) => {
     Artwork.fromData(artworkData, req, (err, value, warnings) => {
         t.error(err, "Error should be empty.");
         t.equal(value, artwork, "Artwork should be returned.");
-        t.equal(value.defaultImageHash, "4567", "defaultImageHash is set.");
+        t.equal(value.defaultImageHash, "4266906334",
+            "defaultImageHash is set.");
         t.equal(value.images.length, 1, "Images are set.");
         t.equal(value.images[0], "test/foo.jpg", "Images are set.");
         t.same(warnings, [], "There should be no warnings.");
@@ -80,13 +82,15 @@ tap.test("Artwork.fromData: Existing artwork", (t) => {
 tap.test("Artwork.fromData: New artwork", (t) => {
     const artworkData = init.getArtworkData();
     const newData = Object.assign({}, artworkData, {
-        id: "4567",
+        id: "4266906334",
     });
 
     Artwork.fromData(newData, req, (err, value, warnings) => {
         t.error(err, "Error should be empty.");
-        t.equal(value._id, "test/4567", "New artwork should be returned.");
-        t.equal(value.defaultImageHash, "4567", "defaultImageHash is set.");
+        t.equal(value._id, "test/4266906334",
+            "New artwork should be returned.");
+        t.equal(value.defaultImageHash, "4266906334",
+            "defaultImageHash is set.");
         t.equal(value.images.length, 1, "Images are set.");
         t.equal(value.images[0], "test/foo.jpg", "Images are set.");
         t.same(warnings, [], "There should be no warnings.");
@@ -97,14 +101,16 @@ tap.test("Artwork.fromData: New artwork", (t) => {
 tap.test("Artwork.fromData: New artwork with warnings", (t) => {
     const artworkData = init.getArtworkData();
     const newData = Object.assign({}, artworkData, {
-        id: "4567",
+        id: "4266906334",
         batch: "batch",
     });
 
     Artwork.fromData(newData, req, (err, value, warnings) => {
         t.error(err, "Error should be empty.");
-        t.equal(value._id, "test/4567", "New artwork should be returned.");
-        t.equal(value.defaultImageHash, "4567", "defaultImageHash is set.");
+        t.equal(value._id, "test/4266906334",
+            "New artwork should be returned.");
+        t.equal(value.defaultImageHash, "4266906334",
+            "defaultImageHash is set.");
         t.equal(value.images.length, 1, "Images are set.");
         t.equal(value.images[0], "test/foo.jpg", "Images are set.");
         t.same(warnings, ["Unrecognized field `batch`."],
@@ -116,7 +122,7 @@ tap.test("Artwork.fromData: New artwork with warnings", (t) => {
 tap.test("Artwork.fromData: New artwork missing images", (t) => {
     const artworkData = init.getArtworkData();
     const newData = Object.assign({}, artworkData, {
-        id: "4567",
+        id: "4266906334",
         images: ["missing.jpg"],
     });
 
@@ -131,14 +137,16 @@ tap.test("Artwork.fromData: New artwork missing images", (t) => {
 tap.test("Artwork.fromData: New artwork missing single image", (t) => {
     const artworkData = init.getArtworkData();
     const newData = Object.assign({}, artworkData, {
-        id: "4567",
+        id: "4266906334",
         images: ["missing.jpg", "foo.jpg"],
     });
 
     Artwork.fromData(newData, req, (err, value, warnings) => {
         t.error(err, "Error should be empty.");
-        t.equal(value._id, "test/4567", "New artwork should be returned.");
-        t.equal(value.defaultImageHash, "4567", "defaultImageHash is set.");
+        t.equal(value._id, "test/4266906334",
+            "New artwork should be returned.");
+        t.equal(value.defaultImageHash, "4266906334",
+            "defaultImageHash is set.");
         t.equal(value.images.length, 1, "Images are set.");
         t.equal(value.images[0], "test/foo.jpg", "Images are set.");
         t.same(warnings, ["Image file not found: missing.jpg"],
@@ -176,7 +184,7 @@ tap.test("updateSimilarity with two matches", (t) => {
             artwork: "test/1236",
             score: 17,
             source: "test",
-            images: ["test/zoo.jpg", "test/zoo2.jpg"],
+            images: ["test/new1.jpg", "test/new2.jpg"],
         }, "Check similar artwork result");
         t.same(artwork.similarArtworks[1].toJSON(), {
             _id: "test/1234",

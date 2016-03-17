@@ -188,13 +188,15 @@
         <div class="row">
         {% for artwork in artworks %}
             <div class="img col-xs-6 col-sm-4 col-md-3">
-                <a href="{{ URL(artwork) }}"
-                    title="{{ getTitle(artwork) }}">
-                    <img src="{{ artwork.getThumbURL() }}"
-                        alt="{{ getTitle(artwork) }}"
-                        title="{{ getTitle(artwork) }}"
-                        class="img-responsive"/>
-                </a>
+                <div class="img-wrap">
+                    <a href="{{ URL(artwork) }}"
+                        title="{{ getTitle(artwork) }}">
+                        <img src="{{ artwork.getThumbURL() }}"
+                            alt="{{ getTitle(artwork) }}"
+                            title="{{ getTitle(artwork) }}"
+                            class="img-responsive center-block"/>
+                    </a>
+                </div>
                 <div class="details">
                     <div class="wrap">
                         {% if artwork.date %}

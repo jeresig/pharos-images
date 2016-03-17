@@ -305,6 +305,11 @@ module.exports = (core) => {
             async.parallel([
                 (callback) => {
                     async.mapLimit(this.images, 4, (imageID, callback) => {
+                        if (typeof imageID !== "string") {
+                            return process.nextTick(() =>
+                                callback(null, imageID));
+                        }
+
                         core.models.Image.findById(imageID, (err, image) => {
                             /* istanbul ignore if */
                             if (err || !image) {
@@ -329,6 +334,11 @@ module.exports = (core) => {
 
                     async.mapLimit(this.similarArtworks, 4,
                         (similar, callback) => {
+                            if (typeof similar !== "string") {
+                                return process.nextTick(() =>
+                                    callback(null, similar));
+                            }
+
                             core.models.Artwork.findById(similar.artwork,
                                 (err, artwork) => {
                                     /* istanbul ignore if */

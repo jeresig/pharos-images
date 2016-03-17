@@ -120,7 +120,7 @@ module.exports = (core) => {
     Image.methods = {
         getFilePath() {
             return path.resolve(this.getSource().getDirBase(),
-                `./images/${this.hash}.jpg`);
+                `images/${this.hash}.jpg`);
         },
 
         getOriginalURL() {
@@ -365,8 +365,8 @@ const images = {
         const parts = size.split("x");
 
         return {
-            width: parseFloat(parts.width),
-            height: parseFloat(parts.height),
+            width: parseFloat(parts[0]),
+            height: parseFloat(parts[0]),
         };
     },
 
@@ -392,9 +392,7 @@ const images = {
         const size = this.parseSize(process.env.THUMB_SIZE);
 
         this.convert(fs.createReadStream(imageFile), thumbFile, (img) => {
-            return img.resize(size.width, size.height, ">")
-                .gravity("Center")
-                .extent(size.width, size.height);
+            return img.resize(size.width, size.height);
         }, callback);
     },
 
@@ -404,7 +402,7 @@ const images = {
         const scaled = this.parseSize(process.env.SCALED_SIZE);
 
         this.convert(fs.createReadStream(imageFile), scaledFile, (img) => {
-            return img.resize(scaled.width, scaled.height, "^>");
+            return img.resize(scaled.width, scaled.height, ">");
         }, callback);
     },
 

@@ -88,17 +88,13 @@ tap.test("getFilteredResults", {autoend: true}, (t) => {
                 "_id": "bar.jpg",
                 "fileName": "bar.jpg",
                 "model": "test/bar.jpg",
-                "warnings": [
-                    "NEW_VERSION",
-                ],
+                "warnings": [],
             },
             {
                 "_id": "foo.jpg",
                 "fileName": "foo.jpg",
                 "model": "test/foo.jpg",
-                "warnings": [
-                    "NEW_VERSION",
-                ],
+                "warnings": [],
             },
             {
                 "_id": "new1.jpg",
@@ -126,30 +122,30 @@ tap.test("getFilteredResults", {autoend: true}, (t) => {
                 "model": "test/new3.jpg",
                 "warnings": [],
             },
+            {
+                "_id": "nosimilar.jpg",
+                "fileName": "nosimilar.jpg",
+                "model": "test/nosimilar.jpg",
+                "warnings": [
+                    "NEW_VERSION",
+                ],
+            },
         ],
         "warnings": [
-            {
-                "_id": "bar.jpg",
-                "fileName": "bar.jpg",
-                "model": "test/bar.jpg",
-                "warnings": [
-                    "NEW_VERSION",
-                ],
-            },
-            {
-                "_id": "foo.jpg",
-                "fileName": "foo.jpg",
-                "model": "test/foo.jpg",
-                "warnings": [
-                    "NEW_VERSION",
-                ],
-            },
             {
                 "_id": "small.jpg",
                 "fileName": "small.jpg",
                 "model": "test/small.jpg",
                 "warnings": [
                     "TOO_SMALL",
+                ],
+            },
+            {
+                "_id": "nosimilar.jpg",
+                "fileName": "nosimilar.jpg",
+                "model": "test/nosimilar.jpg",
+                "warnings": [
+                    "NEW_VERSION",
                 ],
             },
         ],
@@ -162,7 +158,7 @@ tap.test("getFilteredResults", {autoend: true}, (t) => {
 });
 
 tap.test("validate", (t) => {
-    const testZip = path.resolve(process.cwd(), "data", "corrupted.zip");
+    const testZip = path.resolve(process.cwd(), "testData", "corrupted.zip");
 
     const batch = new ImageImport({
         _id: "test/corrupted",
@@ -179,7 +175,7 @@ tap.test("validate", (t) => {
 });
 
 tap.test("validate", (t) => {
-    const testZip = path.resolve(process.cwd(), "data", "corrupted.zip");
+    const testZip = path.resolve(process.cwd(), "testData", "corrupted.zip");
 
     const batch = new ImageImport({
         source: "test",
@@ -211,7 +207,7 @@ tap.test("processImages", (t) => {
 });
 
 tap.test("processImages (Corrupted File)", (t) => {
-    const testZip = path.resolve(process.cwd(), "data", "corrupted.zip");
+    const testZip = path.resolve(process.cwd(), "testData", "corrupted.zip");
 
     const batch = new ImageImport({
         _id: "test/started",
@@ -228,7 +224,7 @@ tap.test("processImages (Corrupted File)", (t) => {
 });
 
 tap.test("processImages (Empty File)", (t) => {
-    const testZip = path.resolve(process.cwd(), "data", "empty.zip");
+    const testZip = path.resolve(process.cwd(), "testData", "empty.zip");
 
     const batch = new ImageImport({
         _id: "test/started",
@@ -324,7 +320,7 @@ tap.test("processImages (advance, error)", (t) => {
 });
 
 tap.test("processImages (advance, Corrupted File)", (t) => {
-    const testZip = path.resolve(process.cwd(), "data", "corrupted.zip");
+    const testZip = path.resolve(process.cwd(), "testData", "corrupted.zip");
 
     const batch = new ImageImport({
         _id: "test/started",

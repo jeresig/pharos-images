@@ -32,12 +32,14 @@
                 {% else %}
                     {% for match in upload.similarArtworks %}
                     <div class="img col-md-6 col-sm-4 col-xs-6">
-                        <a href="{{ URL(match.artwork) }}">
-                            <img src="{{ match.artwork.getThumbURL() }}"
-                                alt="{{ getTitle(match.artwork) }}"
-                                title="{{ getTitle(match.artwork) }}"
-                                class="img-responsive center-block"/>
-                        </a>
+                        <div class="img-wrap">
+                            <a href="{{ URL(match.artwork) }}">
+                                <img src="{{ match.artwork.getThumbURL() }}"
+                                    alt="{{ getTitle(match.artwork) }}"
+                                    title="{{ getTitle(match.artwork) }}"
+                                    class="img-responsive center-block"/>
+                            </a>
+                        </div>
                         <div class="details">
                             <div class="wrap">
                                 <span>{{ format(gettext("Score: %(score)s"), {score: match.score}) }}</span>

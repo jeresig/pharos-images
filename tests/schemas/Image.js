@@ -11,26 +11,26 @@ const ImageImport = init.ImageImport;
 tap.test("getFilePath", {autoend: true}, (t) => {
     const image = init.getImage();
     t.equal(image.getFilePath(),
-        path.resolve(process.cwd(), "sources/test/images/4567.jpg"),
+        path.resolve(process.cwd(), "data/test/images/4266906334.jpg"),
         "Check file path");
 });
 
 tap.test("getOriginalURL", {autoend: true}, (t) => {
     const image = init.getImage();
     t.equal(image.getOriginalURL(),
-        "http://localhost:3000/data/test/images/4567.jpg", "Check Image URL");
+        "http://localhost:3000/data/test/images/4266906334.jpg", "Check Image URL");
 });
 
 tap.test("getScaledURL", {autoend: true}, (t) => {
     const image = init.getImage();
     t.equal(image.getScaledURL(),
-        "http://localhost:3000/data/test/scaled/4567.jpg", "Check Scaled URL");
+        "http://localhost:3000/data/test/scaled/4266906334.jpg", "Check Scaled URL");
 });
 
 tap.test("getThumbURL", {autoend: true}, (t) => {
     const image = init.getImage();
     t.equal(image.getThumbURL(),
-        "http://localhost:3000/data/test/thumbs/4567.jpg", "Check Thumb URL");
+        "http://localhost:3000/data/test/thumbs/4266906334.jpg", "Check Thumb URL");
 });
 
 tap.test("getSource", {autoend: true}, (t) => {
@@ -121,7 +121,7 @@ tap.test("Image.fromFile: New Image", (t) => {
         source: "test",
     });
 
-    const testFile = path.resolve(process.cwd(), "data", "new1.jpg");
+    const testFile = path.resolve(process.cwd(), "testData", "new1.jpg");
 
     Image.fromFile(batch, testFile, (err, image, warnings) => {
         t.error(err, "No error should be thrown.");
@@ -139,7 +139,7 @@ tap.test("Image.fromFile: New Image (Empty File)", (t) => {
         source: "test",
     });
 
-    const testFile = path.resolve(process.cwd(), "data", "empty.jpg");
+    const testFile = path.resolve(process.cwd(), "testData", "empty.jpg");
 
     Image.fromFile(batch, testFile, (err, image, warnings) => {
         t.ok(err, "Has error object.");
@@ -156,7 +156,7 @@ tap.test("Image.fromFile: New Image (Corrupted File)", (t) => {
         source: "test",
     });
 
-    const testFile = path.resolve(process.cwd(), "data", "corrupted.jpg");
+    const testFile = path.resolve(process.cwd(), "testData", "corrupted.jpg");
 
     Image.fromFile(batch, testFile, (err, image, warnings) => {
         t.ok(err, "Has error object.");
@@ -173,7 +173,7 @@ tap.test("Image.fromFile: New Image (Small File)", (t) => {
         source: "test",
     });
 
-    const testFile = path.resolve(process.cwd(), "data", "small.jpg");
+    const testFile = path.resolve(process.cwd(), "testData", "small.jpg");
 
     Image.fromFile(batch, testFile, (err, image, warnings) => {
         t.error(err, "No error should be thrown.");
@@ -189,7 +189,7 @@ tap.test("Image.fromFile: Updating Image", (t) => {
         source: "test",
     });
 
-    const testFile = path.resolve(process.cwd(), "data", "foo.jpg");
+    const testFile = path.resolve(process.cwd(), "testData", "nosimilar.jpg");
 
     Image.fromFile(batch, testFile, (err, image, warnings) => {
         t.error(err, "No error should be thrown.");
@@ -205,7 +205,7 @@ tap.test("Image.fromFile: Updating Image (files already exist)", (t) => {
         source: "test",
     });
 
-    const testFile = path.resolve(process.cwd(), "data", "foo.jpg");
+    const testFile = path.resolve(process.cwd(), "testData", "foo.jpg");
 
     Image.fromFile(batch, testFile, () => {
         // Run this twice to have the images be put into place already

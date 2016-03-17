@@ -3,7 +3,7 @@
 // Some dummy ENV variables used for testing
 process.env.PASTEC_URL = "http://localhost:8000/";
 process.env.THUMB_SIZE = "220x220";
-process.env.SCALED_SIZE = "300x300";
+process.env.SCALED_SIZE = "440x440";
 process.env.BASE_DATA_DIR = process.cwd();
 
 const fs = require("fs");
@@ -129,28 +129,28 @@ const genData = () => {
             _id: "test/1234",
             id: "1234",
             images: ["test/foo.jpg"],
-            defaultImageHash: "4567",
+            defaultImageHash: "4266906334",
         })),
 
         "test/1235": new Artwork(Object.assign({}, artworkData, {
             _id: "test/1235",
             id: "1235",
             images: ["test/bar.jpg"],
-            defaultImageHash: "4568",
+            defaultImageHash: "2508884691",
         })),
 
         "test/1236": new Artwork(Object.assign({}, artworkData, {
             _id: "test/1236",
             id: "1236",
-            images: ["test/zoo.jpg", "test/zoo2.jpg", "test/zoo3.jpg"],
-            defaultImageHash: "4569",
+            images: ["test/new1.jpg", "test/new2.jpg", "test/new3.jpg"],
+            defaultImageHash: "2533156274",
         })),
 
         "test/1237": new Artwork(Object.assign({}, artworkData, {
             _id: "test/1237",
             id: "1237",
             images: ["test/nosimilar.jpg"],
-            defaultImageHash: "4570",
+            defaultImageHash: "4246873662",
         })),
     };
 
@@ -167,27 +167,25 @@ const genData = () => {
             _id: "test",
             url: "http://test.com/",
             name: "Test Source",
-            shortName: "test",
+            shortName: "Test",
         }),
         new Source({
             _id: "test2",
             url: "http://test2.com/",
             name: "Test Source 2",
-            shortName: "test2",
+            shortName: "Test2",
         }),
     ];
 
     source = sources[0];
 
-    const testZip = path.resolve(process.cwd(), "data", "test.zip");
+    const testZip = path.resolve(process.cwd(), "testData", "test.zip");
 
     imageResultsData = [
         {
             "_id": "bar.jpg",
             "fileName": "bar.jpg",
-            "warnings": [
-                "NEW_VERSION",
-            ],
+            "warnings": [],
             "model": "test/bar.jpg",
         },
         {
@@ -203,9 +201,7 @@ const genData = () => {
         {
             "_id": "foo.jpg",
             "fileName": "foo.jpg",
-            "warnings": [
-                "NEW_VERSION",
-            ],
+            "warnings": [],
             "model": "test/foo.jpg",
         },
         {
@@ -233,6 +229,14 @@ const genData = () => {
             "fileName": "new3.jpg",
             "warnings": [],
             "model": "test/new3.jpg",
+        },
+        {
+            "_id": "nosimilar.jpg",
+            "fileName": "nosimilar.jpg",
+            "warnings": [
+                "NEW_VERSION",
+            ],
+            "model": "test/nosimilar.jpg",
         },
     ];
 
@@ -329,7 +333,7 @@ const genData = () => {
             _id: "test/foo.jpg",
             source: "test",
             fileName: "foo.jpg",
-            hash: "4567",
+            hash: "4266906334",
             width: 100,
             height: 100,
             similarImages: [{_id: "test/bar.jpg", score: 10}],
@@ -339,41 +343,41 @@ const genData = () => {
             _id: "test/bar.jpg",
             source: "test",
             fileName: "bar.jpg",
-            hash: "4568",
+            hash: "2508884691",
             width: 120,
             height: 120,
             similarImages: [
                 {_id: "test/foo.jpg", score: 10},
-                {_id: "test/zoo2.jpg", score: 9},
-                {_id: "test/zoo.jpg", score: 8},
+                {_id: "test/new2.jpg", score: 9},
+                {_id: "test/new1.jpg", score: 8},
             ],
         }),
 
-        "test/zoo.jpg": new Image({
-            _id: "test/zoo.jpg",
+        "test/new1.jpg": new Image({
+            _id: "test/new1.jpg",
             source: "test",
-            fileName: "zoo.jpg",
-            hash: "4569",
+            fileName: "new1.jpg",
+            hash: "2533156274",
             width: 115,
             height: 115,
             similarImages: [{_id: "test/bar.jpg", score: 8}],
         }),
 
-        "test/zoo2.jpg": new Image({
-            _id: "test/zoo2.jpg",
+        "test/new2.jpg": new Image({
+            _id: "test/new2.jpg",
             source: "test",
-            fileName: "zoo2.jpg",
-            hash: "4571",
+            fileName: "new2.jpg",
+            hash: "614431508",
             width: 116,
             height: 116,
             similarImages: [{_id: "test/bar.jpg", score: 9}],
         }),
 
-        "test/zoo3.jpg": new Image({
-            _id: "test/zoo3.jpg",
+        "test/new3.jpg": new Image({
+            _id: "test/new3.jpg",
             source: "test",
-            fileName: "zoo3.jpg",
-            hash: "4572",
+            fileName: "new3.jpg",
+            hash: "204571459",
             width: 117,
             height: 117,
             similarImages: [],
@@ -383,7 +387,7 @@ const genData = () => {
             _id: "test/nosimilar.jpg",
             source: "test",
             fileName: "nosimilar.jpg",
-            hash: "4570",
+            hash: "1306644102",
             width: 110,
             height: 110,
             similarImages: [],
@@ -413,34 +417,29 @@ const genData = () => {
 
     similar = {
         "4266906334": [
-            {id: "4567", score: 100},
-            {id: "4568", score: 10},
+            {id: "4266906334", score: 100},
+            {id: "2508884691", score: 10},
             {id: "NO_LONGER_EXISTS", score: 1},
         ],
-        "4567": [
-            {id: "4567", score: 100},
-            {id: "4568", score: 10},
-            {id: "NO_LONGER_EXISTS", score: 1},
+        "2508884691": [
+            {id: "2508884691", score: 100},
+            {id: "4266906334", score: 10},
+            {id: "614431508", score: 9},
+            {id: "2533156274", score: 8},
         ],
-        "4568": [
-            {id: "4568", score: 100},
-            {id: "4567", score: 10},
-            {id: "4571", score: 9},
-            {id: "4569", score: 8},
+        "2533156274": [
+            {id: "2533156274", score: 100},
+            {id: "2508884691", score: 8},
         ],
-        "4569": [
-            {id: "4569", score: 100},
-            {id: "4568", score: 8},
+        "614431508": [
+            {id: "614431508", score: 100},
+            {id: "2508884691", score: 9},
         ],
-        "4571": [
-            {id: "4571", score: 100},
-            {id: "4568", score: 9},
+        "204571459": [
+            {id: "204571459", score: 100},
         ],
-        "4572": [
-            {id: "4572", score: 100},
-        ],
-        "4570": [
-            {id: "4570", score: 100},
+        "1306644102": [
+            {id: "1306644102", score: 100},
         ],
     };
 
@@ -752,20 +751,22 @@ const init = (done) => {
         },
     ], () => {
         mockfs({
-            "sources/test": {
-                "images": {},
-                "scaled": {},
-                "thumbs": {},
-            },
-            "sources/uploads": {
-                "images": {
-                    "4266906334.jpg": testFiles["4266906334.jpg"],
-                    "bar.jpg": testFiles["bar.jpg"],
+            "data": {
+                "test": {
+                    "images": {},
+                    "scaled": {},
+                    "thumbs": {},
                 },
-                "scaled": {},
-                "thumbs": {},
+                "uploads": {
+                    "images": {
+                        "4266906334.jpg": testFiles["4266906334.jpg"],
+                        "bar.jpg": testFiles["bar.jpg"],
+                    },
+                    "scaled": {},
+                    "thumbs": {},
+                },
             },
-            "data": testFiles,
+            "testData": testFiles,
             "converters": converterFiles,
             "public": publicFiles,
             "views": viewFiles,

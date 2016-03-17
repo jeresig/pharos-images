@@ -95,6 +95,27 @@
     overflow: auto;
 }
 
+.img .img-wrap {
+    height: 220px;
+    margin: 0 auto;
+    max-width: 100%;
+    position: relative;
+    width: 220px;
+}
+
+.img .img-wrap img {
+    bottom: 0;
+    height: auto;
+    left: 0;
+    margin: auto;
+    max-height: 100%;
+    max-width: 100%;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: auto;
+}
+
 /*
  * Styling for the artwork search form.
  */
