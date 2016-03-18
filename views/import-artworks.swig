@@ -11,8 +11,14 @@
 
 <p>{{ format(gettext("Uploaded: %(date)s"), {date: fixedDate(batch.created)}) }}</p>
 
+<p><strong>{% if batch.state === "error" %}
+    {{ format(gettext("Error: %(error)s"), {error: batchError(batch)}) }}
+{% else %}
+    {{ batchState(batch) }}
+{% endif %}</strong></p>
+
 {% if batch.state !== "completed" %}
-<p>{{ batchState }} {{ format(gettext("Last Updated: %(date)s"), {date: relativeDate(batch.modified)}) }}</p>
+<p>{{ format(gettext("Last Updated: %(date)s"), {date: relativeDate(batch.modified)}) }}</p>
 {% endif %}
 
 {% if batch.state === "process.completed" %}

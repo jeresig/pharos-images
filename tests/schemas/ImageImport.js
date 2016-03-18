@@ -26,7 +26,7 @@ tap.test("getCurState", {autoend: true}, (t) => {
     const batch = init.getBatch();
     const state = batch.getCurState();
     t.equal(state.id, "started", "Get State ID");
-    t.equal(state.name(req), "Uploaded.", "Get State Name");
+    t.equal(state.name(req), "Awaiting processing...", "Get State Name");
 });
 
 tap.test("getNextState", {autoend: true}, (t) => {
@@ -242,7 +242,7 @@ tap.test("processImages (Empty File)", (t) => {
 
 tap.test("processImages (advance, started)", (t) => {
     const batch = init.getBatch();
-    t.equal(batch.getCurState().name(req), "Uploaded.");
+    t.equal(batch.getCurState().name(req), "Awaiting processing...");
     batch.advance((err) => {
         t.error(err, "Error should be empty.");
 
@@ -272,7 +272,7 @@ tap.test("processImages (advance, process.started)", (t) => {
 
 tap.test("processImages (advance, process.completed)", (t) => {
     const batch = init.getBatches()[2];
-    t.equal(batch.getCurState().name(req), "Processing Completed.");
+    t.equal(batch.getCurState().name(req), "Completed.");
     batch.advance((err) => {
         t.error(err, "Error should be empty.");
 
@@ -348,7 +348,14 @@ tap.test("ImageImport.advance", (t) => {
         }
     };
 
-    ImageImport.find({}, "", {}, (err, batches) => {
+    const getBatches = (callback) => {
+        ImageImport.find({}, "", {}, (err, batches) => {
+            callback(null, batches.filter((batch) => (batch.state !== "error" &&
+                batch.state !== "completed")));
+        });
+    };
+
+    getBatches((err, batches) => {
         checkStates(batches,
             ["started", "process.started", "process.completed",
                 "process.completed"]);
@@ -356,13 +363,13 @@ tap.test("ImageImport.advance", (t) => {
         ImageImport.advance((err) => {
             t.error(err, "Error should be empty.");
 
-            ImageImport.find({}, "", {}, (err, batches) => {
+            getBatches((err, batches) => {
                 checkStates(batches, ["process.completed", "process.started"]);
 
                 ImageImport.advance((err) => {
                     t.error(err, "Error should be empty.");
 
-                    ImageImport.find({}, "", {}, (err, batches) => {
+                    getBatches((err, batches) => {
                         checkStates(batches, ["process.started"]);
 
                         // Force all batches to be completed
@@ -371,7 +378,7 @@ tap.test("ImageImport.advance", (t) => {
                         ImageImport.advance((err) => {
                             t.error(err, "Error should be empty.");
 
-                            ImageImport.find({}, "", {}, (err, batches) => {
+                            getBatches((err, batches) => {
                                 checkStates(batches, []);
                                 t.end();
                             });

@@ -8,7 +8,7 @@ module.exports = (core) => {
     const states = [
         {
             id: "started",
-            name: (req) => req.gettext("Uploaded."),
+            name: (req) => req.gettext("Awaiting processing..."),
             advance(batch, callback) {
                 batch.processArtworks(callback);
             },
@@ -19,7 +19,7 @@ module.exports = (core) => {
         },
         {
             id: "process.completed",
-            name: (req) => req.gettext("Processing Completed."),
+            name: (req) => req.gettext("Confirmation required."),
             // NOTE(jeresig): Do not auto-advance to importing the data
             // we want the user to make the call on the results.
             // batch.importArtworks(callback);
@@ -30,7 +30,7 @@ module.exports = (core) => {
         },
         {
             id: "import.completed",
-            name: (req) => req.gettext("Data imported."),
+            name: (req) => req.gettext("Awaiting similarity sync..."),
             advance(batch, callback) {
                 batch.updateSimilarity(callback);
             },
@@ -41,7 +41,7 @@ module.exports = (core) => {
         },
         {
             id: "similarity.sync.completed",
-            name: (req) => req.gettext("Similarity synced."),
+            name: (req) => req.gettext("Completed."),
             advance(batch, callback) {
                 // NOTE(jeresig): Currently nothing needs to be done to finish
                 // up the import, other than moving it to the "completed" state.

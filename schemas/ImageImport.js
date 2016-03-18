@@ -13,7 +13,7 @@ module.exports = (core) => {
     const states = [
         {
             id: "started",
-            name: (req) => req.gettext("Uploaded."),
+            name: (req) => req.gettext("Awaiting processing..."),
             advance(batch, callback) {
                 batch.processImages(callback);
             },
@@ -24,7 +24,7 @@ module.exports = (core) => {
         },
         {
             id: "process.completed",
-            name: (req) => req.gettext("Processing Completed."),
+            name: (req) => req.gettext("Completed."),
             advance(batch, callback) {
                 // NOTE(jeresig): Currently nothing needs to be done to finish
                 // up the import, other than moving it to the "completed" state.

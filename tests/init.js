@@ -243,6 +243,8 @@ const genData = () => {
     batches = [
         new ImageImport({
             _id: "test/started",
+            created: new Date(),
+            modified: new Date(),
             source: "test",
             zipFile: testZip,
             fileName: "test.zip",
@@ -250,6 +252,8 @@ const genData = () => {
 
         new ImageImport({
             _id: "test/process-started",
+            created: new Date(),
+            modified: new Date(),
             source: "test",
             state: "process.started",
             zipFile: testZip,
@@ -258,6 +262,8 @@ const genData = () => {
 
         new ImageImport({
             _id: "test/process-completed",
+            created: new Date(),
+            modified: new Date(),
             source: "test",
             state: "process.completed",
             zipFile: testZip,
@@ -267,6 +273,8 @@ const genData = () => {
 
         new ImageImport({
             _id: "test/process-completed2",
+            created: new Date(),
+            modified: new Date(),
             source: "test",
             state: "process.completed",
             zipFile: testZip,
@@ -276,6 +284,8 @@ const genData = () => {
 
         new ImageImport({
             _id: "test/completed",
+            created: new Date(),
+            modified: new Date(),
             source: "test",
             state: "completed",
             zipFile: testZip,
@@ -285,6 +295,8 @@ const genData = () => {
 
         new ImageImport({
             _id: "test/error",
+            created: new Date(),
+            modified: new Date(),
             source: "test",
             state: "error",
             zipFile: testZip,
@@ -302,11 +314,15 @@ const genData = () => {
     artworkBatches = [
         new ArtworkImport({
             _id: "test/started",
+            created: new Date(),
+            modified: new Date(),
             fileName: "data.json",
             source: "test",
         }),
         new ArtworkImport({
             _id: "test/started",
+            created: new Date(),
+            modified: new Date(),
             fileName: "data.json",
             source: "test",
             state: "completed",
@@ -314,6 +330,8 @@ const genData = () => {
         }),
         new ArtworkImport({
             _id: "test/started",
+            created: new Date(),
+            modified: new Date(),
             fileName: "data.json",
             source: "test",
             state: "error",
@@ -589,8 +607,7 @@ const bindStubs = () => {
 
     sandbox.stub(ImageImport, "find", (query, select, options, callback) => {
         process.nextTick(() => {
-            callback(null, batches.filter((batch) =>
-                (batch.state !== "error" && batch.state !== "completed")));
+            callback(null, batches);
         });
     });
 
@@ -622,8 +639,7 @@ const bindStubs = () => {
 
     sandbox.stub(ArtworkImport, "find", (query, select, options, callback) => {
         process.nextTick(() => {
-            callback(null, artworkBatches.filter((batch) =>
-                (batch.state !== "error" && batch.state !== "completed")));
+            callback(null, artworkBatches);
         });
     });
 

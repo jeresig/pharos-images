@@ -26,7 +26,7 @@ tap.test("getCurState", {autoend: true}, (t) => {
     const batch = init.getArtworkBatch();
     const state = batch.getCurState();
     t.equal(state.id, "started", "Get State ID");
-    t.equal(state.name(req), "Uploaded.", "Get State Name");
+    t.equal(state.name(req), "Awaiting processing...", "Get State Name");
 
     batch.state = "similarity.sync.started";
 
@@ -420,6 +420,13 @@ tap.test("ArtworkImport.advance", (t) => {
     const batch = init.getArtworkBatch();
     const dataFile = path.resolve(process.cwd(), "testData", "default.json");
 
+    const getBatches = (callback) => {
+        ArtworkImport.find({}, "", {}, (err, batches) => {
+            callback(null, batches.filter((batch) => (batch.state !== "error" &&
+                batch.state !== "completed")));
+        });
+    };
+
     batch.setResults([fs.createReadStream(dataFile)], (err) => {
         t.error(err, "Error should be empty.");
         t.equal(batch.results.length, 6, "Check number of results");
@@ -429,45 +436,42 @@ tap.test("ArtworkImport.advance", (t) => {
             t.equal(result.data.lang, "en");
         }
 
-        ArtworkImport.find({}, "", {}, (err, batches) => {
+        getBatches((err, batches) => {
             checkStates(batches, ["started"]);
 
             ArtworkImport.advance((err) => {
                 t.error(err, "Error should be empty.");
 
-                ArtworkImport.find({}, "", {}, (err, batches) => {
+                getBatches((err, batches) => {
                     checkStates(batches, ["process.completed"]);
 
                     // Need to manually move to the next step
                     batch.importArtworks((err) => {
                         t.error(err, "Error should be empty.");
 
-                        ArtworkImport.find({}, "", {}, (err, batches) => {
+                        getBatches((err, batches) => {
                             checkStates(batches, ["import.completed"]);
 
                             ArtworkImport.advance((err) => {
                                 t.error(err, "Error should be empty.");
 
-                                ArtworkImport.find({}, "", {},
-                                    (err, batches) => {
-                                        checkStates(batches,
-                                            ["similarity.sync.completed"]);
+                                getBatches((err, batches) => {
+                                    checkStates(batches,
+                                        ["similarity.sync.completed"]);
 
-                                        ArtworkImport.advance((err) => {
-                                            t.error(err,
-                                                "Error should be empty.");
-
-                                            t.ok(batch.getCurState().name(req));
-
-                                            ArtworkImport.find({}, "", {},
-                                                (err, batches) => {
-                                                    checkStates(batches, []);
-                                                    t.end();
-                                                });
-                                        });
+                                    ArtworkImport.advance((err) => {
+                                        t.error(err, "Error should be empty.");
 
                                         t.ok(batch.getCurState().name(req));
+
+                                        getBatches((err, batches) => {
+                                            checkStates(batches, []);
+                                            t.end();
+                                        });
                                     });
+
+                                    t.ok(batch.getCurState().name(req));
+                                });
                             });
 
                             t.ok(batch.getCurState().name(req));

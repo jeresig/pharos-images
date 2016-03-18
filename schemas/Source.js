@@ -22,6 +22,10 @@ module.exports = (core) => {
             return core.urls.gen(locale, `/source/${this._id}`);
         },
 
+        getAdminURL(locale) {
+            return `${this.getURL(locale)}/admin`;
+        },
+
         getDirBase() {
             return core.urls.genLocalFile(`data/${this._id}`);
         },

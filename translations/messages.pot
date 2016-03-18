@@ -8,44 +8,44 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2016-03-17 02:46+0000\n"
+"POT-Creation-Date: 2016-03-18 00:58+0000\n"
 
-#: logic/admin.js:28
+#: logic/admin.js:29
 msgid "Error retrieving records."
 msgstr ""
 
-#: logic/admin.js:48
-#: logic/admin.js:76
-#: logic/admin.js:89
+#: logic/admin.js:53
+#: logic/admin.js:82
+#: logic/admin.js:96
 msgid "Import not found."
 msgstr ""
 
-#: logic/admin.js:105
+#: logic/admin.js:112
 msgid "Error processing zip file."
 msgstr ""
 
-#: logic/admin.js:112
+#: logic/admin.js:119
 msgid "No zip file specified."
 msgstr ""
 
-#: logic/admin.js:125
+#: logic/admin.js:132
 msgid "Error saving zip file."
 msgstr ""
 
-#: logic/admin.js:145
+#: logic/admin.js:152
 msgid "Error processing data files."
 msgstr ""
 
-#: logic/admin.js:155
+#: logic/admin.js:162
 msgid "No data files specified."
 msgstr ""
 
-#: logic/admin.js:169
 #: logic/admin.js:176
+#: logic/admin.js:183
 msgid "Error saving data file."
 msgstr ""
 
-#: logic/admin.js:199
+#: logic/admin.js:206
 #: logic/artworks.js:36
 msgid "Source not found."
 msgstr ""
@@ -153,7 +153,7 @@ msgstr ""
 
 #: schemas/ArtworkImport.js:11
 #: schemas/ImageImport.js:16
-msgid "Uploaded."
+msgid "Awaiting processing..."
 msgstr ""
 
 #: schemas/ArtworkImport.js:18
@@ -162,8 +162,7 @@ msgid "Processing..."
 msgstr ""
 
 #: schemas/ArtworkImport.js:22
-#: schemas/ImageImport.js:27
-msgid "Processing Completed."
+msgid "Confirmation required."
 msgstr ""
 
 #: schemas/ArtworkImport.js:29
@@ -171,7 +170,7 @@ msgid "Importing data..."
 msgstr ""
 
 #: schemas/ArtworkImport.js:33
-msgid "Data imported."
+msgid "Awaiting similarity sync..."
 msgstr ""
 
 #: schemas/ArtworkImport.js:40
@@ -179,10 +178,8 @@ msgid "Syncing similarity..."
 msgstr ""
 
 #: schemas/ArtworkImport.js:44
-msgid "Similarity synced."
-msgstr ""
-
 #: schemas/ArtworkImport.js:53
+#: schemas/ImageImport.js:27
 #: schemas/ImageImport.js:36
 msgid "Completed."
 msgstr ""
@@ -238,6 +235,7 @@ msgstr ""
 #: schemas/Import.js:63
 #: views/admin.swig:14
 #: views/admin.swig:26
+#: views/import-artworks.swig:4
 msgid "Error: %(error)s"
 msgstr ""
 
@@ -302,7 +300,7 @@ msgstr ""
 
 #: views/admin.swig:12
 #: views/admin.swig:24
-#: views/import-artworks.swig:9
+#: views/import-artworks.swig:10
 msgid "Errors"
 msgstr ""
 
@@ -320,7 +318,7 @@ msgid "Unprocessed"
 msgstr ""
 
 #: views/admin.swig:21
-#: views/import-artworks.swig:14
+#: views/import-artworks.swig:15
 msgid "Created"
 msgstr ""
 
@@ -329,12 +327,12 @@ msgid "Updated"
 msgstr ""
 
 #: views/admin.swig:23
-#: views/import-artworks.swig:17
+#: views/import-artworks.swig:18
 msgid "Deleted"
 msgstr ""
 
 #: views/admin.swig:27
-#: views/import-artworks.swig:5
+#: views/import-artworks.swig:6
 msgid "Finalize Import"
 msgstr ""
 
@@ -480,39 +478,39 @@ msgstr ""
 msgid "Uploaded: %(date)s"
 msgstr ""
 
-#: views/import-artworks.swig:4
+#: views/import-artworks.swig:5
 msgid "Last Updated: %(date)s"
 msgstr ""
 
-#: views/import-artworks.swig:6
+#: views/import-artworks.swig:7
 msgid "Abandon Import"
 msgstr ""
 
-#: views/import-artworks.swig:7
+#: views/import-artworks.swig:8
 msgid "To Be Processed"
 msgstr ""
 
-#: views/import-artworks.swig:8
-#: views/import-artworks.swig:10
-#: views/import-artworks.swig:13
-#: views/import-artworks.swig:16
-#: views/import-artworks.swig:19
+#: views/import-artworks.swig:9
+#: views/import-artworks.swig:11
+#: views/import-artworks.swig:14
+#: views/import-artworks.swig:17
+#: views/import-artworks.swig:20
 msgid "Show all %(count)s results..."
 msgstr ""
 
-#: views/import-artworks.swig:11
+#: views/import-artworks.swig:12
 msgid "Changed"
 msgstr ""
 
-#: views/import-artworks.swig:12
+#: views/import-artworks.swig:13
 msgid "To Be Changed"
 msgstr ""
 
-#: views/import-artworks.swig:15
+#: views/import-artworks.swig:16
 msgid "To Be Created"
 msgstr ""
 
-#: views/import-artworks.swig:18
+#: views/import-artworks.swig:19
 msgid "To Be Deleted"
 msgstr ""
 

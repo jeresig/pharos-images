@@ -63,11 +63,11 @@
     </tr>
     {% for batch in imageImport %}
     <tr>
-        <td>{{ batch.fileName }}</td>
+        <td><a href="{{ URL(batch) }}">{{ batch.fileName }}</a></td>
         <td>{{ relativeDate(batch.modified) }}</td>
         {% if batch.state === "error" %}
         <td colspan="4">
-            {{ format(gettext("Error: %(error)s"), {error: batch.error}) }}
+            {{ format(gettext("Error: %(error)s"), {error: batchError(batch)}) }}
         </td>
         {% else %}
         {% set results = batch.getFilteredResults() %}
@@ -130,7 +130,7 @@
         <td>{{ relativeDate(batch.modified) }}</td>
         {% if batch.state === "error" %}
         <td colspan="7">
-            {{ format(gettext("Error: %(error)s"), {error: batch.error}) }}
+            {{ format(gettext("Error: %(error)s"), {error: batchError(batch)}) }}
         </td>
         {% else %}
         {% set results = batch.getFilteredResults() %}

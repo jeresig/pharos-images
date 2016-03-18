@@ -15,6 +15,7 @@ module.exports = function(core, app) {
         admin(req, res, next) {
             const source = req.source;
             const batchState = (batch) => batch.getCurState().name(req);
+            const batchError = (batch) => batch.getError(req);
 
             async.parallel([
                 (callback) => ImageImport.find({source: source._id}, null,
@@ -36,11 +37,15 @@ module.exports = function(core, app) {
                     imageImport,
                     artworkImport,
                     batchState,
+                    batchError,
                 });
             });
         },
 
         import(req, res) {
+            const batchState = (batch) => batch.getCurState().name(req);
+            const batchError = (batch) => batch.getError(req);
+
             if (req.query.artworks) {
                 ArtworkImport.findById(req.query.artworks, (err, batch) => {
                     if (err || !batch) {
@@ -51,12 +56,12 @@ module.exports = function(core, app) {
 
                     if (req.query.abandon) {
                         return batch.abandon(() => {
-                            res.redirect(batch.getURL(req.lang));
+                            res.redirect(req.source.getAdminURL(req.lang));
                         });
 
                     } else if (req.query.finalize) {
                         return batch.manuallyApprove(() => {
-                            res.redirect(batch.getURL(req.lang));
+                            res.redirect(req.source.getAdminURL(req.lang));
                         });
                     }
 
@@ -64,7 +69,8 @@ module.exports = function(core, app) {
                         batch,
                         results: batch.getFilteredResults(),
                         expanded: req.query.expanded,
-                        batchState: batch.getStateName(req),
+                        batchState,
+                        batchError,
                         diff: (delta) => jdp.formatters.html.format(delta),
                     });
                 });
@@ -80,7 +86,8 @@ module.exports = function(core, app) {
                     res.render("import-images", {
                         batch,
                         results: batch.getFilteredResults(),
-                        batchState: batch.getStateName(req),
+                        batchState,
+                        batchError,
                     });
                 });
 
