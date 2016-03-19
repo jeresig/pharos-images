@@ -173,7 +173,7 @@ tap.test("Image.fromFile: New Image (Small File)", (t) => {
         source: "test",
     });
 
-    const testFile = path.resolve(process.cwd(), "testData", "small.jpg");
+    const testFile = path.resolve(process.cwd(), "testData", "test-small.jpg");
 
     Image.fromFile(batch, testFile, (err, image, warnings) => {
         t.error(err, "No error should be thrown.");

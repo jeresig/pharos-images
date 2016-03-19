@@ -85,8 +85,7 @@ module.exports = (core) => {
         },
 
         getError(req) {
-            const msg = errors[this.error];
-            return msg ? msg(req) : this.error;
+            return core.models.ArtworkImport.getError(req, this.error);
         },
 
         getStates() {
@@ -268,6 +267,11 @@ module.exports = (core) => {
     Object.assign(ArtworkImport.statics, {
         fromFile(fileName, source) {
             return new core.models.ArtworkImport({source, fileName});
+        },
+
+        getError(req, error) {
+            const msg = errors[error];
+            return msg ? msg(req) : error;
         },
     });
 

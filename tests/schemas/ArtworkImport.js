@@ -53,8 +53,8 @@ tap.test("getError", {autoend: true}, (t) => {
         "ERROR_DELETING"];
     for (const error of errors) {
         batch.error = error;
-        t.ok(batch.getError(req), error);
-        t.notEqual(batch.getError(req), error, error);
+        t.ok(ArtworkImport.getError(req, batch.error), error);
+        t.notEqual(ArtworkImport.getError(req, batch.error), error, error);
     }
 });
 

@@ -57,8 +57,8 @@ tap.test("getError", {autoend: true}, (t) => {
         "EMPTY_IMAGE", "NEW_VERSION", "TOO_SMALL", "ERROR_SAVING"];
     for (const error of errors) {
         batch.error = error;
-        t.ok(batch.getError(req), error);
-        t.notEqual(batch.getError(req), error, error);
+        t.ok(ImageImport.getError(req, batch.error), error);
+        t.notEqual(ImageImport.getError(req, batch.error), error, error);
     }
 });
 

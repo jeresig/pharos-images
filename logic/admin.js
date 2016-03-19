@@ -44,9 +44,10 @@ module.exports = function(core, app) {
 
         import(req, res) {
             const batchState = (batch) => batch.getCurState().name(req);
-            const batchError = (batch) => batch.getError(req);
 
             if (req.query.artworks) {
+                const batchError = (err) => ArtworkImport.getError(req, err);
+
                 ArtworkImport.findById(req.query.artworks, (err, batch) => {
                     if (err || !batch) {
                         return res.status(404).render("error", {
@@ -76,6 +77,8 @@ module.exports = function(core, app) {
                 });
 
             } else if (req.query.images) {
+                const batchError = (err) => ImageImport.getError(req, err);
+
                 ImageImport.findById(req.query.images, (err, batch) => {
                     if (err || !batch) {
                         return res.status(404).render("error", {
@@ -83,11 +86,33 @@ module.exports = function(core, app) {
                         });
                     }
 
-                    res.render("import-images", {
-                        batch,
-                        results: batch.getFilteredResults(),
-                        batchState,
-                        batchError,
+                    const results = batch.results
+                        .filter((result) => !!result.model);
+                    const toPopulate = req.query.expanded === "images" ?
+                        results :
+                        results.slice(0, 8);
+
+                    async.eachLimit(toPopulate, 4, (result, callback) => {
+                        const imageID = result.model;
+
+                        if (typeof imageID !== "string") {
+                            return process.nextTick(callback);
+                        }
+
+                        core.models.Image.findById(imageID, (err, image) => {
+                            if (image) {
+                                result.model = image;
+                            }
+
+                            callback();
+                        });
+                    }, () => {
+                        res.render("import-images", {
+                            batch,
+                            results: batch.getFilteredResults(),
+                            batchState,
+                            batchError,
+                        });
                     });
                 });
 

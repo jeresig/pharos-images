@@ -405,7 +405,7 @@ const genData = () => {
             _id: "test/nosimilar.jpg",
             source: "test",
             fileName: "nosimilar.jpg",
-            hash: "1306644102",
+            hash: "4246873662a",
             width: 110,
             height: 110,
             similarImages: [],
@@ -695,8 +695,10 @@ const bindStubs = () => {
     sandbox.stub(Image, "fromFile", (batch, file, callback) => {
         fromFile.call(Image, batch, file, (err, image, warnings) => {
             if (image && !image.save.restore) {
-                sandbox.stub(image, "save", (callback) =>
-                    image.validate(callback));
+                sandbox.stub(image, "save", (callback) => {
+                    images[image._id] = image;
+                    image.validate(callback);
+                });
             }
 
             callback(err, image, warnings);

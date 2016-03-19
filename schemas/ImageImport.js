@@ -73,8 +73,7 @@ module.exports = (core) => {
         },
 
         getError(req) {
-            const msg = errors[this.error];
-            return msg ? msg(req) : this.error;
+            return core.models.ImageImport.getError(req, this.error);
         },
 
         getStates() {
@@ -197,6 +196,11 @@ module.exports = (core) => {
     Object.assign(ImageImport.statics, {
         fromFile(fileName, source) {
             return new core.models.ImageImport({source, fileName});
+        },
+
+        getError(req, error) {
+            const msg = errors[error];
+            return msg ? msg(req) : error;
         },
     });
 
