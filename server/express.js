@@ -44,7 +44,7 @@ module.exports = (core, app) => {
     // Parses the contents of HTTP POST bodies, handling URL-encoded forms
     // and also JSON blobs
     app.use(bodyParser.urlencoded({
-        extended: false,
+        extended: true,
     }));
 
     // Adds in support for overriding HTTP verbs to help

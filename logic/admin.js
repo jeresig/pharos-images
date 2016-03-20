@@ -5,6 +5,7 @@ const fs = require("fs");
 const async = require("async");
 const formidable = require("formidable");
 const jdp = require("jsondiffpatch");
+//const passport = require("passport");
 
 module.exports = function(core, app) {
     const Source = core.models.Source;
@@ -215,7 +216,23 @@ module.exports = function(core, app) {
         },
 
         routes() {
-            // TODO(jeresig): Only allow certain users to access these pages
+            /*
+            // Only allow certain users to access these pages
+            const auth = (req, res, next) => {
+                passport.authenticate("local", () => {
+                    if (!req.user) {
+                        req.session.redirectTo = req.originalUrl;
+                        res.redirect(core.urls.gen(req.lang, "/login"));
+                    } else if (req.user.sourceAdmin
+                            .indexOf(req.params.source) < 0) {
+                        next(new Error(req.gettext("Authorization required.")));
+                    } else {
+                        next();
+                    }
+                })(req, res, next);
+            };
+            */
+
             app.get("/source/:source/admin", this.admin);
             app.get("/source/:source/import", this.import);
             app.post("/source/:source/upload-images", this.uploadImages);

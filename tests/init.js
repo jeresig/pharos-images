@@ -13,6 +13,10 @@ const tap = require("tap");
 const sinon = require("sinon");
 const mockfs = require("mock-fs");
 const async = require("async");
+const iconv = require("iconv-lite");
+
+// Force ICONV to pre-load its encodings
+iconv.getCodec("utf8");
 
 const core = require("../core");
 const server = require("../server/server");
@@ -25,6 +29,7 @@ const ImageImport = core.models.ImageImport;
 const ArtworkImport = core.models.ArtworkImport;
 const UploadImage = core.models.UploadImage;
 const Upload = core.models.Upload;
+const User = core.models.User;
 
 // Data used for testing
 let source;
@@ -44,6 +49,8 @@ let artwork;
 let artworkData;
 let similar;
 let similarAdded;
+let user;
+let users;
 
 // Sandbox the bound methods
 let sandbox;
@@ -462,6 +469,18 @@ const genData = () => {
     };
 
     similarAdded = [];
+
+    users = [
+        new User({
+            _id: core.db.types.ObjectId(),
+            email: "test@test.com",
+            password: "test",
+            sourceAdmin: ["test"],
+            siteAdmin: true,
+        }),
+    ];
+
+    user = users[0];
 };
 
 const bindStubs = () => {
@@ -709,6 +728,17 @@ const bindStubs = () => {
         process.nextTick(() => callback(null, uploadImages[id]));
     });
 
+    sandbox.stub(User, "find", (query, callback) => {
+        process.nextTick(() => callback(null, users));
+    });
+
+    sandbox.stub(User, "findOne", (query, callback) => {
+        const matches = users.filter((user) =>
+            (user.email === query.email ||
+                user._id.toString() === query._id.toString()));
+        process.nextTick(() => callback(null, matches[0]));
+    });
+
     sandbox.stub(core.similar, "similar", (hash, callback) => {
         process.nextTick(() => callback(null, similar[hash]));
     });
@@ -815,12 +845,14 @@ module.exports = {
     getImageResultsData: () => imageResultsData,
     getUpload: () => upload,
     getUploadImage: () => uploadImage,
+    getUser: () => user,
     req,
     Image,
     Artwork,
     ImageImport,
     ArtworkImport,
     UploadImage,
+    User,
     Source,
     stub: sinon.stub,
     core,

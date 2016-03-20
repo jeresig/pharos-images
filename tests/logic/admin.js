@@ -4,17 +4,29 @@ const fs = require("fs");
 const path = require("path");
 
 const tap = require("tap");
-const request = require("request");
+const request = require("request").defaults({jar: true});
 
 require("../init");
 
+const login = (callback) => {
+    request.post({
+        url: "http://localhost:3000/login",
+        form: {
+            email: "test@test.com",
+            password: "test",
+        },
+    }, callback);
+};
+
 tap.test("uploadData: Source not found", (t) => {
-    const url = "http://localhost:3000/source/foo/upload-data";
-    const formData = {};
-    request.post({url, formData}, (err, res) => {
-        t.error(err, "Error should be empty.");
-        t.equal(res.statusCode, 404);
-        t.end();
+    login(() => {
+        const url = "http://localhost:3000/source/foo/upload-data";
+        const formData = {};
+        request.post({url, formData}, (err, res) => {
+            t.error(err, "Error should be empty.");
+            t.equal(res.statusCode, 404);
+            t.end();
+        });
     });
 });
 

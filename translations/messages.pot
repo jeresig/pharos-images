@@ -8,44 +8,44 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2016-03-19 02:19+0000\n"
+"POT-Creation-Date: 2016-03-20 03:26+0000\n"
 
-#: logic/admin.js:29
+#: logic/admin.js:30
 msgid "Error retrieving records."
 msgstr ""
 
-#: logic/admin.js:54
-#: logic/admin.js:85
-#: logic/admin.js:121
+#: logic/admin.js:55
+#: logic/admin.js:86
+#: logic/admin.js:122
 msgid "Import not found."
 msgstr ""
 
-#: logic/admin.js:137
+#: logic/admin.js:138
 msgid "Error processing zip file."
 msgstr ""
 
-#: logic/admin.js:144
+#: logic/admin.js:145
 msgid "No zip file specified."
 msgstr ""
 
-#: logic/admin.js:157
+#: logic/admin.js:158
 msgid "Error saving zip file."
 msgstr ""
 
-#: logic/admin.js:177
+#: logic/admin.js:178
 msgid "Error processing data files."
 msgstr ""
 
-#: logic/admin.js:187
+#: logic/admin.js:188
 msgid "No data files specified."
 msgstr ""
 
-#: logic/admin.js:201
-#: logic/admin.js:208
+#: logic/admin.js:202
+#: logic/admin.js:209
 msgid "Error saving data file."
 msgstr ""
 
-#: logic/admin.js:231
+#: logic/admin.js:248
 #: logic/artworks.js:36
 msgid "Source not found."
 msgstr ""
@@ -526,6 +526,20 @@ msgstr ""
 #: views/import-images.swig:1
 #: views/import-images.swig:2
 msgid "Image Import: %(fileName)s"
+msgstr ""
+
+#: views/login.swig:1
+#: views/login.swig:2
+#: views/login.swig:5
+msgid "Login"
+msgstr ""
+
+#: views/login.swig:3
+msgid "Email Address:"
+msgstr ""
+
+#: views/login.swig:4
+msgid "Password:"
 msgstr ""
 
 #: views/search.swig:1

@@ -5,11 +5,41 @@ const bcrypt = require("bcrypt");
 module.exports = (core) => {
     const User = new core.db.schema({
         _id: core.db.schema.Types.ObjectId,
-        name: {type: String, default: ""},
-        email: {type: String, default: ""},
-        hashed_password: {type: String, default: ""},
-        salt: {type: String, default: ""},
-        authToken: {type: String, default: ""},
+
+        // The email address of the user, must be unique
+        email: {
+            type: String,
+            required: true,
+            unique: true,
+            index: true,
+        },
+
+        // The Bcrypt-hashed password
+        hashedPassword: {
+            type: String,
+            required: true,
+        },
+
+        // Hashed using the following salt
+        salt: {
+            type: String,
+            required: true,
+        },
+
+        // The sources to which the user is an administrator
+        sourceAdmin: {
+            type: [{
+                type: String,
+                ref: "Source",
+            }],
+        },
+
+        // If this user is a site administrator
+        // (can create new sources and other admins)
+        siteAdmin: {
+            type: Boolean,
+            default: false,
+        },
     });
 
     User
@@ -17,53 +47,29 @@ module.exports = (core) => {
         .set(function(password) {
             this._password = password;
             this.salt = this.makeSalt();
-            this.hashed_password = this.encryptPassword(password);
+            this.hashedPassword = this.encryptPassword(password);
         })
         .get(function() {
             return this._password;
         });
-
-    const validatePresenceOf = (value) => value && value.length;
-
-    // TODO(jeresig): i18n the error messages
-
-    User.path("name").validate(validatePresenceOf,
-        "Name cannot be blank");
-
-    User.path("email").validate(validatePresenceOf,
-        "Email cannot be blank");
 
     User.path("email").validate(function(email, callback) {
         const User = core.models.User;
 
         // Check only when it is a new user or when email field is modified
         if (this.isNew || this.isModified("email")) {
-            User.find({email: email}).exec((err, users) => {
+            User.find({email: email}, (err, users) => {
                 callback(!err && users.length === 0);
             });
+
         } else {
             callback(true);
         }
     }, "Email already exists");
 
-    User.path("hashed_password").validate(validatePresenceOf,
-        "Password cannot be blank");
-
-    User.pre("save", function(next) {
-        if (!this.isNew) {
-            return next();
-        }
-
-        if (!validatePresenceOf(this.password)) {
-            next(new Error("Invalid password"));
-        } else {
-            next();
-        }
-    });
-
     User.methods = {
         authenticate(plainText) {
-            return this.encryptPassword(plainText) === this.hashed_password;
+            return this.encryptPassword(plainText) === this.hashedPassword;
         },
 
         makeSalt() {

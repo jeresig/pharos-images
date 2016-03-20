@@ -8,7 +8,7 @@ module.exports = (core, app) => {
 
     // serialize sessions
     passport.serializeUser((user, callback) => {
-        callback(null, user.id);
+        callback(null, user._id);
     });
 
     passport.deserializeUser((id, callback) => {
@@ -22,20 +22,23 @@ module.exports = (core, app) => {
             passwordField: "password",
         },
         (email, password, callback) => {
-            User.findOne({email: email}).exec((err, user) => {
+            User.findOne({email: email}, (err, user) => {
                 if (err) {
                     return callback(err);
                 }
+
                 if (!user) {
                     return callback(null, false, {
                         message: "Unknown user",
                     });
                 }
+
                 if (!user.authenticate(password)) {
                     return callback(null, false, {
                         message: "Invalid password",
                     });
                 }
+
                 return callback(null, user);
             });
         }
