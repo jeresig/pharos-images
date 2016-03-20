@@ -765,8 +765,6 @@ const bindStubs = () => {
 
         process.nextTick(callback);
     });
-
-    sandbox.stub(core.db, "connect", process.nextTick);
 };
 
 const req = {

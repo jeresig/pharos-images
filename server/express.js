@@ -14,7 +14,7 @@ const mongoStore = require("connect-mongo")(session);
 const swig = require("swig");
 
 const pkg = require("../package");
-const env = process.env.NODE_ENV || "development";
+const env = process.env.NODE_ENV;
 
 const viewMethods = require("./middlewares/view-methods");
 const searchURL = require("./middlewares/search-url");
@@ -22,6 +22,7 @@ const searchURL = require("./middlewares/search-url");
 const rootPath = path.resolve(__dirname, "..");
 
 module.exports = (core, app) => {
+    /* istanbul ignore if */
     if (env !== "test") {
         // A basic logger for tracking who is accessing the service
         app.use(morgan("dev"));
@@ -57,6 +58,7 @@ module.exports = (core, app) => {
     // Track user sessions and store them in a Mongodb data store
     let store;
 
+    /* istanbul ignore if */
     if (env !== "test") {
         store = new mongoStore({
             mongooseConnection: core.db.mongoose.connection,

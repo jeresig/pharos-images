@@ -53,6 +53,7 @@ module.exports = (core, app) => {
             sort: sorts[query.sort].sort,
             hydrate: true,
         }, (err, results) => {
+            /* istanbul ignore if */
             if (err) {
                 console.error(err);
                 return res.status(500).render("error", {

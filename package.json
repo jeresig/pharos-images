@@ -89,5 +89,11 @@
   "pre-commit": [
     "test",
     "extract-i18n"
-  ]
+  ],
+  "nyc": {
+      "exclude": [
+          "tests",
+          "server/cron.js"
+      ]
+  }
 }

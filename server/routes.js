@@ -17,6 +17,7 @@ module.exports = function(core, app) {
     // Enable error handling and displaying of a 500 error page
     // when an exception is thrown
     app.use((err, req, res, next) => {
+        /* istanbul ignore else */
         if (err) {
             res.status(500).render("error", {
                 title: err.message,

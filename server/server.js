@@ -15,6 +15,7 @@ module.exports = (callback) => {
     const app = express();
 
     core.init((err) => {
+        /* istanbul ignore if */
         if (err) {
             return callback(err);
         }
@@ -29,11 +30,13 @@ module.exports = (callback) => {
         const server = app.listen(port, () => {
             callback(null, server);
 
+            /* istanbul ignore if */
             if (process.send) {
                 process.send("online");
             }
         });
 
+        /* istanbul ignore if */
         if (process.env.NODE_ENV !== "test") {
             // Start the app by listening on <port>
             console.log(`PORT: ${port}`);

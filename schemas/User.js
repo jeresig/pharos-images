@@ -84,6 +84,7 @@ module.exports = (core) => {
             try {
                 return bcrypt.hashSync(password, this.salt);
             } catch (err) {
+                /* istanbul ignore next */
                 return "";
             }
         },

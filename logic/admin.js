@@ -5,7 +5,7 @@ const fs = require("fs");
 const async = require("async");
 const formidable = require("formidable");
 const jdp = require("jsondiffpatch");
-//const passport = require("passport");
+const passport = require("passport");
 
 module.exports = function(core, app) {
     const Source = core.models.Source;
@@ -216,7 +216,6 @@ module.exports = function(core, app) {
         },
 
         routes() {
-            /*
             // Only allow certain users to access these pages
             const auth = (req, res, next) => {
                 passport.authenticate("local", () => {
@@ -231,12 +230,11 @@ module.exports = function(core, app) {
                     }
                 })(req, res, next);
             };
-            */
 
-            app.get("/source/:source/admin", this.admin);
-            app.get("/source/:source/import", this.import);
-            app.post("/source/:source/upload-images", this.uploadImages);
-            app.post("/source/:source/upload-data", this.uploadData);
+            app.get("/source/:source/admin", auth, this.admin);
+            app.get("/source/:source/import", auth, this.import);
+            app.post("/source/:source/upload-images", auth, this.uploadImages);
+            app.post("/source/:source/upload-data", auth, this.uploadData);
 
             app.param("source", (req, res, next, id) => {
                 try {

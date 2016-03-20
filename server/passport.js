@@ -23,6 +23,7 @@ module.exports = (core, app) => {
         },
         (email, password, callback) => {
             User.findOne({email: email}, (err, user) => {
+                /* istanbul ignore if */
                 if (err) {
                     return callback(err);
                 }
