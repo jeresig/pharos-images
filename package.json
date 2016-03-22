@@ -67,6 +67,7 @@
     "parse-dimensions": "0.0.5",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
+    "password-generator": "^2.0.2",
     "pastec": "0.0.5",
     "readline-sync": "^1.4.1",
     "request": "^2.67.0",
@@ -91,9 +92,9 @@
     "extract-i18n"
   ],
   "nyc": {
-      "exclude": [
-          "tests",
-          "server/cron.js"
-      ]
+    "exclude": [
+      "tests",
+      "server/cron.js"
+    ]
   }
 }

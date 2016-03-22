@@ -472,7 +472,6 @@ const genData = () => {
 
     users = [
         new User({
-            _id: core.db.types.ObjectId(),
             email: "test@test.com",
             password: "test",
             sourceAdmin: ["test"],
