@@ -18,6 +18,41 @@ const login = (callback) => {
     }, callback);
 };
 
+tap.test("Admin Page", (t) => {
+    login(() => {
+        const url = "http://localhost:3000/source/test/admin";
+        request.get(url, (err, res) => {
+            t.error(err, "Error should be empty.");
+            t.equal(res.statusCode, 200);
+            t.end();
+        });
+    });
+});
+
+tap.test("Artwork Import Page", (t) => {
+    login(() => {
+        const url = "http://localhost:3000/source/test/import" +
+            "?artworks=test/started";
+        request.get(url, (err, res) => {
+            t.error(err, "Error should be empty.");
+            t.equal(res.statusCode, 200);
+            t.end();
+        });
+    });
+});
+
+tap.test("Image Import Page", (t) => {
+    login(() => {
+        const url = "http://localhost:3000/source/test/import" +
+            "?images=test/started";
+        request.get(url, (err, res) => {
+            t.error(err, "Error should be empty.");
+            t.equal(res.statusCode, 200);
+            t.end();
+        });
+    });
+});
+
 tap.test("uploadData: Source not found", (t) => {
     login(() => {
         const url = "http://localhost:3000/source/foo/upload-data";
