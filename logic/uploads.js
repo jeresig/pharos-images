@@ -21,6 +21,7 @@ module.exports = (core, app) => {
     const genTmpFile = () => path.join(os.tmpdir(), (new Date).getTime());
 
     const handleUpload = (req, res, next) => (err, file) => {
+        /* istanbul ignore if */
         if (err) {
             return next(err);
         }
@@ -108,6 +109,7 @@ module.exports = (core, app) => {
             form.maxFieldsSize = process.env.MAX_UPLOAD_SIZE;
 
             form.parse(req, (err, fields, files) => {
+                /* istanbul ignore if */
                 if (err) {
                     return next(new Error(
                         req.gettext("Error processing upload.")));
@@ -126,7 +128,8 @@ module.exports = (core, app) => {
         show(req, res) {
             // TODO: Update similar matches if new image data has
             // since come in since it was last updated.
-            Upload.findById(req.params.upload, (err, upload) => {
+            const _id = `uploads/${req.params.upload}`;
+            Upload.findById(_id, (err, upload) => {
                 if (err || !upload) {
                     return res.status(404).render("error", {
                         title: req.gettext("Uploaded image not found."),
@@ -140,6 +143,8 @@ module.exports = (core, app) => {
                         }, () => {
                             res.render("upload", {
                                 title: upload.getTitle(req),
+                                upload,
+                                image: upload.images[0],
                                 noIndex: true,
                                 artworks: [upload]
                                     .concat(upload.similarArtworks

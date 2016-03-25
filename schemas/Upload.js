@@ -29,11 +29,14 @@ module.exports = (core) => {
     };
 
     Upload.methods.getURL = function(locale) {
-        return core.urls.gen(locale, `/${uploadName}/${this._id}`);
+        return core.urls.gen(locale, `/${this._id}`);
     };
 
     Upload.methods.getImages = function(callback) {
         async.mapLimit(this.images, 4, (id, callback) => {
+            if (typeof id !== "string") {
+                return process.nextTick(() => callback(null, id));
+            }
             core.models.UploadImage.findById(id, callback);
         }, callback);
     };

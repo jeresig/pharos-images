@@ -1,6 +1,6 @@
 {% extends "page.swig" %}
 
-{% block title %}{{ getTitle(upload) }}{% endblock %}
+{% block title %}{{ title }}{% endblock %}
 
 {% block content %}
 <div id="result" class="row">
@@ -10,8 +10,8 @@
                 <strong>{{ gettext("Uploaded Image") }}</strong>
             </div>
             <div class="panel-body">
-                <a href="{{ upload.getOriginalURL() }}">
-                    <img src="{{ upload.getScaledURL() }}"
+                <a href="{{ image.getOriginalURL() }}">
+                    <img src="{{ image.getScaledURL() }}"
                         alt="{{ getTitle(upload) }}"
                         title="{{ getTitle(upload) }}"
                         class="img-responsive center-block"/>

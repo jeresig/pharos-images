@@ -240,6 +240,9 @@ module.exports = (core) => {
 
         getImages(callback) {
             async.mapLimit(this.images, 4, (id, callback) => {
+                if (typeof id !== "string") {
+                    return process.nextTick(() => callback(null, id));
+                }
                 core.models.Image.findById(id, callback);
             }, callback);
         },
@@ -304,21 +307,7 @@ module.exports = (core) => {
         loadImages(loadSimilarArtworks, callback) {
             async.parallel([
                 (callback) => {
-                    async.mapLimit(this.images, 4, (imageID, callback) => {
-                        if (typeof imageID !== "string") {
-                            return process.nextTick(() =>
-                                callback(null, imageID));
-                        }
-
-                        core.models.Image.findById(imageID, (err, image) => {
-                            /* istanbul ignore if */
-                            if (err || !image) {
-                                return callback();
-                            }
-
-                            callback(null, image);
-                        });
-                    }, (err, images) => {
+                    this.getImages((err, images) => {
                         // We filter out any invalid/un-found images
                         // TODO: We should log out some details on when this
                         // happens (hopefully never).

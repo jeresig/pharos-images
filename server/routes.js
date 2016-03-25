@@ -21,6 +21,7 @@ module.exports = function(core, app) {
         if (err) {
             res.status(500).render("error", {
                 title: err.message,
+                body: err.stack,
             });
         } else {
             next();

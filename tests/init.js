@@ -41,6 +41,7 @@ let artworkBatches;
 let imageResultsData;
 let images;
 let image;
+let uploads;
 let upload;
 let uploadImages;
 let uploadImage;
@@ -434,11 +435,15 @@ const genData = () => {
 
     uploadImage = uploadImages["uploads/4266906334.jpg"];
 
-    upload = new Upload({
-        _id: "4266906334",
-        images: ["uploads/4266906334.jpg"],
-        defaultImageHash: "4266906334",
-    });
+    uploads = {
+        "uploads/4266906334": new Upload({
+            _id: "uploads/4266906334",
+            images: ["uploads/4266906334.jpg"],
+            defaultImageHash: "4266906334",
+        }),
+    };
+
+    upload = uploads["uploads/4266906334"];
 
     similar = {
         "4266906334": [
@@ -727,6 +732,10 @@ const bindStubs = () => {
         process.nextTick(() => callback(null, uploadImages[id]));
     });
 
+    sandbox.stub(Upload, "findById", (id, callback) => {
+        process.nextTick(() => callback(null, uploads[id]));
+    });
+
     sandbox.stub(User, "find", (query, callback) => {
         process.nextTick(() => callback(null, users));
     });
@@ -841,6 +850,7 @@ module.exports = {
     getArtworkData: () => artworkData,
     getImageResultsData: () => imageResultsData,
     getUpload: () => upload,
+    getUploads: () => uploads,
     getUploadImage: () => uploadImage,
     getUser: () => user,
     req,
