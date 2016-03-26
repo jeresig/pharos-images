@@ -732,8 +732,41 @@ const bindStubs = () => {
         process.nextTick(() => callback(null, uploadImages[id]));
     });
 
+    const uploadFromFile = UploadImage.fromFile;
+
+    sandbox.stub(UploadImage, "fromFile", (file, callback) => {
+        uploadFromFile.call(UploadImage, file, (err, image, warnings) => {
+            if (image && !image.save.restore) {
+                sandbox.stub(image, "save", (callback) => {
+                    uploadImages[image._id] = image;
+                    image.validate(callback);
+                });
+            }
+
+            callback(err, image, warnings);
+        });
+    });
+
     sandbox.stub(Upload, "findById", (id, callback) => {
         process.nextTick(() => callback(null, uploads[id]));
+    });
+
+    const fromImage = Upload.fromImage;
+
+    sandbox.stub(Upload, "fromImage", (image, callback) => {
+        fromImage.call(Upload, image, (err, upload) => {
+            if (upload && !upload.save.restore) {
+                sandbox.stub(upload, "save", (callback) => {
+                    if (!(upload._id in uploads)) {
+                        uploads[upload._id] = upload;
+                    }
+
+                    process.nextTick(callback);
+                });
+            }
+
+            callback(err, upload);
+        });
     });
 
     sandbox.stub(User, "find", (query, callback) => {

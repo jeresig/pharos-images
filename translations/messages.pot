@@ -8,7 +8,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2016-03-25 01:22+0000\n"
+"POT-Creation-Date: 2016-03-26 02:58+0000\n"
 
 #: logic/admin.js:30
 msgid "Error retrieving records."
@@ -62,23 +62,23 @@ msgstr ""
 msgid "Artwork not found."
 msgstr ""
 
-#: logic/uploads.js:34
+#: logic/uploads.js:32
 msgid "Error processing image."
 msgstr ""
 
-#: logic/uploads.js:99
+#: logic/uploads.js:95
 msgid "No image URL specified."
 msgstr ""
 
-#: logic/uploads.js:115
+#: logic/uploads.js:111
 msgid "Error processing upload."
 msgstr ""
 
-#: logic/uploads.js:123
+#: logic/uploads.js:119
 msgid "No image specified."
 msgstr ""
 
-#: logic/uploads.js:135
+#: logic/uploads.js:131
 msgid "Uploaded image not found."
 msgstr ""
 

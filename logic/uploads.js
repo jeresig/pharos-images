@@ -29,30 +29,26 @@ module.exports = (core, app) => {
         UploadImage.fromFile(file, (err, image) => {
             // TODO: Display better error message
             if (err) {
-                console.error(err);
-                return next(new Error(
-                    req.gettext("Error processing image.")));
+                return next(new Error(req.gettext("Error processing image.")));
             }
 
-            const _id = image._id.replace(/\.jpg$/, "");
-
-            // Check to see if image already exists and redirect
-            // if it does.
-            Upload.findById(_id, (err, existing) => {
-                if (existing) {
-                    return res.redirect(existing.getURL(req.lang));
+            Upload.fromImage(image, (err, upload) => {
+                /* istanbul ignore if */
+                if (err) {
+                    return next(err);
                 }
 
-                // TODO: Add in uploader's user name (once those exist)
-                const upload = new Upload({
-                    _id,
-                    source: "uploads",
-                    images: [image._id],
-                });
+                image.save((err) => {
+                    /* istanbul ignore if */
+                    if (err) {
+                        return next(err);
+                    }
 
-                upload.updateSimilarity(() => {
-                    upload.save(() => res.redirect(
-                        upload.getURL(req.lang)));
+                    // TODO: Add in uploader's user name (once those exist)
+                    upload.updateSimilarity(() => {
+                        upload.save(() => res.redirect(
+                            upload.getURL(req.lang)));
+                    });
                 });
             });
         });

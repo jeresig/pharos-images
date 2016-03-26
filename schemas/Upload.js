@@ -41,5 +41,30 @@ module.exports = (core) => {
         }, callback);
     };
 
+    Upload.statics.fromImage = function(image, callback) {
+        const _id = image._id.replace(/\.jpg$/, "");
+
+        // Check to see if image already exists and redirect
+        // if it does.
+        core.models.Upload.findById(_id, (err, existing) => {
+            /* istanbul ignore if */
+            if (err) {
+                return callback(err);
+            }
+
+            if (existing) {
+                return callback(null, existing);
+            }
+
+            const upload = new core.models.Upload({
+                _id,
+                source: "uploads",
+                images: [image._id],
+            });
+
+            callback(null, upload);
+        });
+    };
+
     return Upload;
 };
