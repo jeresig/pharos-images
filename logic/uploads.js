@@ -18,7 +18,8 @@ module.exports = (core, app) => {
     const Upload = core.models.Upload;
     const UploadImage = core.models.UploadImage;
 
-    const genTmpFile = () => path.join(os.tmpdir(), (new Date).getTime());
+    const genTmpFile = () => path.join(os.tmpdir(),
+        (new Date).getTime().toString());
 
     const handleUpload = (req, res, next) => (err, file) => {
         /* istanbul ignore if */
@@ -63,24 +64,24 @@ module.exports = (core, app) => {
             const tmpFile = genTmpFile();
             const outStream = fs.createWriteStream(tmpFile);
 
-            outStream.on("finish", () => callback(null, tmpFile));
+            outStream.on("close", () => callback(null, tmpFile));
 
             const stream = request({
                 url: imageURL,
                 timeout: DOWNLOAD_TIMEOUT,
             });
 
-            stream.on("error", (err) => {
-                console.error("Error Downloading Image:",
-                    JSON.stringify(err));
+            stream.on("response", (res) => {
+                if (res.statusCode === 200) {
+                    return stream.pipe(outStream);
+                }
+
                 if (attemptNum < MAX_ATTEMPTS) {
                     downloadImage();
                 } else {
                     callback(new Error("Error Downloading image."));
                 }
             });
-
-            stream.pipe(outStream);
         };
 
         downloadImage();

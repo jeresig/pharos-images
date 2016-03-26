@@ -88,6 +88,49 @@ tap.test("Upload No Image", (t) => {
     });
 });
 
+tap.test("Upload New Image From URL", (t) => {
+    // TODO(jeresig): Change this to a local URL
+    const uploadURL = encodeURIComponent(
+        "http://data.ukiyo-e.org/met/thumbs/2011_138_Strm1.jpg");
+    const url = `http://localhost:3000/url-upload?url=${uploadURL}`;
+
+    request.get({
+        url,
+    }, (err, res) => {
+        t.error(err, "Error should be empty.");
+        t.equal(res.statusCode, 200);
+        t.match(res.request.uri.href,
+            "http://localhost:3000/uploads/516463693");
+        t.end();
+    });
+});
+
+tap.test("Upload No Image From URL", (t) => {
+    const uploadURL = encodeURIComponent("http://");
+    const url = `http://localhost:3000/url-upload?url=${uploadURL}`;
+
+    request.get({
+        url,
+    }, (err, res) => {
+        t.error(err, "Error should be empty.");
+        t.equal(res.statusCode, 500);
+        t.end();
+    });
+});
+
+tap.test("Upload Missing Image From URL", (t) => {
+    const uploadURL = encodeURIComponent("http://localhost:3000/foo.jpg");
+    const url = `http://localhost:3000/url-upload?url=${uploadURL}`;
+
+    request.get({
+        url,
+    }, (err, res) => {
+        t.error(err, "Error should be empty.");
+        t.equal(res.statusCode, 500);
+        t.end();
+    });
+});
+
 tap.test("View Upload", (t) => {
     const url = "http://localhost:3000/uploads/4266906334";
     request.get({
