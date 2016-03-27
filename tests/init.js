@@ -604,7 +604,7 @@ const bindStubs = () => {
 
     sandbox.stub(Artwork, "count", (query, callback) => {
         const count = Object.keys(artworks).filter((id) =>
-            artworks[id].source === query.source).length;
+            !query.source || artworks[id].source === query.source).length;
 
         process.nextTick(() => callback(null, count));
     });
