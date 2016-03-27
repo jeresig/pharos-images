@@ -1,10 +1,10 @@
 "use strict";
 
+const fs = require("fs");
 const os = require("os");
 const path = require("path");
 
 const async = require("async");
-const fs = require("graceful-fs");
 const request = require("request");
 const formidable = require("formidable");
 
