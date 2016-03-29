@@ -42,7 +42,7 @@
 
             <div class="form-inline">
                 <div class="form-group">
-                    <input type="file" name="zipFiled" class="form-control" />
+                    <input type="file" name="zipField" class="form-control" />
                 </div>
                 <input type="submit" value="{{ gettext("Upload") }}" class="btn btn-primary" />
             </div>

@@ -106,6 +106,11 @@ module.exports = (core) => {
                         return entry.autodrain();
                     }
 
+                    /* istanbul ignore if */
+                    if (process.env.NODE_ENV !== "test") {
+                        console.log("Extracting:", path.basename(outFileName));
+                    }
+
                     files.push(outFileName);
                     entry.pipe(fs.createWriteStream(outFileName));
                 })
