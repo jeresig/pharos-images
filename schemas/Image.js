@@ -91,7 +91,7 @@ module.exports = (core) => {
         // Keep track of if the image needs to index its image similarity
         needsSimilarIndex: {
             type: Boolean,
-            default: true,
+            default: false,
         },
 
         // Keep track of if the image needs to update its image similarity

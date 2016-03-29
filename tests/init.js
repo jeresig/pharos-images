@@ -709,7 +709,7 @@ const bindStubs = () => {
         process.nextTick(() => callback(null, match));
     });
 
-    sandbox.stub(Image, "update", (query, update, callback) => {
+    sandbox.stub(Image, "update", (query, update, options, callback) => {
         process.nextTick(callback);
     });
 

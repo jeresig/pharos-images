@@ -139,21 +139,39 @@ module.exports = (core) => {
                             return callback(err);
                         }
 
-                        this.setOtherSimilarityToUpdate(callback);
+                        this.setSimilarityState(callback);
                     });
                 });
             });
         },
 
-        setOtherSimilarityToUpdate(callback) {
+        setSimilarityState(callback) {
             core.models.Image.update(
-                {batch: {$ne: this._id}},
-                {needsSimilarUpdate: true},
-                callback
+                {batch: this._id},
+                {needsSimilarIndex: true},
+                {multi: true},
+                (err) => {
+                    /* istanbul ignore if */
+                    if (err) {
+                        return callback(err);
+                    }
+
+                    core.models.Image.update(
+                        {batch: {$ne: this._id}},
+                        {needsSimilarUpdate: true},
+                        {multi: true},
+                        callback
+                    );
+                }
             );
         },
 
         addResult(file, callback) {
+            /* istanbul ignore if */
+            if (process.env.NODE_ENV !== "test") {
+                console.log("Adding Image:", path.basename(file));
+            }
+
             core.models.Image.fromFile(this, file, (err, image, warnings) => {
                 const fileName = path.basename(file);
 
