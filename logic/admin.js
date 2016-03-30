@@ -222,7 +222,7 @@ module.exports = function(core, app) {
                     if (!req.user) {
                         req.session.redirectTo = req.originalUrl;
                         res.redirect(core.urls.gen(req.lang, "/login"));
-                    } else if (req.user.sourceAdmin
+                    } else if (!req.user.siteAdmin && req.user.sourceAdmin
                             .indexOf(req.params.source) < 0) {
                         next(new Error(req.gettext("Authorization required.")));
                     } else {

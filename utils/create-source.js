@@ -1,5 +1,8 @@
 "use strict";
 
+const fs = require("fs");
+const path = require("path");
+
 const rl = require("readline-sync");
 
 const core = require("../core");
@@ -26,6 +29,13 @@ core.init(() => {
         if (err) {
             console.error(err);
         } else {
+            // Create directories to hold images
+            const dir = source.getDirBase();
+            fs.mkdirSync(dir);
+            fs.mkdirSync(path.join(dir, "images"));
+            fs.mkdirSync(path.join(dir, "scaled"));
+            fs.mkdirSync(path.join(dir, "thumbs"));
+
             console.log("CREATED");
         }
 
