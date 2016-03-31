@@ -31,7 +31,7 @@ tap.test("Admin Page", (t) => {
 
 tap.test("Artwork Import Page", (t) => {
     login(() => {
-        const url = "http://localhost:3000/source/test/import" +
+        const url = "http://localhost:3000/source/test/admin" +
             "?artworks=test/started";
         request.get(url, (err, res) => {
             t.error(err, "Error should be empty.");
@@ -43,7 +43,7 @@ tap.test("Artwork Import Page", (t) => {
 
 tap.test("Image Import Page", (t) => {
     login(() => {
-        const url = "http://localhost:3000/source/test/import" +
+        const url = "http://localhost:3000/source/test/admin" +
             "?images=test/started";
         request.get(url, (err, res) => {
             t.error(err, "Error should be empty.");
@@ -97,7 +97,7 @@ tap.test("uploadData: File Error", (t) => {
             t.error(err, "Error should be empty.");
             t.equal(res.statusCode, 302);
             t.match(res.headers.location,
-                "http://localhost:3000/source/test/import?artworks=test/");
+                "http://localhost:3000/source/test/admin");
             t.end();
         });
     });
@@ -122,7 +122,7 @@ tap.test("uploadData: Default File", (t) => {
             t.error(err, "Error should be empty.");
             t.equal(res.statusCode, 302);
             t.match(res.headers.location,
-                "http://localhost:3000/source/test/import?artworks=test/");
+                "http://localhost:3000/source/test/admin");
             t.end();
         });
     });
@@ -172,7 +172,7 @@ tap.test("uploadImages: Empty Zip", (t) => {
             t.error(err, "Error should be empty.");
             t.equal(res.statusCode, 302);
             t.match(res.headers.location,
-                "http://localhost:3000/source/test/import?images=test/");
+                "http://localhost:3000/source/test/admin");
             t.end();
         });
     });
@@ -197,7 +197,7 @@ tap.test("uploadImages: Corrupted Zip", (t) => {
             t.error(err, "Error should be empty.");
             t.equal(res.statusCode, 302);
             t.match(res.headers.location,
-                "http://localhost:3000/source/test/import?images=test/");
+                "http://localhost:3000/source/test/admin");
             t.end();
         });
     });
@@ -222,7 +222,7 @@ tap.test("uploadImages: Normal Zip", (t) => {
             t.error(err, "Error should be empty.");
             t.equal(res.statusCode, 302);
             t.match(res.headers.location,
-                "http://localhost:3000/source/test/import?images=test/");
+                "http://localhost:3000/source/test/admin");
             t.end();
         });
     });

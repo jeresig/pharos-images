@@ -12,7 +12,7 @@ const ImageImport = init.ImageImport;
 tap.test("getURL", {autoend: true}, (t) => {
     const batch = init.getBatch();
     t.equal(batch.getURL(req.lang),
-        "http://localhost:3000/source/test/import?images=test/started",
+        "http://localhost:3000/source/test/admin?images=test/started",
         "Get URL");
 });
 

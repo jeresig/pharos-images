@@ -38,7 +38,11 @@
                 <input type="hidden" name="lang" value="{{ lang }}"/>
             {% endif %}
 
-            <p>{{ gettext("Upload a Zip file (.zip) of JPG images (.jpg or .jpeg). Names of images should match names provided in the artwork metadata.") }}</p>
+            <p>
+                {{ gettext("Upload a Zip file (.zip) of JPG images (.jpg or .jpeg).") }}
+                {{ gettext("Names of images should match the names provided in the artwork metadata.") }}
+                {{ gettext("After you've uploaded a new batch of images they will be processed immediately but their similarlity to other images will be computed in the background over the subsequent hours and days.") }}
+            </p>
 
             <div class="form-inline">
                 <div class="form-group">
@@ -87,6 +91,7 @@
         <h3 class="panel-title">{{ gettext("Upload Artwork Metadata") }}</h3>
     </div>
     <div class="panel-body">
+        {% if imagesImported %}
         <form action="/source/{{source._id}}/upload-data" method="POST" enctype="multipart/form-data">
             {% if qsLocale() %}
                 <input type="hidden" name="lang" value="{{ lang }}"/>
@@ -105,6 +110,9 @@
                 </div>
             {% endfor %}
         </form>
+        {% else %}
+        <p>{{ gettext("You must upload some images before you can upload any artwork metadata.") }}</p>
+        {% endif %}
     </div>
 </div>
 

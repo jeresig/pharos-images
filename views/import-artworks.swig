@@ -7,6 +7,8 @@
 {% endblock %}
 
 {% block content %}
+<p><a href="{{ adminURL }}" class="btn btn-primary">&laquo; {{ gettext("Return to Admin Page") }}</a></p>
+
 <h1>{{ format(gettext("Data Import: %(fileName)s"), {fileName: batch.fileName}) }}</h1>
 
 <p>{{ format(gettext("Uploaded: %(date)s"), {date: fixedDate(batch.created)}) }}</p>
@@ -34,90 +36,115 @@
 {% endif %}
 
 {% if results.unprocessed.length > 0 %}
-<h2 id="unprocessed">{{ gettext("To Be Processed") }} ({{ stringNum(results.unprocessed.length) }})</h2>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 id="unprocessed" class="panel-title">{{ gettext("To Be Processed") }} ({{ stringNum(results.unprocessed.length) }})</h3>
+    </div>
+    <div class="panel-body">
+        {% for result in results.unprocessed %}
+            {% if expanded === "unprocessed" || loop.index0 < 5 %}
+            <pre>{{ result.data|json(4) }}</pre>
+            {% endif %}
+        {% endfor %}
 
-{% for result in results.unprocessed %}
-    {% if expanded === "unprocessed" || loop.index0 < 5 %}
-    <pre>{{ result.data|json(4) }}</pre>
-    {% endif %}
-{% endfor %}
-
-{% if results.unprocessed.length > 5 %}
-    <a href="{{ URL(batch, {expanded: "unprocessed"}) }}#unprocessed">{{ format(gettext("Show all %(count)s results..."), {count: stringNum(results.unprocessed.length)}) }}</a>
-{% endif %}
+        {% if results.unprocessed.length > 5 %}
+            <a href="{{ URL(batch, {expanded: "unprocessed"}) }}#unprocessed">{{ format(gettext("Show all %(count)s results..."), {count: stringNum(results.unprocessed.length)}) }}</a>
+        {% endif %}
+    </div>
+</div>
 {% endif %}
 
 {% if results.errors.length > 0 %}
-<h2 id="completed">{{ gettext("Errors") }} ({{ stringNum(results.errors.length) }})</h2>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 id="completed" class="panel-title">{{ gettext("Errors") }} ({{ stringNum(results.errors.length) }})</h3>
+    </div>
+    <div class="panel-body">
+        {% for result in results.errors %}
+            {% if expanded === "errors" || loop.index0 < 5 %}
+            <h3>{{ result.error }}</h3>
+            <pre>{{ result.data|json(4) }}</pre>
+            {% endif %}
+        {% endfor %}
 
-{% for result in results.errors %}
-    {% if expanded === "errors" || loop.index0 < 5 %}
-    <h3>{{ result.error }}</h3>
-    <pre>{{ result.data|json(4) }}</pre>
-    {% endif %}
-{% endfor %}
-
-{% if results.errors.length > 5 %}
-    <a href="{{ URL(batch, {expanded: "errors"}) }}#errors">{{ format(gettext("Show all %(count)s results..."), {count: stringNum(results.errors.length)}) }}</a>
-{% endif %}
+        {% if results.errors.length > 5 %}
+            <a href="{{ URL(batch, {expanded: "errors"}) }}#errors">{{ format(gettext("Show all %(count)s results..."), {count: stringNum(results.errors.length)}) }}</a>
+        {% endif %}
+    </div>
+</div>
 {% endif %}
 
 {% if results.changed.length > 0 %}
-<h2 id="changed">{% if batch.state === "completed" %}{{ gettext("Changed") }}{% else %}{{ gettext("To Be Changed") }}{% endif %} ({{ stringNum(results.changed.length) }})</h2>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 id="changed" class="panel-title">{% if batch.state === "completed" %}{{ gettext("Changed") }}{% else %}{{ gettext("To Be Changed") }}{% endif %} ({{ stringNum(results.changed.length) }})</h3>
+    </div>
+    <div class="panel-body">
+        {% for result in results.changed %}
+            {% if expanded === "changed" || loop.index0 < 5 %}
+            <h3><a href="{{ urlFromID(result.model) }}">{{ result.model }}</a></h3>
+            <div class="diff">{{ diff(result.diff) }}</div>
+            {% endif %}
+        {% endfor %}
 
-{% for result in results.changed %}
-    {% if expanded === "changed" || loop.index0 < 5 %}
-    <h3><a href="{{ urlFromID(result.model) }}">{{ result.model }}</a></h3>
-    <div class="diff">{{ diff(result.diff) }}</div>
-    {% endif %}
-{% endfor %}
-
-{% if results.changed.length > 5 %}
-    <a href="{{ URL(batch, {expanded: "changed"}) }}#changed">{{ format(gettext("Show all %(count)s results..."), {count: stringNum(results.changed.length)}) }}</a>
-{% endif %}
+        {% if results.changed.length > 5 %}
+            <a href="{{ URL(batch, {expanded: "changed"}) }}#changed">{{ format(gettext("Show all %(count)s results..."), {count: stringNum(results.changed.length)}) }}</a>
+        {% endif %}
+    </div>
+</div>
 {% endif %}
 
 {% if results.created.length > 0 %}
-<h2 id="completed">{% if batch.state === "completed" %}{{ gettext("Created") }}{% else %}{{ gettext("To Be Created") }}{% endif %} ({{ stringNum(results.created.length) }})</h2>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 id="completed" class="panel-title">{% if batch.state === "completed" %}{{ gettext("Created") }}{% else %}{{ gettext("To Be Created") }}{% endif %} ({{ stringNum(results.created.length) }})</h3>
+    </div>
+    <div class="panel-body">
+        {% for result in results.created %}
+            {% if expanded === "created" || loop.index0 < 5 %}
+            <h3>
+            {% if batch.state === "completed" %}
+                <a href="{{ urlFromID(result.model) }}">{{ result.model }}</a>
+            {% else %}
+                {{ result.model }}
+            {% endif %}
+            </h3>
+            <pre>{{ result.data|json(4) }}</pre>
+            {% endif %}
+        {% endfor %}
 
-{% for result in results.created %}
-    {% if expanded === "created" || loop.index0 < 5 %}
-    <h3>
-    {% if batch.state === "completed" %}
-        <a href="{{ urlFromID(result.model) }}">{{ result.model }}</a>
-    {% else %}
-        {{ result.model }}
-    {% endif %}
-    </h3>
-    <pre>{{ result.data|json(4) }}</pre>
-    {% endif %}
-{% endfor %}
-
-{% if results.created.length > 5 %}
-    <a href="{{ URL(batch, {expanded: "created"}) }}#completed">{{ format(gettext("Show all %(count)s results..."), {count: stringNum(results.created.length)}) }}</a>
-{% endif %}
+        {% if results.created.length > 5 %}
+            <a href="{{ URL(batch, {expanded: "created"}) }}#completed">{{ format(gettext("Show all %(count)s results..."), {count: stringNum(results.created.length)}) }}</a>
+        {% endif %}
+    </div>
+</div>
 {% endif %}
 
 {% if results.deleted.length > 0 %}
-<h2 id="deleted">{% if batch.state === "completed" %}{{ gettext("Deleted") }}{% else %}{{ gettext("To Be Deleted") }}{% endif %} ({{ stringNum(results.deleted.length) }})</h2>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 id="deleted" class="panel-title">{% if batch.state === "completed" %}{{ gettext("Deleted") }}{% else %}{{ gettext("To Be Deleted") }}{% endif %} ({{ stringNum(results.deleted.length) }})</h3>
+    </div>
+    <div class="panel-body">
+        <ul>
+        {% for result in results.deleted %}
+            {% if expanded === "deleted" || loop.index0 < 5 %}
+            <li>
+            {% if batch.state !== "completed" %}
+                <a href="{{ urlFromID(result.model) }}">{{ result.model }}</a>
+            {% else %}
+                {{ result.model }}
+            {% endif %}
+            </li>
+            {% endif %}
+        {% endfor %}
+        </ul>
 
-<ul>
-{% for result in results.deleted %}
-    {% if expanded === "deleted" || loop.index0 < 5 %}
-    <li>
-    {% if batch.state !== "completed" %}
-        <a href="{{ urlFromID(result.model) }}">{{ result.model }}</a>
-    {% else %}
-        {{ result.model }}
-    {% endif %}
-    </li>
-    {% endif %}
-{% endfor %}
-</ul>
-
-{% if results.deleted.length > 5 %}
-    <a href="{{ URL(batch, {expanded: "deleted"}) }}#deleted">{{ format(gettext("Show all %(count)s results..."), {count: stringNum(results.deleted.length)}) }}</a>
-{% endif %}
+        {% if results.deleted.length > 5 %}
+            <a href="{{ URL(batch, {expanded: "deleted"}) }}#deleted">{{ format(gettext("Show all %(count)s results..."), {count: stringNum(results.deleted.length)}) }}</a>
+        {% endif %}
+    </div>
+</div>
 {% endif %}
 
 {% endblock %}

@@ -81,7 +81,7 @@ module.exports = (core) => {
     Object.assign(ArtworkImport.methods, {
         getURL(lang) {
             return core.urls.gen(lang,
-                `/source/${this.source}/import?artworks=${this._id}`);
+                `/source/${this.source}/admin?artworks=${this._id}`);
         },
 
         getError(req) {

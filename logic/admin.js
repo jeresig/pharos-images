@@ -12,115 +12,131 @@ module.exports = function(core, app) {
     const ImageImport = core.models.ImageImport;
     const ArtworkImport = core.models.ArtworkImport;
 
-    return {
-        admin(req, res, next) {
-            const source = req.source;
-            const batchState = (batch) => batch.getCurState().name(req);
-            const batchError = (batch) => batch.getError(req);
+    const importArtworks = (req, res) => {
+        const batchState = (batch) => batch.getCurState().name(req);
+        const batchError = (err) => ArtworkImport.getError(req, err);
 
-            async.parallel([
-                (callback) => ImageImport.find({source: source._id}, null,
-                    {sort: {created: "desc"}}, callback),
-                (callback) => ArtworkImport.find({source: source._id}, null,
-                    {sort: {created: "desc"}}, callback),
-            ], (err, results) => {
-                /* istanbul ignore if */
-                if (err) {
-                    return next(new Error(
-                        req.gettext("Error retrieving records.")));
+        ArtworkImport.findById(req.query.artworks, (err, batch) => {
+            if (err || !batch) {
+                return res.status(404).render("error", {
+                    title: req.gettext("Import not found."),
+                });
+            }
+
+            if (req.query.abandon) {
+                return batch.abandon(() => {
+                    res.redirect(req.source.getAdminURL(req.lang));
+                });
+
+            } else if (req.query.finalize) {
+                return batch.manuallyApprove(() => {
+                    res.redirect(req.source.getAdminURL(req.lang));
+                });
+            }
+
+            const adminURL = req.source.getAdminURL(req.lang);
+
+            res.render("import-artworks", {
+                batch,
+                results: batch.getFilteredResults(),
+                expanded: req.query.expanded,
+                adminURL,
+                batchState,
+                batchError,
+                diff: (delta) => jdp.formatters.html.format(delta),
+            });
+        });
+    };
+
+    const importImages = (req, res) => {
+        const batchState = (batch) => batch.getCurState().name(req);
+        const batchError = (err) => ImageImport.getError(req, err);
+
+        ImageImport.findById(req.query.images, (err, batch) => {
+            if (err || !batch) {
+                return res.status(404).render("error", {
+                    title: req.gettext("Import not found."),
+                });
+            }
+
+            const results = batch.results
+                .filter((result) => !!result.model);
+            const toPopulate = req.query.expanded === "images" ?
+                results :
+                results.slice(0, 8);
+
+            async.eachLimit(toPopulate, 4, (result, callback) => {
+                const imageID = result.model;
+
+                if (typeof imageID !== "string") {
+                    return process.nextTick(callback);
                 }
 
-                const imageImport = results[0];
-                const artworkImport = results[1];
+                core.models.Image.findById(imageID, (err, image) => {
+                    if (image) {
+                        result.model = image;
+                    }
 
-                res.render("admin", {
-                    source,
-                    imageImport,
-                    artworkImport,
+                    callback();
+                });
+            }, () => {
+                const adminURL = req.source.getAdminURL(req.lang);
+
+                res.render("import-images", {
+                    batch,
+                    results: batch.getFilteredResults(),
+                    adminURL,
                     batchState,
                     batchError,
                 });
             });
-        },
+        });
+    };
 
-        import(req, res) {
-            const batchState = (batch) => batch.getCurState().name(req);
+    const adminPage = (req, res, next) => {
+        const source = req.source;
+        const batchState = (batch) => batch.getCurState().name(req);
+        const batchError = (batch) => batch.getError(req);
 
+        async.parallel([
+            (callback) => ImageImport.find({source: source._id}, null,
+                {sort: {created: "desc"}}, callback),
+            (callback) => ArtworkImport.find({source: source._id}, null,
+                {sort: {created: "desc"}}, callback),
+        ], (err, results) => {
+            /* istanbul ignore if */
+            if (err) {
+                return next(new Error(
+                    req.gettext("Error retrieving records.")));
+            }
+
+            const imageImport = results[0];
+            const artworkImport = results[1];
+
+            const imagesImported = imageImport.some((batch) =>
+                batch.state === "completed");
+
+            res.render("admin", {
+                source,
+                imageImport,
+                artworkImport,
+                imagesImported,
+                batchState,
+                batchError,
+            });
+        });
+    };
+
+    return {
+        admin(req, res, next) {
             if (req.query.artworks) {
-                const batchError = (err) => ArtworkImport.getError(req, err);
-
-                ArtworkImport.findById(req.query.artworks, (err, batch) => {
-                    if (err || !batch) {
-                        return res.status(404).render("error", {
-                            title: req.gettext("Import not found."),
-                        });
-                    }
-
-                    if (req.query.abandon) {
-                        return batch.abandon(() => {
-                            res.redirect(req.source.getAdminURL(req.lang));
-                        });
-
-                    } else if (req.query.finalize) {
-                        return batch.manuallyApprove(() => {
-                            res.redirect(req.source.getAdminURL(req.lang));
-                        });
-                    }
-
-                    res.render("import-artworks", {
-                        batch,
-                        results: batch.getFilteredResults(),
-                        expanded: req.query.expanded,
-                        batchState,
-                        batchError,
-                        diff: (delta) => jdp.formatters.html.format(delta),
-                    });
-                });
+                importArtworks(req, res, next);
 
             } else if (req.query.images) {
-                const batchError = (err) => ImageImport.getError(req, err);
-
-                ImageImport.findById(req.query.images, (err, batch) => {
-                    if (err || !batch) {
-                        return res.status(404).render("error", {
-                            title: req.gettext("Import not found."),
-                        });
-                    }
-
-                    const results = batch.results
-                        .filter((result) => !!result.model);
-                    const toPopulate = req.query.expanded === "images" ?
-                        results :
-                        results.slice(0, 8);
-
-                    async.eachLimit(toPopulate, 4, (result, callback) => {
-                        const imageID = result.model;
-
-                        if (typeof imageID !== "string") {
-                            return process.nextTick(callback);
-                        }
-
-                        core.models.Image.findById(imageID, (err, image) => {
-                            if (image) {
-                                result.model = image;
-                            }
-
-                            callback();
-                        });
-                    }, () => {
-                        res.render("import-images", {
-                            batch,
-                            results: batch.getFilteredResults(),
-                            batchState,
-                            batchError,
-                        });
-                    });
-                });
+                importImages(req, res, next);
 
             } else {
-                res.status(404).render("error", {
-                    title: req.gettext("Import not found."),
-                });
+                adminPage(req, res, next);
             }
         },
 
@@ -158,7 +174,7 @@ module.exports = function(core, app) {
                             req.gettext("Error saving zip file.")));
                     }
 
-                    res.redirect(batch.getURL(req.lang));
+                    res.redirect(source.getAdminURL(req.lang));
                 });
             });
         },
@@ -209,7 +225,7 @@ module.exports = function(core, app) {
                                 req.gettext("Error saving data file.")));
                         }
 
-                        res.redirect(batch.getURL(req.lang));
+                        res.redirect(source.getAdminURL(req.lang));
                     });
                 });
             });
@@ -232,7 +248,6 @@ module.exports = function(core, app) {
             };
 
             app.get("/source/:source/admin", auth, this.admin);
-            app.get("/source/:source/import", auth, this.import);
             app.post("/source/:source/upload-images", auth, this.uploadImages);
             app.post("/source/:source/upload-data", auth, this.uploadData);
 

@@ -8,48 +8,47 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2016-03-30 00:34+0000\n"
+"POT-Creation-Date: 2016-03-31 01:47+0000\n"
 
-#: logic/admin.js:30
-msgid "Error retrieving records."
-msgstr ""
-
-#: logic/admin.js:55
-#: logic/admin.js:86
-#: logic/admin.js:122
+#: logic/admin.js:22
+#: logic/admin.js:58
 msgid "Import not found."
 msgstr ""
 
-#: logic/admin.js:138
+#: logic/admin.js:110
+msgid "Error retrieving records."
+msgstr ""
+
+#: logic/admin.js:154
 msgid "Error processing zip file."
 msgstr ""
 
-#: logic/admin.js:145
+#: logic/admin.js:161
 msgid "No zip file specified."
 msgstr ""
 
-#: logic/admin.js:158
+#: logic/admin.js:174
 msgid "Error saving zip file."
 msgstr ""
 
-#: logic/admin.js:178
+#: logic/admin.js:194
 msgid "Error processing data files."
 msgstr ""
 
-#: logic/admin.js:188
+#: logic/admin.js:204
 msgid "No data files specified."
 msgstr ""
 
-#: logic/admin.js:202
-#: logic/admin.js:209
+#: logic/admin.js:218
+#: logic/admin.js:225
 msgid "Error saving data file."
 msgstr ""
 
-#: logic/admin.js:227
+#: logic/admin.js:243
 msgid "Authorization required."
 msgstr ""
 
-#: logic/admin.js:246
+#: logic/admin.js:261
 #: logic/artworks.js:36
 msgid "Source not found."
 msgstr ""
@@ -237,10 +236,10 @@ msgid "Error saving image."
 msgstr ""
 
 #: schemas/Import.js:63
-#: views/admin.swig:14
-#: views/admin.swig:26
-#: views/import-artworks.swig:4
-#: views/import-images.swig:4
+#: views/admin.swig:16
+#: views/admin.swig:29
+#: views/import-artworks.swig:5
+#: views/import-images.swig:5
 msgid "Error: %(error)s"
 msgstr ""
 
@@ -274,73 +273,83 @@ msgid "Upload Images"
 msgstr ""
 
 #: views/admin.swig:6
-msgid ""
-"Upload a Zip file (.zip) of JPG images (.jpg or .jpeg). Names of images "
-"should match names provided in the artwork metadata."
+msgid "Upload a Zip file (.zip) of JPG images (.jpg or .jpeg)."
 msgstr ""
 
 #: views/admin.swig:7
-#: views/admin.swig:16
-msgid "Upload"
+msgid "Names of images should match the names provided in the artwork metadata."
 msgstr ""
 
 #: views/admin.swig:8
-#: views/admin.swig:17
-msgid "File Name"
+msgid "After you"
 msgstr ""
 
 #: views/admin.swig:9
 #: views/admin.swig:18
-msgid "Last Updated"
+msgid "Upload"
 msgstr ""
 
 #: views/admin.swig:10
-#: views/admin.swig:19
-msgid "Status"
+#: views/admin.swig:20
+msgid "File Name"
 msgstr ""
 
 #: views/admin.swig:11
-#: views/import-images.swig:10
-msgid "Images"
+#: views/admin.swig:21
+msgid "Last Updated"
 msgstr ""
 
 #: views/admin.swig:12
-#: views/admin.swig:24
-#: views/import-artworks.swig:10
-#: views/import-images.swig:6
-msgid "Errors"
+#: views/admin.swig:22
+msgid "Status"
 msgstr ""
 
 #: views/admin.swig:13
-#: views/admin.swig:25
-#: views/import-images.swig:8
-msgid "Warnings"
+#: views/import-images.swig:11
+msgid "Images"
+msgstr ""
+
+#: views/admin.swig:14
+#: views/admin.swig:27
+#: views/import-artworks.swig:11
+#: views/import-images.swig:7
+msgid "Errors"
 msgstr ""
 
 #: views/admin.swig:15
+#: views/admin.swig:28
+#: views/import-images.swig:9
+msgid "Warnings"
+msgstr ""
+
+#: views/admin.swig:17
 msgid "Upload Artwork Metadata"
 msgstr ""
 
-#: views/admin.swig:20
-msgid "Unprocessed"
-msgstr ""
-
-#: views/admin.swig:21
-#: views/import-artworks.swig:15
-msgid "Created"
-msgstr ""
-
-#: views/admin.swig:22
-msgid "Updated"
+#: views/admin.swig:19
+msgid "You must upload some images before you can upload any artwork metadata."
 msgstr ""
 
 #: views/admin.swig:23
-#: views/import-artworks.swig:18
+msgid "Unprocessed"
+msgstr ""
+
+#: views/admin.swig:24
+#: views/import-artworks.swig:16
+msgid "Created"
+msgstr ""
+
+#: views/admin.swig:25
+msgid "Updated"
+msgstr ""
+
+#: views/admin.swig:26
+#: views/import-artworks.swig:19
 msgid "Deleted"
 msgstr ""
 
-#: views/admin.swig:27
-#: views/import-artworks.swig:6
+#: views/admin.swig:30
+#: views/import-artworks.swig:7
 msgid "Finalize Import"
 msgstr ""
 
@@ -478,57 +487,62 @@ msgid "%(count)s Artworks"
 msgstr ""
 
 #: views/import-artworks.swig:1
-#: views/import-artworks.swig:2
+#: views/import-artworks.swig:3
 msgid "Data Import: %(fileName)s"
 msgstr ""
 
-#: views/import-artworks.swig:3
-#: views/import-images.swig:3
+#: views/import-artworks.swig:2
+#: views/import-images.swig:2
+msgid "Return to Admin Page"
+msgstr ""
+
+#: views/import-artworks.swig:4
+#: views/import-images.swig:4
 msgid "Uploaded: %(date)s"
 msgstr ""
 
-#: views/import-artworks.swig:5
-#: views/import-images.swig:5
+#: views/import-artworks.swig:6
+#: views/import-images.swig:6
 msgid "Last Updated: %(date)s"
 msgstr ""
 
-#: views/import-artworks.swig:7
+#: views/import-artworks.swig:8
 msgid "Abandon Import"
 msgstr ""
 
-#: views/import-artworks.swig:8
+#: views/import-artworks.swig:9
 msgid "To Be Processed"
 msgstr ""
 
-#: views/import-artworks.swig:9
-#: views/import-artworks.swig:11
-#: views/import-artworks.swig:14
-#: views/import-artworks.swig:17
-#: views/import-artworks.swig:20
-#: views/import-images.swig:7
-#: views/import-images.swig:9
-#: views/import-images.swig:11
+#: views/import-artworks.swig:10
+#: views/import-artworks.swig:12
+#: views/import-artworks.swig:15
+#: views/import-artworks.swig:18
+#: views/import-artworks.swig:21
+#: views/import-images.swig:8
+#: views/import-images.swig:10
+#: views/import-images.swig:12
 msgid "Show all %(count)s results..."
 msgstr ""
 
-#: views/import-artworks.swig:12
+#: views/import-artworks.swig:13
 msgid "Changed"
 msgstr ""
 
-#: views/import-artworks.swig:13
+#: views/import-artworks.swig:14
 msgid "To Be Changed"
 msgstr ""
 
-#: views/import-artworks.swig:16
+#: views/import-artworks.swig:17
 msgid "To Be Created"
 msgstr ""
 
-#: views/import-artworks.swig:19
+#: views/import-artworks.swig:20
 msgid "To Be Deleted"
 msgstr ""
 
 #: views/import-images.swig:1
-#: views/import-images.swig:2
+#: views/import-images.swig:3
 msgid "Image Import: %(fileName)s"
 msgstr ""
 
