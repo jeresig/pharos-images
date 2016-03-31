@@ -142,6 +142,10 @@ module.exports = (core) => {
             return core.models.Source.getSource(this.source);
         },
 
+        relatedArtworks(callback) {
+            core.models.Artwork.find({images: this._id}, callback);
+        },
+
         updateSimilarity(callback) {
             core.similar.similar(this.hash, (err, matches) => {
                 if (err || !matches) {
@@ -195,6 +199,26 @@ module.exports = (core) => {
 
                     return callback(null, true);
                 });
+            });
+        },
+
+        updateRelatedArtworks(callback) {
+            this.relatedArtworks((err, artworks) => {
+                /* istanbul ignore if */
+                if (err) {
+                    return callback(err);
+                }
+
+                async.eachLimit(artworks, 1, (artwork, callback) => {
+                    artwork.updateSimilarity((err) => {
+                        /* istanbul ignore if */
+                        if (err) {
+                            return callback(err);
+                        }
+
+                        artwork.save(callback);
+                    });
+                }, callback);
             });
         },
     };
@@ -325,7 +349,21 @@ module.exports = (core) => {
                     }
 
                     image.needsSimilarUpdate = false;
-                    image.save((err) => callback(err, true));
+                    image.save((err) => {
+                        /* istanbul ignore if */
+                        if (err) {
+                            return callback(err);
+                        }
+
+                        image.updateRelatedArtworks((err) => {
+                            /* istanbul ignore if */
+                            if (err) {
+                                return callback(err);
+                            }
+
+                            callback(null, true);
+                        });
+                    });
                 });
             });
         },

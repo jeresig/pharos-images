@@ -528,6 +528,10 @@ const bindStubs = () => {
             matches = Object.keys(artworks).filter((id) =>
                 artworks[id].source === query.source)
                 .map((id) => artworks[id]);
+        } else if (query.images) {
+            matches = Object.keys(artworks).filter((id) =>
+                artworks[id].images.indexOf(query.images) >= 0)
+                .map((id) => artworks[id]);
         } else {
             matches = Object.keys(artworks).map((id) => artworks[id]);
         }
