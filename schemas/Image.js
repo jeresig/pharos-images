@@ -146,7 +146,16 @@ module.exports = (core) => {
             core.models.Artwork.find({images: this._id}, callback);
         },
 
+        canIndex() {
+            return this.width >= 150 && this.height >= 150;
+        },
+
         updateSimilarity(callback) {
+            // Skip small images
+            if (!this.canIndex()) {
+                return process.nextTick(callback);
+            }
+
             core.similar.similar(this.hash, (err, matches) => {
                 if (err || !matches) {
                     return callback(err);
@@ -262,7 +271,7 @@ module.exports = (core) => {
                             return callback(new Error("EMPTY_IMAGE"));
                         }
 
-                        if (width < 150 || height < 150) {
+                        if (!this.canIndex()) {
                             warnings.push("TOO_SMALL");
                         }
 
