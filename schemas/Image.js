@@ -271,7 +271,7 @@ module.exports = (core) => {
                             return callback(new Error("EMPTY_IMAGE"));
                         }
 
-                        if (!this.canIndex()) {
+                        if (!image.canIndex()) {
                             warnings.push("TOO_SMALL");
                         }
 
