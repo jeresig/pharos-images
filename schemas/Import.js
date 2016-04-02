@@ -98,6 +98,7 @@ module.exports = (core) => {
                     // Advance to the next state
                     const nextState = this.getNextState();
                     if (nextState) {
+                        this.markModified("results");
                         this.saveState(nextState.id, callback);
                     } else {
                         callback();

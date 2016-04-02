@@ -117,6 +117,8 @@ module.exports = (core) => {
             async.eachLimit(this.results, 1, (result, callback) => {
                 const data = Object.assign(result.data, {source: this.source});
 
+                console.log("Processing Artwork:", data.id);
+
                 Artwork.fromData(data, req, (err, artwork, warnings, isNew) => {
                     result.state = "process.completed";
 
@@ -140,6 +142,8 @@ module.exports = (core) => {
                     callback();
                 });
             }, () => {
+                console.log("Finding artworks to delete...");
+
                 // Find artworks that need to be deleted
                 Artwork.find({source: this.source})
                     .lean().distinct("_id")

@@ -271,10 +271,6 @@ module.exports = (core) => {
                             return callback(new Error("EMPTY_IMAGE"));
                         }
 
-                        if (!image.canIndex()) {
-                            warnings.push("TOO_SMALL");
-                        }
-
                         const data = {
                             _id,
                             batch: batch._id,
@@ -293,6 +289,10 @@ module.exports = (core) => {
                         } else {
                             warnings.push("NEW_VERSION");
                             model.set(data);
+                        }
+
+                        if (!model.canIndex()) {
+                            warnings.push("TOO_SMALL");
                         }
 
                         model.validate((err) => {
