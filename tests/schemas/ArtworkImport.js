@@ -232,82 +232,41 @@ tap.test("importArtworks", (t) => {
     });
 });
 
-tap.test("updateSimilarity", (t) => {
+tap.test("updateSimilarity (empty results)", (t) => {
     const batch = init.getArtworkBatch();
-    const expected = [
-        {
-            "_id": "test/1234",
-            "similarArtworks": [
-                {
-                    "_id": "test/1235",
-                    "artwork": "test/1235",
-                    "score": 10,
-                    "source": "test",
-                    "images": [
-                        "test/bar.jpg",
-                    ],
-                },
-            ],
-        },
-        {
-            "_id": "test/1235",
-            "similarArtworks": [
-                {
-                    "_id": "test/1236",
-                    "artwork": "test/1236",
-                    "score": 17,
-                    "source": "test",
-                    "images": [
-                        "test/new1.jpg",
-                        "test/new2.jpg",
-                    ],
-                },
-                {
-                    "_id": "test/1234",
-                    "artwork": "test/1234",
-                    "score": 10,
-                    "source": "test",
-                    "images": [
-                        "test/foo.jpg",
-                    ],
-                },
-            ],
-        },
-        {
-            "_id": "test/1236",
-            "similarArtworks": [
-                {
-                    "_id": "test/1235",
-                    "artwork": "test/1235",
-                    "score": 9,
-                    "source": "test",
-                    "images": [
-                        "test/bar.jpg",
-                    ],
-                },
-            ],
-        },
-        {
-            _id: "test/1237",
-            similarArtworks: [],
-        },
-    ];
+
+    const artworkMap = init.getArtworks();
+    const artworks = Object.keys(artworkMap)
+        .map((id) => artworkMap[id]);
 
     batch.updateSimilarity(() => {
-        const artworkMap = init.getArtworks();
-        const artworks = Object.keys(artworkMap).map((id) => artworkMap[id]);
-
-        expected.forEach((expected, i) => {
-            const artwork = artworks[i];
-            t.equal(artwork._id, expected._id);
-            t.equal(artwork.similarArtworks.length,
-                expected.similarArtworks.length);
-            expected.similarArtworks.forEach((expected, i) => {
-                t.same(artwork.similarArtworks[i].toJSON(), expected);
-            });
+        artworks.forEach((artwork) => {
+            t.equal(artwork.needsSimilarUpdate, false);
         });
 
         t.end();
+    });
+});
+
+tap.test("updateSimilarity", (t) => {
+    const batch = init.getArtworkBatch();
+    const dataFile = path.resolve(process.cwd(), "testData", "default.json");
+
+    const artworkMap = init.getArtworks();
+    const artworks = Object.keys(artworkMap)
+        .map((id) => artworkMap[id]);
+
+    batch.setResults([fs.createReadStream(dataFile)], (err) => {
+        t.error(err);
+        batch.processArtworks(() => {
+            batch.updateSimilarity(() => {
+                artworks.forEach((artwork) => {
+                    t.equal(artwork.needsSimilarUpdate, true);
+                });
+
+                t.end();
+            });
+        });
     });
 });
 

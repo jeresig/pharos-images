@@ -607,6 +607,9 @@ const bindStubs = () => {
     });
 
     sandbox.stub(Artwork, "update", (query, update, options, callback) => {
+        Object.keys(artworks).forEach((id) => {
+            artworks[id].needsSimilarUpdate = true;
+        });
         process.nextTick(callback);
     });
 

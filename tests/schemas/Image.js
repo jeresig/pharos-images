@@ -41,7 +41,7 @@ tap.test("getSource", {autoend: true}, (t) => {
 
 tap.test("updateSimilarity: Existing Image", (t) => {
     const image = init.getImage();
-    const oldSimilar = image.similarImages;
+    const oldSimilar = image.similarImages.slice(0);
     image.updateSimilarity((err) => {
         t.error(err, "No error should be thrown.");
         t.notEqual(image.similarImages, oldSimilar, "Similarity updated.");

@@ -117,7 +117,10 @@ module.exports = (core) => {
             async.eachLimit(this.results, 1, (result, callback) => {
                 const data = Object.assign(result.data, {source: this.source});
 
-                console.log("Processing Artwork:", data.id);
+                /* istanbul ignore if */
+                if (process.env.NODE_ENV !== "test") {
+                    console.log("Processing Artwork:", data.id);
+                }
 
                 Artwork.fromData(data, req, (err, artwork, warnings, isNew) => {
                     result.state = "process.completed";
@@ -142,7 +145,10 @@ module.exports = (core) => {
                     callback();
                 });
             }, () => {
-                console.log("Finding artworks to delete...");
+                /* istanbul ignore if */
+                if (process.env.NODE_ENV !== "test") {
+                    console.log("Finding artworks to delete...");
+                }
 
                 // Find artworks that need to be deleted
                 Artwork.find({source: this.source})
@@ -189,7 +195,10 @@ module.exports = (core) => {
             async.eachLimit(this.results, 1, (result, callback) => {
                 result.state = "import.started";
 
-                console.log("Importing", result.data.id);
+                /* istanbul ignore if */
+                if (process.env.NODE_ENV !== "test") {
+                    console.log("Importing", result.data.id);
+                }
 
                 if (result.result === "created" ||
                         result.result === "changed") {

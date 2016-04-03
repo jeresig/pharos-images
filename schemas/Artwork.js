@@ -254,7 +254,10 @@ module.exports = (core) => {
         },
 
         updateSimilarity(callback) {
-            console.log("Updating Similarity", this._id);
+            /* istanbul ignore if */
+            if (process.env.NODE_ENV !== "test") {
+                console.log("Updating Similarity", this._id);
+            }
 
             this.getImages((err, images) => {
                 /* istanbul ignore if */
@@ -502,7 +505,7 @@ module.exports = (core) => {
                 let value = data[field];
                 const options = schema.path(field).options;
 
-                if (value !== "" && value != null &&
+                if (value !== "" && value !== null && value !== undefined &&
                         (value.length === undefined || value.length > 0)) {
                     const expectedType = getExpectedType(options, value);
 
@@ -576,7 +579,8 @@ module.exports = (core) => {
                     }
                 }
 
-                if (value == null || value === "" || value.length === 0) {
+                if (value === null || value === undefined || value === "" ||
+                        value.length === 0) {
                     if (options.required) {
                         error = req.format(req.gettext(
                             "Required field `%(field)s` is empty."), {field});
