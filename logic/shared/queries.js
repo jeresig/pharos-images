@@ -309,8 +309,10 @@ module.exports = (core) => ({
         match: (query) => ({
             match: {
                 "similarArtworks.source": {
-                    query: core.models.Source.getSources().map((source) =>
-                        source._id).filter((id) => id !== query.source),
+                    query: core.models.Source.getSources()
+                        .map((source) => source._id)
+                        .filter((id) => id !== query.source)
+                        .join(" "),
                     operator: "or",
                 },
             },

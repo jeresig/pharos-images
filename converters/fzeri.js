@@ -49,6 +49,11 @@ const propMap = {
         "MISU",
         (unit, getByTagName) => {
             if (unit) {
+                const diameter = getByTagName("MISD");
+                if (diameter) {
+                    return [`${diameter}${unit} x ${diameter}${unit}`];
+                }
+
                 return [`${getByTagName("MISA")}${unit} x ` +
                     `${getByTagName("MISL")}${unit}`];
             }
@@ -77,9 +82,7 @@ const propMap = {
 };
 
 const searchByProps = function(root, propMap) {
-    const results = {
-        lang: "it",
-    };
+    const results = {};
 
     const getByTagName = (name) => {
         const node = root.get(`.//${name}`);
@@ -137,9 +140,15 @@ module.exports = {
     processFiles(fileStreams, callback) {
         fileStreams[0].pipe(concat((fileData) => {
             try {
-                const xmlDoc = libxmljs.parseXml(fileData.toString("utf8"));
-                const matches = xmlDoc.find("//SCHEDA")
-                    .map((node) => searchByProps(node, propMap));
+                const fileString = fileData.toString("utf8");
+                const xmlDoc = libxmljs.parseXml(fileString, {
+                    recover: true,
+                });
+                const matches = xmlDoc.find("//SCHEDA").map((node) => {
+                    const match = searchByProps(node, propMap);
+                    match.lang = "it";
+                    return match;
+                });
                 callback(null, matches);
             } catch (e) {
                 callback(e);

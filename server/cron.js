@@ -11,6 +11,23 @@ module.exports = (core) => ({
         advance();
     },
 
+    updateArtworkSimilarity() {
+        const Artwork = core.models.Artwork;
+        const next = () => setTimeout(update, QUERY_RATE);
+        const update = () => Artwork.updateSimilarity((err, success) => {
+            // If nothing happened then we wait to try again
+            if (err || !success) {
+                return next();
+            }
+
+            // If it worked immediately attempt to index or update
+            // another image.
+            process.nextTick(update);
+        });
+
+        update();
+    },
+
     updateImageImport() {
         const advance = () => core.models.ImageImport.advance(() =>
             setTimeout(advance, QUERY_RATE));
@@ -53,6 +70,7 @@ module.exports = (core) => ({
 
     start() {
         this.updateArtworkImport();
+        this.updateArtworkSimilarity();
         this.updateImageImport();
         this.updateImageSimilarity();
     },

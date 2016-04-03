@@ -33,7 +33,7 @@
         {% endfor %}
         </ul>
 
-        {% if results.errors.length > 5 %}
+        {% if results.errors.length > 5 && expanded !== "errors" %}
             <a href="{{ URL(batch, {expanded: "errors"}) }}#errors">{{ format(gettext("Show all %(count)s results..."), {count: stringNum(results.errors.length)}) }}</a>
         {% endif %}
     </div>
@@ -60,7 +60,7 @@
         {% endfor %}
         </ul>
 
-        {% if results.warnings.length > 5 %}
+        {% if results.warnings.length > 5 && expanded !== "warnings" %}
             <a href="{{ URL(batch, {expanded: "warnings"}) }}#warnings">{{ format(gettext("Show all %(count)s results..."), {count: stringNum(results.warnings.length)}) }}</a>
         {% endif %}
     </div>
@@ -93,7 +93,7 @@
         {% endfor %}
         </div>
 
-        {% if results.models.length > 8 %}
+        {% if results.models.length > 8 && expanded !== "images" %}
             <a href="{{ URL(batch, {expanded: "images"}) }}#images">{{ format(gettext("Show all %(count)s results..."), {count: stringNum(results.models.length)}) }}</a>
         {% endif %}
     </div>

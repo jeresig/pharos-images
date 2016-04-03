@@ -27,16 +27,17 @@ const propMap = {
     ],
     bibID: ["004"],
     title: ["245", ["a"], (results) => trim(results[0])],
-    dates: ["260", ["c"], (results) => [trim(results[0])]],
+    dates: ["260", ["c"], (results) =>
+        [trim(results[0])].filter((date) => date && !/n.d/i.test(date))],
     depictions: [
         "600",
         ["a", "c"],
-        (results) => results.filter((name) => !!name).map(trim).join(", "),
+        (results) => [results.filter((name) => !!name).map(trim).join(", ")],
     ],
     categories: [
         "650",
         ["a", "x", "y", "z"],
-        (results) => results.filter((name) => !!name).map(trim).join(", "),
+        (results) => [results.filter((name) => !!name).map(trim).join(", ")],
         (val, data) => {
             let results = val;
 
@@ -54,7 +55,7 @@ const propMap = {
         (results) => results[1] && results[2] ? trim(results[0]) : "",
         (val) => {
             if (!val) {
-                return;
+                return defaultType;
             }
 
             const results = Array.isArray(val) ? val : [val];
@@ -77,12 +78,13 @@ const propMap = {
         "100",
         ["a", "d"],
         (results) => {
+            const date = results[1] && trim(results[1]);
             const data = {
                 name: trim(results[0]),
             };
 
-            if (results[1]) {
-                data.dates = trim(results[1]);
+            if (date) {
+                data.dates = [date];
             }
 
             return [data];

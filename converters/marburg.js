@@ -66,18 +66,18 @@ const propMap = {
                 "nameActorSet/appellationValue[@pref='alternative']");
             const startDate = getByTagName("vitalDatesActor/earliestDate");
             const endDate = getByTagName("vitalDatesActor/latestDate");
-            let date;
+            let dates;
             if (startDate || endDate) {
-                date = {
+                dates = [{
                     start: parseFloat(startDate) || undefined,
                     end: parseFloat(endDate) || undefined,
-                };
+                }];
             }
             if (name) {
                 return {
                     name,
                     pseudonym,
-                    date,
+                    dates,
                 };
             }
         },

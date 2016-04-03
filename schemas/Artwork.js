@@ -171,6 +171,12 @@ module.exports = (core) => {
             es_indexed: true,
         }],
 
+        // Keep track of if the artwork needs to update its artwork similarity
+        needsSimilarUpdate: {
+            type: Boolean,
+            default: false,
+        },
+
         // Computed by looking at the results of images.similarImages
         similarArtworks: [{
             _id: String,
@@ -248,6 +254,8 @@ module.exports = (core) => {
         },
 
         updateSimilarity(callback) {
+            console.log("Updating Similarity", this._id);
+
             this.getImages((err, images) => {
                 /* istanbul ignore if */
                 if (err) {
@@ -264,6 +272,7 @@ module.exports = (core) => {
                 }, {});
 
                 if (matches.length === 0) {
+                    this.needsSimilarUpdate = false;
                     return callback();
                 }
 
@@ -299,6 +308,7 @@ module.exports = (core) => {
                         .filter((similar) => similar.score > 0)
                         .sort((a, b) => b.score - a.score);
 
+                    this.needsSimilarUpdate = false;
                     callback();
                 });
             });
@@ -323,7 +333,7 @@ module.exports = (core) => {
 
                     async.mapLimit(this.similarArtworks, 4,
                         (similar, callback) => {
-                            if (typeof similar !== "string") {
+                            if (typeof similar.artwork !== "string") {
                                 return process.nextTick(() =>
                                     callback(null, similar));
                             }
@@ -492,7 +502,8 @@ module.exports = (core) => {
                 let value = data[field];
                 const options = schema.path(field).options;
 
-                if (value && (value.length === undefined || value.length > 0)) {
+                if (value !== "" && value != null &&
+                        (value.length === undefined || value.length > 0)) {
                     const expectedType = getExpectedType(options, value);
 
                     if (expectedType) {
@@ -565,7 +576,7 @@ module.exports = (core) => {
                     }
                 }
 
-                if (!value || value.length === 0) {
+                if (value == null || value === "" || value.length === 0) {
                     if (options.required) {
                         error = req.format(req.gettext(
                             "Required field `%(field)s` is empty."), {field});
@@ -585,6 +596,33 @@ module.exports = (core) => {
             }
 
             return {data: cleaned, warnings};
+        },
+
+        updateSimilarity(callback) {
+            core.models.Artwork.findOne({
+                needsSimilarUpdate: true,
+            }, (err, artwork) => {
+                if (err || !artwork) {
+                    return callback(err);
+                }
+
+                artwork.updateSimilarity((err) => {
+                    /* istanbul ignore if */
+                    if (err) {
+                        console.error(err);
+                        return callback(err);
+                    }
+
+                    artwork.save((err) => {
+                        /* istanbul ignore if */
+                        if (err) {
+                            return callback(err);
+                        }
+
+                        callback(null, true);
+                    });
+                });
+            });
         },
     };
 

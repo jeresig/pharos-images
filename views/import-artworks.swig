@@ -4,6 +4,12 @@
 
 {% block script %}
 {{ CDN("/css/format-diff.css") }}
+<style>
+pre {
+    max-height: 200px;
+    overflow: auto;
+}
+</style>
 {% endblock %}
 
 {% block content %}
@@ -14,7 +20,7 @@
 <p>{{ format(gettext("Uploaded: %(date)s"), {date: fixedDate(batch.created)}) }}</p>
 
 <p><strong>{% if batch.state === "error" %}
-    {{ format(gettext("Error: %(error)s"), {error: batchError(batch)}) }}
+    {{ format(gettext("Error: %(error)s"), {error: batchError(batch.error)}) }}
 {% else %}
     {{ batchState(batch) }}
 {% endif %}</strong></p>
@@ -62,13 +68,38 @@
     <div class="panel-body">
         {% for result in results.errors %}
             {% if expanded === "errors" || loop.index0 < 5 %}
-            <h3>{{ result.error }}</h3>
+            <h4>{{ result.error }}</h4>
             <pre>{{ result.data|json(4) }}</pre>
             {% endif %}
         {% endfor %}
 
-        {% if results.errors.length > 5 %}
+        {% if results.errors.length > 5 && expanded !== "errors" %}
             <a href="{{ URL(batch, {expanded: "errors"}) }}#errors">{{ format(gettext("Show all %(count)s results..."), {count: stringNum(results.errors.length)}) }}</a>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+
+{% if results.warnings.length > 0 %}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 id="warnings" class="panel-title">{{ gettext("Warnings") }} ({{ stringNum(results.warnings.length) }})</h3>
+    </div>
+    <div class="panel-body">
+        {% for result in results.warnings %}
+            {% if expanded === "warnings" || loop.index0 < 5 %}
+            <h4>{{ result.data.id }}</h4>
+            <ul>
+            {% for warning in result.warnings %}
+                <li>{{ batchError(warning) }}</li>
+            {% endfor %}
+            </ul>
+            <pre>{{ result.data|json(4) }}</pre>
+            {% endif %}
+        {% endfor %}
+
+        {% if results.warnings.length > 5 && expanded !== "warnings" %}
+            <a href="{{ URL(batch, {expanded: "warnings"}) }}#warnings">{{ format(gettext("Show all %(count)s results..."), {count: stringNum(results.warnings.length)}) }}</a>
         {% endif %}
     </div>
 </div>
@@ -82,12 +113,12 @@
     <div class="panel-body">
         {% for result in results.changed %}
             {% if expanded === "changed" || loop.index0 < 5 %}
-            <h3><a href="{{ urlFromID(result.model) }}">{{ result.model }}</a></h3>
+            <h4><a href="{{ urlFromID(result.model) }}">{{ result.model }}</a></h4>
             <div class="diff">{{ diff(result.diff) }}</div>
             {% endif %}
         {% endfor %}
 
-        {% if results.changed.length > 5 %}
+        {% if results.changed.length > 5 && expanded !== "changed" %}
             <a href="{{ URL(batch, {expanded: "changed"}) }}#changed">{{ format(gettext("Show all %(count)s results..."), {count: stringNum(results.changed.length)}) }}</a>
         {% endif %}
     </div>
@@ -102,18 +133,18 @@
     <div class="panel-body">
         {% for result in results.created %}
             {% if expanded === "created" || loop.index0 < 5 %}
-            <h3>
+            <h4>
             {% if batch.state === "completed" %}
                 <a href="{{ urlFromID(result.model) }}">{{ result.model }}</a>
             {% else %}
                 {{ result.model }}
             {% endif %}
-            </h3>
+            </h4>
             <pre>{{ result.data|json(4) }}</pre>
             {% endif %}
         {% endfor %}
 
-        {% if results.created.length > 5 %}
+        {% if results.created.length > 5 && expanded !== "created" %}
             <a href="{{ URL(batch, {expanded: "created"}) }}#completed">{{ format(gettext("Show all %(count)s results..."), {count: stringNum(results.created.length)}) }}</a>
         {% endif %}
     </div>
@@ -140,7 +171,7 @@
         {% endfor %}
         </ul>
 
-        {% if results.deleted.length > 5 %}
+        {% if results.deleted.length > 5 && expanded !== "deleted" %}
             <a href="{{ URL(batch, {expanded: "deleted"}) }}#deleted">{{ format(gettext("Show all %(count)s results..."), {count: stringNum(results.deleted.length)}) }}</a>
         {% endif %}
     </div>

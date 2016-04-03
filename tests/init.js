@@ -606,6 +606,10 @@ const bindStubs = () => {
         }));
     });
 
+    sandbox.stub(Artwork, "update", (query, update, options, callback) => {
+        process.nextTick(callback);
+    });
+
     sandbox.stub(Artwork, "count", (query, callback) => {
         const count = Object.keys(artworks).filter((id) =>
             !query.source || artworks[id].source === query.source).length;

@@ -189,6 +189,8 @@ module.exports = (core) => {
             async.eachLimit(this.results, 1, (result, callback) => {
                 result.state = "import.started";
 
+                console.log("Importing", result.data.id);
+
                 if (result.result === "created" ||
                         result.result === "changed") {
                     Artwork.fromData(result.data, req, (err, artwork) => {
@@ -230,20 +232,30 @@ module.exports = (core) => {
                     return this.saveState("error", callback);
                 }
 
+                this.markModified("results");
+
                 // Advance to the next state
                 this.saveState("import.completed", callback);
             });
         },
 
         updateSimilarity(callback) {
+            const results = this.getFilteredResults();
+
+            // No need to update the similarity if no artworks were created
+            // or deleted.
+            if (results.created.length === 0 && results.deleted.length === 0) {
+                return process.nextTick(callback);
+            }
+
             // Update the similarity on all artworks, including the ones that
             // were just added.
-            core.models.Artwork.find({}, {}, {timeout: true}).stream()
-                .on("data", function(artwork) {
-                    this.pause();
-                    artwork.updateSimilarity(() => this.resume());
-                })
-                .on("close", callback);
+            core.models.Artwork.update(
+                {},
+                {needsSimilarUpdate: true},
+                {multi: true},
+                callback
+            );
         },
 
         abandon(callback) {

@@ -101,8 +101,16 @@ module.exports = function(core, app) {
         async.parallel([
             (callback) => ImageImport.find({source: source._id}, null,
                 {sort: {created: "desc"}}, callback),
-            (callback) => ArtworkImport.find({source: source._id}, null,
-                {sort: {created: "desc"}}, callback),
+            (callback) => ArtworkImport.find({source: source._id}, {
+                state: true,
+                fileName: true,
+                source: true,
+                modified: true,
+                error: true,
+                "results.result": true,
+                "results.error": true,
+                "results.warnings": true,
+            }, {sort: {created: "desc"}}, callback),
         ], (err, results) => {
             /* istanbul ignore if */
             if (err) {
