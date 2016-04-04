@@ -8,47 +8,47 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2016-03-31 03:28+0000\n"
+"POT-Creation-Date: 2016-04-04 02:35+0000\n"
 
 #: logic/admin.js:22
 #: logic/admin.js:58
 msgid "Import not found."
 msgstr ""
 
-#: logic/admin.js:110
+#: logic/admin.js:118
 msgid "Error retrieving records."
 msgstr ""
 
-#: logic/admin.js:154
+#: logic/admin.js:162
 msgid "Error processing zip file."
 msgstr ""
 
-#: logic/admin.js:161
+#: logic/admin.js:169
 msgid "No zip file specified."
 msgstr ""
 
-#: logic/admin.js:174
+#: logic/admin.js:182
 msgid "Error saving zip file."
 msgstr ""
 
-#: logic/admin.js:194
+#: logic/admin.js:202
 msgid "Error processing data files."
 msgstr ""
 
-#: logic/admin.js:204
+#: logic/admin.js:212
 msgid "No data files specified."
 msgstr ""
 
-#: logic/admin.js:218
-#: logic/admin.js:225
+#: logic/admin.js:226
+#: logic/admin.js:233
 msgid "Error saving data file."
 msgstr ""
 
-#: logic/admin.js:243
+#: logic/admin.js:251
 msgid "Authorization required."
 msgstr ""
 
-#: logic/admin.js:261
+#: logic/admin.js:269
 #: logic/artworks.js:36
 msgid "Source not found."
 msgstr ""
@@ -65,19 +65,19 @@ msgstr ""
 msgid "Error processing image."
 msgstr ""
 
-#: logic/uploads.js:96
+#: logic/uploads.js:103
 msgid "No image URL specified."
 msgstr ""
 
-#: logic/uploads.js:112
+#: logic/uploads.js:119
 msgid "Error processing upload."
 msgstr ""
 
-#: logic/uploads.js:120
+#: logic/uploads.js:127
 msgid "No image specified."
 msgstr ""
 
-#: logic/uploads.js:132
+#: logic/uploads.js:139
 msgid "Uploaded image not found."
 msgstr ""
 
@@ -114,43 +114,43 @@ msgstr ""
 msgid "Locations must have a name or city specified."
 msgstr ""
 
-#: schemas/Artwork.js:229
+#: schemas/Artwork.js:235
 msgid "Artwork"
 msgstr ""
 
-#: schemas/Artwork.js:416
+#: schemas/Artwork.js:429
 msgid "Image file not found: %(fileName)s"
 msgstr ""
 
-#: schemas/Artwork.js:426
+#: schemas/Artwork.js:439
 msgid "Error accessing image data."
 msgstr ""
 
-#: schemas/Artwork.js:434
+#: schemas/Artwork.js:447
 msgid "No images found."
 msgstr ""
 
-#: schemas/Artwork.js:454
+#: schemas/Artwork.js:467
 msgid "There was an error with the data format."
 msgstr ""
 
-#: schemas/Artwork.js:480
+#: schemas/Artwork.js:493
 msgid "Unrecognized field `%(field)s`."
 msgstr ""
 
-#: schemas/Artwork.js:500
+#: schemas/Artwork.js:514
 msgid "`%(field)s` is the wrong type. Expected a %(type)s."
 msgstr ""
 
-#: schemas/Artwork.js:518
+#: schemas/Artwork.js:532
 msgid "`%(field)s` value is the wrong type. Expected a %(type)s."
 msgstr ""
 
-#: schemas/Artwork.js:570
+#: schemas/Artwork.js:585
 msgid "Required field `%(field)s` is empty."
 msgstr ""
 
-#: schemas/Artwork.js:574
+#: schemas/Artwork.js:589
 msgid "Recommended field `%(field)s` is empty."
 msgstr ""
 
@@ -318,6 +318,7 @@ msgstr ""
 
 #: views/admin.swig:15
 #: views/admin.swig:28
+#: views/import-artworks.swig:13
 #: views/import-images.swig:9
 msgid "Warnings"
 msgstr ""
@@ -335,7 +336,7 @@ msgid "Unprocessed"
 msgstr ""
 
 #: views/admin.swig:24
-#: views/import-artworks.swig:16
+#: views/import-artworks.swig:18
 msgid "Created"
 msgstr ""
 
@@ -344,7 +345,7 @@ msgid "Updated"
 msgstr ""
 
 #: views/admin.swig:26
-#: views/import-artworks.swig:19
+#: views/import-artworks.swig:21
 msgid "Deleted"
 msgstr ""
 
@@ -516,28 +517,29 @@ msgstr ""
 
 #: views/import-artworks.swig:10
 #: views/import-artworks.swig:12
-#: views/import-artworks.swig:15
-#: views/import-artworks.swig:18
-#: views/import-artworks.swig:21
+#: views/import-artworks.swig:14
+#: views/import-artworks.swig:17
+#: views/import-artworks.swig:20
+#: views/import-artworks.swig:23
 #: views/import-images.swig:8
 #: views/import-images.swig:10
 #: views/import-images.swig:12
 msgid "Show all %(count)s results..."
 msgstr ""
 
-#: views/import-artworks.swig:13
+#: views/import-artworks.swig:15
 msgid "Changed"
 msgstr ""
 
-#: views/import-artworks.swig:14
+#: views/import-artworks.swig:16
 msgid "To Be Changed"
 msgstr ""
 
-#: views/import-artworks.swig:17
+#: views/import-artworks.swig:19
 msgid "To Be Created"
 msgstr ""
 
-#: views/import-artworks.swig:20
+#: views/import-artworks.swig:22
 msgid "To Be Deleted"
 msgstr ""
 

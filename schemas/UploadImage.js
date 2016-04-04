@@ -8,6 +8,7 @@ module.exports = (core) => {
     const Image = require("./Image")(core);
 
     const uploadName = "uploads";
+    const collection = "uploadimages";
 
     const UploadImage = Image.extend({
         // Source is always set to "uploads"
@@ -16,9 +17,7 @@ module.exports = (core) => {
             default: uploadName,
             required: true,
         },
-    }, {
-        collection: uploadName,
-    });
+    }, {collection});
 
     const getDirBase = function() {
         return core.urls.genLocalFile(`data/${uploadName}`);

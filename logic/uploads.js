@@ -39,16 +39,23 @@ module.exports = (core, app) => {
                     return next(err);
                 }
 
-                image.save((err) => {
+                image.updateSimilarity((err) => {
                     /* istanbul ignore if */
                     if (err) {
                         return next(err);
                     }
 
-                    // TODO: Add in uploader's user name (once those exist)
-                    upload.updateSimilarity(() => {
-                        upload.save(() => res.redirect(
-                            upload.getURL(req.lang)));
+                    image.save((err) => {
+                        /* istanbul ignore if */
+                        if (err) {
+                            return next(err);
+                        }
+
+                        // TODO: Add in uploader's user name (once those exist)
+                        upload.updateSimilarity(() => {
+                            upload.save(() => res.redirect(
+                                upload.getURL(req.lang)));
+                        });
                     });
                 });
             });

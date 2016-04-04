@@ -43,6 +43,7 @@ module.exports = (core) => {
 
     Upload.statics.fromImage = function(image, callback) {
         const _id = image._id.replace(/\.jpg$/, "");
+        const id = _id.replace(`${uploadName}/`, "");
 
         // Check to see if image already exists and redirect
         // if it does.
@@ -58,8 +59,12 @@ module.exports = (core) => {
 
             const upload = new core.models.Upload({
                 _id,
+                id,
                 source: "uploads",
                 images: [image._id],
+                defaultImageHash: image.hash,
+                url: image.getOriginalURL(),
+                lang: "en",
             });
 
             callback(null, upload);
