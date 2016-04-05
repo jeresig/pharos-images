@@ -8,6 +8,7 @@ const async = require("async");
 module.exports = (core) => {
     let sourceCache = [];
     const Artwork = core.models.Artwork;
+    const Image = core.models.Image;
 
     const Source = new core.db.schema({
         _id: String,
@@ -72,6 +73,18 @@ module.exports = (core) => {
                 callback();
             });
         },
+
+        cacheNumImages(callback) {
+            Image.count({source: this._id}, (err, num) => {
+                /* istanbul ignore if */
+                if (err) {
+                    return callback(err);
+                }
+
+                this.numImages = num;
+                callback();
+            });
+        },
     };
 
     Source.statics = {
@@ -80,7 +93,10 @@ module.exports = (core) => {
                 sourceCache = sources;
 
                 async.eachLimit(sources, 2, (source, callback) => {
-                    source.cacheNumArtworks(callback);
+                    async.parallel([
+                        (callback) => source.cacheNumArtworks(callback),
+                        (callback) => source.cacheNumImages(callback),
+                    ], callback);
                 }, () => {
                     callback(err, sources);
                 });

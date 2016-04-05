@@ -739,6 +739,13 @@ const bindStubs = () => {
         });
     });
 
+    sandbox.stub(Image, "count", (query, callback) => {
+        const count = Object.keys(images).filter((id) =>
+            !query.source || images[id].source === query.source).length;
+
+        process.nextTick(() => callback(null, count));
+    });
+
     sandbox.stub(UploadImage, "findById", (id, callback) => {
         process.nextTick(() => callback(null, uploadImages[id]));
     });

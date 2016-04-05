@@ -164,6 +164,15 @@
             </div>
         {% endif %}
 
+        {% if artworks.length === 0 %}
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="alert alert-info" role="alert">
+                        {{ gettext("No results found. Please refine your query.") }}
+                    </div>
+                </div>
+            </div>
+        {% else %}
         <nav>
             <ul class="pager">
                 {% if prev %}
@@ -239,6 +248,7 @@
                 {% endif %}
             </ul>
         </nav>
+        {% endif %}
     </div>
 </div>
 

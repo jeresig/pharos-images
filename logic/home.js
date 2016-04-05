@@ -1,17 +1,28 @@
 "use strict";
 
+const async = require("async");
+
+const cache = require("../server/middlewares/cache");
+
 module.exports = (core, app) => {
     const Source = core.models.Source;
     const Artwork = core.models.Artwork;
-
-    const cache = require("../server/middlewares/cache");
+    const Image = core.models.Image;
 
     return {
-        index(req, res) {
-            Artwork.count({}, (err, total) => {
+        index(req, res, next) {
+            async.parallel([
+                (callback) => Artwork.count({}, callback),
+                (callback) => Image.count({}, callback),
+            ], (err, results) => {
+                if (err) {
+                    return next(err);
+                }
+
                 res.render("home", {
                     sources: Source.getSources(),
-                    total: total,
+                    artworkTotal: results[0],
+                    imageTotal: results[1],
                 });
             });
         },

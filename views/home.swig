@@ -18,7 +18,7 @@
 {% block content %}
 <div class="home-contents row">
     <div class="col-sm-8 col-sm-offset-2 upload-box">
-        <h3>{{ format(gettext("Search %(count)s Artworks:"), {count: stringNum(total)}) }}</h3>
+        <h3>{{ format(gettext("Search %(artworkCount)s Artworks and %(imageCount)s Images:"), {artworkCount: stringNum(artworkTotal), imageCount: stringNum(imageTotal)}) }}</h3>
         <form action="{{ URL("/search") }}" method="GET" class="form-search search form-inline">
             <div class="form-group">
                 {% if qsLocale() %}
@@ -76,7 +76,7 @@
         <div class="sources">
             {% for source in sources %}
             <h4><a href="{{ URL(source) }}">{{ fullName(source) }}</a></h4>
-            <p>{{ format(gettext("%(count)s Artworks"), {count: stringNum(source.numArtworks)}) }}</p>
+            <p>{{ format(gettext("%(artworkCount)s Artworks, %(imageCount)s Images"), {artworkCount: stringNum(source.numArtworks), imageCount: stringNum(source.numImages)}) }}</p>
             {% endfor %}
         </div>
     </div>

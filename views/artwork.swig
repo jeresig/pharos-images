@@ -5,6 +5,11 @@
 {% block content %}
 <div id="result" class="row">
     <div class="{% if similar.length > 0 %}col-md-9{% else %}col-md-12{% endif %} imageholder">
+        {% if compare || artworks.length > 1 %}
+            <a href="{{ URL(artworks[0]) }}" class="btn btn-success">
+                &laquo; {{ gettext("End Comparison") }}
+            </a>
+        {% endif %}
         <div class="responsive-table">
         <table class="table table-hover">
         <tr class="plain">
@@ -65,7 +70,7 @@
             {% endfor %}
         </tr>
 
-        {% if compare || artworks[0].artists %}
+        {% if compare || artworks[0].artists.length > 0 %}
         <tr>
             <th class="text-right">{{ gettext("Artist") }}</th>
             {% for artwork in artworks %}
@@ -226,7 +231,7 @@
     {% if similar.length > 0 %}
     <div class="col-md-3">
         <a href="?compare" class="btn btn-success btn-block" style="margin-bottom: 20px;">
-            {{ gettext("Compare Artworks") }}
+            {{ gettext("Compare Artworks") }} &raquo;
         </a>
 
         <div class="panel panel-default">
