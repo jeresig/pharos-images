@@ -291,44 +291,87 @@ module.exports = (core) => ({
         secondary: true,
     },
 
-    hasLink: {
-        value: (req) => req.query.hasLink || "",
-        title: (req) => req.gettext("Links to Another Artwork"),
-        match: () => ({
-            range: {
-                "similarArtworks.score": {
-                    gte: 1,
-                },
+    similar: {
+        filters: {
+            any: {
+                getTitle: (req) => req.gettext("Similar to Any Artwork"),
+                match: () => ({
+                    range: {
+                        "similarArtworks.score": {
+                            gte: 1,
+                        },
+                    },
+                }),
             },
-        }),
-    },
 
-    hasExternalLink: {
-        value: (req) => req.query.hasExternalLink || "",
-        title: (req) => req.gettext("Links to an External Artwork"),
-        match: (query) => ({
-            match: {
-                "similarArtworks.source": {
-                    query: core.models.Source.getSources()
-                        .map((source) => source._id)
-                        .filter((id) => id !== query.source)
-                        .join(" "),
-                    operator: "or",
-                },
-            },
-        }),
-    },
+            external: {
+                getTitle: (req) =>
+                    req.gettext("Similar to an External Artwork"),
+                match: () => {
+                    const sourceIDs = core.models.Source.getSources()
+                        .map((source) => source._id);
+                    const should = sourceIDs.map((sourceID) => ({
+                        bool: {
+                            must: [
+                                {
+                                    match: {
+                                        source: sourceID,
+                                    },
+                                },
+                                {
+                                    match: {
+                                        "similarArtworks.source": {
+                                            query: sourceIDs
+                                                .filter((id) => id !== sourceID)
+                                                .join(" "),
+                                            operator: "or",
+                                        },
+                                    },
+                                },
+                            ],
+                        },
+                    }));
 
-    hasInternalLink: {
-        value: (req) => req.query.hasInternalLink || "",
-        title: (req) => req.gettext("Links to an Internal Artwork"),
-        match: (query) => ({
-            match: {
-                "similarArtworks.source": {
-                    query: query.source,
-                    operator: "or",
+                    return {bool: {should}};
                 },
             },
-        }),
+
+            internal: {
+                getTitle: (req) =>
+                    req.gettext("Similar to an Internal Artwork"),
+                match: () => {
+                    const sourceIDs = core.models.Source.getSources()
+                        .map((source) => source._id);
+                    const should = sourceIDs.map((sourceID) => ({
+                        bool: {
+                            must: [
+                                {
+                                    match: {
+                                        source: sourceID,
+                                    },
+                                },
+                                {
+                                    match: {
+                                        "similarArtworks.source": {
+                                            query: sourceID,
+                                            operator: "or",
+                                        },
+                                    },
+                                },
+                            ],
+                        },
+                    }));
+
+                    return {bool: {should}};
+                },
+            },
+        },
+        value: (req) => req.query.similar || "",
+        title(req, query) {
+            return this.filters[query.similar].getTitle(req);
+        },
+        match(query) {
+            return this.filters[query.similar].match(query);
+        },
     },
 });

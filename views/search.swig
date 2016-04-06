@@ -95,6 +95,15 @@
                     </select>
                 </div>
                 <div class="form-group">
+                    <label for="similar" class="control-label">{{ gettext("Similarity") }}</label>
+                    <select name="similar" style="width: 100%;" class="form-control">
+                        <option value=""></option>
+                        {% for id, similar in queries.similar.filters %}
+                            <option value="{{ id }}" {% if query.similar === id %}selected{% endif %}>{{ getTitle(similar) }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
                     <label for="source" class="control-label">{{ gettext("Sort") }}</label>
                     <select name="sort" style="width: 100%;" class="form-control">
                     {% for sort in sorts %}

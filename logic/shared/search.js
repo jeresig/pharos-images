@@ -156,6 +156,7 @@ module.exports = (core, app) => {
                 types: typeData,
                 minDate: process.env.DEFAULT_START_DATE || "",
                 maxDate: process.env.DEFAULT_END_DATE || "",
+                queries,
                 sorts: sortData,
                 facets: facetData,
                 artworks: results.hits.hits,
