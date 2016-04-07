@@ -40,6 +40,7 @@
     "csurf": "^1.8.3",
     "csv-streamify": "^3.0.3",
     "dotenv": "^2.0.0",
+    "elasticsearch-sanitize": "^2.0.0",
     "eslint": "^2.5.1",
     "express": "^4.13.4",
     "express-cdn": "^0.2.8",

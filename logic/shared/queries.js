@@ -1,5 +1,6 @@
 "use strict";
 
+const escape = require("elasticsearch-sanitize");
 const pd = require("parse-dimensions");
 
 const types = require("./types");
@@ -143,7 +144,7 @@ module.exports = (core) => ({
                 {query: query.filter || "*"}),
         match: (query) => ({
             query_string: {
-                query: query.filter || "*",
+                query: escape(query.filter) || "*",
                 default_operator: "and",
             },
         }),
@@ -158,7 +159,7 @@ module.exports = (core) => ({
         match: (query) => ({
             match: {
                 source: {
-                    query: query.source,
+                    query: escape(query.source),
                     operator: "or",
                     zero_terms_query: "all",
                 },
@@ -174,7 +175,7 @@ module.exports = (core) => ({
         match: (query) => ({
             match: {
                 "locations.name": {
-                    query: query.location,
+                    query: escape(query.location),
                     operator: "and",
                     zero_terms_query: "all",
                 },
@@ -189,7 +190,7 @@ module.exports = (core) => ({
         match: (query) => ({
             match: {
                 "objectType.raw": {
-                    query: query.type,
+                    query: escape(query.type),
                     operator: "or",
                     zero_terms_query: "all",
                 },
@@ -204,7 +205,7 @@ module.exports = (core) => ({
         match: (query) => ({
             multi_match: {
                 fields: ["artists.name"],
-                query: query.artist,
+                query: escape(query.artist),
                 operator: "and",
                 zero_terms_query: "all",
             },
