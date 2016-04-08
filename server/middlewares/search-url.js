@@ -44,7 +44,8 @@ module.exports = (core, app) => {
             }
 
             if (queryString) {
-                queryString = `?${queryString}`;
+                const prefix = url.indexOf("?") >= 0 ? "&" : "?";
+                queryString = `${prefix}${queryString}`;
             }
 
             return `${url}${queryString}`;

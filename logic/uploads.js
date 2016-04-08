@@ -119,6 +119,8 @@ module.exports = (core, app) => {
                         req.gettext("Error processing upload.")));
                 }
 
+                req.lang = fields.lang;
+
                 if (files && files.file && files.file.path &&
                         files.file.size > 0) {
                     handleUpload(req, res, next)(null, files.file.path);

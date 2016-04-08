@@ -57,7 +57,6 @@
                             {{ gettext("Browse All") }}
                         </a>
                     </li>
-                    <!--
                     <li class="dropdown">
                         <a href="" class="dropdown-toggle"
                             data-toggle="dropdown" role="button"
@@ -73,7 +72,8 @@
                                 <li>
                                     <a href="{{ getOtherURL(locale) }}">
                                         <img src="{{ CDN("/images/" + locale + ".png", {"raw": true}) }}"
-                                            alt="{{ getLocaleName(locale) }}" />
+                                            alt="{{ getLocaleName(locale) }}"
+                                            width="16" height="11" />
                                         {{ getLocaleName(locale) }}
                                     </a>
                                 </li>
@@ -81,7 +81,6 @@
                             {% endfor %}
                         </ul>
                     </li>
-                    -->
                 </ul>
 
                 <form action="{{ URL("/search") }}" method="GET"

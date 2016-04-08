@@ -8,7 +8,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2016-04-07 03:38+0000\n"
+"POT-Creation-Date: 2016-04-08 03:08+0000\n"
 
 #: logic/admin.js:22
 #: logic/admin.js:58
@@ -73,11 +73,11 @@ msgstr ""
 msgid "Error processing upload."
 msgstr ""
 
-#: logic/uploads.js:127
+#: logic/uploads.js:129
 msgid "No image specified."
 msgstr ""
 
-#: logic/uploads.js:139
+#: logic/uploads.js:141
 msgid "Uploaded image not found."
 msgstr ""
 
