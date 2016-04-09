@@ -217,6 +217,11 @@ module.exports = (core) => {
             return core.models.Artwork.getURLFromID(locale, this._id);
         },
 
+        getOriginalURL() {
+            return core.urls.genData(
+                `/${this.source}/images/${this.defaultImageHash}.jpg`);
+        },
+
         getThumbURL() {
             return core.urls.genData(
                 `/${this.source}/thumbs/${this.defaultImageHash}.jpg`);
