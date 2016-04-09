@@ -7,13 +7,10 @@ module.exports = (core, app) => {
     const User = core.models.User;
 
     // serialize sessions
-    passport.serializeUser((user, callback) => {
-        callback(null, user._id);
-    });
+    passport.serializeUser((user, callback) => callback(null, user._id));
 
-    passport.deserializeUser((id, callback) => {
-        User.findOne({_id: id}, callback);
-    });
+    passport.deserializeUser((id, callback) =>
+        User.findOne({_id: id}, callback));
 
     // use local strategy
     passport.use(new LocalStrategy(

@@ -66,13 +66,7 @@ module.exports = function(core, app) {
                 results.slice(0, 8);
 
             async.eachLimit(toPopulate, 4, (result, callback) => {
-                const imageID = result.model;
-
-                if (typeof imageID !== "string") {
-                    return process.nextTick(callback);
-                }
-
-                core.models.Image.findById(imageID, (err, image) => {
+                core.models.Image.findById(result.model, (err, image) => {
                     if (image) {
                         result.model = image;
                     }

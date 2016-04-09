@@ -328,7 +328,7 @@ const genData = () => {
             source: "test",
         }),
         new ArtworkImport({
-            _id: "test/started",
+            _id: "test/completed",
             created: new Date(),
             modified: new Date(),
             fileName: "data.json",
@@ -337,7 +337,7 @@ const genData = () => {
             results: [],
         }),
         new ArtworkImport({
-            _id: "test/started",
+            _id: "test/error",
             created: new Date(),
             modified: new Date(),
             fileName: "data.json",
@@ -481,6 +481,12 @@ const genData = () => {
             password: "test",
             sourceAdmin: ["test"],
             siteAdmin: true,
+        }),
+        new User({
+            email: "normal@test.com",
+            password: "test",
+            sourceAdmin: [],
+            siteAdmin: false,
         }),
     ];
 
@@ -640,9 +646,7 @@ const bindStubs = () => {
     });
 
     sandbox.stub(ImageImport, "find", (query, select, options, callback) => {
-        process.nextTick(() => {
-            callback(null, batches);
-        });
+        process.nextTick(() => callback(null, batches));
     });
 
     sandbox.stub(ImageImport, "findById", (id, callback) => {
@@ -794,7 +798,7 @@ const bindStubs = () => {
     sandbox.stub(User, "findOne", (query, callback) => {
         const matches = users.filter((user) =>
             (user.email === query.email ||
-                user._id.toString() === query._id.toString()));
+                query._id && user._id.toString() === query._id.toString()));
         process.nextTick(() => callback(null, matches[0]));
     });
 
