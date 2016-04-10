@@ -26,19 +26,8 @@ module.exports = function(core, app) {
         },
 
         bySource(req, res) {
-            let source;
-
-            try {
-                source = Source.getSource(req.params.source);
-
-            } catch (e) {
-                return res.status(404).render("error", {
-                    title: req.gettext("Source not found."),
-                });
-            }
-
             search(req, res, {
-                url: source.url,
+                url: req.source.url,
             });
         },
 
@@ -90,6 +79,20 @@ module.exports = function(core, app) {
             app.get("/artworks/:source/:artworkName", this.show);
             app.get("/type/:type", cache(1), this.byType);
             app.get("/source/:source", cache(1), this.bySource);
+
+            // NOTE(jeresig): This is also used by the source admin pages
+            // to extract the source from the URL.
+            app.param("source", (req, res, next, id) => {
+                try {
+                    req.source = Source.getSource(id);
+                    next();
+
+                } catch (e) {
+                    return res.status(404).render("error", {
+                        title: req.gettext("Source not found."),
+                    });
+                }
+            });
         },
     };
 };

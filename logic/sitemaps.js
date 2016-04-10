@@ -45,7 +45,7 @@ module.exports = function(core, app) {
                     });
                 }
 
-                const urls = results.map((item) =>
+                const urls = results.hits.hits.map((item) =>
                     Artwork.getURLFromID(req.lang, item._id));
 
                 res.header("Content-Type", "application/xml");

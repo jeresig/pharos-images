@@ -8,7 +8,6 @@ const jdp = require("jsondiffpatch");
 const passport = require("passport");
 
 module.exports = function(core, app) {
-    const Source = core.models.Source;
     const ImageImport = core.models.ImageImport;
     const ArtworkImport = core.models.ArtworkImport;
 
@@ -252,18 +251,6 @@ module.exports = function(core, app) {
             app.get("/source/:source/admin", auth, this.admin);
             app.post("/source/:source/upload-images", auth, this.uploadImages);
             app.post("/source/:source/upload-data", auth, this.uploadData);
-
-            app.param("source", (req, res, next, id) => {
-                try {
-                    req.source = Source.getSource(id);
-                    next();
-
-                } catch (e) {
-                    return res.status(404).render("error", {
-                        title: req.gettext("Source not found."),
-                    });
-                }
-            });
         },
     };
 };

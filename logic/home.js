@@ -15,6 +15,7 @@ module.exports = (core, app) => {
                 (callback) => Artwork.count({}, callback),
                 (callback) => Image.count({}, callback),
             ], (err, results) => {
+                /* istanbul ignore if */
                 if (err) {
                     return next(err);
                 }
