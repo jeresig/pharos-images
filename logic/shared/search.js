@@ -133,7 +133,6 @@ module.exports = (core, app) => {
 
             if (params.primary.length > 1) {
                 breadcrumbs = params.primary.map((param) => {
-                    const getTitle = queries[param].title;
                     const rmQuery = Object.assign({}, query);
                     rmQuery[param] = null;
 
@@ -143,7 +142,8 @@ module.exports = (core, app) => {
                     }
 
                     return {
-                        name: getTitle && getTitle(req, query),
+                        name: queries[param].title &&
+                            queries[param].title(req, query),
                         url: req.searchURL(rmQuery),
                     };
                 }).filter((crumb) => crumb.name);
