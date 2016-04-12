@@ -140,11 +140,10 @@ module.exports = (core) => ({
     filter: {
         value: (req) => req.query.filter,
         title: (req, query) => req.format(
-            req.gettext("Query: '%(query)s'"),
-                {query: query.filter || "*"}),
+            req.gettext("Query: '%(query)s'"), {query: query.filter}),
         match: (query) => ({
             query_string: {
-                query: escape(query.filter) || "*",
+                query: escape(query.filter),
                 default_operator: "and",
             },
         }),
@@ -170,8 +169,7 @@ module.exports = (core) => ({
     location: {
         value: (req) => req.query.location,
         title: (req, query) => req.format(
-            req.gettext("Location: '%(query)s'"),
-                {query: query.location || "*"}),
+            req.gettext("Location: '%(query)s'"), {query: query.location}),
         match: (query) => ({
             match: {
                 "locations.name": {
