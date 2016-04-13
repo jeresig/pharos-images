@@ -11,6 +11,7 @@ if (process.env.NODE_ENV !== "test") {
 }
 
 const core = {};
+const models = require("./lib/models")(core);
 
 // Load Libraries
 fs.readdirSync("lib").forEach((file) => {
@@ -23,13 +24,7 @@ core.models = {};
 // Load Models
 fs.readdirSync("schemas").forEach((file) => {
     const name = path.basename(file, ".js");
-    const schema = require(`./schemas/${file}`)(core);
-
-    if (core.db.bindPlugins[name]) {
-        core.db.bindPlugins[name](schema);
-    }
-
-    core.models[name] = core.db.model(name, schema);
+    core.models[name] = models(name);
 });
 
 core.init = (callback) => {

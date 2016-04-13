@@ -9,15 +9,19 @@ const jdp = require("jsondiffpatch").create({
 });
 
 const locales = require("../config/locales.json");
-const types = require("../logic/shared/types.js");
+const types = require("../logic/shared/types");
 
 module.exports = (core) => {
+    const models = require("../lib/models")(core);
+    const db = require("../lib/db")(core);
+    const urls = require("../lib/urls")(core);
+
     const Name = require("./Name")(core);
     const YearRange = require("./YearRange")(core);
     const Dimension = require("./Dimension")(core);
     const Location = require("./Location")(core);
 
-    const Artwork = new core.db.schema({
+    const Artwork = new db.schema({
         // UUID of the image (Format: SOURCE/ID)
         _id: {
             type: String,
@@ -214,16 +218,16 @@ module.exports = (core) => {
 
     Artwork.methods = {
         getURL(locale) {
-            return core.models.Artwork.getURLFromID(locale, this._id);
+            return models("Artwork").getURLFromID(locale, this._id);
         },
 
         getOriginalURL() {
-            return core.urls.genData(
+            return urls.genData(
                 `/${this.source}/images/${this.defaultImageHash}.jpg`);
         },
 
         getThumbURL() {
-            return core.urls.genData(
+            return urls.genData(
                 `/${this.source}/thumbs/${this.defaultImageHash}.jpg`);
         },
 
@@ -246,7 +250,7 @@ module.exports = (core) => {
         },
 
         getSource() {
-            return core.models.Source.getSource(this.source);
+            return models("Source").getSource(this.source);
         },
 
         getImages(callback) {
@@ -254,7 +258,7 @@ module.exports = (core) => {
                 if (typeof id !== "string") {
                     return process.nextTick(() => callback(null, id));
                 }
-                core.models.Image.findById(id, callback);
+                models("Image").findById(id, callback);
             }, callback);
         },
 
@@ -289,7 +293,7 @@ module.exports = (core) => {
                     images: match._id,
                 }));
 
-                core.models.Artwork.find({
+                models("Artwork").find({
                     $or: query,
                     _id: {$ne: this._id},
                 }, (err, artworks) => {
@@ -346,7 +350,7 @@ module.exports = (core) => {
                                     callback(null, similar));
                             }
 
-                            core.models.Artwork.findById(similar.artwork,
+                            models("Artwork").findById(similar.artwork,
                                 (err, artwork) => {
                                     /* istanbul ignore if */
                                     if (err || !artwork) {
@@ -410,7 +414,7 @@ module.exports = (core) => {
 
     Artwork.statics = {
         getURLFromID(locale, id) {
-            return core.urls.gen(locale, `/artworks/${id}`);
+            return urls.gen(locale, `/artworks/${id}`);
         },
 
         fromData(tmpData, req, callback) {
@@ -424,11 +428,11 @@ module.exports = (core) => {
             const data = lint.data;
             const artworkId = `${data.source}/${data.id}`;
 
-            core.models.Artwork.findById(artworkId, (err, artwork) => {
+            models("Artwork").findById(artworkId, (err, artwork) => {
                 const creating = !artwork;
 
                 async.mapLimit(data.images, 2, (imageId, callback) => {
-                    core.models.Image.findById(imageId, (err, image) => {
+                    models("Image").findById(imageId, (err, image) => {
                         if (!image) {
                             const fileName = imageId.replace(/^\w+[/]/, "");
                             warnings.push(req.format(req.gettext(
@@ -460,7 +464,7 @@ module.exports = (core) => {
                     let original;
 
                     if (creating) {
-                        model = new core.models.Artwork(data);
+                        model = new models("Artwork")(data);
                     } else {
                         original = model.toJSON();
                         model.set(data);
@@ -608,7 +612,7 @@ module.exports = (core) => {
         },
 
         updateSimilarity(callback) {
-            core.models.Artwork.findOne({
+            models("Artwork").findOne({
                 needsSimilarUpdate: true,
             }, (err, artwork) => {
                 if (err || !artwork) {
