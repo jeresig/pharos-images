@@ -55,12 +55,14 @@ module.exports = (core) => {
         const User = core.models.User;
 
         // Check only when it is a new user or when email field is modified
+        /* istanbul ignore else */
         if (this.isNew || this.isModified("email")) {
-            User.find({email: email}, (err, users) => {
-                callback(!err && users.length === 0);
+            User.findOne({email: email}, (err, user) => {
+                callback(!err && !user);
             });
 
         } else {
+            /* istanbul ignore next */
             callback(true);
         }
     }, "Email already exists");
