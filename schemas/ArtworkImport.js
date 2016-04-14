@@ -4,6 +4,7 @@ const async = require("async");
 
 const models = require("../lib/models");
 const urls = require("../lib/urls");
+const config = require("../lib/config");
 
 const Import = require("./Import");
 
@@ -120,7 +121,7 @@ Object.assign(ArtworkImport.methods, {
             const data = Object.assign(result.data, {source: this.source});
 
             /* istanbul ignore if */
-            if (process.env.NODE_ENV !== "test") {
+            if (config.NODE_ENV !== "test") {
                 console.log("Processing Artwork:", data.id);
             }
 
@@ -148,7 +149,7 @@ Object.assign(ArtworkImport.methods, {
             });
         }, () => {
             /* istanbul ignore if */
-            if (process.env.NODE_ENV !== "test") {
+            if (config.NODE_ENV !== "test") {
                 console.log("Finding artworks to delete...");
             }
 
@@ -198,7 +199,7 @@ Object.assign(ArtworkImport.methods, {
             result.state = "import.started";
 
             /* istanbul ignore if */
-            if (process.env.NODE_ENV !== "test") {
+            if (config.NODE_ENV !== "test") {
                 console.log("Importing", result.data.id);
             }
 

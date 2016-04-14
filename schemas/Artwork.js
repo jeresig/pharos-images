@@ -14,6 +14,7 @@ const types = require("../logic/shared/types");
 const models = require("../lib/models");
 const db = require("../lib/db");
 const urls = require("../lib/urls");
+const config = require("../lib/config");
 
 const Name = require("./Name");
 const YearRange = require("./YearRange");
@@ -263,7 +264,7 @@ Artwork.methods = {
 
     updateSimilarity(callback) {
         /* istanbul ignore if */
-        if (process.env.NODE_ENV !== "test") {
+        if (config.NODE_ENV !== "test") {
             console.log("Updating Similarity", this._id);
         }
 

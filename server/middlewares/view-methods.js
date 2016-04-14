@@ -6,16 +6,17 @@ const moment = require("moment");
 const pd = require("parse-dimensions");
 
 const urls = require("../../lib/urls");
+const config = require("../../lib/config");
 const locales = require("../../config/locales.json");
 const types = require("../../logic/shared/types");
 
 module.exports = (req, res, next) => {
     const methods = {
-        SITE_NAME: process.env.SITE_NAME,
-        SITE_NAME_SHORT: process.env.SITE_NAME_SHORT,
+        SITE_NAME: config.SITE_NAME,
+        SITE_NAME_SHORT: config.SITE_NAME_SHORT,
 
         // An option to disable indexing of the entire site
-        noIndex: !!process.env.NO_INDEX,
+        noIndex: !!config.NO_INDEX,
 
         getLocales() {
             return Object.keys(locales);
@@ -124,7 +125,7 @@ module.exports = (req, res, next) => {
         `${bucket.from || 0}-${bucket.to}${bucket.unit || ""}` :
         `${bucket.from}${bucket.unit || ""}+`;
 
-    req.defaultUnit = () => process.env.DEFAULT_UNIT || "cm";
+    req.defaultUnit = () => config.DEFAULT_UNIT;
     req.unit = () => req.query.unit || req.defaultUnit();
 
     next();

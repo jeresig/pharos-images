@@ -9,16 +9,16 @@ const Artwork = init.Artwork;
 tap.test("getURL", {autoend: true}, (t) => {
     const artwork = init.getArtwork();
     t.equal(artwork.getURL("en"),
-        "http://localhost:3000/artworks/test/1234", "Check 'en' URL");
+        "/artworks/test/1234", "Check 'en' URL");
 
     t.equal(artwork.getURL("de"),
-        "http://localhost:3000/artworks/test/1234?lang=de", "Check 'de' URL");
+        "/artworks/test/1234?lang=de", "Check 'de' URL");
 });
 
 tap.test("getThumbURL", {autoend: true}, (t) => {
     const artwork = init.getArtwork();
     t.equal(artwork.getThumbURL(),
-        "http://localhost:3000/data/test/thumbs/4266906334.jpg",
+        "/data/test/thumbs/4266906334.jpg",
         "Check Thumb URL");
 });
 

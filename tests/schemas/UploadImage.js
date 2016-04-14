@@ -17,21 +17,21 @@ tap.test("getFilePath", {autoend: true}, (t) => {
 tap.test("getOriginalURL", {autoend: true}, (t) => {
     const image = init.getUploadImage();
     t.equal(image.getOriginalURL(),
-        "http://localhost:3000/data/uploads/images/4266906334.jpg",
+        "/data/uploads/images/4266906334.jpg",
         "Check UploadImage URL");
 });
 
 tap.test("getScaledURL", {autoend: true}, (t) => {
     const image = init.getUploadImage();
     t.equal(image.getScaledURL(),
-        "http://localhost:3000/data/uploads/scaled/4266906334.jpg",
+        "/data/uploads/scaled/4266906334.jpg",
         "Check Scaled URL");
 });
 
 tap.test("getThumbURL", {autoend: true}, (t) => {
     const image = init.getUploadImage();
     t.equal(image.getThumbURL(),
-        "http://localhost:3000/data/uploads/thumbs/4266906334.jpg",
+        "/data/uploads/thumbs/4266906334.jpg",
         "Check Thumb URL");
 });
 

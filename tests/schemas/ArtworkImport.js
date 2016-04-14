@@ -12,7 +12,7 @@ const ArtworkImport = init.ArtworkImport;
 tap.test("getURL", {autoend: true}, (t) => {
     const batch = init.getArtworkBatch();
     t.equal(batch.getURL(req.lang),
-        "http://localhost:3000/source/test/admin?artworks=test/started",
+        "/source/test/admin?artworks=test/started",
         "Get URL");
 });
 

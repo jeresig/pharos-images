@@ -14,9 +14,10 @@ const mongoStore = require("connect-mongo")(session);
 const swig = require("swig");
 
 const pkg = require("../package");
-const env = process.env.NODE_ENV;
 
 const db = require("../lib/db");
+const config = require("../lib/config");
+
 const viewMethods = require("./middlewares/view-methods");
 const searchURL = require("./middlewares/search-url");
 
@@ -24,7 +25,7 @@ const rootPath = path.resolve(__dirname, "..");
 
 module.exports = (app) => {
     /* istanbul ignore if */
-    if (env !== "test") {
+    if (config.NODE_ENV !== "test") {
         // A basic logger for tracking who is accessing the service
         app.use(morgan("dev"));
     }
@@ -40,7 +41,7 @@ module.exports = (app) => {
     app.set("view engine", "swig");
 
     // Enable caching of the view files by Express, but only in production
-    app.set("view cache", env === "production");
+    app.set("view cache", config.NODE_ENV === "production");
     swig.setDefaults({ cache: false });
 
     // Parses the contents of HTTP POST bodies, handling URL-encoded forms
@@ -60,7 +61,7 @@ module.exports = (app) => {
     let store;
 
     /* istanbul ignore if */
-    if (env !== "test") {
+    if (config.NODE_ENV !== "test") {
         store = new mongoStore({
             mongooseConnection: db.mongoose.connection,
             collection: "sessions",

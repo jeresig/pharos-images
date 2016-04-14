@@ -2,8 +2,9 @@
 
 const path = require("path");
 
-const staticBucket = process.env.S3_STATIC_BUCKET;
-const env = process.env.NODE_ENV;
+const config = require("../lib/config");
+
+const staticBucket = config.S3_STATIC_BUCKET;
 
 module.exports = (app) => {
     let CDN = () => (path, opts) => {
@@ -24,12 +25,14 @@ module.exports = (app) => {
 
     /* istanbul ignore if */
     if (staticBucket) {
-        if (!process.env.S3_KEY) {
-            throw new Error("ENV S3_KEY is undefined.");
+        if (!config.S3_KEY) {
+            console.error("ENV S3_KEY is undefined.");
+            process.exit(1);
         }
 
-        if (!process.env.S3_SECRET) {
-            throw new Error("ENV S3_SECRET is undefined.");
+        if (!config.S3_SECRET) {
+            console.error("ENV S3_SECRET is undefined.");
+            process.exit(1);
         }
 
         const expressCDN = require("express-cdn");
@@ -41,10 +44,10 @@ module.exports = (app) => {
             extensions: [".swig"],
             domain: staticBucket,
             bucket: staticBucket,
-            key: process.env.S3_KEY,
-            secret: process.env.S3_SECRET,
+            key: config.S3_KEY,
+            secret: config.S3_SECRET,
             ssl: false,
-            production: env === "production",
+            production: config.NODE_ENV === "production",
         });
     }
 

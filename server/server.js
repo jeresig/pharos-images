@@ -3,6 +3,8 @@
 const express = require("express");
 
 const init = require("../lib/init");
+const config = require("../lib/config");
+
 const expressInit = require("./express");
 const passport = require("./passport");
 const i18n = require("./i18n");
@@ -11,7 +13,7 @@ const routes = require("./routes");
 const cron = require("./cron");
 
 module.exports = (callback) => {
-    const port = process.env.PORT || 3000;
+    const port = config.PORT;
     const app = express();
 
     init((err) => {
@@ -37,7 +39,7 @@ module.exports = (callback) => {
         });
 
         /* istanbul ignore if */
-        if (process.env.NODE_ENV !== "test") {
+        if (config.NODE_ENV !== "test") {
             // Start the app by listening on <port>
             console.log(`PORT: ${port}`);
 

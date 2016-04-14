@@ -8,26 +8,17 @@ const imageinfo = require("imageinfo");
 let gm = require("gm");
 const async = require("async");
 
-// Add the ability to provide an explicit bath to the GM binary
-/* istanbul ignore if */
-if (process.env.GM_PATH) {
-    gm = gm.subClass({appPath: process.env.GM_PATH});
-}
-
-/* istanbul ignore if */
-if (!process.env.THUMB_SIZE) {
-    console.error("THUMB_SIZE must be specified.");
-}
-
-/* istanbul ignore if */
-if (!process.env.SCALED_SIZE) {
-    console.error("SCALED_SIZE must be specified.");
-}
-
 const models = require("../lib/models");
 const urls = require("../lib/urls");
 const db = require("../lib/db");
 const similar = require("../lib/similar");
+const config = require("../lib/config");
+
+// Add the ability to provide an explicit bath to the GM binary
+/* istanbul ignore if */
+if (config.GM_PATH) {
+    gm = gm.subClass({appPath: config.GM_PATH});
+}
 
 const Image = new db.schema({
     // An ID for the image in the form: SOURCE/IMAGENAME
@@ -440,7 +431,7 @@ const images = {
     makeThumb(baseDir, fileName, callback) {
         const imageFile = path.resolve(baseDir, "images", fileName);
         const thumbFile = path.resolve(baseDir, "thumbs", fileName);
-        const size = this.parseSize(process.env.THUMB_SIZE);
+        const size = this.parseSize(config.THUMB_SIZE);
 
         this.convert(fs.createReadStream(imageFile), thumbFile, (img) => {
             return img.resize(size.width, size.height);
@@ -450,7 +441,7 @@ const images = {
     makeScaled(baseDir, fileName, callback) {
         const imageFile = path.resolve(baseDir, "images", fileName);
         const scaledFile = path.resolve(baseDir, "scaled", fileName);
-        const scaled = this.parseSize(process.env.SCALED_SIZE);
+        const scaled = this.parseSize(config.SCALED_SIZE);
 
         this.convert(fs.createReadStream(imageFile), scaledFile, (img) => {
             return img.resize(scaled.width, scaled.height, ">");

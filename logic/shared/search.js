@@ -2,6 +2,7 @@
 
 const models = require("../../lib/models");
 const urls = require("../../lib/urls");
+const config = require("../../lib/config");
 
 const facets = require("./facets");
 const queries = require("./queries");
@@ -153,8 +154,8 @@ module.exports = (req, res, tmplParams) => {
             breadcrumbs,
             sources: models("Source").getSources(),
             types: typeData,
-            minDate: process.env.DEFAULT_START_DATE || "",
-            maxDate: process.env.DEFAULT_END_DATE || "",
+            minDate: config.DEFAULT_START_DATE,
+            maxDate: config.DEFAULT_END_DATE,
             queries,
             sorts: sortData,
             facets: facetData,

@@ -4,6 +4,7 @@ const async = require("async");
 
 const models = require("../lib/models");
 const db = require("../lib/db");
+const config = require("../lib/config");
 
 const Import = new db.schema({
     // An ID for the import, based on the source and time
@@ -142,7 +143,7 @@ Import.statics = {
                     // We now load the complete batch with all fields intact
                     this.findById(batch._id, (err, batch) => {
                         /* istanbul ignore if */
-                        if (process.env.NODE_ENV !== "test") {
+                        if (config.NODE_ENV !== "test") {
                             console.log(`Advancing ${batch._id} to ` +
                                 `${batch.getNextState().id}...`);
                         }

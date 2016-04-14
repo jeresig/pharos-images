@@ -7,6 +7,7 @@ const types = require("./types");
 
 const models = require("../../lib/models");
 const urls = require("../../lib/urls");
+const config = require("../../lib/config");
 
 // NOTE(jeresig): There has got to be a better way to handle this.
 const dateMatch = (query) => {
@@ -130,13 +131,13 @@ module.exports = {
 
     rows: {
         value: (req) => parseFloat(req.query.rows),
-        defaultValue: () => parseFloat(process.env.DEFAULT_ROWS || "100"),
+        defaultValue: () => parseFloat(config.DEFAULT_ROWS),
         secondary: true,
     },
 
     sort: {
         value: (req) => req.query.sort,
-        defaultValue: () => process.env.DEFAULT_SORT || "dateAsc",
+        defaultValue: () => config.DEFAULT_SORT,
         secondary: true,
     },
 

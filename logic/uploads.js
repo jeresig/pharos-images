@@ -9,6 +9,7 @@ const request = require("request");
 const formidable = require("formidable");
 
 const models = require("../lib/models");
+const config = require("../lib/config");
 
 // The maximum number of times to try downloading an image
 const MAX_ATTEMPTS = 3;
@@ -112,7 +113,7 @@ module.exports = (app) => {
         fileUpload(req, res, next) {
             const form = new formidable.IncomingForm();
             form.encoding = "utf-8";
-            form.maxFieldsSize = process.env.MAX_UPLOAD_SIZE;
+            form.maxFieldsSize = config.MAX_UPLOAD_SIZE;
 
             form.parse(req, (err, fields, files) => {
                 /* istanbul ignore if */

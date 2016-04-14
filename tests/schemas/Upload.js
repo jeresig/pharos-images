@@ -8,16 +8,16 @@ const req = init.req;
 tap.test("getURL", {autoend: true}, (t) => {
     const upload = init.getUpload();
     t.equal(upload.getURL("en"),
-        "http://localhost:3000/uploads/4266906334", "Check 'en' URL");
+        "/uploads/4266906334", "Check 'en' URL");
 
     t.equal(upload.getURL("de"),
-        "http://localhost:3000/uploads/4266906334?lang=de", "Check 'de' URL");
+        "/uploads/4266906334?lang=de", "Check 'de' URL");
 });
 
 tap.test("getThumbURL", {autoend: true}, (t) => {
     const upload = init.getUpload();
     t.equal(upload.getThumbURL(),
-        "http://localhost:3000/data/uploads/thumbs/4266906334.jpg",
+        "/data/uploads/thumbs/4266906334.jpg",
         "Check Thumb URL");
 });
 

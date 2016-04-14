@@ -25,8 +25,7 @@ tap.test("Upload New Image", (t) => {
     }, (err, res) => {
         t.error(err, "Error should be empty.");
         t.equal(res.statusCode, 302);
-        t.match(res.headers.location,
-            "http://localhost:3000/uploads/2508884691");
+        t.match(res.headers.location, "/uploads/2508884691");
         t.end();
     });
 });
@@ -48,8 +47,7 @@ tap.test("Upload Existing Image", (t) => {
     }, (err, res) => {
         t.error(err, "Error should be empty.");
         t.equal(res.statusCode, 302);
-        t.match(res.headers.location,
-            "http://localhost:3000/uploads/4266906334");
+        t.match(res.headers.location, "/uploads/4266906334");
         t.end();
     });
 });

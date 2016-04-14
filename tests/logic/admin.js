@@ -233,8 +233,7 @@ tap.test("uploadData: File Error", (t) => {
         }, (err, res) => {
             t.error(err, "Error should be empty.");
             t.equal(res.statusCode, 302);
-            t.match(res.headers.location,
-                "http://localhost:3000/source/test/admin");
+            t.match(res.headers.location, "/source/test/admin");
             t.end();
         });
     });
@@ -258,8 +257,7 @@ tap.test("uploadData: Default File", (t) => {
         }, (err, res) => {
             t.error(err, "Error should be empty.");
             t.equal(res.statusCode, 302);
-            t.match(res.headers.location,
-                "http://localhost:3000/source/test/admin");
+            t.match(res.headers.location, "/source/test/admin");
             t.end();
         });
     });
@@ -308,8 +306,7 @@ tap.test("uploadImages: Empty Zip", (t) => {
         }, (err, res) => {
             t.error(err, "Error should be empty.");
             t.equal(res.statusCode, 302);
-            t.match(res.headers.location,
-                "http://localhost:3000/source/test/admin");
+            t.match(res.headers.location, "/source/test/admin");
             t.end();
         });
     });
@@ -333,8 +330,7 @@ tap.test("uploadImages: Corrupted Zip", (t) => {
         }, (err, res) => {
             t.error(err, "Error should be empty.");
             t.equal(res.statusCode, 302);
-            t.match(res.headers.location,
-                "http://localhost:3000/source/test/admin");
+            t.match(res.headers.location, "/source/test/admin");
             t.end();
         });
     });
@@ -358,8 +354,7 @@ tap.test("uploadImages: Normal Zip", (t) => {
         }, (err, res) => {
             t.error(err, "Error should be empty.");
             t.equal(res.statusCode, 302);
-            t.match(res.headers.location,
-                "http://localhost:3000/source/test/admin");
+            t.match(res.headers.location, "/source/test/admin");
             t.end();
         });
     });

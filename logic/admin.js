@@ -9,6 +9,7 @@ const passport = require("passport");
 
 const models = require("../lib/models");
 const urls = require("../lib/urls");
+const config = require("../lib/config");
 
 module.exports = function(app) {
     const ImageImport = models("ImageImport");
@@ -151,7 +152,7 @@ module.exports = function(app) {
 
             const form = new formidable.IncomingForm();
             form.encoding = "utf-8";
-            form.maxFieldsSize = process.env.MAX_UPLOAD_SIZE;
+            form.maxFieldsSize = config.MAX_UPLOAD_SIZE;
 
             form.parse(req, (err, fields, files) => {
                 /* istanbul ignore if */
@@ -191,7 +192,7 @@ module.exports = function(app) {
             const form = new formidable.IncomingForm();
             form.encoding = "utf-8";
             form.multiples = true;
-            form.maxFieldsSize = process.env.MAX_UPLOAD_SIZE;
+            form.maxFieldsSize = config.MAX_UPLOAD_SIZE;
 
             form.parse(req, (err, fields, files) => {
                 /* istanbul ignore if */

@@ -9,6 +9,7 @@ const unzip = require("unzip2");
 
 const models = require("../lib/models");
 const urls = require("../lib/urls");
+const config = require("../lib/config");
 
 const Import = require("./Import");
 
@@ -109,7 +110,7 @@ Object.assign(ImageImport.methods, {
                 }
 
                 /* istanbul ignore if */
-                if (process.env.NODE_ENV !== "test") {
+                if (config.NODE_ENV !== "test") {
                     console.log("Extracting:", path.basename(outFileName));
                 }
 
@@ -172,7 +173,7 @@ Object.assign(ImageImport.methods, {
 
     addResult(file, callback) {
         /* istanbul ignore if */
-        if (process.env.NODE_ENV !== "test") {
+        if (config.NODE_ENV !== "test") {
             console.log("Adding Image:", path.basename(file));
         }
 

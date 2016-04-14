@@ -10,10 +10,10 @@ const Source = init.Source;
 tap.test("getURL", {autoend: true}, (t) => {
     const source = init.getSource();
     t.equal(source.getURL("en"),
-        "http://localhost:3000/source/test", "Check 'en' URL");
+        "/source/test", "Check 'en' URL");
 
     t.equal(source.getURL("de"),
-        "http://localhost:3000/source/test?lang=de", "Check 'de' URL");
+        "/source/test?lang=de", "Check 'de' URL");
 });
 
 tap.test("getDirBase", {autoend: true}, (t) => {

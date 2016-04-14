@@ -1,11 +1,5 @@
 "use strict";
 
-// Some dummy ENV variables used for testing
-process.env.PASTEC_URL = "http://localhost:8000/";
-process.env.THUMB_SIZE = "220x220";
-process.env.SCALED_SIZE = "440x440";
-process.env.BASE_DATA_DIR = process.cwd();
-
 const fs = require("fs");
 const path = require("path");
 
@@ -18,6 +12,7 @@ const iconv = require("iconv-lite");
 // Force ICONV to pre-load its encodings
 iconv.getCodec("utf8");
 
+const config = require("../lib/config");
 const models = require("../lib/models");
 const similarity = require("../lib/similar");
 const server = require("../server/server");
@@ -31,6 +26,8 @@ const ArtworkImport = models("ArtworkImport");
 const UploadImage = models("UploadImage");
 const Upload = models("Upload");
 const User = models("User");
+
+config.BASE_DATA_DIR = process.cwd();
 
 // Data used for testing
 let source;

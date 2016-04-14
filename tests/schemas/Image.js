@@ -18,19 +18,19 @@ tap.test("getFilePath", {autoend: true}, (t) => {
 tap.test("getOriginalURL", {autoend: true}, (t) => {
     const image = init.getImage();
     t.equal(image.getOriginalURL(),
-        "http://localhost:3000/data/test/images/4266906334.jpg", "Check Image URL");
+        "/data/test/images/4266906334.jpg", "Check Image URL");
 });
 
 tap.test("getScaledURL", {autoend: true}, (t) => {
     const image = init.getImage();
     t.equal(image.getScaledURL(),
-        "http://localhost:3000/data/test/scaled/4266906334.jpg", "Check Scaled URL");
+        "/data/test/scaled/4266906334.jpg", "Check Scaled URL");
 });
 
 tap.test("getThumbURL", {autoend: true}, (t) => {
     const image = init.getImage();
     t.equal(image.getThumbURL(),
-        "http://localhost:3000/data/test/thumbs/4266906334.jpg", "Check Thumb URL");
+        "/data/test/thumbs/4266906334.jpg", "Check Thumb URL");
 });
 
 tap.test("getSource", {autoend: true}, (t) => {
