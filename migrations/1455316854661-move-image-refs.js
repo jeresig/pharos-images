@@ -1,11 +1,11 @@
 "use strict";
 
-const core = require("../core");
-const Artwork = core.models.Artwork;
+const init = require("../lib/init");
+const models = require("../lib/models");
 
 exports.up = (next) => {
-    core.init(() => {
-        Artwork.find({}, {}, {timeout: true}).stream()
+    init(() => {
+        models("Artwork").find({}, {}, {timeout: true}).stream()
             .on("data", function(artwork) {
                 this.pause();
 

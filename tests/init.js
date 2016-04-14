@@ -18,18 +18,19 @@ const iconv = require("iconv-lite");
 // Force ICONV to pre-load its encodings
 iconv.getCodec("utf8");
 
-const core = require("../core");
+const models = require("../lib/models");
+const similarity = require("../lib/similar");
 const server = require("../server/server");
 
 // Models used for testing
-const Image = core.models.Image;
-const Artwork = core.models.Artwork;
-const Source = core.models.Source;
-const ImageImport = core.models.ImageImport;
-const ArtworkImport = core.models.ArtworkImport;
-const UploadImage = core.models.UploadImage;
-const Upload = core.models.Upload;
-const User = core.models.User;
+const Image = models("Image");
+const Artwork = models("Artwork");
+const Source = models("Source");
+const ImageImport = models("ImageImport");
+const ArtworkImport = models("ArtworkImport");
+const UploadImage = models("UploadImage");
+const Upload = models("Upload");
+const User = models("User");
 
 // Data used for testing
 let source;
@@ -802,21 +803,21 @@ const bindStubs = () => {
         process.nextTick(() => callback(null, matches[0]));
     });
 
-    sandbox.stub(core.similar, "similar", (hash, callback) => {
+    sandbox.stub(similarity, "similar", (hash, callback) => {
         process.nextTick(() => callback(null, similar[hash]));
     });
 
-    sandbox.stub(core.similar, "fileSimilar", (file, callback) => {
+    sandbox.stub(similarity, "fileSimilar", (file, callback) => {
         // Cheat and just get the hash from the file name
         const hash = path.basename(file).replace(/\..*$/, "");
         process.nextTick(() => callback(null, similar[hash]));
     });
 
-    sandbox.stub(core.similar, "idIndexed", (hash, callback) => {
+    sandbox.stub(similarity, "idIndexed", (hash, callback) => {
         process.nextTick(() => callback(null, !!similar[hash]));
     });
 
-    sandbox.stub(core.similar, "add", (file, hash, callback) => {
+    sandbox.stub(similarity, "add", (file, hash, callback) => {
         if (hash === "99998") {
             return process.nextTick(() => callback({
                 type: "IMAGE_SIZE_TOO_SMALL",
@@ -917,6 +918,5 @@ module.exports = {
     User,
     Source,
     stub: sinon.stub,
-    core,
     init,
 };

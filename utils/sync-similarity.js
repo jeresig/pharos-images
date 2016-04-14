@@ -1,10 +1,11 @@
 "use strict";
 
-const core = require("../core");
+const init = require("../lib/init");
+const models = require("../lib/models");
 
-core.init(() => {
+init(() => {
     // Models
-    const Artwork = core.models.Artwork;
+    const Artwork = models("Artwork");
 
     console.log("Finding artwork records...");
 

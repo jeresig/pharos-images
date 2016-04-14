@@ -1,69 +1,69 @@
 "use strict";
 
-module.exports = (core) => {
-    const YearRange = new core.db.schema({
-        // An ID for the year range, computed from the original + start/end
-        // properties before validation.
-        _id: String,
+const db = require("../lib/db");
 
-        // The source string from which the year range was generated
-        original: String,
+const YearRange = new db.schema({
+    // An ID for the year range, computed from the original + start/end
+    // properties before validation.
+    _id: String,
 
-        // A label associated with the year range (e.g. "modified")
-        label: String,
+    // The source string from which the year range was generated
+    original: String,
 
-        // If the date should be treated as "circa"
-        circa: Boolean,
+    // A label associated with the year range (e.g. "modified")
+    label: String,
 
-        // The date range start and end
-        start: {type: Number, es_indexed: true},
-        start_ca: Boolean,
-        end: {type: Number, es_indexed: true},
-        end_ca: Boolean,
+    // If the date should be treated as "circa"
+    circa: Boolean,
 
-        // If the end date is the current day
-        current: {type: Boolean, es_indexed: true},
+    // The date range start and end
+    start: {type: Number, es_indexed: true},
+    start_ca: Boolean,
+    end: {type: Number, es_indexed: true},
+    end_ca: Boolean,
 
-        // A generated list of years which this year range maps to. This is
-        // indexed in Elasticsearch for things like histograms and
-        // aggregations.
-        years: [{type: Number, es_indexed: true}],
-    });
+    // If the end date is the current day
+    current: {type: Boolean, es_indexed: true},
 
-    YearRange.methods = {
-        toJSON() {
-            const obj = this.toObject();
-            delete obj.original;
-            delete obj.years;
-            return obj;
-        },
-    };
+    // A generated list of years which this year range maps to. This is
+    // indexed in Elasticsearch for things like histograms and
+    // aggregations.
+    years: [{type: Number, es_indexed: true}],
+});
 
-    // We generate a list of years in which the artwork exists, in order
-    // to improve querying inside Elasticsearch
-    YearRange.pre("validate", function(next) {
-        if (!this.start || !this.end || this.start > this.end) {
-            return next();
-        }
-
-        // NOTE(jeresig): This will get much better once generators
-        // are available in Node!
-        const years = [];
-
-        for (let year = this.start; year <= this.end; year += 1) {
-            years.push(year);
-        }
-
-        this.years = years;
-
-        next();
-    });
-
-    // Dynamically generate the _id attribute
-    YearRange.pre("validate", function(next) {
-        this._id = this.original || [this.start, this.end].join(",");
-        next();
-    });
-
-    return YearRange;
+YearRange.methods = {
+    toJSON() {
+        const obj = this.toObject();
+        delete obj.original;
+        delete obj.years;
+        return obj;
+    },
 };
+
+// We generate a list of years in which the artwork exists, in order
+// to improve querying inside Elasticsearch
+YearRange.pre("validate", function(next) {
+    if (!this.start || !this.end || this.start > this.end) {
+        return next();
+    }
+
+    // NOTE(jeresig): This will get much better once generators
+    // are available in Node!
+    const years = [];
+
+    for (let year = this.start; year <= this.end; year += 1) {
+        years.push(year);
+    }
+
+    this.years = years;
+
+    next();
+});
+
+// Dynamically generate the _id attribute
+YearRange.pre("validate", function(next) {
+    this._id = this.original || [this.start, this.end].join(",");
+    next();
+});
+
+module.exports = YearRange;

@@ -8,15 +8,17 @@ const async = require("async");
 const request = require("request");
 const formidable = require("formidable");
 
+const models = require("../lib/models");
+
 // The maximum number of times to try downloading an image
 const MAX_ATTEMPTS = 3;
 
 // How long to wait, in milliseconds, for the download
 const DOWNLOAD_TIMEOUT = 10000;
 
-module.exports = (core, app) => {
-    const Upload = core.models.Upload;
-    const UploadImage = core.models.UploadImage;
+module.exports = (app) => {
+    const Upload = models("Upload");
+    const UploadImage = models("UploadImage");
 
     const genTmpFile = () => path.join(os.tmpdir(),
         (new Date).getTime().toString());

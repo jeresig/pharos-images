@@ -4,10 +4,12 @@ const async = require("async");
 
 const cache = require("../server/middlewares/cache");
 
-module.exports = (core, app) => {
-    const Source = core.models.Source;
-    const Artwork = core.models.Artwork;
-    const Image = core.models.Image;
+const models = require("../lib/models");
+
+module.exports = (app) => {
+    const Source = models("Source");
+    const Artwork = models("Artwork");
+    const Image = models("Image");
 
     return {
         index(req, res, next) {

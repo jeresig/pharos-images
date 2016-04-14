@@ -3,9 +3,10 @@
 const rl = require("readline-sync");
 const genPassword = require("password-generator");
 
-const core = require("../core");
+const init = require("../lib/init");
+const models = require("../lib/models");
 
-core.init(() => {
+init(() => {
     const email = rl.question("Email: ");
     const password = rl.question("Password [auto-gen]: ", {
         defaultInput: genPassword(),
@@ -13,7 +14,8 @@ core.init(() => {
     });
     const source = rl.question("Source Admin: ");
 
-    const user = new core.models.User({
+    const User = models("User");
+    const user = new User({
         email,
         password,
         sourceAdmin: source ? [source] : [],

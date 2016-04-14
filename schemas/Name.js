@@ -2,82 +2,82 @@
 
 const yearRange = require("yearrange");
 
-module.exports = (core) => {
-    const YearRange = require("./YearRange")(core);
+const db = require("../lib/db");
 
-    const Name = new core.db.schema({
-        // An ID for the name, computed from the original + name properties
-        // before validation.
-        _id: String,
+const YearRange = require("./YearRange");
 
-        // The original string from which the rest of the values were derived
-        original: String,
+const Name = new db.schema({
+    // An ID for the name, computed from the original + name properties
+    // before validation.
+    _id: String,
 
-        // The locale for the string (e.g. 'en', 'ja')
-        locale: String,
+    // The original string from which the rest of the values were derived
+    original: String,
 
-        // Any sort of name parsing options
-        settings: core.db.schema.Types.Mixed,
+    // The locale for the string (e.g. 'en', 'ja')
+    locale: String,
 
-        // The English form of the full artist's name
-        name: {
-            type: String,
-            es_indexed: true,
-            es_type: "multi_field",
-            // A raw name to use for building aggregations in Elasticsearch
-            es_fields: {
-                name: {type: "string", index: "analyzed"},
-                raw: {type: "string", index: "not_analyzed"},
-            },
-            required: true,
+    // Any sort of name parsing options
+    settings: db.schema.Types.Mixed,
+
+    // The English form of the full artist's name
+    name: {
+        type: String,
+        es_indexed: true,
+        es_type: "multi_field",
+        // A raw name to use for building aggregations in Elasticsearch
+        es_fields: {
+            name: {type: "string", index: "analyzed"},
+            raw: {type: "string", index: "not_analyzed"},
         },
+        required: true,
+    },
 
-        // Same but in ascii (for example: Hokushō becomes Hokushoo)
-        ascii: String,
+    // Same but in ascii (for example: Hokushō becomes Hokushoo)
+    ascii: String,
 
-        // Same but with diacritics stripped (Hokushō becomes Hokusho)
-        plain: {type: String, es_indexed: true},
+    // Same but with diacritics stripped (Hokushō becomes Hokusho)
+    plain: {type: String, es_indexed: true},
 
-        // The English form of the middle name
-        middle: String,
+    // The English form of the middle name
+    middle: String,
 
-        // The English form of the surname
-        surname: String,
+    // The English form of the surname
+    surname: String,
 
-        // A number representing the generation of the artist
-        generation: Number,
+    // A number representing the generation of the artist
+    generation: Number,
 
-        // A pseudonym for the person
-        pseudonym: String,
+    // A pseudonym for the person
+    pseudonym: String,
 
-        // Is the artist unknown/unattributed
-        unknown: Boolean,
+    // Is the artist unknown/unattributed
+    unknown: Boolean,
 
-        // Is this artist part of a school
-        school: Boolean,
+    // Is this artist part of a school
+    school: Boolean,
 
-        // Was this work done in the style of, or after, an artist
-        after: Boolean,
+    // Was this work done in the style of, or after, an artist
+    after: Boolean,
 
-        // Is this work attributed to an artist
-        attributed: Boolean,
+    // Is this work attributed to an artist
+    attributed: Boolean,
 
-        // Date when the name was used
-        dates: {
-            type: [YearRange],
-            convert: (obj) => typeof obj === "string" ?
-                yearRange.parse(obj) : obj,
-            validateArray: (val) => val.start || val.end,
-            validationMsg: (req) => req.gettext("Dates must have a start or " +
-                "end specified."),
-        },
-    });
+    // Date when the name was used
+    dates: {
+        type: [YearRange],
+        convert: (obj) => typeof obj === "string" ?
+            yearRange.parse(obj) : obj,
+        validateArray: (val) => val.start || val.end,
+        validationMsg: (req) => req.gettext("Dates must have a start or " +
+            "end specified."),
+    },
+});
 
-    // Dynamically generate the _id attribute
-    Name.pre("validate", function(next) {
-        this._id = this.original || this.name;
-        next();
-    });
+// Dynamically generate the _id attribute
+Name.pre("validate", function(next) {
+    this._id = this.original || this.name;
+    next();
+});
 
-    return Name;
-};
+module.exports = Name;

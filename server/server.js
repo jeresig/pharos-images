@@ -2,7 +2,7 @@
 
 const express = require("express");
 
-const core = require("../core");
+const init = require("../lib/init");
 const expressInit = require("./express");
 const passport = require("./passport");
 const i18n = require("./i18n");
@@ -14,18 +14,18 @@ module.exports = (callback) => {
     const port = process.env.PORT || 3000;
     const app = express();
 
-    core.init((err) => {
+    init((err) => {
         /* istanbul ignore if */
         if (err) {
             return callback(err);
         }
 
         // Load in the main server logic
-        expressInit(core, app);
-        passport(core, app);
-        i18n(core, app);
-        cdn(core, app);
-        routes(core, app);
+        expressInit(app);
+        passport(app);
+        i18n(app);
+        cdn(app);
+        routes(app);
 
         const server = app.listen(port, () => {
             callback(null, server);
@@ -55,7 +55,7 @@ module.exports = (callback) => {
                 }
             });
 
-            cron(core).start();
+            cron.start();
         }
     });
 };

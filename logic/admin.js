@@ -7,9 +7,12 @@ const formidable = require("formidable");
 const jdp = require("jsondiffpatch");
 const passport = require("passport");
 
-module.exports = function(core, app) {
-    const ImageImport = core.models.ImageImport;
-    const ArtworkImport = core.models.ArtworkImport;
+const models = require("../lib/models");
+const urls = require("../lib/urls");
+
+module.exports = function(app) {
+    const ImageImport = models("ImageImport");
+    const ArtworkImport = models("ArtworkImport");
 
     const importArtworks = (req, res) => {
         const batchState = (batch) => batch.getCurState().name(req);
@@ -48,6 +51,8 @@ module.exports = function(core, app) {
     };
 
     const importImages = (req, res) => {
+        const Image = models("Image");
+
         const batchState = (batch) => batch.getCurState().name(req);
         const batchError = (err) => ImageImport.getError(req, err);
 
@@ -65,7 +70,7 @@ module.exports = function(core, app) {
                 results.slice(0, 8);
 
             async.eachLimit(toPopulate, 4, (result, callback) => {
-                core.models.Image.findById(result.model, (err, image) => {
+                Image.findById(result.model, (err, image) => {
                     if (image) {
                         result.model = image;
                     }
@@ -238,7 +243,7 @@ module.exports = function(core, app) {
                 passport.authenticate("local", () => {
                     if (!req.user) {
                         req.session.redirectTo = req.originalUrl;
-                        res.redirect(core.urls.gen(req.lang, "/login"));
+                        res.redirect(urls.gen(req.lang, "/login"));
                     } else if (!req.user.siteAdmin && req.user.sourceAdmin
                             .indexOf(req.params.source) < 0) {
                         next(new Error(req.gettext("Authorization required.")));

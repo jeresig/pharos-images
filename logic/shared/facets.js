@@ -4,7 +4,9 @@ const pd = require("parse-dimensions");
 
 const types = require("./types");
 
-module.exports = (core) => ({
+const models = require("../../lib/models");
+
+module.exports = {
     source: {
         agg: {
             terms: {
@@ -13,8 +15,7 @@ module.exports = (core) => ({
         },
         name: (req) => req.gettext("Source"),
         url: (req, bucket) => req.searchURL({source: bucket.key}),
-        text: (req, bucket) =>
-            core.models.Source.getSource(bucket.key).name,
+        text: (req, bucket) => models("Source").getSource(bucket.key).name,
     },
 
     type: {
@@ -167,4 +168,4 @@ module.exports = (core) => ({
             });
         },
     },
-});
+};

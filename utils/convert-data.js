@@ -5,7 +5,8 @@ const path = require("path");
 
 const ArgumentParser = require("argparse").ArgumentParser;
 
-const core = require("../core");
+const init = require("../lib/init");
+const models = require("../lib/models");
 
 const argparser = new ArgumentParser({
     description: "Parse a data file, given the specified converter, and" +
@@ -19,8 +20,8 @@ argparser.addArgument(["source"], {
 const args = argparser.parseArgs();
 const sources = require("../config/data.sources.json");
 
-core.init(() => {
-    const source = core.models.Source.getSource(args.source);
+init(() => {
+    const source = models("Source").getSource(args.source);
     const options = sources.find((item) => item.source === args.source);
 
     if (!options) {

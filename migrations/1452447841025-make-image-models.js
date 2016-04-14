@@ -1,15 +1,11 @@
 "use strict";
 
 const fs = require("fs");
-const path = require("path");
 
 const async = require("async");
 
-const core = require("../core");
-const Artwork = core.models.Artwork;
-const Image = core.models.Image;
-const ArtworkImport = core.models.ArtworkImport;
-const ImageImport = core.models.ImageImport;
+const init = require("../lib/init");
+const models = require("../lib/models");
 
 const sources = require("../config/data.sources.json");
 
@@ -18,10 +14,13 @@ const artworkBatches = {};
 const imageBatches = {};
 
 const genBatches = (callback) => {
+    const ArtworkImport = models("ArtworkImport");
+    const ImageImport = models("ImageImport");
+
     console.log("Generating Batches...");
 
-    sources.forEach((source) => {
-        source = source.source;
+    sources.forEach((sourceObj) => {
+        const source = sourceObj.source;
 
         artworkBatches[source] = new ArtworkImport({
             _id: `${source}/${Date.now()}`,
@@ -47,8 +46,8 @@ const genBatches = (callback) => {
 const saveBatches = (callback) => {
     console.log("Saving batches...");
 
-    async.eachLimit(sources, 1, (source, callback) => {
-        source = source.source;
+    async.eachLimit(sources, 1, (sourceObj, callback) => {
+        const source = sourceObj.source;
 
         artworkBatches[source].save((err) => {
             if (err) {
@@ -74,9 +73,10 @@ const genHashes = (callback) => {
         console.log(`Processing ${source.name}...`);
 
         async.eachLimit(images, 2, (fileName, callback) => {
+            /*
             const file = path.resolve(source.imageDir, fileName);
 
-            core.images.hashImage(file, (err, hash) => {
+            images.hashImage(file, (err, hash) => {
                 if (err) {
                     console.error("Error hashing:", file);
                     return callback();
@@ -88,12 +88,14 @@ const genHashes = (callback) => {
                 };
                 callback();
             });
+            */
+            callback();
         }, callback);
     }, callback);
 };
 
 const loadImages = (callback) => {
-    Artwork.find({}, {}, {timeout: true}).stream()
+    models("Artwork").find({}, {}, {timeout: true}).stream()
         .on("data", function(artwork) {
             this.pause();
 
@@ -177,7 +179,7 @@ const loadImages = (callback) => {
 };
 
 exports.up = (next) => {
-    core.init(() => {
+    init(() => {
         genBatches(() =>
             genHashes(() =>
                 loadImages(() =>

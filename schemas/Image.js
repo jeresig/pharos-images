@@ -24,369 +24,373 @@ if (!process.env.SCALED_SIZE) {
     console.error("SCALED_SIZE must be specified.");
 }
 
-module.exports = (core) => {
-    const Image = new core.db.schema({
-        // An ID for the image in the form: SOURCE/IMAGENAME
-        _id: String,
+const models = require("../lib/models");
+const urls = require("../lib/urls");
+const db = require("../lib/db");
+const similar = require("../lib/similar");
 
-        // The date that this item was created
-        created: {
-            type: Date,
-            default: Date.now,
-        },
+const Image = new db.schema({
+    // An ID for the image in the form: SOURCE/IMAGENAME
+    _id: String,
 
-        // The date that this item was updated
-        modified: {
-            type: Date,
-        },
+    // The date that this item was created
+    created: {
+        type: Date,
+        default: Date.now,
+    },
 
-        // The most recent batch in which the image was uploaded
-        // NOTE(jeresig): This is not required as the image could have
-        // been uploaded for use in a search.
-        batch: {
-            type: String,
-            ref: "ImageImport",
-        },
+    // The date that this item was updated
+    modified: {
+        type: Date,
+    },
 
-        // The source that the image is associated with
-        source: {
+    // The most recent batch in which the image was uploaded
+    // NOTE(jeresig): This is not required as the image could have
+    // been uploaded for use in a search.
+    batch: {
+        type: String,
+        ref: "ImageImport",
+    },
+
+    // The source that the image is associated with
+    source: {
+        type: String,
+        required: true,
+    },
+
+    // TODO: Migrate away from this.
+    imageName: {
+        type: String,
+    },
+
+    // The name of the original file (e.g. `foo.jpg`)
+    fileName: {
+        type: String,
+        required: true,
+    },
+
+    // Full URL of where the image came.
+    url: String,
+
+    // The hashed contents of the image
+    hash: {
+        type: String,
+        required: true,
+    },
+
+    // The width of the image
+    width: {
+        type: Number,
+        required: true,
+        min: 1,
+    },
+
+    // The height of the image
+    height: {
+        type: Number,
+        required: true,
+        min: 1,
+    },
+
+    // Keep track of if the image needs to index its image similarity
+    needsSimilarIndex: {
+        type: Boolean,
+        default: false,
+    },
+
+    // Keep track of if the image needs to update its image similarity
+    needsSimilarUpdate: {
+        type: Boolean,
+        default: false,
+    },
+
+    // Similar images (as determined by image similarity)
+    similarImages: [{
+        // The ID of the visually similar image
+        _id: {
             type: String,
             required: true,
         },
 
-        // TODO: Migrate away from this.
-        imageName: {
-            type: String,
-        },
-
-        // The name of the original file (e.g. `foo.jpg`)
-        fileName: {
-            type: String,
-            required: true,
-        },
-
-        // Full URL of where the image came.
-        url: String,
-
-        // The hashed contents of the image
-        hash: {
-            type: String,
-            required: true,
-        },
-
-        // The width of the image
-        width: {
+        // The similarity score between the images
+        score: {
             type: Number,
             required: true,
             min: 1,
         },
+    }],
+});
 
-        // The height of the image
-        height: {
-            type: Number,
-            required: true,
-            min: 1,
-        },
+Image.methods = {
+    getFilePath() {
+        return path.resolve(this.getSource().getDirBase(),
+            `images/${this.hash}.jpg`);
+    },
 
-        // Keep track of if the image needs to index its image similarity
-        needsSimilarIndex: {
-            type: Boolean,
-            default: false,
-        },
+    getOriginalURL() {
+        return urls.genData(
+            `/${this.source}/images/${this.hash}.jpg`);
+    },
 
-        // Keep track of if the image needs to update its image similarity
-        needsSimilarUpdate: {
-            type: Boolean,
-            default: false,
-        },
+    getScaledURL() {
+        return urls.genData(
+            `/${this.source}/scaled/${this.hash}.jpg`);
+    },
 
-        // Similar images (as determined by image similarity)
-        similarImages: [{
-            // The ID of the visually similar image
-            _id: {
-                type: String,
-                required: true,
-            },
+    getThumbURL() {
+        return urls.genData(
+            `/${this.source}/thumbs/${this.hash}.jpg`);
+    },
 
-            // The similarity score between the images
-            score: {
-                type: Number,
-                required: true,
-                min: 1,
-            },
-        }],
-    });
+    getSource() {
+        return models("Source").getSource(this.source);
+    },
 
-    Image.methods = {
-        getFilePath() {
-            return path.resolve(this.getSource().getDirBase(),
-                `images/${this.hash}.jpg`);
-        },
+    relatedArtworks(callback) {
+        models("Artwork").find({images: this._id}, callback);
+    },
 
-        getOriginalURL() {
-            return core.urls.genData(
-                `/${this.source}/images/${this.hash}.jpg`);
-        },
+    canIndex() {
+        return this.width >= 150 && this.height >= 150;
+    },
 
-        getScaledURL() {
-            return core.urls.genData(
-                `/${this.source}/scaled/${this.hash}.jpg`);
-        },
+    updateSimilarity(callback) {
+        // Skip small images
+        if (!this.canIndex()) {
+            return process.nextTick(callback);
+        }
 
-        getThumbURL() {
-            return core.urls.genData(
-                `/${this.source}/thumbs/${this.hash}.jpg`);
-        },
-
-        getSource() {
-            return core.models.Source.getSource(this.source);
-        },
-
-        relatedArtworks(callback) {
-            core.models.Artwork.find({images: this._id}, callback);
-        },
-
-        canIndex() {
-            return this.width >= 150 && this.height >= 150;
-        },
-
-        updateSimilarity(callback) {
-            // Skip small images
-            if (!this.canIndex()) {
-                return process.nextTick(callback);
+        similar.similar(this.hash, (err, matches) => {
+            if (err || !matches) {
+                return callback(err);
             }
 
-            core.similar.similar(this.hash, (err, matches) => {
-                if (err || !matches) {
-                    return callback(err);
+            async.mapLimit(matches, 1, (match, callback) => {
+                // Skip matches for the image itself
+                if (match.id === this.hash) {
+                    return callback();
                 }
 
-                async.mapLimit(matches, 1, (match, callback) => {
-                    // Skip matches for the image itself
-                    if (match.id === this.hash) {
+                models("Image").findOne({
+                    hash: match.id,
+                }, (err, image) => {
+                    if (err || !image) {
                         return callback();
                     }
 
-                    core.models.Image.findOne({
-                        hash: match.id,
-                    }, (err, image) => {
-                        if (err || !image) {
-                            return callback();
-                        }
-
-                        callback(null, {
-                            _id: image._id,
-                            score: match.score,
-                        });
+                    callback(null, {
+                        _id: image._id,
+                        score: match.score,
                     });
-                }, (err, matches) => {
-                    this.similarImages = matches.filter((match) => match);
-                    callback();
                 });
+            }, (err, matches) => {
+                this.similarImages = matches.filter((match) => match);
+                callback();
             });
-        },
+        });
+    },
 
-        indexSimilarity(callback) {
-            core.similar.idIndexed(this.hash, (err, indexed) => {
+    indexSimilarity(callback) {
+        similar.idIndexed(this.hash, (err, indexed) => {
+            /* istanbul ignore if */
+            if (err) {
+                return callback(err);
+            } else if (indexed) {
+                return callback(null, true);
+            }
+
+            const file = this.getFilePath();
+
+            similar.add(file, this.hash, (err) => {
+                // Ignore small images, we just won't index them
                 /* istanbul ignore if */
-                if (err) {
+                if (err && err.type !== "IMAGE_SIZE_TOO_SMALL") {
                     return callback(err);
-                } else if (indexed) {
-                    return callback(null, true);
+                } else if (err) {
+                    return callback();
                 }
 
-                const file = this.getFilePath();
+                return callback(null, true);
+            });
+        });
+    },
 
-                core.similar.add(file, this.hash, (err) => {
-                    // Ignore small images, we just won't index them
+    updateRelatedArtworks(callback) {
+        this.relatedArtworks((err, artworks) => {
+            /* istanbul ignore if */
+            if (err) {
+                return callback(err);
+            }
+
+            async.eachLimit(artworks, 1, (artwork, callback) => {
+                artwork.updateSimilarity((err) => {
                     /* istanbul ignore if */
-                    if (err && err.type !== "IMAGE_SIZE_TOO_SMALL") {
+                    if (err) {
                         return callback(err);
-                    } else if (err) {
-                        return callback();
                     }
 
-                    return callback(null, true);
+                    artwork.save(callback);
                 });
-            });
-        },
+            }, callback);
+        });
+    },
+};
 
-        updateRelatedArtworks(callback) {
-            this.relatedArtworks((err, artworks) => {
-                /* istanbul ignore if */
+Image.statics = {
+    fromFile(batch, file, callback) {
+        const Image = models("Image");
+        const Source = models("Source");
+
+        const fileName = path.basename(file);
+        const source = batch.source;
+        const _id = `${source}/${fileName}`;
+        const sourceDir = Source.getSource(source).getDirBase();
+        const warnings = [];
+
+        this.findById(_id, (err, image) => {
+            /* istanbul ignore if */
+            if (err) {
+                return callback(new Error("ERROR_RETRIEVING"));
+            }
+
+            const creating = !image;
+
+            this.processImage(file, sourceDir, (err, hash) => {
                 if (err) {
-                    return callback(err);
+                    return callback(new Error("MALFORMED_IMAGE"));
                 }
 
-                async.eachLimit(artworks, 1, (artwork, callback) => {
-                    artwork.updateSimilarity((err) => {
-                        /* istanbul ignore if */
-                        if (err) {
-                            return callback(err);
-                        }
-
-                        artwork.save(callback);
-                    });
-                }, callback);
-            });
-        },
-    };
-
-    Image.statics = {
-        fromFile(batch, file, callback) {
-            const fileName = path.basename(file);
-            const source = batch.source;
-            const _id = `${source}/${fileName}`;
-            const sourceDir = core.models.Source.getSource(source).getDirBase();
-            const warnings = [];
-
-            this.findById(_id, (err, image) => {
-                /* istanbul ignore if */
-                if (err) {
-                    return callback(new Error("ERROR_RETRIEVING"));
+                // The same image was uploaded, we can just skip the rest
+                if (!creating && hash === image.hash) {
+                    return callback(null, image, warnings);
                 }
 
-                const creating = !image;
-
-                this.processImage(file, sourceDir, (err, hash) => {
+                this.getSize(file, (err, size) => {
+                    /* istanbul ignore if */
                     if (err) {
                         return callback(new Error("MALFORMED_IMAGE"));
                     }
 
-                    // The same image was uploaded, we can just skip the rest
-                    if (!creating && hash === image.hash) {
-                        return callback(null, image, warnings);
+                    const width = size.width;
+                    const height = size.height;
+
+                    if (width <= 1 || height <= 1) {
+                        return callback(new Error("EMPTY_IMAGE"));
                     }
 
-                    this.getSize(file, (err, size) => {
+                    const data = {
+                        _id,
+                        batch: batch._id,
+                        source,
+                        fileName,
+                        hash,
+                        width,
+                        height,
+                    };
+
+                    let model = image;
+
+                    if (creating) {
+                        model = new Image(data);
+
+                    } else {
+                        warnings.push("NEW_VERSION");
+                        model.set(data);
+                    }
+
+                    if (!model.canIndex()) {
+                        warnings.push("TOO_SMALL");
+                    }
+
+                    model.validate((err) => {
                         /* istanbul ignore if */
                         if (err) {
-                            return callback(new Error("MALFORMED_IMAGE"));
+                            return callback(new Error("ERROR_SAVING"));
                         }
 
-                        const width = size.width;
-                        const height = size.height;
-
-                        if (width <= 1 || height <= 1) {
-                            return callback(new Error("EMPTY_IMAGE"));
-                        }
-
-                        const data = {
-                            _id,
-                            batch: batch._id,
-                            source,
-                            fileName,
-                            hash,
-                            width,
-                            height,
-                        };
-
-                        let model = image;
-
-                        if (creating) {
-                            model = new core.models.Image(data);
-
-                        } else {
-                            warnings.push("NEW_VERSION");
-                            model.set(data);
-                        }
-
-                        if (!model.canIndex()) {
-                            warnings.push("TOO_SMALL");
-                        }
-
-                        model.validate((err) => {
-                            /* istanbul ignore if */
-                            if (err) {
-                                return callback(new Error("ERROR_SAVING"));
-                            }
-
-                            callback(null, model, warnings);
-                        });
+                        callback(null, model, warnings);
                     });
                 });
             });
-        },
+        });
+    },
 
-        processImage(sourceFile, baseDir, callback) {
-            return images.processImage(sourceFile, baseDir, callback);
-        },
+    processImage(sourceFile, baseDir, callback) {
+        return images.processImage(sourceFile, baseDir, callback);
+    },
 
-        getSize(fileName, callback) {
-            return images.getSize(fileName, callback);
-        },
+    getSize(fileName, callback) {
+        return images.getSize(fileName, callback);
+    },
 
-        indexSimilarity(callback) {
-            core.models.Image.findOne({
-                needsSimilarIndex: true,
-            }, (err, image) => {
-                if (err || !image) {
+    indexSimilarity(callback) {
+        models("Image").findOne({
+            needsSimilarIndex: true,
+        }, (err, image) => {
+            if (err || !image) {
+                return callback(err);
+            }
+
+            console.log("Indexing Similarity", image._id);
+
+            image.indexSimilarity((err) => {
+                /* istanbul ignore if */
+                if (err) {
+                    console.error(err);
                     return callback(err);
                 }
 
-                console.log("Indexing Similarity", image._id);
-
-                image.indexSimilarity((err) => {
-                    /* istanbul ignore if */
-                    if (err) {
-                        console.error(err);
-                        return callback(err);
-                    }
-
-                    image.needsSimilarIndex = false;
-                    image.needsSimilarUpdate = true;
-                    image.save((err) => callback(err, true));
-                });
+                image.needsSimilarIndex = false;
+                image.needsSimilarUpdate = true;
+                image.save((err) => callback(err, true));
             });
-        },
+        });
+    },
 
-        updateSimilarity(callback) {
-            core.models.Image.findOne({
-                needsSimilarUpdate: true,
-            }, (err, image) => {
-                if (err || !image) {
+    updateSimilarity(callback) {
+        models("Image").findOne({
+            needsSimilarUpdate: true,
+        }, (err, image) => {
+            if (err || !image) {
+                return callback(err);
+            }
+
+            console.log("Updating Similarity", image._id);
+
+            image.updateSimilarity((err) => {
+                /* istanbul ignore if */
+                if (err) {
+                    console.error(err);
                     return callback(err);
                 }
 
-                console.log("Updating Similarity", image._id);
-
-                image.updateSimilarity((err) => {
+                image.needsSimilarUpdate = false;
+                image.save((err) => {
                     /* istanbul ignore if */
                     if (err) {
-                        console.error(err);
                         return callback(err);
                     }
 
-                    image.needsSimilarUpdate = false;
-                    image.save((err) => {
+                    image.updateRelatedArtworks((err) => {
                         /* istanbul ignore if */
                         if (err) {
                             return callback(err);
                         }
 
-                        image.updateRelatedArtworks((err) => {
-                            /* istanbul ignore if */
-                            if (err) {
-                                return callback(err);
-                            }
-
-                            callback(null, true);
-                        });
+                        callback(null, true);
                     });
                 });
             });
-        },
-    };
-
-    /* istanbul ignore next */
-    Image.pre("save", function(next) {
-        // Always updated the modified time on every save
-        this.modified = new Date();
-        next();
-    });
-
-    return Image;
+        });
+    },
 };
+
+/* istanbul ignore next */
+Image.pre("save", function(next) {
+    // Always updated the modified time on every save
+    this.modified = new Date();
+    next();
+});
 
 const images = {
     convert(inputStream, outputFile, config, callback) {
@@ -521,3 +525,5 @@ const images = {
         });
     },
 };
+
+module.exports = Image;

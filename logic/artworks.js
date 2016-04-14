@@ -2,12 +2,14 @@
 
 const async = require("async");
 
-module.exports = function(core, app) {
-    const Artwork = core.models.Artwork;
-    const Source = core.models.Source;
+const models = require("../lib/models");
+
+module.exports = function(app) {
+    const Artwork = models("Artwork");
+    const Source = models("Source");
 
     const cache = require("../server/middlewares/cache");
-    const search = require("./shared/search")(core, app);
+    const search = require("./shared/search");
     const types = require("./shared/types");
 
     return {

@@ -5,9 +5,10 @@ const path = require("path");
 
 const rl = require("readline-sync");
 
-const core = require("../core");
+const init = require("../lib/init");
+const models = require("../lib/models");
 
-core.init(() => {
+init(() => {
     const _id = rl.question("Source ID (e.g. frick): ");
     const name = rl.question("Full Name (e.g. Frick Library): ");
     const shortName = rl.question("Short Name (e.g. Frick): ");
@@ -16,8 +17,8 @@ core.init(() => {
         defaultInput: "default",
     });
 
-
-    const source = new core.models.Source({
+    const Source = models("Source");
+    const source = new Source({
         _id,
         name,
         shortName,

@@ -3,8 +3,10 @@
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 
-module.exports = (core, app) => {
-    const User = core.models.User;
+const models = require("../lib/models");
+
+module.exports = (app) => {
+    const User = models("User");
 
     // serialize sessions
     passport.serializeUser((user, callback) => callback(null, user._id));

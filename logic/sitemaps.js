@@ -2,8 +2,11 @@
 
 const NUM_PER_SITEMAP = 1000;
 
-module.exports = function(core, app) {
-    const Artwork = core.models.Artwork;
+const models = require("../lib/models");
+const urls = require("../lib/urls");
+
+module.exports = function(app) {
+    const Artwork = models("Artwork");
 
     return {
         index(req, res) {
@@ -12,7 +15,7 @@ module.exports = function(core, app) {
 
                 for (let i = 0; i < total; i += NUM_PER_SITEMAP) {
                     sitemaps.push({
-                        url: core.urls.gen(req.lang,
+                        url: urls.gen(req.lang,
                             `/sitemap-search-${i}.xml`),
                     });
                 }

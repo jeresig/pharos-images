@@ -16,12 +16,13 @@ const swig = require("swig");
 const pkg = require("../package");
 const env = process.env.NODE_ENV;
 
+const db = require("../lib/db");
 const viewMethods = require("./middlewares/view-methods");
 const searchURL = require("./middlewares/search-url");
 
 const rootPath = path.resolve(__dirname, "..");
 
-module.exports = (core, app) => {
+module.exports = (app) => {
     /* istanbul ignore if */
     if (env !== "test") {
         // A basic logger for tracking who is accessing the service
@@ -61,7 +62,7 @@ module.exports = (core, app) => {
     /* istanbul ignore if */
     if (env !== "test") {
         store = new mongoStore({
-            mongooseConnection: core.db.mongoose.connection,
+            mongooseConnection: db.mongoose.connection,
             collection: "sessions",
         });
     }
@@ -75,5 +76,5 @@ module.exports = (core, app) => {
 
     // Bring in the methods that will be available to the views
     app.use(viewMethods);
-    app.use(searchURL(core, app));
+    app.use(searchURL);
 };

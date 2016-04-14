@@ -7,7 +7,7 @@ init.init((err) => {
         console.error(err);
     } else {
         console.log("STARTED");
-        const cron = require("../server/cron")(init.core);
+        const cron = require("../server/cron");
         cron.start();
     }
 });

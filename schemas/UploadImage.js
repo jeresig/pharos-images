@@ -4,123 +4,129 @@ const path = require("path");
 
 const async = require("async");
 
-module.exports = (core) => {
-    const Image = require("./Image")(core);
+const models = require("../lib/models");
+const urls = require("../lib/urls");
+const similar = require("../lib/similar");
 
-    const uploadName = "uploads";
-    const collection = "uploadimages";
+const Image = require("./Image");
 
-    const UploadImage = Image.extend({
-        // Source is always set to "uploads"
-        source: {
-            type: String,
-            default: uploadName,
-            required: true,
-        },
-    }, {collection});
+const uploadName = "uploads";
+const collection = "uploadimages";
 
-    const getDirBase = function() {
-        return core.urls.genLocalFile(`data/${uploadName}`);
-    };
+const UploadImage = Image.extend({
+    // Source is always set to "uploads"
+    source: {
+        type: String,
+        default: uploadName,
+        required: true,
+    },
+}, {collection});
 
-    UploadImage.methods.getFilePath = function() {
-        return path.resolve(getDirBase(), `images/${this.hash}.jpg`);
-    };
+const getDirBase = function() {
+    return urls.genLocalFile(`data/${uploadName}`);
+};
 
-    // We don't save the uploaded files in the index so we override this
-    // method to use `fileSimilar` to re-query every time.
-    UploadImage.methods.updateSimilarity = function(callback) {
-        const file = this.getFilePath();
+UploadImage.methods.getFilePath = function() {
+    return path.resolve(getDirBase(), `images/${this.hash}.jpg`);
+};
 
-        core.similar.fileSimilar(file, (err, matches) => {
-            /* istanbul ignore if */
-            if (err) {
-                return callback(err);
+// We don't save the uploaded files in the index so we override this
+// method to use `fileSimilar` to re-query every time.
+UploadImage.methods.updateSimilarity = function(callback) {
+    const Image = models("Image");
+
+    const file = this.getFilePath();
+
+    similar.fileSimilar(file, (err, matches) => {
+        /* istanbul ignore if */
+        if (err) {
+            return callback(err);
+        }
+
+        async.mapLimit(matches, 1, (match, callback) => {
+            // Skip matches for the image itself
+            if (match.id === this.hash) {
+                return callback();
             }
 
-            async.mapLimit(matches, 1, (match, callback) => {
-                // Skip matches for the image itself
-                if (match.id === this.hash) {
+            Image.findOne({
+                hash: match.id,
+            }, (err, image) => {
+                if (err || !image) {
                     return callback();
                 }
 
-                core.models.Image.findOne({
-                    hash: match.id,
-                }, (err, image) => {
-                    if (err || !image) {
-                        return callback();
-                    }
-
-                    callback(null, {
-                        _id: image._id,
-                        score: match.score,
-                    });
+                callback(null, {
+                    _id: image._id,
+                    score: match.score,
                 });
-            }, (err, matches) => {
-                this.similarImages = matches.filter((match) => match);
-                callback();
             });
+        }, (err, matches) => {
+            this.similarImages = matches.filter((match) => match);
+            callback();
         });
-    };
+    });
+};
 
-    UploadImage.statics.fromFile = function(file, callback) {
-        const sourceDir = getDirBase();
+UploadImage.statics.fromFile = function(file, callback) {
+    const UploadImage = models("UploadImage");
 
-        this.processImage(file, sourceDir, (err, hash) => {
+    const sourceDir = getDirBase();
+
+    this.processImage(file, sourceDir, (err, hash) => {
+        if (err) {
+            return callback(new Error("MALFORMED_IMAGE"));
+        }
+
+        this.getSize(file, (err, size) => {
+            /* istanbul ignore if */
             if (err) {
                 return callback(new Error("MALFORMED_IMAGE"));
             }
 
-            this.getSize(file, (err, size) => {
+            const width = size.width;
+            const height = size.height;
+
+            if (width <= 1 || height <= 1) {
+                return callback(new Error("EMPTY_IMAGE"));
+            }
+
+            if (width < 150 || height < 150) {
+                return callback(new Error("TOO_SMALL"));
+            }
+
+            const fileName = `${hash}.jpg`;
+            const _id = `${uploadName}/${fileName}`;
+
+            this.findById(_id, (err, image) => {
                 /* istanbul ignore if */
                 if (err) {
-                    return callback(new Error("MALFORMED_IMAGE"));
+                    return callback(new Error("ERROR_RETRIEVING"));
                 }
 
-                const width = size.width;
-                const height = size.height;
-
-                if (width <= 1 || height <= 1) {
-                    return callback(new Error("EMPTY_IMAGE"));
+                if (image) {
+                    return callback(null, image);
                 }
 
-                if (width < 150 || height < 150) {
-                    return callback(new Error("TOO_SMALL"));
-                }
+                const model = new UploadImage({
+                    _id,
+                    fileName,
+                    hash,
+                    width,
+                    height,
+                });
 
-                const fileName = `${hash}.jpg`;
-                const _id = `${uploadName}/${fileName}`;
-
-                this.findById(_id, (err, image) => {
+                model.validate((err) => {
                     /* istanbul ignore if */
                     if (err) {
-                        return callback(new Error("ERROR_RETRIEVING"));
+                        return callback(new Error("ERROR_SAVING"));
                     }
 
-                    if (image) {
-                        return callback(null, image);
-                    }
-
-                    const model = new core.models.UploadImage({
-                        _id,
-                        fileName,
-                        hash,
-                        width,
-                        height,
-                    });
-
-                    model.validate((err) => {
-                        /* istanbul ignore if */
-                        if (err) {
-                            return callback(new Error("ERROR_SAVING"));
-                        }
-
-                        callback(null, model);
-                    });
+                    callback(null, model);
                 });
             });
         });
-    };
-
-    return UploadImage;
+    });
 };
+
+module.exports = UploadImage;

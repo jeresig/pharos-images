@@ -5,7 +5,7 @@ const qs = require("querystring");
 const moment = require("moment");
 const pd = require("parse-dimensions");
 
-const urls = require("../../lib/urls")();
+const urls = require("../../lib/urls");
 const locales = require("../../config/locales.json");
 const types = require("../../logic/shared/types");
 

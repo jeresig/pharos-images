@@ -5,6 +5,9 @@ const pd = require("parse-dimensions");
 
 const types = require("./types");
 
+const models = require("../../lib/models");
+const urls = require("../../lib/urls");
+
 // NOTE(jeresig): There has got to be a better way to handle this.
 const dateMatch = (query) => {
     const start = query.dateStart || -10000;
@@ -118,7 +121,7 @@ const heightFormat = (req, query) => {
     return req.format(req.gettext("Height: %(range)s"), {range});
 };
 
-module.exports = (core) => ({
+module.exports = {
     start: {
         value: (req) => parseFloat(req.query.start),
         defaultValue: () => 0,
@@ -151,9 +154,9 @@ module.exports = (core) => ({
 
     source: {
         value: (req) => req.query.source || req.params.source || "",
-        title: (req, query) => core.models.Source.getSource(query.source)
+        title: (req, query) => models("Source").getSource(query.source)
             .getFullName(req.lang),
-        url: (req, query) => core.models.Source.getSource(query.source)
+        url: (req, query) => models("Source").getSource(query.source)
             .getURL(req.lang),
         match: (query) => ({
             match: {
@@ -184,7 +187,7 @@ module.exports = (core) => ({
     type: {
         value: (req) => req.query.type || req.params.type || "",
         title: (req, query) => types[query.type].name(req),
-        url: (req, query) => core.urls.gen(req.lang, `/type/${query.type}`),
+        url: (req, query) => urls.gen(req.lang, `/type/${query.type}`),
         match: (query) => ({
             match: {
                 "objectType.raw": {
@@ -307,7 +310,7 @@ module.exports = (core) => ({
                 getTitle: (req) =>
                     req.gettext("Similar to an External Artwork"),
                 match: () => {
-                    const sourceIDs = core.models.Source.getSources()
+                    const sourceIDs = models("Source").getSources()
                         .map((source) => source._id);
                     const should = sourceIDs.map((sourceID) => ({
                         bool: {
@@ -339,7 +342,7 @@ module.exports = (core) => ({
                 getTitle: (req) =>
                     req.gettext("Similar to an Internal Artwork"),
                 match: () => {
-                    const sourceIDs = core.models.Source.getSources()
+                    const sourceIDs = models("Source").getSources()
                         .map((source) => source._id);
                     const should = sourceIDs.map((sourceID) => ({
                         bool: {
@@ -373,4 +376,4 @@ module.exports = (core) => ({
             return this.filters[query.similar].match(query);
         },
     },
-});
+};

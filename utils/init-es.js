@@ -5,12 +5,13 @@
  *   curl -XDELETE 'http://127.0.0.1:9200/artworks'
  */
 
-const core = require("../core");
+const init = require("../lib/init");
+const models = require("../lib/models");
 
-const Artwork = core.models.Artwork;
-
-core.init(() => {
+init(() => {
     console.log("Re-building index...");
+
+    const Artwork = models("Artwork");
 
     Artwork.createMapping((err) => {
         if (err) {

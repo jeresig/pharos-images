@@ -5,11 +5,11 @@ const path = require("path");
 
 const basePath = path.resolve(__dirname, "../logic/");
 
-module.exports = function(core, app) {
+module.exports = function(app) {
     // Import all the logic routes
     fs.readdirSync(basePath).forEach((file) => {
         if (file.endsWith(".js")) {
-            const logic = require(path.resolve(basePath, file))(core, app);
+            const logic = require(path.resolve(basePath, file))(app);
             logic.routes();
         }
     });

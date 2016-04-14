@@ -3,16 +3,18 @@
 // How often queries should be performed
 const QUERY_RATE = 5000;
 
-module.exports = (core) => ({
+const models = require("../lib/models");
+
+module.exports = {
     updateArtworkImport() {
-        const advance = () => core.models.ArtworkImport.advance(() =>
+        const advance = () => models("ArtworkImport").advance(() =>
             setTimeout(advance, QUERY_RATE));
 
         advance();
     },
 
     updateArtworkSimilarity() {
-        const Artwork = core.models.Artwork;
+        const Artwork = models("Artwork");
         const next = () => setTimeout(update, QUERY_RATE);
         const update = () => Artwork.updateSimilarity((err, success) => {
             // If nothing happened then we wait to try again
@@ -29,14 +31,14 @@ module.exports = (core) => ({
     },
 
     updateImageImport() {
-        const advance = () => core.models.ImageImport.advance(() =>
+        const advance = () => models("ImageImport").advance(() =>
             setTimeout(advance, QUERY_RATE));
 
         advance();
     },
 
     updateImageSimilarity() {
-        const Image = core.models.Image;
+        const Image = models("Image");
         const next = () => setTimeout(update, QUERY_RATE);
         const update = () => Image.indexSimilarity((err, success) => {
             // If we hit an error attempt again after a small delay
@@ -74,4 +76,4 @@ module.exports = (core) => ({
         this.updateImageImport();
         this.updateImageSimilarity();
     },
-});
+};
