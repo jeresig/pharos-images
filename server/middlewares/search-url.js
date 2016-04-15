@@ -40,7 +40,12 @@ module.exports = (req, res, next) => {
         if (params.primary.length === 1 &&
                 queries[params.primary[0]].url) {
             queryString = qs.stringify(params.secondary);
-            url = queries[params.primary[0]].url(req, params.all);
+            url = queries[params.primary[0]].url(params.all);
+            if (url.getURL) {
+                url = url.getURL(req.lang);
+            } else {
+                url = urls.gen(req.lang, url);
+            }
         }
 
         if (queryString) {

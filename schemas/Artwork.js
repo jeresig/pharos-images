@@ -9,7 +9,6 @@ const jdp = require("jsondiffpatch").create({
 });
 
 const locales = require("../config/locales.json");
-const types = require("../logic/shared/types");
 
 const models = require("../lib/models");
 const db = require("../lib/db");
@@ -20,6 +19,8 @@ const Name = require("./Name");
 const YearRange = require("./YearRange");
 const Dimension = require("./Dimension");
 const Location = require("./Location");
+
+const types = config.types;
 
 const Artwork = new db.schema({
     // UUID of the image (Format: SOURCE/ID)

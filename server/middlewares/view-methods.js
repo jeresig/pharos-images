@@ -8,7 +8,8 @@ const pd = require("parse-dimensions");
 const urls = require("../../lib/urls");
 const config = require("../../lib/config");
 const locales = require("../../config/locales.json");
-const types = require("../../logic/shared/types");
+
+const types = config.types;
 
 module.exports = (req, res, next) => {
     const methods = {

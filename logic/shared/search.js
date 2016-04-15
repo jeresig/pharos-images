@@ -6,8 +6,9 @@ const config = require("../../lib/config");
 
 const facets = require("./facets");
 const queries = require("./queries");
-const sorts = require("./sorts");
-const types = require("./types");
+
+const sorts = config.sorts;
+const types = config.types;
 
 module.exports = (req, res, tmplParams) => {
     // Build the query object which will be used to construct

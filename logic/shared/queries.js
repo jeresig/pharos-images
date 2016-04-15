@@ -1,128 +1,11 @@
 "use strict";
 
 const escape = require("elasticsearch-sanitize");
-const pd = require("parse-dimensions");
-
-const types = require("./types");
 
 const models = require("../../lib/models");
-const urls = require("../../lib/urls");
 const config = require("../../lib/config");
 
-// NOTE(jeresig): There has got to be a better way to handle this.
-const dateMatch = (query) => {
-    const start = query.dateStart || -10000;
-    const end = query.dateEnd || (new Date).getYear() + 1900;
-
-    const startInside = {
-        bool: {
-            must: [
-                {
-                    range: {
-                        "dates.start": {
-                            lte: parseFloat(start),
-                        },
-                    },
-                },
-
-                {
-                    range: {
-                        "dates.end": {
-                            gte: parseFloat(start),
-                        },
-                    },
-                },
-            ],
-        },
-    };
-
-    const endInside = {
-        bool: {
-            must: [
-                {
-                    range: {
-                        "dates.start": {
-                            lte: parseFloat(end),
-                        },
-                    },
-                },
-
-                {
-                    range: {
-                        "dates.end": {
-                            gte: parseFloat(end),
-                        },
-                    },
-                },
-            ],
-        },
-    };
-
-    const contains = {
-        bool: {
-            must: [
-                {
-                    range: {
-                        "dates.start": {
-                            gte: parseFloat(start),
-                        },
-                    },
-                },
-
-                {
-                    range: {
-                        "dates.end": {
-                            lte: parseFloat(end),
-                        },
-                    },
-                },
-            ],
-        },
-    };
-
-    return {
-        bool: {
-            should: [
-                startInside,
-                endInside,
-                contains,
-            ],
-        },
-    };
-};
-
-const dateFormat = (req, query) => {
-    const range = req.numRange({
-        from: query.dateStart,
-        to: query.dateEnd,
-    });
-
-    return req.format(req.gettext("Dates: %(range)s"), {range});
-};
-
-const widthFormat = (req, query) => {
-    const unit = req.unit();
-    const range = req.numRange({
-        from: query.widthMin,
-        to: query.widthMax,
-        unit,
-    });
-
-    return req.format(req.gettext("Width: %(range)s"), {range});
-};
-
-const heightFormat = (req, query) => {
-    const unit = req.unit();
-    const range = req.numRange({
-        from: query.heightMin,
-        to: query.heightMax,
-        unit,
-    });
-
-    return req.format(req.gettext("Height: %(range)s"), {range});
-};
-
-module.exports = {
+module.exports = Object.assign({
     start: {
         value: (req) => parseFloat(req.query.start),
         defaultValue: () => 0,
@@ -157,8 +40,7 @@ module.exports = {
         value: (req) => req.query.source || req.params.source || "",
         title: (req, query) => models("Source").getSource(query.source)
             .getFullName(req.lang),
-        url: (req, query) => models("Source").getSource(query.source)
-            .getURL(req.lang),
+        url: (query) => models("Source").getSource(query.source),
         match: (query) => ({
             match: {
                 source: {
@@ -168,130 +50,6 @@ module.exports = {
                 },
             },
         }),
-    },
-
-    location: {
-        value: (req) => req.query.location,
-        title: (req, query) => req.format(
-            req.gettext("Location: '%(query)s'"), {query: query.location}),
-        match: (query) => ({
-            match: {
-                "locations.name": {
-                    query: escape(query.location),
-                    operator: "and",
-                    zero_terms_query: "all",
-                },
-            },
-        }),
-    },
-
-    type: {
-        value: (req) => req.query.type || req.params.type || "",
-        title: (req, query) => types[query.type].name(req),
-        url: (req, query) => urls.gen(req.lang, `/type/${query.type}`),
-        match: (query) => ({
-            match: {
-                "objectType.raw": {
-                    query: escape(query.type),
-                    operator: "or",
-                    zero_terms_query: "all",
-                },
-            },
-        }),
-    },
-
-    artist: {
-        value: (req) => req.query.artist || "",
-        title: (req, query) => req.format(
-            req.gettext("Artist: %(artist)s"), {artist: query.artist}),
-        match: (query) => ({
-            multi_match: {
-                fields: ["artists.name"],
-                query: escape(query.artist),
-                operator: "and",
-                zero_terms_query: "all",
-            },
-        }),
-    },
-
-    dateStart: {
-        pair: "dateEnd",
-        value: (req) => req.query.dateStart,
-        title: dateFormat,
-        match: dateMatch,
-    },
-
-    dateEnd: {
-        pair: "dateStart",
-        value: (req) => req.query.dateEnd,
-        title: dateFormat,
-        match: (query) => {
-            if (!query.dateStart) {
-                return dateMatch(query);
-            }
-        },
-    },
-
-    widthMin: {
-        pair: "widthMax",
-        value: (req) => req.query.widthMin,
-        title: widthFormat,
-        match: (query) => ({
-            range: {
-                "dimensions.width": {
-                    gte: pd.convertNumber(
-                        parseFloat(query.widthMin), query.unit, "mm"),
-                },
-            },
-        }),
-    },
-
-    widthMax: {
-        pair: "widthMin",
-        value: (req) => req.query.widthMax,
-        title: widthFormat,
-        match: (query) => ({
-            range: {
-                "dimensions.width": {
-                    lte: pd.convertNumber(
-                        parseFloat(query.widthMax), query.unit, "mm"),
-                },
-            },
-        }),
-    },
-
-    heightMin: {
-        pair: "heightMax",
-        value: (req) => req.query.heightMin,
-        title: heightFormat,
-        match: (query) => ({
-            range: {
-                "dimensions.height": {
-                    gte: pd.convertNumber(
-                        parseFloat(query.heightMin), query.unit, "mm"),
-                },
-            },
-        }),
-    },
-
-    heightMax: {
-        pair: "heightMin",
-        value: (req) => req.query.heightMax,
-        title: heightFormat,
-        match: (query) => ({
-            range: {
-                "dimensions.height": {
-                    lte: pd.convertNumber(
-                        parseFloat(query.heightMax), query.unit, "mm"),
-                },
-            },
-        }),
-    },
-
-    unit: {
-        value: (req) => req.query.unit,
-        defaultValue: (req) => req.defaultUnit(),
-        secondary: true,
     },
 
     similar: {
@@ -377,4 +135,4 @@ module.exports = {
             return this.filters[query.similar].match(query);
         },
     },
-};
+}, config.queries);

@@ -8,233 +8,233 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2016-04-13 01:52+0000\n"
+"POT-Creation-Date: 2016-04-15 18:13+0000\n"
 
-#: logic/admin.js:21
-#: logic/admin.js:57
+#: logic/admin.js:25
+#: logic/admin.js:63
 msgid "Import not found."
 msgstr ""
 
-#: logic/admin.js:111
+#: logic/admin.js:117
 msgid "Error retrieving records."
 msgstr ""
 
-#: logic/admin.js:155
+#: logic/admin.js:161
 msgid "Error processing zip file."
 msgstr ""
 
-#: logic/admin.js:162
+#: logic/admin.js:168
 msgid "No zip file specified."
 msgstr ""
 
-#: logic/admin.js:175
+#: logic/admin.js:181
 msgid "Error saving zip file."
 msgstr ""
 
-#: logic/admin.js:195
+#: logic/admin.js:201
 msgid "Error processing data files."
 msgstr ""
 
-#: logic/admin.js:205
+#: logic/admin.js:211
 msgid "No data files specified."
 msgstr ""
 
-#: logic/admin.js:219
-#: logic/admin.js:226
+#: logic/admin.js:225
+#: logic/admin.js:232
 msgid "Error saving data file."
 msgstr ""
 
-#: logic/admin.js:244
+#: logic/admin.js:250
 msgid "Authorization required."
 msgstr ""
 
-#: logic/artworks.js:21
+#: logic/artworks.js:24
 msgid "Type not found."
 msgstr ""
 
-#: logic/artworks.js:41
+#: logic/artworks.js:44
 msgid "Artwork not found."
 msgstr ""
 
-#: logic/artworks.js:92
+#: logic/artworks.js:95
 msgid "Source not found."
 msgstr ""
 
-#: logic/uploads.js:33
+#: logic/uploads.js:36
 msgid "Error processing image."
 msgstr ""
 
-#: logic/uploads.js:103
+#: logic/uploads.js:106
 msgid "No image URL specified."
 msgstr ""
 
-#: logic/uploads.js:119
+#: logic/uploads.js:122
 msgid "Error processing upload."
 msgstr ""
 
-#: logic/uploads.js:129
+#: logic/uploads.js:132
 msgid "No image specified."
 msgstr ""
 
-#: logic/uploads.js:141
+#: logic/uploads.js:144
 msgid "Uploaded image not found."
 msgstr ""
 
-#: schemas/Artwork.js:31
+#: schemas/Artwork.js:36
 msgid "IDs can only contain letters, numbers, underscores, and hyphens."
 msgstr ""
 
-#: schemas/Artwork.js:67
+#: schemas/Artwork.js:72
 msgid "`lang` must only be one of following languages: %(langs)s."
 msgstr ""
 
-#: schemas/Artwork.js:78
+#: schemas/Artwork.js:83
 msgid "`url` must be properly-formatted URL."
 msgstr ""
 
-#: schemas/Artwork.js:93
+#: schemas/Artwork.js:98
 msgid "Images must be a valid image file name. For example: `image.jpg`."
 msgstr ""
 
-#: schemas/Artwork.js:119
+#: schemas/Artwork.js:124
 msgid "Dimensions must have a unit specified and at least a width or height."
 msgstr ""
 
-#: schemas/Artwork.js:129
-#: schemas/Name.js:71
+#: schemas/Artwork.js:134
+#: schemas/Name.js:72
 msgid "Dates must have a start or end specified."
 msgstr ""
 
-#: schemas/Artwork.js:148
+#: schemas/Artwork.js:153
 msgid "`objectType` must be one of the following types: %(types)s."
 msgstr ""
 
-#: schemas/Artwork.js:164
+#: schemas/Artwork.js:169
 msgid "Locations must have a name or city specified."
 msgstr ""
 
-#: schemas/Artwork.js:240
+#: schemas/Artwork.js:245
 msgid "Artwork"
 msgstr ""
 
-#: schemas/Artwork.js:434
+#: schemas/Artwork.js:442
 msgid "Image file not found: %(fileName)s"
 msgstr ""
 
-#: schemas/Artwork.js:444
+#: schemas/Artwork.js:452
 msgid "Error accessing image data."
 msgstr ""
 
-#: schemas/Artwork.js:452
+#: schemas/Artwork.js:460
 msgid "No images found."
 msgstr ""
 
-#: schemas/Artwork.js:472
+#: schemas/Artwork.js:480
 msgid "There was an error with the data format."
 msgstr ""
 
-#: schemas/Artwork.js:498
+#: schemas/Artwork.js:506
 msgid "Unrecognized field `%(field)s`."
 msgstr ""
 
-#: schemas/Artwork.js:519
+#: schemas/Artwork.js:527
 msgid "`%(field)s` is the wrong type. Expected a %(type)s."
 msgstr ""
 
-#: schemas/Artwork.js:537
+#: schemas/Artwork.js:545
 msgid "`%(field)s` value is the wrong type. Expected a %(type)s."
 msgstr ""
 
-#: schemas/Artwork.js:590
+#: schemas/Artwork.js:598
 msgid "Required field `%(field)s` is empty."
 msgstr ""
 
-#: schemas/Artwork.js:594
+#: schemas/Artwork.js:602
 msgid "Recommended field `%(field)s` is empty."
 msgstr ""
 
-#: schemas/ArtworkImport.js:11
-#: schemas/ImageImport.js:16
+#: schemas/ArtworkImport.js:14
+#: schemas/ImageImport.js:19
 msgid "Awaiting processing..."
 msgstr ""
 
-#: schemas/ArtworkImport.js:18
-#: schemas/ImageImport.js:23
+#: schemas/ArtworkImport.js:21
+#: schemas/ImageImport.js:26
 msgid "Processing..."
 msgstr ""
 
-#: schemas/ArtworkImport.js:22
+#: schemas/ArtworkImport.js:25
 msgid "Confirmation required."
 msgstr ""
 
-#: schemas/ArtworkImport.js:29
+#: schemas/ArtworkImport.js:32
 msgid "Importing data..."
 msgstr ""
 
-#: schemas/ArtworkImport.js:33
+#: schemas/ArtworkImport.js:36
 msgid "Awaiting similarity sync..."
 msgstr ""
 
-#: schemas/ArtworkImport.js:40
+#: schemas/ArtworkImport.js:43
 msgid "Syncing similarity..."
 msgstr ""
 
-#: schemas/ArtworkImport.js:44
-#: schemas/ArtworkImport.js:53
-#: schemas/ImageImport.js:27
-#: schemas/ImageImport.js:36
+#: schemas/ArtworkImport.js:47
+#: schemas/ArtworkImport.js:56
+#: schemas/ImageImport.js:30
+#: schemas/ImageImport.js:39
 msgid "Completed."
 msgstr ""
 
-#: schemas/ArtworkImport.js:58
+#: schemas/ArtworkImport.js:61
 msgid "Data import abandoned."
 msgstr ""
 
-#: schemas/ArtworkImport.js:59
+#: schemas/ArtworkImport.js:62
 msgid "Error reading data from provided data files."
 msgstr ""
 
-#: schemas/ArtworkImport.js:61
+#: schemas/ArtworkImport.js:64
 msgid "Error saving record."
 msgstr ""
 
-#: schemas/ArtworkImport.js:62
+#: schemas/ArtworkImport.js:65
 msgid "Error deleting existing record."
 msgstr ""
 
-#: schemas/ImageImport.js:41
+#: schemas/ImageImport.js:44
 msgid "Error opening zip file."
 msgstr ""
 
-#: schemas/ImageImport.js:42
+#: schemas/ImageImport.js:45
 msgid "Zip file has no images in it."
 msgstr ""
 
-#: schemas/ImageImport.js:43
+#: schemas/ImageImport.js:46
 msgid ""
 "There was an error processing the image. Perhaps it is malformed in some "
 "way."
 msgstr ""
 
-#: schemas/ImageImport.js:45
+#: schemas/ImageImport.js:48
 msgid "The image is empty."
 msgstr ""
 
-#: schemas/ImageImport.js:46
+#: schemas/ImageImport.js:49
 msgid "A new version of the image was uploaded, replacing the old one."
 msgstr ""
 
-#: schemas/ImageImport.js:48
+#: schemas/ImageImport.js:51
 msgid ""
 "The image is too small to work with the image similarity algorithm. It must "
 "be at least 150px on each side."
 msgstr ""
 
-#: schemas/ImageImport.js:51
+#: schemas/ImageImport.js:54
 msgid "Error saving image."
 msgstr ""
 
-#: schemas/Import.js:63
+#: schemas/Import.js:66
 #: views/admin.swig:12
 #: views/admin.swig:25
 #: views/import-artworks.swig:5
@@ -242,7 +242,7 @@ msgstr ""
 msgid "Error: %(error)s"
 msgstr ""
 
-#: schemas/Upload.js:28
+#: schemas/Upload.js:30
 #: views/upload.swig:1
 msgid "Uploaded Image"
 msgstr ""

@@ -3,6 +3,7 @@
 const async = require("async");
 
 const models = require("../lib/models");
+const config = require("../lib/config");
 
 module.exports = function(app) {
     const Artwork = models("Artwork");
@@ -10,13 +11,13 @@ module.exports = function(app) {
 
     const cache = require("../server/middlewares/cache");
     const search = require("./shared/search");
-    const types = require("./shared/types");
+    const types = config.types;
 
     return {
         search,
 
         byType(req, res) {
-            const type = types[req.query.type || req.params.type];
+            const type = types[req.params.type];
 
             if (!type) {
                 return res.status(404).render("error", {
