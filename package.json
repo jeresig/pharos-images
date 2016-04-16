@@ -12,7 +12,7 @@
     "dev": "supervisor -i node_modules,old,locales,converters,sources,public server.js",
     "dev-test": "NODE_ENV=test supervisor -i node_modules,old,locales,converters,sources,public tests/server.js",
     "extract-i18n-js": "jsxgettext --keyword=format --keyword=gettext -L javascript --output-dir=./translations --output=messages.pot logic/*.js schemas/*.js server/*.js lib/*.js",
-    "extract-i18n-views": "jsxgettext --join-existing --keyword=format --keyword=gettext -L swig --output-dir=./translations --output=messages.pot views/*.swig",
+    "extract-i18n-views": "jsxgettext --join-existing --keyword=format --keyword=gettext -L swig --output-dir=./translations --output=messages.pot views/*.swig views/*.jsx",
     "extract-i18n": "npm run extract-i18n-js && npm run extract-i18n-views && git add translations/messages.pot",
     "update-i18n": "tx pull -a && po2json.js -p translations/de/messages.po > translations/de/messages.json && po2json.js -p translations/it/messages.po > translations/it/messages.json",
     "migrate": "migrate",
@@ -32,6 +32,8 @@
     "JSONStream": "^1.1.1",
     "argparse": "^1.0.7",
     "async": "^1.5.2",
+    "babel-preset-react": "^6.5.0",
+    "babel-register": "^6.7.2",
     "bcrypt": "^0.8.5",
     "body-parser": "^1.14.2",
     "concat-stream": "^1.5.0",
@@ -44,6 +46,7 @@
     "eslint": "^2.5.1",
     "express": "^4.13.4",
     "express-cdn": "^0.2.8",
+    "express-react-views": "^0.10.1",
     "express-session": "^1.13.0",
     "farmhash": "^1.1.1",
     "formidable": "^1.0.17",
@@ -70,6 +73,8 @@
     "passport-local": "^1.0.0",
     "password-generator": "^2.0.2",
     "pastec": "0.0.5",
+    "react": "^15.0.1",
+    "react-dom": "^15.0.1",
     "readline-sync": "^1.4.1",
     "request": "^2.67.0",
     "serve-favicon": "^2.3.0",
@@ -80,7 +85,9 @@
     "yearrange": "0.0.5"
   },
   "devDependencies": {
+    "babel-cli": "^6.7.5",
     "eslint": "^2.2.0",
+    "eslint-plugin-react": "^4.3.0",
     "jsxgettext": "^0.8.1",
     "migrate": "^0.2.2",
     "mock-fs": "^3.7.0",
@@ -96,6 +103,9 @@
     "exclude": [
       "tests",
       "server/cron.js"
+    ],
+    "extension": [
+      ".jsx"
     ]
   }
 }

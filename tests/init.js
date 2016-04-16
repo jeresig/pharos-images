@@ -16,6 +16,10 @@ const iconv = require("iconv-lite");
 // Force ICONV to pre-load its encodings
 iconv.getCodec("utf8");
 
+// Force babel sub-modules to preload
+require("babel-preset-react");
+require("babel-helper-builder-react-jsx");
+
 const models = require("../lib/models");
 const similarity = require("../lib/similar");
 const server = require("../server/server");
@@ -54,6 +58,9 @@ let users;
 
 // Sandbox the bound methods
 let sandbox;
+
+// Package File
+const pkgFile = fs.readFileSync(path.resolve(__dirname, "../package.json"));
 
 // Files used for testing
 const testFiles = {};
@@ -859,6 +866,7 @@ const init = (done) => {
         },
     ], () => {
         mockfs({
+            "package.json": pkgFile,
             "data": {
                 "test": {
                     "images": {},

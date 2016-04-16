@@ -7,32 +7,13 @@ const pd = require("parse-dimensions");
 
 const urls = require("../../lib/urls");
 const config = require("../../lib/config");
-const locales = require("../../config/locales.json");
 
 const types = config.types;
 
 module.exports = (req, res, next) => {
     const methods = {
-        SITE_NAME: config.SITE_NAME,
-        SITE_NAME_SHORT: config.SITE_NAME_SHORT,
-
-        // An option to disable indexing of the entire site
-        noIndex: !!config.NO_INDEX,
-
-        getLocales() {
-            return Object.keys(locales);
-        },
-
-        getLocaleName(locale) {
-            return locales[locale];
-        },
-
         getOtherURL(locale) {
             return urls.gen(locale, req.path);
-        },
-
-        qsLocale() {
-            return req.query.lang;
         },
 
         URL(path, query) {
@@ -70,10 +51,6 @@ module.exports = (req, res, next) => {
         },
 
         getDate(item) {
-            if (item.date) {
-                return locales.getDate(item.date);
-            }
-
             if (item.original) {
                 return item.original;
             }

@@ -8,7 +8,6 @@ const config = require("../lib/config");
 const expressInit = require("./express");
 const passport = require("./passport");
 const i18n = require("./i18n");
-const cdn = require("./cdn");
 const routes = require("./routes");
 const cron = require("./cron");
 
@@ -26,7 +25,6 @@ module.exports = (callback) => {
         expressInit(app);
         passport(app);
         i18n(app);
-        cdn(app);
         routes(app);
 
         const server = app.listen(port, () => {

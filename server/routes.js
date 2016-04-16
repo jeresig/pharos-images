@@ -19,7 +19,7 @@ module.exports = function(app) {
     app.use((err, req, res, next) => {
         /* istanbul ignore else */
         if (err) {
-            res.status(500).render("error", {
+            res.status(500).render("Error", {
                 title: err.message,
                 body: err.stack,
             });
@@ -30,7 +30,7 @@ module.exports = function(app) {
 
     // Handle missing pages
     app.use((req, res) => {
-        res.status(404).render("error", {
+        res.status(404).render("Error", {
             title: req.gettext("Page Not Found"),
         });
     });

@@ -10,8 +10,15 @@ const serveStatic = require("serve-static");
 const morgan = require("morgan");
 const session = require("express-session");
 const mongoStore = require("connect-mongo")(session);
+const reactViews = require("express-react-views");
+const babelRegister = require("babel-register");
 
-const swig = require("swig");
+babelRegister({
+    only: /views/,
+    sourceMaps: "inline",
+    extensions: [".jsx"],
+    presets: ["react"],
+});
 
 const pkg = require("../package");
 
@@ -35,14 +42,15 @@ module.exports = (app) => {
     app.use(serveStatic(`${rootPath}/public`));
     app.use("/data", serveStatic(`${rootPath}/data`));
 
-    // Configure how the views are handled (with swig)
-    app.engine("swig", swig.renderFile);
+    // Configure how the views are handled (with React)
+    app.engine("jsx", reactViews.createEngine({
+        transformViews: false,
+    }));
     app.set("views", `${rootPath}/views`);
-    app.set("view engine", "swig");
+    app.set("view engine", "jsx");
 
     // Enable caching of the view files by Express, but only in production
     app.set("view cache", config.NODE_ENV === "production");
-    swig.setDefaults({ cache: false });
 
     // Parses the contents of HTTP POST bodies, handling URL-encoded forms
     // and also JSON blobs

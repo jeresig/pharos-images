@@ -22,7 +22,7 @@ module.exports = (app) => {
                     return next(err);
                 }
 
-                res.render("home", {
+                res.render("Home", {
                     sources: Source.getSources(),
                     artworkTotal: results[0],
                     imageTotal: results[1],
