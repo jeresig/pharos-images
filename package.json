@@ -5,18 +5,18 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint lib/*.js logic/*.js logic/shared/*.js schemas/*.js server/*.js server/*/*.js utils/*.js converters/*.js tests/*.js *.js",
-    "test": "npm run lint && NODE_ENV=test tap tests/schemas/*.js tests/logic/*.js --cov",
+    "test": "npm run lint && NODE_ENV=test nyc tap tests/schemas/*.js tests/logic/*.js",
     "start": "NODE_ENV=production naught start --worker-count 2 --log ./logs/naught.log --stdout ./logs/node.log --stderr ./logs/node-error.log server.js",
     "restart": "naught deploy",
     "stop": "naught stop",
     "dev": "supervisor -i node_modules,old,locales,converters,sources,public server.js",
     "dev-test": "NODE_ENV=test supervisor -i node_modules,old,locales,converters,sources,public tests/server.js",
     "extract-i18n-js": "jsxgettext --keyword=format --keyword=gettext -L javascript --output-dir=./translations --output=messages.pot logic/*.js schemas/*.js server/*.js lib/*.js",
-    "extract-i18n-views": "jsxgettext --join-existing --keyword=format --keyword=gettext -L swig --output-dir=./translations --output=messages.pot views/*.swig views/*.jsx",
+    "extract-i18n-views": "jsxgettext --join-existing --keyword=format --keyword=gettext --output-dir=./translations --output=messages.pot views/*.jsx",
     "extract-i18n": "npm run extract-i18n-js && npm run extract-i18n-views && git add translations/messages.pot",
     "update-i18n": "tx pull -a && po2json.js -p translations/de/messages.po > translations/de/messages.json && po2json.js -p translations/it/messages.po > translations/it/messages.json",
     "migrate": "migrate",
-    "coverage": "NODE_ENV=test tap tests/schemas/*.js tests/logic/*.js --cov --coverage-report=lcov"
+    "coverage": "NODE_ENV=test nyc --reporter=lcov tap tests/schemas/*.js tests/logic/*.js"
   },
   "repository": {
     "type": "git",
@@ -32,6 +32,7 @@
     "JSONStream": "^1.1.1",
     "argparse": "^1.0.7",
     "async": "^1.5.2",
+    "babel-preset-es2015": "^6.6.0",
     "babel-preset-react": "^6.5.0",
     "babel-register": "^6.7.2",
     "bcrypt": "^0.8.5",
@@ -79,7 +80,6 @@
     "request": "^2.67.0",
     "serve-favicon": "^2.3.0",
     "serve-static": "^1.10.2",
-    "swig": "^1.4.2",
     "unzip2": "^0.2.5",
     "valid-url": "^1.0.9",
     "yearrange": "0.0.5"
@@ -91,6 +91,7 @@
     "jsxgettext": "^0.8.1",
     "migrate": "^0.2.2",
     "mock-fs": "^3.7.0",
+    "nyc": "^6.4.0",
     "pre-commit": "^1.1.2",
     "sinon": "^1.17.3",
     "tap": "^5.7.0"

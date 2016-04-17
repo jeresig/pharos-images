@@ -11,14 +11,8 @@ const morgan = require("morgan");
 const session = require("express-session");
 const mongoStore = require("connect-mongo")(session);
 const reactViews = require("express-react-views");
-const babelRegister = require("babel-register");
 
-babelRegister({
-    only: /views/,
-    sourceMaps: "inline",
-    extensions: [".jsx"],
-    presets: ["react"],
-});
+require("babel-register");
 
 const pkg = require("../package");
 

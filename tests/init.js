@@ -59,8 +59,9 @@ let users;
 // Sandbox the bound methods
 let sandbox;
 
-// Package File
+// Root Files
 const pkgFile = fs.readFileSync(path.resolve(__dirname, "../package.json"));
+const babelrc = fs.readFileSync(path.resolve(__dirname, "../.babelrc"));
 
 // Files used for testing
 const testFiles = {};
@@ -867,6 +868,7 @@ const init = (done) => {
     ], () => {
         mockfs({
             "package.json": pkgFile,
+            ".babelrc": babelrc,
             "data": {
                 "test": {
                     "images": {},
