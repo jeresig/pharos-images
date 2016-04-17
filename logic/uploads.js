@@ -140,7 +140,7 @@ module.exports = (app) => {
             const _id = `uploads/${req.params.upload}`;
             Upload.findById(_id, (err, upload) => {
                 if (err || !upload) {
-                    return res.status(404).render("error", {
+                    return res.status(404).render("Error", {
                         title: req.gettext("Uploaded image not found."),
                     });
                 }

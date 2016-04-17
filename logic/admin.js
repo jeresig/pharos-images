@@ -21,7 +21,7 @@ module.exports = function(app) {
 
         ArtworkImport.findById(req.query.artworks, (err, batch) => {
             if (err || !batch) {
-                return res.status(404).render("error", {
+                return res.status(404).render("Error", {
                     title: req.gettext("Import not found."),
                 });
             }
@@ -59,7 +59,7 @@ module.exports = function(app) {
 
         ImageImport.findById(req.query.images, (err, batch) => {
             if (err || !batch) {
-                return res.status(404).render("error", {
+                return res.status(404).render("Error", {
                     title: req.gettext("Import not found."),
                 });
             }

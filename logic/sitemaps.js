@@ -43,7 +43,7 @@ module.exports = function(app) {
             }, (err, results) => {
                 /* istanbul ignore if */
                 if (err) {
-                    return res.status(500).render("error", {
+                    return res.status(500).render("Error", {
                         title: err.message,
                     });
                 }

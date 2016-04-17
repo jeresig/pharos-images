@@ -2,6 +2,8 @@
 
 const React = require("react");
 
+const Page = require("./Page.jsx");
+
 module.exports = React.createClass({
     propTypes: {
         body: React.PropTypes.string,
@@ -9,9 +11,15 @@ module.exports = React.createClass({
     },
 
     render() {
-        return <div>
-            <h1>{this.props.title}</h1>
-            <pre>{this.props.body}</pre>
-        </div>;
+        return <Page
+            {...this.props}
+        >
+            <div className="row">
+                <div className="col-xs-12">
+                    <h1>{this.props.title}</h1>
+                    {this.props.body && <pre>{this.props.body}</pre>}
+                </div>
+            </div>
+        </Page>;
     },
 });

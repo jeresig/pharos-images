@@ -20,7 +20,7 @@ module.exports = function(app) {
             const type = types[req.params.type];
 
             if (!type) {
-                return res.status(404).render("error", {
+                return res.status(404).render("Error", {
                     title: req.gettext("Type not found."),
                 });
             }
@@ -40,7 +40,7 @@ module.exports = function(app) {
 
             Artwork.findById(id, (err, artwork) => {
                 if (err || !artwork) {
-                    return res.status(404).render("error", {
+                    return res.status(404).render("Error", {
                         title: req.gettext("Artwork not found."),
                     });
                 }
@@ -54,8 +54,9 @@ module.exports = function(app) {
                         .sort((a, b) => b.score - a.score);
 
                     if (!compare) {
-                        return res.render("artwork", {
+                        return res.render("Artwork", {
                             title,
+                            compare: false,
                             artworks: [artwork],
                             similar: artwork.similarArtworks,
                         });
@@ -65,9 +66,11 @@ module.exports = function(app) {
                         (similar, callback) => {
                             similar.artwork.loadImages(false, callback);
                         }, () => {
-                            res.render("artwork", {
+                            res.render("Artwork", {
                                 title,
+                                compare: true,
                                 noIndex: true,
+                                similar: [],
                                 artworks: [artwork]
                                     .concat(artwork.similarArtworks
                                         .map((similar) => similar.artwork)),
@@ -91,7 +94,7 @@ module.exports = function(app) {
                     next();
 
                 } catch (e) {
-                    return res.status(404).render("error", {
+                    return res.status(404).render("Error", {
                         title: req.gettext("Source not found."),
                     });
                 }

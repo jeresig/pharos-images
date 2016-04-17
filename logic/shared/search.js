@@ -56,8 +56,7 @@ module.exports = (req, res, tmplParams) => {
     }, (err, results) => {
         /* istanbul ignore if */
         if (err) {
-            console.error(err);
-            return res.status(500).render("error", {
+            return res.status(500).render("Error", {
                 title: err.message,
             });
         }
@@ -70,14 +69,14 @@ module.exports = (req, res, tmplParams) => {
         const end = query.start + results.hits.hits.length;
 
         // The link to the previous page of search results
-        const prevLink = (query.start > 0 && req.searchURL({
+        const prevLink = (query.start > 0 ? req.searchURL({
             start: (query.start - query.rows > 0 ?
                 (query.start - query.rows) : ""),
-        }, true));
+        }, true) : "");
 
         // The link to the next page of the search results
-        const nextLink = (end < results.hits.total &&
-            req.searchURL({start: query.start + query.rows}, true));
+        const nextLink = (end < results.hits.total ?
+            req.searchURL({start: query.start + query.rows}, true) : "");
 
         // Construct a nicer form of the facet data to feed in to
         // the templates
@@ -150,7 +149,7 @@ module.exports = (req, res, tmplParams) => {
             }).filter((crumb) => crumb.name);
         }
 
-        res.render("search", Object.assign({
+        res.render("Search", Object.assign({
             title,
             breadcrumbs,
             sources: models("Source").getSources(),
