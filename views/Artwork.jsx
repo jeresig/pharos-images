@@ -15,6 +15,7 @@ const artworkType = React.PropTypes.shape({
     dates: React.PropTypes.arrayOf(
         React.PropTypes.shape({
             _id: React.PropTypes.string,
+            original: React.PropTypes.string,
             circa: React.PropTypes.bool,
             end: React.PropTypes.number,
             start: React.PropTypes.number,

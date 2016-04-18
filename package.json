@@ -17,7 +17,7 @@
     "update-i18n": "tx pull -a && po2json.js -p translations/de/messages.po > translations/de/messages.json && po2json.js -p translations/it/messages.po > translations/it/messages.json",
     "migrate": "migrate",
     "coverage": "NODE_ENV=test nyc --reporter=lcov tap tests/schemas/*.js tests/logic/*.js",
-    "test-file": "NODE_ENV=test nyc --reporter=lcov tap"
+    "test-file": "NODE_ENV=test nyc tap"
   },
   "repository": {
     "type": "git",

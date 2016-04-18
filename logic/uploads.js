@@ -150,14 +150,11 @@ module.exports = (app) => {
                         (similar, callback) => {
                             similar.artwork.loadImages(false, callback);
                         }, () => {
-                            res.render("upload", {
+                            res.render("Upload", {
                                 title: upload.getTitle(req),
-                                upload,
+                                similar: upload.similarArtworks,
                                 image: upload.images[0],
                                 noIndex: true,
-                                artworks: [upload]
-                                    .concat(upload.similarArtworks
-                                        .map((similar) => similar.artwork)),
                             });
                         });
                 });
