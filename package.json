@@ -88,12 +88,12 @@
     "babel-cli": "^6.7.5",
     "eslint": "^2.2.0",
     "eslint-plugin-react": "^4.3.0",
-    "jsxgettext": "jeresig/jsxgettext",
+    "jsxgettext": "https://github.com/jeresig/jsxgettext",
     "migrate": "^0.2.2",
     "mock-fs": "^3.7.0",
     "pre-commit": "^1.1.2",
     "sinon": "^1.17.3",
-    "tap": "jeresig/node-tap#update-nyc"
+    "tap": "https://github.com/jeresig/node-tap#update-nyc"
   },
   "pre-commit": [
     "test",
