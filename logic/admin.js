@@ -118,16 +118,12 @@ module.exports = function(app) {
             }
 
             const imageImport = results[0];
-            const artworkImport = results[1];
+            const dataImport = results[1];
 
-            const imagesImported = imageImport.some((batch) =>
-                batch.state === "completed");
-
-            res.render("admin", {
+            res.render("Admin", {
                 source,
                 imageImport,
-                artworkImport,
-                imagesImported,
+                dataImport,
                 batchState,
                 batchError,
             });

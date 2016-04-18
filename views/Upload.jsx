@@ -104,7 +104,7 @@ module.exports = React.createClass({
         return <Page
             {...this.props}
         >
-            <div id="result" className="row">
+            <div className="row">
                 <div className="col-md-6">
                     {this.renderUpload()}
                 </div>
