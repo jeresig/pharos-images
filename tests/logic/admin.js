@@ -157,7 +157,7 @@ tap.test("Image Import Page (Completed)", (t) => {
 tap.test("Image Import Page (Completed, Expanded)", (t) => {
     adminLogin(() => {
         const url = "http://localhost:3000/source/test/admin" +
-            "?images=test/completed&expanded=images";
+            "?images=test/completed&expanded=models";
         request.get(url, (err, res) => {
             t.error(err, "Error should be empty.");
             t.equal(res.statusCode, 200);

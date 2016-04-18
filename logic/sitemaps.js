@@ -14,14 +14,18 @@ module.exports = function(app) {
                 const sitemaps = [];
 
                 for (let i = 0; i < total; i += NUM_PER_SITEMAP) {
-                    sitemaps.push({
-                        url: urls.gen(req.lang,
-                            `/sitemap-search-${i}.xml`),
-                    });
+                    const url = urls.gen(req.lang, `/sitemap-search-${i}.xml`);
+                    sitemaps.push(`<sitemap><loc>${url}</loc></sitemap>`);
                 }
 
+                const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${sitemaps.join("\n")}
+</sitemapindex>
+`;
+
                 res.header("Content-Type", "application/xml");
-                res.render("sitemap-index", {sitemaps});
+                res.status(200).send(sitemap);
             });
         },
 
@@ -48,11 +52,18 @@ module.exports = function(app) {
                     });
                 }
 
-                const urls = results.hits.hits.map((item) =>
-                    Artwork.getURLFromID(req.lang, item._id));
+                const sitemaps = results.hits.hits.map((item) =>
+                    Artwork.getURLFromID(req.lang, item._id))
+                    .map((url) => `<url><loc>${url}</loc></url>`);
+
+                const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+${sitemaps.join("\n")}
+</urlset>`;
 
                 res.header("Content-Type", "application/xml");
-                res.render("sitemap-results", {urls});
+                res.status(200).send(sitemap);
             });
         },
 

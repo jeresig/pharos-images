@@ -113,6 +113,7 @@ tap.test("getFilteredResults", {autoend: true}, (t) => {
                 "fileName": "small.jpg",
                 "model": "test/small.jpg",
                 "warnings": [
+                    "NEW_VERSION",
                     "TOO_SMALL",
                 ],
             },
@@ -137,6 +138,7 @@ tap.test("getFilteredResults", {autoend: true}, (t) => {
                 "fileName": "small.jpg",
                 "model": "test/small.jpg",
                 "warnings": [
+                    "NEW_VERSION",
                     "TOO_SMALL",
                 ],
             },

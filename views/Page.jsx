@@ -5,29 +5,27 @@ const React = require("react");
 const config = require("../lib/config");
 const locales = require("../config/locales.json");
 
-module.exports = React.createClass({
+const Page = React.createClass({
     propTypes: {
         URL: React.PropTypes.func.isRequired,
         children: React.PropTypes.any,
-        desc: React.PropTypes.string,
         getOtherURL: React.PropTypes.func.isRequired,
         gettext: React.PropTypes.func.isRequired,
         lang: React.PropTypes.string.isRequired,
         noIndex: React.PropTypes.bool,
         scripts: React.PropTypes.any,
         social: React.PropTypes.shape({
+            imgURL: React.PropTypes.string.isRequired,
             url: React.PropTypes.string.isRequired,
             title: React.PropTypes.string.isRequired,
-            imgURL: React.PropTypes.string.isRequired,
         }),
         splash: React.PropTypes.any,
         style: React.PropTypes.any,
-        title: React.PropTypes.string.isRequired,
+        title: React.PropTypes.string,
     },
 
     renderHead() {
         const URL = this.props.URL;
-        const desc = this.props.desc;
         let title = `${config.SITE_NAME_SHORT}: ${config.SITE_NAME}`;
 
         if (this.props.title) {
@@ -50,7 +48,6 @@ module.exports = React.createClass({
                 href={URL("/images/favicon.png")}
             />
             <title>{title}</title>
-            {desc && <meta name="description" content={desc}/>}
             {this.props.social && this.renderSocialMeta()}
             <link rel="stylesheet" href={URL("/css/bootstrap.min.css")}/>
             <link rel="stylesheet"
@@ -64,15 +61,15 @@ module.exports = React.createClass({
     renderSocialMeta() {
         const social = this.props.social;
         return [
-            <meta name="twitter:card" content="photo"/>,
-            <meta name="twitter:url" content={social.url}/>,
-            <meta name="twitter:title" content={social.title}/>,
-            <meta name="twitter:image" content={social.imgURL}/>,
-            <meta property="og:title" content={social.title}/>,
-            <meta property="og:type" content="article"/>,
-            <meta property="og:url" content={social.url}/>,
-            <meta property="og:image" content={social.imgURL}/>,
-            <meta property="og:site_name" content={config.SITE_NAME}/>,
+            <meta key="1" name="twitter:card" content="photo"/>,
+            <meta key="2" name="twitter:url" content={social.url}/>,
+            <meta key="3" name="twitter:title" content={social.title}/>,
+            <meta key="4" name="twitter:image" content={social.imgURL}/>,
+            <meta key="5" property="og:title" content={social.title}/>,
+            <meta key="6" property="og:type" content="article"/>,
+            <meta key="7" property="og:url" content={social.url}/>,
+            <meta key="8" property="og:image" content={social.imgURL}/>,
+            <meta key="9" property="og:site_name" content={config.SITE_NAME}/>,
         ];
     },
 
@@ -190,3 +187,5 @@ module.exports = React.createClass({
         </html>;
     },
 });
+
+module.exports = Page;

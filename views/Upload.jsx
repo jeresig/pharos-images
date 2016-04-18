@@ -4,7 +4,7 @@ const React = require("react");
 
 const Page = require("./Page.jsx");
 
-module.exports = React.createClass({
+const Upload = React.createClass({
     propTypes: {
         URL: React.PropTypes.func.isRequired,
         format: React.PropTypes.func.isRequired,
@@ -115,3 +115,5 @@ module.exports = React.createClass({
         </Page>;
     },
 });
+
+module.exports = Upload;

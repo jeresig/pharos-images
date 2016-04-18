@@ -39,7 +39,7 @@ module.exports = function(app) {
 
             const adminURL = req.source.getAdminURL(req.lang);
 
-            res.render("import-artworks", {
+            res.render("ImportData", {
                 batch,
                 results: batch.getFilteredResults(),
                 expanded: req.query.expanded,
@@ -64,9 +64,10 @@ module.exports = function(app) {
                 });
             }
 
+            const expanded = req.query.expanded;
             const results = batch.results
                 .filter((result) => !!result.model);
-            const toPopulate = req.query.expanded === "images" ?
+            const toPopulate = req.query.expanded === "models" ?
                 results :
                 results.slice(0, 8);
 
@@ -81,9 +82,9 @@ module.exports = function(app) {
             }, () => {
                 const adminURL = req.source.getAdminURL(req.lang);
 
-                res.render("import-images", {
+                res.render("ImportImages", {
                     batch,
-                    results: batch.getFilteredResults(),
+                    expanded,
                     adminURL,
                     batchState,
                     batchError,

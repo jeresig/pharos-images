@@ -7,7 +7,7 @@ const urls = require("../lib/urls");
 module.exports = (app) => {
     return {
         login(req, res) {
-            res.render("login", {});
+            res.render("Login", {});
         },
 
         loginRedirect(req, res, next) {

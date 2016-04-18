@@ -6,7 +6,7 @@ const config = require("../lib/config");
 
 const Page = require("./Page.jsx");
 
-module.exports = React.createClass({
+const Home = React.createClass({
     propTypes: {
         URL: React.PropTypes.func.isRequired,
         artworkTotal: React.PropTypes.number.isRequired,
@@ -165,7 +165,6 @@ module.exports = React.createClass({
     render() {
         return <Page
             {...this.props}
-            title={config.SITE_NAME}
             splash={this.renderSplash()}
         >
             <div className="col-sm-8 col-sm-offset-2 upload-box">
@@ -176,3 +175,5 @@ module.exports = React.createClass({
         </Page>;
     },
 });
+
+module.exports = Home;

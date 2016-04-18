@@ -4,7 +4,7 @@ const React = require("react");
 
 const Page = require("./Page.jsx");
 
-module.exports = React.createClass({
+const Error = React.createClass({
     propTypes: {
         body: React.PropTypes.string,
         title: React.PropTypes.string.isRequired,
@@ -23,3 +23,5 @@ module.exports = React.createClass({
         </Page>;
     },
 });
+
+module.exports = Error;

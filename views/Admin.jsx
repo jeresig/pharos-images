@@ -96,18 +96,20 @@ module.exports = React.createClass({
 
     renderImageImport(batch) {
         const results = batch.getFilteredResults();
-        let columns = [
-            <td key="state">{this.props.batchState(batch)}</td>,
-            <td key="models">{results.models.length}</td>,
-            <td key="errors">{results.errors.length}</td>,
-            <td key="warnings">{results.warnings.length}</td>,
-        ];
+        let columns;
 
         if (batch.state === "error") {
             columns = <td colSpan="4">
                 {this.props.format(this.props.gettext("Error: %(error)s"),
                     {error: this.props.batchError(batch)})}
             </td>;
+        } else {
+            columns = [
+                <td key="state">{this.props.batchState(batch)}</td>,
+                <td key="models">{results.models.length}</td>,
+                <td key="errors">{results.errors.length}</td>,
+                <td key="warnings">{results.warnings.length}</td>,
+            ];
         }
 
         return <tr key={batch._id}>
@@ -191,29 +193,31 @@ module.exports = React.createClass({
 
     renderDataImport(batch) {
         const results = batch.getFilteredResults();
-        let columns = [
-            batch.state === "process.completed" && <td key="finalize">
-                <a href={this.props.URL(batch)}
-                    className="btn btn-success btn-xs"
-                >
-                    {this.props.gettext("Finalize Import")}
-                </a>
-            </td>,
-            batch.state !== "process.completed" &&
-                <td key="state">{this.props.batchState(batch)}</td>,
-            <td key="unprocessed">{results.unprocessed.length}</td>,
-            <td key="created">{results.created.length}</td>,
-            <td key="changed">{results.changed.length}</td>,
-            <td key="deleted">{results.deleted.length}</td>,
-            <td key="errors">{results.errors.length}</td>,
-            <td key="warnings">{results.warnings.length}</td>,
-        ];
+        let columns;
 
         if (batch.state === "error") {
             columns = <td colSpan="7">
                 {this.props.format(this.props.gettext("Error: %(error)s"),
                     {error: this.props.batchError(batch)})}
             </td>;
+        } else {
+            columns = [
+                batch.state === "process.completed" && <td key="finalize">
+                    <a href={this.props.URL(batch)}
+                        className="btn btn-success btn-xs"
+                    >
+                        {this.props.gettext("Finalize Import")}
+                    </a>
+                </td>,
+                batch.state !== "process.completed" &&
+                    <td key="state">{this.props.batchState(batch)}</td>,
+                <td key="unprocessed">{results.unprocessed.length}</td>,
+                <td key="created">{results.created.length}</td>,
+                <td key="changed">{results.changed.length}</td>,
+                <td key="deleted">{results.deleted.length}</td>,
+                <td key="errors">{results.errors.length}</td>,
+                <td key="warnings">{results.warnings.length}</td>,
+            ];
         }
 
         return <tr key={batch._id}>

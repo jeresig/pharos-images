@@ -152,6 +152,22 @@ const genData = () => {
             id: "1235",
             images: ["test/bar.jpg"],
             defaultImageHash: "2508884691",
+            similarArtworks: [
+                {
+                    _id: "test/1236",
+                    artwork: "test/1236",
+                    score: 17,
+                    source: "test",
+                    images: ["test/new1.jpg", "test/new2.jpg"],
+                },
+                {
+                    _id: "test/1234",
+                    artwork: "test/1234",
+                    score: 10,
+                    source: "test",
+                    images: ["test/foo.jpg"],
+                },
+            ],
         })),
 
         "test/1236": new Artwork(Object.assign({}, artworkData, {
@@ -166,6 +182,7 @@ const genData = () => {
             id: "1237",
             images: ["test/nosimilar.jpg"],
             defaultImageHash: "4246873662",
+            similarArtworks: [],
         })),
     };
 
@@ -235,6 +252,7 @@ const genData = () => {
             "_id": "small.jpg",
             "fileName": "small.jpg",
             "warnings": [
+                "NEW_VERSION",
                 "TOO_SMALL",
             ],
             "model": "test/small.jpg",
@@ -423,6 +441,16 @@ const genData = () => {
             hash: "4246873662a",
             width: 110,
             height: 110,
+            similarImages: [],
+        }),
+
+        "test/small.jpg": new Image({
+            _id: "test/small.jpg",
+            source: "test",
+            fileName: "small.jpg",
+            hash: "4246873662b",
+            width: 90,
+            height: 90,
             similarImages: [],
         }),
     };

@@ -10,7 +10,7 @@ const buckets = React.PropTypes.arrayOf({
     url: React.PropTypes.string.isRequired,
 });
 
-module.exports = React.createClass({
+const Search = React.createClass({
     propTypes: {
         URL: React.PropTypes.func.isRequired,
         artworks: React.PropTypes.arrayOf(
@@ -420,3 +420,5 @@ module.exports = React.createClass({
         </Page>;
     },
 });
+
+module.exports = Search;

@@ -1,6 +1,5 @@
 {
     "only": "**/*.jsx",
     "sourceMaps": "inline",
-    "retainLines": true,
     "presets": ["es2015", "react"]
 }

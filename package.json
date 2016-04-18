@@ -4,20 +4,19 @@
   "description": "This is the work-in-progress, open source, image database which will be used by the PHAROS art history photo archive consortium.",
   "main": "index.js",
   "scripts": {
-    "lint": "eslint lib/*.js logic/*.js logic/shared/*.js schemas/*.js server/*.js server/*/*.js utils/*.js converters/*.js tests/*.js *.js",
-    "test": "npm run lint && NODE_ENV=test nyc tap tests/schemas/*.js tests/logic/*.js",
+    "lint": "eslint lib/*.js logic/*.js logic/shared/*.js schemas/*.js server/*.js server/*/*.js utils/*.js converters/*.js custom/*.js tests/*.js *.js",
+    "test": "npm run lint && NODE_ENV=test tap --cov tests/schemas/*.js tests/logic/*.js",
     "start": "NODE_ENV=production naught start --worker-count 2 --log ./logs/naught.log --stdout ./logs/node.log --stderr ./logs/node-error.log server.js",
     "restart": "naught deploy",
     "stop": "naught stop",
-    "dev": "supervisor -i node_modules,old,locales,converters,sources,public server.js",
-    "dev-test": "NODE_ENV=test supervisor -i node_modules,old,locales,converters,sources,public tests/server.js",
-    "extract-i18n-js": "jsxgettext --keyword=format --keyword=gettext -L javascript --output-dir=./translations --output=messages.pot logic/*.js schemas/*.js server/*.js lib/*.js",
-    "extract-i18n-views": "jsxgettext --join-existing --keyword=format --keyword=gettext --output-dir=./translations --output=messages.pot views/*.jsx",
-    "extract-i18n": "npm run extract-i18n-js && npm run extract-i18n-views && git add translations/messages.pot",
+    "dev": "supervisor -e js,jsx -i node_modules,old,locales,converters,sources,public server.js",
+    "dev-test": "NODE_ENV=test supervisor -e js,jsx -i node_modules,old,locales,converters,sources,public tests/server.js",
+    "extract-i18n-js": "jsxgettext --keyword=format --keyword=gettext -L javascript --output-dir=./translations --output=messages.pot logic/*.js schemas/*.js server/*.js lib/*.js custom/*.js views/*.jsx",
+    "extract-i18n": "npm run extract-i18n-js && git add translations/messages.pot",
     "update-i18n": "tx pull -a && po2json.js -p translations/de/messages.po > translations/de/messages.json && po2json.js -p translations/it/messages.po > translations/it/messages.json",
     "migrate": "migrate",
-    "coverage": "NODE_ENV=test nyc --reporter=lcov tap tests/schemas/*.js tests/logic/*.js",
-    "test-file": "NODE_ENV=test nyc tap"
+    "coverage": "NODE_ENV=test tap --cov --coverage-report=lcov tests/schemas/*.js tests/logic/*.js",
+    "test-file": "NODE_ENV=test tap --cov"
   },
   "repository": {
     "type": "git",
@@ -89,13 +88,12 @@
     "babel-cli": "^6.7.5",
     "eslint": "^2.2.0",
     "eslint-plugin-react": "^4.3.0",
-    "jsxgettext": "^0.8.1",
+    "jsxgettext": "jeresig/jsxgettext",
     "migrate": "^0.2.2",
     "mock-fs": "^3.7.0",
-    "nyc": "^6.4.0",
     "pre-commit": "^1.1.2",
     "sinon": "^1.17.3",
-    "tap": "^5.7.0"
+    "tap": "jeresig/node-tap#update-nyc"
   },
   "pre-commit": [
     "test",

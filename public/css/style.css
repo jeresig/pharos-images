@@ -188,3 +188,11 @@
 .table > tbody > tr.plain:hover > td {
     background: #fff;
 }
+
+/*
+ * Styling for the import artwork view.
+ */
+pre.json {
+    max-height: 200px;
+    overflow: auto;
+}

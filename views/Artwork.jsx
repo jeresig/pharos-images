@@ -28,17 +28,13 @@ const artworkType = React.PropTypes.shape({
             width: React.PropTypes.number,
         })
     ),
-    images: React.PropTypes.arrayOf(
-        React.PropTypes.shape({
-            _id: React.PropTypes.string.isRequired,
-        })
-    ),
+    images: React.PropTypes.arrayOf(React.PropTypes.any),
     medium: React.PropTypes.string,
     objectType: React.PropTypes.string,
     title: React.PropTypes.string,
 });
 
-module.exports = React.createClass({
+const Artwork = React.createClass({
     propTypes: {
         URL: React.PropTypes.func.isRequired,
         artworks: React.PropTypes.arrayOf(artworkType),
@@ -54,6 +50,17 @@ module.exports = React.createClass({
         shortName: React.PropTypes.func.isRequired,
         similar: React.PropTypes.arrayOf(artworkType),
         stringNum: React.PropTypes.func.isRequired,
+    },
+
+    getTitle(artwork) {
+        let title = artwork.title || "";
+
+        if (artwork.objectType) {
+            const type = this.props.getType(artwork);
+            title = title ? `${type}: ${title}` : type;
+        }
+
+        return title;
     },
 
     renderArtwork() {
@@ -155,12 +162,7 @@ module.exports = React.createClass({
 
     renderTitle(artwork) {
         const size = Math.max(Math.round(12 / this.props.artworks.length), 3);
-        let title = artwork.title || "";
-
-        if (artwork.objectType) {
-            const type = this.props.getType(artwork);
-            title = title ? `${type}: ${title}` : type;
-        }
+        const title = this.getTitle(artwork);
 
         return <th className={`col-xs-${size} text-center`} key={artwork._id}>
             <h1 className="panel-title">{title}</h1>
@@ -203,7 +205,7 @@ module.exports = React.createClass({
             <ol className="carousel-indicators">
                 {artwork.images.map((image, i) =>
                     <li data-target={`#${carouselId}`} data-slide-to={i}
-                        className={i === 0 ? "active" : ""} key={carouselId}
+                        className={i === 0 ? "active" : ""} key={`img${i}`}
                     ></li>
                 )}
             </ol>
@@ -308,42 +310,14 @@ module.exports = React.createClass({
     },
 
     renderDetails(artwork) {
-        const source = artwork.getSource();
-        let link = <a href={artwork.url}>
+        const link = <a href={artwork.url}>
             {this.props.gettext("More information...")}</a>;
-
-        if (source.inactive) {
-            link = <small>{this.props.gettext(
-                "Unfortunately the source of this artwork no longer exists.")}
-            </small>;
-        } else if (source.hideLinks) {
-            link = <small>{this.props.gettext("There is no way to link to " +
-                "this artwork on the source site. Please visit the source " +
-                "and search for the artwork there.")}
-            </small>;
-        } else if (source.linkTitle) {
-            link = <small><a href={artwork.url}
-                title={artwork.getSource().linkTitle}
-            >
-                {this.props.getTitle(artwork)}
-            </a></small>;
-        }
 
         return <td key={artwork._id}>{link}</td>;
     },
 
     renderSource(artwork) {
         const source = artwork.getSource();
-
-        if (source.inactive) {
-            return <td key={artwork._id}>
-                <a href={this.props.URL(source)}
-                    title={this.props.fullName(source)}
-                >
-                    {this.props.fullName(source)}
-                </a>
-            </td>;
-        }
 
         return <td key={artwork._id}>
             <a href={source.url}>
@@ -419,10 +393,19 @@ module.exports = React.createClass({
     },
 
     render() {
+        const artwork = this.props.artworks[0];
+        const title = this.getTitle(artwork);
+        const social = {
+            imgURL: artwork.getOriginalURL(),
+            title,
+            url: this.props.URL(artwork),
+        };
+
         return <Page
             {...this.props}
-            title={this.props.artworks[0].title}
+            title={title}
             scripts={this.renderScript()}
+            social={social}
         >
             <div className="row">
                 {this.renderArtwork()}
@@ -431,3 +414,5 @@ module.exports = React.createClass({
         </Page>;
     },
 });
+
+module.exports = Artwork;
