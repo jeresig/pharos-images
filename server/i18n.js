@@ -25,10 +25,11 @@ module.exports = (app) => {
         // Restore the old local properties and methods
         Object.assign(res.locals, res.tmpLocals);
 
+        /* istanbul ignore next */
+        const host = req.headers["x-forwarded-host"] || req.get("host");
         let locale = config.USE_I18N_SUBDOMAIN === "1" ?
             // Set the locale based upon the subdomain
-            /* istanbul ignore else */
-            (/:\/\/(\w+)/.exec(req.url) || [])[1] :
+            /^\w*/.exec(host)[0] :
 
             // Set the locale based upon the ?lang= query string
             req.query.lang;
