@@ -8,7 +8,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2016-04-18 21:10+0000\n"
+"POT-Creation-Date: 2016-04-19 16:01+0000\n"
 
 #: logic/admin.js:25
 #: logic/admin.js:63
@@ -237,7 +237,7 @@ msgstr ""
 #: schemas/Import.js:66
 #: views/Admin.jsx:103
 #: views/Admin.jsx:200
-#: views/ImportData.jsx:122
+#: views/ImportData.jsx:124
 #: views/ImportImages.jsx:74
 msgid "Error: %(error)s"
 msgstr ""
@@ -400,14 +400,14 @@ msgstr ""
 
 #: views/Admin.jsx:85
 #: views/Admin.jsx:182
-#: views/ImportData.jsx:159
+#: views/ImportData.jsx:161
 #: views/ImportImages.jsx:99
 msgid "Errors"
 msgstr ""
 
 #: views/Admin.jsx:86
 #: views/Admin.jsx:183
-#: views/ImportData.jsx:166
+#: views/ImportData.jsx:168
 #: views/ImportImages.jsx:106
 msgid "Warnings"
 msgstr ""
@@ -425,7 +425,7 @@ msgid "Unprocessed"
 msgstr ""
 
 #: views/Admin.jsx:179
-#: views/ImportData.jsx:183
+#: views/ImportData.jsx:185
 msgid "Created"
 msgstr ""
 
@@ -434,12 +434,12 @@ msgid "Updated"
 msgstr ""
 
 #: views/Admin.jsx:181
-#: views/ImportData.jsx:192
+#: views/ImportData.jsx:194
 msgid "Deleted"
 msgstr ""
 
 #: views/Admin.jsx:209
-#: views/ImportData.jsx:103
+#: views/ImportData.jsx:105
 msgid "Finalize Import"
 msgstr ""
 
@@ -557,46 +557,46 @@ msgstr ""
 msgid "%(artworkCount)s Artworks, %(imageCount)s Images"
 msgstr ""
 
-#: views/ImportData.jsx:109
+#: views/ImportData.jsx:111
 msgid "Abandon Import"
 msgstr ""
 
-#: views/ImportData.jsx:119
+#: views/ImportData.jsx:121
 msgid "Data Import: %(fileName)s"
 msgstr ""
 
-#: views/ImportData.jsx:125
+#: views/ImportData.jsx:127
 #: views/ImportImages.jsx:77
 msgid "Uploaded: %(date)s"
 msgstr ""
 
-#: views/ImportData.jsx:127
+#: views/ImportData.jsx:129
 #: views/ImportImages.jsx:79
 msgid "Last Updated: %(date)s"
 msgstr ""
 
-#: views/ImportData.jsx:140
+#: views/ImportData.jsx:142
 #: views/ImportImages.jsx:87
 msgid "Return to Admin Page"
 msgstr ""
 
-#: views/ImportData.jsx:152
+#: views/ImportData.jsx:154
 msgid "To Be Processed"
 msgstr ""
 
-#: views/ImportData.jsx:174
+#: views/ImportData.jsx:176
 msgid "Changed"
 msgstr ""
 
-#: views/ImportData.jsx:175
+#: views/ImportData.jsx:177
 msgid "Will Be Changed"
 msgstr ""
 
-#: views/ImportData.jsx:184
+#: views/ImportData.jsx:186
 msgid "Will Be Created"
 msgstr ""
 
-#: views/ImportData.jsx:193
+#: views/ImportData.jsx:195
 msgid "Will Be Deleted"
 msgstr ""
 

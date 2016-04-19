@@ -38,8 +38,8 @@ module.exports = React.createClass({
                 </h3>
             </div>
             <div className="panel-body">
-                <form action="/source/{source._id}/upload-images" method="POST"
-                    encType="multipart/form-data"
+                <form action={`/source/${this.props.source._id}/upload-images`}
+                    method="POST" encType="multipart/form-data"
                 >
                     <input type="hidden" name="lang" value={this.props.lang}/>
                     <p>
@@ -144,7 +144,7 @@ module.exports = React.createClass({
             </p>;
         }
 
-        return <form action="/source/{source._id}/upload-data"
+        return <form action={`/source/${this.props.source._id}/upload-data`}
             method="POST" encType="multipart/form-data"
         >
             <input type="hidden" name="lang" value={this.props.lang}/>

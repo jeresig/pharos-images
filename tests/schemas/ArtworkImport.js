@@ -93,15 +93,20 @@ tap.test("setResults", (t) => {
 });
 
 tap.test("setResults (with error)", (t) => {
+    const error = [
+        "Parse error on line 2:",
+        "[    {        id: \"1234\",        ",
+        "--------------^",
+        "Expecting 'STRING', '}', got 'undefined'",
+    ].join("\n");
+
     const batch = init.getArtworkBatch();
     const dataFile = path.resolve(process.cwd(), "testData",
         "default-error.json");
     batch.setResults([fs.createReadStream(dataFile)], (err) => {
         t.error(err, "Error should be empty.");
-        t.equal(batch.error,
-            "Invalid JSON (Unexpected \"i\" at position 16 in state STOP)");
-        t.equal(batch.getError(req),
-            "Invalid JSON (Unexpected \"i\" at position 16 in state STOP)");
+        t.equal(batch.error, error);
+        t.equal(batch.getError(req), error);
         t.equal(batch.state, "error");
         t.equal(batch.results.length, 0, "Check number of results");
         t.end();

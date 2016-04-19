@@ -1,28 +1,22 @@
 "use strict";
 
+/**
+ * Parse a data file, given the specified converter, and return a JSON
+ * representation to load into the database.
+ */
+
 const fs = require("fs");
 const path = require("path");
-
-const ArgumentParser = require("argparse").ArgumentParser;
 
 const init = require("../lib/init");
 const models = require("../lib/models");
 
-const argparser = new ArgumentParser({
-    description: "Parse a data file, given the specified converter, and" +
-        "return a JSON representation to load into the database.",
-});
-
-argparser.addArgument(["source"], {
-    help: "The name of source of the converter (e.g. 'frick' or 'fzeri').",
-});
-
-const args = argparser.parseArgs();
+const sourceName = process.argv[2];
 const sources = require("../config/data.sources.json");
 
 init(() => {
-    const source = models("Source").getSource(args.source);
-    const options = sources.find((item) => item.source === args.source);
+    const source = models("Source").getSource(sourceName);
+    const options = sources.find((item) => item.source === sourceName);
 
     if (!options) {
         console.error("Source not found in data.config.json.");

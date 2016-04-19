@@ -1,26 +1,21 @@
 "use strict";
-const JSONStream = require("JSONStream");
+
+const jsonlint = require("jsonlint");
+const concat = require("concat-stream");
 
 module.exports = {
     files: [
-        "Upload a JSON file (.json) containing artwork metadata.",
+        "Upload a JSON file (.json) containing metadata.",
     ],
 
     processFiles(files, callback) {
-        const results = [];
-
-        files[0]
-            .pipe(JSONStream.parse("*"))
-            .on("data", (data) => {
-                results.push(data);
-            })
-            .on("error", function(err) {
-                this.destroy();
-                // TODO(jeresig): Transmit more friendly error message back
-                callback(err);
-            })
-            .on("end", () => {
+        files[0].pipe(concat((fileData) => {
+            try {
+                const results = jsonlint.parse(fileData.toString("utf8"));
                 callback(null, results);
-            });
+            } catch (err) {
+                callback(err);
+            }
+        }));
     },
 };

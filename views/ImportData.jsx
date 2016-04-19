@@ -70,7 +70,9 @@ const ImportData = React.createClass({
             <h4><a href={this.props.urlFromID(result.model)}>
                 {result.model}
             </a></h4>
-            <div className="diff">{this.props.diff(result.diff)}</div>
+            <div className="diff" dangerouslySetInnerHTML={
+                {__html: this.props.diff(result.diff)}}
+            ></div>
         </div>;
     },
 
@@ -92,7 +94,7 @@ const ImportData = React.createClass({
             <a href={this.props.urlFromID(result.model)}>{result.model}</a> :
             result.model;
 
-        return <li key={`item${i}`}>{title}</li>;
+        return <div key={`item${i}`}>{title}</div>;
     },
 
     renderConfirmButtons() {
@@ -102,7 +104,7 @@ const ImportData = React.createClass({
             >
                 {this.props.gettext("Finalize Import")}
             </a>
-
+            {" "}
             <a href={this.props.URL(this.props.batch, {abandon: true})}
                 className="btn btn-danger"
             >

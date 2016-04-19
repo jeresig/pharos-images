@@ -40,7 +40,7 @@ tap.test("getConverter", {autoend: true}, (t) => {
 tap.test("getExpectedFiles", {autoend: true}, (t) => {
     const source = init.getSource();
     t.same(source.getExpectedFiles(), [
-        "Upload a JSON file (.json) containing artwork metadata.",
+        "Upload a JSON file (.json) containing metadata.",
     ]);
 });
 
