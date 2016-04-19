@@ -28,7 +28,7 @@ module.exports = (app) => {
         let locale = config.USE_I18N_SUBDOMAIN === "1" ?
             // Set the locale based upon the subdomain
             /* istanbul ignore else */
-            (/\/\/(\w+)/.exec(req.url) || [])[0] :
+            (/:\/\/(\w+)/.exec(req.url) || [])[1] :
 
             // Set the locale based upon the ?lang= query string
             req.query.lang;
