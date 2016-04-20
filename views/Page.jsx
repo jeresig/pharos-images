@@ -3,7 +3,6 @@
 const React = require("react");
 
 const config = require("../lib/config");
-const locales = require("../config/locales.json");
 
 const Page = React.createClass({
     propTypes: {
@@ -137,24 +136,25 @@ const Page = React.createClass({
                 data-toggle="dropdown" role="button"
                 aria-expanded="false"
             >
-                <img alt={locales[this.props.lang]}
+                <img alt={config.locales[this.props.lang]}
                     src={URL(`/images/${this.props.lang}.png`)}
+                    width="16" height="11"
                 />
                 {" "}
-                {locales[this.props.lang]}
+                {config.locales[this.props.lang]}
                 <span className="caret"></span>
             </a>
             <ul className="dropdown-menu" role="menu">
-                {Object.keys(locales)
+                {Object.keys(config.locales)
                     .filter((locale) => locale !== this.props.lang)
                     .map((locale) => <li key={locale}>
                         <a href={this.props.getOtherURL(locale)}>
                             <img src={URL(`/images/${locale}.png`)}
-                                alt={locales[locale]}
+                                alt={config.locales[locale]}
                                 width="16" height="11"
                             />
                             {" "}
-                            {locales[locale]}
+                            {config.locales[locale]}
                         </a>
                     </li>)
                 }

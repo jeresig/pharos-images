@@ -624,16 +624,14 @@ tap.test("Artwork.lintData: Validation", {autoend: true}, (t) => {
     t.same(Artwork.lintData({
         id: "1234",
         source: "nga",
-        lang: "foo",
+        lang: "",
         url: "http://google.com/",
         images: ["foo.jpg"],
         title: "Test",
         objectType: "painting",
     }, req), {
         "error": "Required field `lang` is empty.",
-        "warnings": [
-            "`lang` must only be one of following languages: en, it, de.",
-        ],
+        "warnings": [],
     }, "Lang");
 
     t.same(Artwork.lintData({

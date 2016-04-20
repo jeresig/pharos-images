@@ -8,8 +8,6 @@ const jdp = require("jsondiffpatch").create({
     objectHash: (obj) => obj._id,
 });
 
-const locales = require("../config/locales.json");
-
 const models = require("../lib/models");
 const db = require("../lib/db");
 const urls = require("../lib/urls");
@@ -68,11 +66,6 @@ const Artwork = new db.schema({
     lang: {
         type: String,
         required: true,
-        validate: (v) => Object.keys(locales).indexOf(v) >= 0,
-        validationMsg: (req) => req.format(req.gettext("`lang` must only " +
-            "be one of following languages: %(langs)s."), {
-                langs: Object.keys(locales).join(", "),
-            }),
     },
 
     // A link to the artwork at its source
