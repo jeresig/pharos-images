@@ -114,7 +114,7 @@ const Search = React.createClass({
                 </label>
                 <input type="text" name="artist"
                     placeholder={this.props.gettext("Sample: Andrea del Sarto")}
-                    deafultValue={this.props.query.artist}
+                    defaultValue={this.props.query.artist}
                     className="form-control"
                 />
             </div>
