@@ -96,7 +96,7 @@ const Search = React.createClass({
     renderSearchForm() {
         const similarity = this.props.queries.similar.filters;
 
-        return <form action="/search" method="GET">
+        return <form action={this.props.URL("/search")} method="GET">
             <input type="hidden" name="lang" value={this.props.lang}/>
             <div className="form-group">
                 <label htmlFor="filter" className="control-label">

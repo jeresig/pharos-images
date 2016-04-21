@@ -8,7 +8,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2016-04-20 01:29+0000\n"
+"POT-Creation-Date: 2016-04-21 02:46+0000\n"
 
 #: logic/admin.js:25
 #: logic/admin.js:63
@@ -231,8 +231,8 @@ msgid "Error saving image."
 msgstr ""
 
 #: schemas/Import.js:66
-#: views/Admin.jsx:103
-#: views/Admin.jsx:200
+#: views/Admin.jsx:104
+#: views/Admin.jsx:202
 #: views/ImportData.jsx:124
 #: views/ImportImages.jsx:74
 msgid "Error: %(error)s"
@@ -354,92 +354,92 @@ msgstr ""
 msgid "Upload Images"
 msgstr ""
 
-#: views/Admin.jsx:46
+#: views/Admin.jsx:47
 msgid "Upload a Zip file (.zip) of JPG images (.jpg or .jpeg)."
 msgstr ""
 
-#: views/Admin.jsx:49
+#: views/Admin.jsx:50
 msgid "Names of images should match the names provided in the metadata."
 msgstr ""
 
-#: views/Admin.jsx:52
+#: views/Admin.jsx:53
 msgid ""
 "After you've uploaded a new batch of images they will be processed "
 "immediately but their similarity to other images will be computed in the "
 "background over the subsequent hours and days."
 msgstr ""
 
-#: views/Admin.jsx:67
-#: views/Admin.jsx:162
+#: views/Admin.jsx:68
+#: views/Admin.jsx:164
 msgid "Upload"
 msgstr ""
 
-#: views/Admin.jsx:81
-#: views/Admin.jsx:175
+#: views/Admin.jsx:82
+#: views/Admin.jsx:177
 msgid "File Name"
 msgstr ""
 
-#: views/Admin.jsx:82
-#: views/Admin.jsx:176
+#: views/Admin.jsx:83
+#: views/Admin.jsx:178
 msgid "Last Updated"
 msgstr ""
 
-#: views/Admin.jsx:83
-#: views/Admin.jsx:177
+#: views/Admin.jsx:84
+#: views/Admin.jsx:179
 msgid "Status"
 msgstr ""
 
-#: views/Admin.jsx:84
+#: views/Admin.jsx:85
 #: views/ImportImages.jsx:113
 msgid "Images"
 msgstr ""
 
-#: views/Admin.jsx:85
-#: views/Admin.jsx:182
+#: views/Admin.jsx:86
+#: views/Admin.jsx:184
 #: views/ImportData.jsx:161
 #: views/ImportImages.jsx:99
 msgid "Errors"
 msgstr ""
 
-#: views/Admin.jsx:86
-#: views/Admin.jsx:183
+#: views/Admin.jsx:87
+#: views/Admin.jsx:185
 #: views/ImportData.jsx:168
 #: views/ImportImages.jsx:106
 msgid "Warnings"
 msgstr ""
 
-#: views/Admin.jsx:126
+#: views/Admin.jsx:127
 msgid "Upload Metadata"
 msgstr ""
 
-#: views/Admin.jsx:142
+#: views/Admin.jsx:143
 msgid "You must upload some images before you can upload any metadata."
 msgstr ""
 
-#: views/Admin.jsx:178
+#: views/Admin.jsx:180
 msgid "Unprocessed"
 msgstr ""
 
-#: views/Admin.jsx:179
+#: views/Admin.jsx:181
 #: views/ImportData.jsx:185
 msgid "Created"
 msgstr ""
 
-#: views/Admin.jsx:180
+#: views/Admin.jsx:182
 msgid "Updated"
 msgstr ""
 
-#: views/Admin.jsx:181
+#: views/Admin.jsx:183
 #: views/ImportData.jsx:194
 msgid "Deleted"
 msgstr ""
 
-#: views/Admin.jsx:209
+#: views/Admin.jsx:211
 #: views/ImportData.jsx:105
 msgid "Finalize Import"
 msgstr ""
 
-#: views/Admin.jsx:232
+#: views/Admin.jsx:234
 msgid "%(name)s Admin Area"
 msgstr ""
 
@@ -487,20 +487,15 @@ msgstr ""
 msgid "More information..."
 msgstr ""
 
-#: views/Artwork.jsx:329
-msgid "Browse all %(count)s artworks..."
+#: views/Artwork.jsx:334
+msgid "Compare Images"
 msgstr ""
 
-#: views/Artwork.jsx:341
-msgid "Compare Artworks"
+#: views/Artwork.jsx:339
+msgid "Similar Images"
 msgstr ""
 
-#: views/Artwork.jsx:346
-#: views/Upload.jsx:52
-msgid "Similar Artworks"
-msgstr ""
-
-#: views/Artwork.jsx:371
+#: views/Artwork.jsx:364
 #: views/Upload.jsx:89
 msgid "Score: %(score)s"
 msgstr ""
@@ -676,6 +671,10 @@ msgstr ""
 
 #: views/Search.jsx:348
 msgid "No results found. Please refine your query."
+msgstr ""
+
+#: views/Upload.jsx:52
+msgid "Similar Artworks"
 msgstr ""
 
 #: views/Upload.jsx:63

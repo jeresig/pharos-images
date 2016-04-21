@@ -320,16 +320,9 @@ const Artwork = React.createClass({
         const source = artwork.getSource();
 
         return <td key={artwork._id}>
-            <a href={source.url}>
-                {source.linkText || this.props.fullName(source)}
-            </a><br/>
-            <small><a href={this.props.URL(source)}
-                title={this.props.fullName(source)}
-            >
-                {this.props.format(this.props.gettext(
-                    "Browse all %(count)s artworks..."),
-                    {count: this.props.stringNum(source.numArtworks)})}
-            </a></small>
+            <a href={this.props.URL(source)}>
+                {this.props.fullName(source)}
+            </a>
         </td>;
     },
 
@@ -338,12 +331,12 @@ const Artwork = React.createClass({
             <a href="?compare" className="btn btn-success btn-block"
                 style={{marginBottom: 20}}
             >
-                {this.props.gettext("Compare Artworks")} &raquo;
+                {this.props.gettext("Compare Images")} &raquo;
             </a>
 
             <div className="panel panel-default">
                 <div className="panel-heading">
-                    {this.props.gettext("Similar Artworks")}
+                    {this.props.gettext("Similar Images")}
                 </div>
                 <div className="panel-body row">
                     {this.props.similar.map((match) =>
