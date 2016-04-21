@@ -82,7 +82,7 @@
   "devDependencies": {
     "eslint": "^2.5.1",
     "eslint-plugin-react": "^4.3.0",
-    "jsxgettext": "https://github.com/jeresig/jsxgettext",
+    "jsxgettext": "^0.9.0",
     "migrate": "^0.2.2",
     "mock-fs": "^3.8.0",
     "pre-commit": "^1.1.2",
