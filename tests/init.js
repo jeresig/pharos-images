@@ -78,7 +78,9 @@ const viewFiles = {};
 const viewDir = path.resolve(__dirname, "..", "views");
 
 for (const file of fs.readdirSync(viewDir)) {
-    viewFiles[file] = fs.readFileSync(path.resolve(viewDir, file));
+    if (file.indexOf(".jsx") >= 0) {
+        viewFiles[file] = fs.readFileSync(path.resolve(viewDir, file));
+    }
 }
 
 // Converters used for testing
