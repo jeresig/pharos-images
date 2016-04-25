@@ -8,7 +8,8 @@ const FixedString = (options) => {
     /*
     name
     modelName
-    values: [String]
+    allowUnknown: Bool
+    values: {Key: title(i18n)}
     title(i18n)
     placeholder(i18n)
     */
@@ -24,12 +25,15 @@ FixedString.prototype = {
     },
 
     searchTitle(query, i18n) {
-        const title = this.options.title(i18n);
-        return `${title}: ${query[this.options.name]}`;
-    },
+        const value = query[this.options.name];
+        const values = this.options.values || {};
 
-    url(query) {
-        return `/type/${encodeURIComponent(query[this.options.name])}`;
+        // If there is a value that has an i18n title mapping
+        if (values && typeof values[value] === "function") {
+            return values[value](i18n);
+        }
+
+        return value;
     },
 
     filter(query, sanitize) {
@@ -61,7 +65,25 @@ FixedString.prototype = {
     },
 
     schema() {
-        return {
+        let validate = {};
+        const values = Array.isArray(this.options.values) ?
+            this.options.values :
+            Object.keys(this.options.values);
+
+        // Only validate the values if there are values to validate against
+        // and if unknown values aren't allowed
+        if (values.length > 0 && !this.options.allowUnknown) {
+            validate = {
+                validate: (val) => values.indexOf(val) >= 0,
+                validationMsg: (req) => req.format(req.gettext("`%(name)s` " +
+                    "must be one of the following values: %(values)s."), {
+                        name: this.options.name,
+                        values: values.join(", "),
+                    }),
+            };
+        }
+
+        return Object.assign({
             type: String,
             es_indexed: true,
             es_type: "multi_field",
@@ -70,15 +92,7 @@ FixedString.prototype = {
                 name: {type: "string", index: "analyzed"},
                 raw: {type: "string", index: "not_analyzed"},
             },
-            recommended: true,
-            validate: (val) =>
-                Object.keys(this.options.values).indexOf(val) >= 0,
-            validationMsg: (req) => req.format(req.gettext("`%(name)s` " +
-                "must be one of the following values: %(values)s."), {
-                    name: this.options.name,
-                    values: Object.keys(this.options.values).join(", "),
-                }),
-        };
+        }, validate);
     },
 };
 
