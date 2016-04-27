@@ -126,6 +126,53 @@ YearRange.prototype = {
         };
     },
 
+    facet(query) {
+        const value = query[this.props.name];
+        // TODO: Make these ranges configurable
+        let ranges = [
+            { to: 999 },
+            { from: 1000, to: 1099 },
+            { from: 1100, to: 1199 },
+            { from: 1200, to: 1299 },
+            { from: 1300, to: 1399 },
+            { from: 1400, to: 1499 },
+            { from: 1500, to: 1599 },
+            { from: 1600, to: 1699 },
+            { from: 1700, to: 1799 },
+            { from: 1800 },
+        ];
+
+        const start = parseFloat(value.start);
+        const end = parseFloat(value.end);
+
+        if (start && end && end - start < 300) {
+            ranges = [];
+            for (let year = start; year < end; year += 10) {
+                ranges.push({
+                    from: year,
+                    to: year + 9,
+                });
+            }
+        }
+
+        return {
+            range: {
+                field: `${this.modelName()}.years`,
+                ranges,
+            },
+        };
+    },
+
+    formatFacetBucket(bucket, searchURL) {
+        return {
+            text: numRange(bucket),
+            url: searchURL({
+                [`${this.props.name}.start`]: bucket.from,
+                [`${this.props.name}.end`]: bucket.to,
+            }),
+        };
+    },
+
     renderFilter(query, i18n) {
         return YearRangeFilter({
             placeholder: this.options.placeholder(i18n),

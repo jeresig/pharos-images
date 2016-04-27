@@ -32,7 +32,7 @@ Dimension.prototype = {
         const widthMin = req.query[`${this.options.name}.widthMin`];
         const widthMax = req.query[`${this.options.name}.widthMax`];
         const unit = req.query[`${this.options.name}.unit`] ||
-            config.DEFAULT_UNIT;
+            config.DEFAULT_SEARCH_UNIT || config.DEFAULT_UNIT;
 
         if (heightMin || heightMax || widthMin || widthMax) {
             return {heightMin, heightMax, widthMin, widthMax, unit};
@@ -41,10 +41,11 @@ Dimension.prototype = {
 
     searchTitle(query, i18n) {
         const title = this.options.title(i18n);
+        const value = query[this.options.name];
         const range = numRange({
-            from: query[this.options.name].start,
-            to: query[this.options.name].end,
-            unit: query[this.options.name].unit,
+            from: value.start,
+            to: value.end,
+            unit: value.unit,
         });
 
         return `${title}: ${range}`;
@@ -59,11 +60,50 @@ Dimension.prototype = {
                 range: {
                     "dimensions.width": {
                         gte: pd.convertNumber(
-                            parseFloat(value.widthMin), value.unit, "mm"),
+                            parseFloat(value.widthMin), value.unit,
+                                config.DEFAULT_UNIT),
                     },
                 },
             });
         }
+
+        if (value.widthMax) {
+            filters.push({
+                range: {
+                    "dimensions.width": {
+                        lte: pd.convertNumber(
+                            parseFloat(value.widthMax), value.unit,
+                                config.DEFAULT_UNIT),
+                    },
+                },
+            });
+        }
+
+        if (value.heightMin) {
+            filters.push({
+                range: {
+                    "dimensions.height": {
+                        gte: pd.convertNumber(
+                            parseFloat(query.heightMin), query.unit,
+                                config.DEFAULT_UNIT),
+                    },
+                },
+            });
+        }
+
+        if (value.heightMax) {
+            filters.push({
+                range: {
+                    "dimensions.height": {
+                        lte: pd.convertNumber(
+                            parseFloat(query.heightMax), query.unit,
+                                config.DEFAULT_UNIT),
+                    },
+                },
+            });
+        }
+
+        return filters;
     },
 
     renderFilter(query, i18n) {
@@ -121,8 +161,8 @@ Dimension.prototype = {
         return {
             type: [DimensionSchema],
             convert: (obj) => typeof obj === "string" ?
-                pd.parseDimension(obj, true, "mm") :
-                pd.convertDimension(obj, "mm"),
+                pd.parseDimension(obj, true, config.DEFAULT_UNIT) :
+                pd.convertDimension(obj, config.DEFAULT_UNIT),
             validateArray: (val) => (val.width || val.height) && val.unit,
             validationMsg: (req) => req.gettext("Dimensions must have a " +
                 "unit specified and at least a width or height."),
