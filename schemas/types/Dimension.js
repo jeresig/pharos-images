@@ -16,7 +16,8 @@ const Dimension = (options) => {
     /*
     name
     modelName
-    title(i18n)
+    widthTitle(i18n)
+    heightTitle(i18n)
     placeholder(i18n)
     */
 };
@@ -39,16 +40,45 @@ Dimension.prototype = {
         }
     },
 
-    searchTitle(query, i18n) {
-        const title = this.options.title(i18n);
+    breadcrumb(query, searchURL, i18n) {
+        const breadcrumbs = [];
         const value = query[this.options.name];
-        const range = numRange({
-            from: value.start,
-            to: value.end,
-            unit: value.unit,
-        });
 
-        return `${title}: ${range}`;
+        if (value.heightMin || value.heightMax) {
+            const title = this.options.heightTitle(i18n);
+            const range = numRange({
+                from: value.heightMin,
+                to: value.heightMax,
+                unit: value.unit,
+            });
+
+            breadcrumbs.push({
+                title: `${title}: ${range}`,
+                url: searchURL({
+                    heightMin: value.heightMin,
+                    heightMax: value.heightMax,
+                }),
+            });
+        }
+
+        if (value.widthMin || value.widthMax) {
+            const title = this.options.widthTitle(i18n);
+            const range = numRange({
+                from: value.widthMin,
+                to: value.widthMax,
+                unit: value.unit,
+            });
+
+            breadcrumbs.push({
+                title: `${title}: ${range}`,
+                url: searchURL({
+                    widthMin: value.widthMin,
+                    widthMax: value.widthMax,
+                }),
+            });
+        }
+
+        return breadcrumbs;
     },
 
     filter(query) {
@@ -104,6 +134,25 @@ Dimension.prototype = {
         }
 
         return filters;
+    },
+
+    facet() {
+        return {
+            terms: {
+                field: `${this.modelName()}.raw`,
+            },
+        };
+    },
+
+    formatFacetBucket(bucket, searchURL, i18n) {
+        return {
+            text: (bucket.key in this.options.values ?
+                this.options.values[bucket.key](i18n) :
+                bucket.key),
+            url: searchURL({
+                [this.props.name]: bucket.key,
+            }),
+        };
     },
 
     renderFilter(query, i18n) {
