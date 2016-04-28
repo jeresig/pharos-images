@@ -48,6 +48,25 @@ FixedString.prototype = {
         };
     },
 
+    facet() {
+        return {
+            terms: {
+                field: `${this.modelName()}.raw`,
+            },
+        };
+    },
+
+    formatFacetBucket(bucket, searchURL, i18n) {
+        return {
+            text: (bucket.key in this.options.values ?
+                this.options.values[bucket.key](i18n) :
+                bucket.key),
+            url: searchURL({
+                [this.props.name]: bucket.key,
+            }),
+        };
+    },
+
     renderFilter(query, i18n) {
         return FixedStringFilter({
             placeholder: this.options.placeholder(i18n),

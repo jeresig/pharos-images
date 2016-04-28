@@ -40,6 +40,25 @@ Name.prototype = {
         };
     },
 
+    facet() {
+        // TODO: Make the number of facets configurable
+        return {
+            terms: {
+                field: `${this.modelName()}.name.raw`,
+                size: 50,
+            },
+        };
+    },
+
+    formatFacetBucket(bucket, searchURL) {
+        return {
+            text: bucket.key,
+            url: searchURL({
+                [this.props.name]: bucket.key,
+            }),
+        };
+    },
+
     renderFilter(query, i18n) {
         return NameFilter({
             placeholder: this.options.placeholder(i18n),
