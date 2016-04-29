@@ -377,11 +377,11 @@ const Search = React.createClass({
         >
             <div className="img-wrap">
                 <a href={this.props.URL(artwork)}
-                    title={artwork.getTitle(this.props.lang)}
+                    title={this.props.getTitle(artwork)}
                 >
                     <img src={artwork.getThumbURL()}
-                        alt={artwork.getTitle(this.props.lang)}
-                        title={artwork.getTitle(this.props.lang)}
+                        alt={this.props.getTitle(artwork)}
+                        title={this.props.getTitle(artwork)}
                         className="img-responsive center-block"
                     />
                 </a>

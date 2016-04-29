@@ -88,6 +88,7 @@
     color: #FFF;
     padding: 0 5px;
     margin-top: 5px;
+    max-height: 20px;
 }
 
 .img .details a {
