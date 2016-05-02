@@ -2,7 +2,7 @@
 
 const React = require("react");
 
-const LocationFilter = React.createClass({
+const NameFilter = React.createClass({
     propTypes: {
         name: React.PropTypes.string.isRequired,
         placeholder: React.PropTypes.string,
@@ -24,4 +24,4 @@ const LocationFilter = React.createClass({
     },
 });
 
-module.exports = LocationFilter;
+module.exports = NameFilter;

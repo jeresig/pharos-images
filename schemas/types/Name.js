@@ -61,6 +61,7 @@ Name.prototype = {
 
     renderFilter(query, i18n) {
         return NameFilter({
+            name: this.options.name,
             placeholder: this.options.placeholder(i18n),
             title: this.options.title(i18n),
             value: query[this.options.name],
@@ -69,8 +70,8 @@ Name.prototype = {
 
     renderView(data, searchURL) {
         return NameDisplay({
-            locations: data[this.modelName()],
             name: this.options.name,
+            names: data[this.modelName()],
             searchURL,
         });
     },
