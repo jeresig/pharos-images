@@ -7,8 +7,8 @@ const DimensionFilter = React.createClass({
         heightTitle: React.PropTypes.string.isRequired,
         name: React.PropTypes.string.isRequired,
         placeholder: React.PropTypes.shape({
-            end: React.PropTypes.number,
-            start: React.PropTypes.number,
+            max: React.PropTypes.number,
+            min: React.PropTypes.number,
         }),
         value: React.PropTypes.string,
         widthTitle: React.PropTypes.string.isRequired,
@@ -25,13 +25,13 @@ const DimensionFilter = React.createClass({
                 <div className="form-inline">
                     <input type="text" name={`${this.props.name}.width.min`}
                         defaultValue={this.props.value.width.min}
-                        placeholder="10"
+                        placeholder={this.props.placeholder.min}
                         className="form-control size-control"
                     />
                     &mdash;
                     <input type="text" name={`${this.props.name}.height.max`}
                         defaultValue={this.props.value.width.max}
-                        placeholder="200"
+                        placeholder={this.props.placeholder.max}
                         className="form-control size-control"
                     />
                 </div>
@@ -45,13 +45,13 @@ const DimensionFilter = React.createClass({
                 <div className="form-inline">
                     <input type="text" name={`${this.props.name}.height.min`}
                         defaultValue={this.props.value.width.minmin}
-                        placeholder="10"
+                        placeholder={this.props.placeholder.min}
                         className="form-control size-control"
                     />
                     &mdash;
                     <input type="text" name={`${this.props.name}.height.max`}
                         defaultValue={this.props.value.width.max}
-                        placeholder="200"
+                        placeholder={this.props.placeholder.max}
                         className="form-control size-control"
                     />
                 </div>
