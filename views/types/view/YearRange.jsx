@@ -2,7 +2,7 @@
 
 const React = require("react");
 
-const DateView = React.createClass({
+const YearRangeView = React.createClass({
     propTypes: {
         getDate: React.PropTypes.func.isRequired,
         name: React.PropTypes.string.isRequired,
@@ -29,4 +29,4 @@ const DateView = React.createClass({
     },
 });
 
-module.exports = DateView;
+module.exports = YearRangeView;

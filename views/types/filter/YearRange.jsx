@@ -2,7 +2,7 @@
 
 const React = require("react");
 
-const DateFilter = React.createClass({
+const YearRangeFilter = React.createClass({
     propTypes: {
         name: React.PropTypes.string.isRequired,
         placeholder: React.PropTypes.shape({
@@ -35,4 +35,4 @@ const DateFilter = React.createClass({
     },
 });
 
-module.exports = DateFilter;
+module.exports = YearRangeFilter;
