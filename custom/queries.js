@@ -163,6 +163,21 @@ module.exports = {
         }),
     },
 
+    medium: {
+        value: (req) => req.query.medium || "",
+        title: (req, query) => req.format(
+            req.gettext("Medium: %(medium)s"), {medium: query.medium}),
+        match: (query) => ({
+            match: {
+                "medium": {
+                    query: escape(query.medium),
+                    operator: "or",
+                    zero_terms_query: "all",
+                },
+            },
+        }),
+    },
+
     dateStart: {
         pair: "dateEnd",
         value: (req) => req.query.dateStart,

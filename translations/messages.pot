@@ -8,7 +8,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2016-05-04 01:44+0000\n"
+"POT-Creation-Date: 2016-05-07 01:06+0000\n"
 
 #: logic/admin.js:25
 #: logic/admin.js:63
@@ -249,20 +249,20 @@ msgid "Page Not Found"
 msgstr ""
 
 #: custom/facets.js:14
-#: views/Artwork.jsx:110
-#: views/Search.jsx:133
+#: views/Artwork.jsx:114
+#: views/Search.jsx:130
 msgid "Type"
 msgstr ""
 
 #: custom/facets.js:55
-#: views/Artwork.jsx:103
-#: views/Search.jsx:149
+#: views/Artwork.jsx:107
+#: views/Search.jsx:136
 msgid "Date"
 msgstr ""
 
 #: custom/facets.js:70
-#: views/Artwork.jsx:96
-#: views/Search.jsx:113
+#: views/Artwork.jsx:100
+#: views/Search.jsx:118
 msgid "Artist"
 msgstr ""
 
@@ -292,6 +292,10 @@ msgstr ""
 
 #: custom/queries.js:155
 msgid "Artist: %(artist)s"
+msgstr ""
+
+#: custom/queries.js:169
+msgid "Medium: %(medium)s"
 msgstr ""
 
 #: custom/sorts.js:5
@@ -443,59 +447,59 @@ msgstr ""
 msgid "%(name)s Admin Area"
 msgstr ""
 
-#: views/Artwork.jsx:77
+#: views/Artwork.jsx:81
 msgid "End Comparison"
 msgstr ""
 
-#: views/Artwork.jsx:117
+#: views/Artwork.jsx:121
 msgid "Medium"
 msgstr ""
 
-#: views/Artwork.jsx:124
+#: views/Artwork.jsx:128
 msgid "Dimensions"
 msgstr ""
 
-#: views/Artwork.jsx:131
+#: views/Artwork.jsx:135
 msgid "Categories"
 msgstr ""
 
-#: views/Artwork.jsx:138
-#: views/Search.jsx:123
+#: views/Artwork.jsx:142
+#: views/Search.jsx:124
 msgid "Location"
 msgstr ""
 
-#: views/Artwork.jsx:145
+#: views/Artwork.jsx:149
 msgid "Details"
 msgstr ""
 
-#: views/Artwork.jsx:152
-#: views/Search.jsx:209
+#: views/Artwork.jsx:156
+#: views/Search.jsx:196
 msgid "Source"
 msgstr ""
 
-#: views/Artwork.jsx:220
-#: views/Search.jsx:361
+#: views/Artwork.jsx:224
+#: views/Search.jsx:348
 msgid "Previous"
 msgstr ""
 
-#: views/Artwork.jsx:231
-#: views/Search.jsx:366
+#: views/Artwork.jsx:235
+#: views/Search.jsx:353
 msgid "Next"
 msgstr ""
 
-#: views/Artwork.jsx:314
+#: views/Artwork.jsx:317
 msgid "More information..."
 msgstr ""
 
-#: views/Artwork.jsx:334
+#: views/Artwork.jsx:337
 msgid "Compare Images"
 msgstr ""
 
-#: views/Artwork.jsx:339
+#: views/Artwork.jsx:342
 msgid "Similar Images"
 msgstr ""
 
-#: views/Artwork.jsx:364
+#: views/Artwork.jsx:367
 #: views/Upload.jsx:89
 msgid "Score: %(score)s"
 msgstr ""
@@ -508,7 +512,7 @@ msgstr ""
 #: views/Home.jsx:62
 #: views/Page.jsx:118
 #: views/Page.jsx:123
-#: views/Search.jsx:255
+#: views/Search.jsx:242
 msgid "Search"
 msgstr ""
 
@@ -612,64 +616,64 @@ msgstr ""
 msgid "Password:"
 msgstr ""
 
-#: views/Search.jsx:75
+#: views/Search.jsx:79
 msgid "%(numArtworks)s matches."
 msgstr ""
 
-#: views/Search.jsx:81
+#: views/Search.jsx:85
 msgid "Viewing %(start)s to %(end)s."
 msgstr ""
 
-#: views/Search.jsx:103
+#: views/Search.jsx:107
 msgid "Query"
 msgstr ""
 
-#: views/Search.jsx:106
+#: views/Search.jsx:110
 msgid "Sample: christ or cristo"
 msgstr ""
 
-#: views/Search.jsx:116
+#: views/Search.jsx:117
 msgid "Sample: Andrea del Sarto"
 msgstr ""
 
-#: views/Search.jsx:126
+#: views/Search.jsx:123
 msgid "Sample: Louvre"
 msgstr ""
 
-#: views/Search.jsx:139
+#: views/Search.jsx:129
 msgid "Any Type"
 msgstr ""
 
-#: views/Search.jsx:169
+#: views/Search.jsx:156
 msgid "Width (%(unit)s)"
 msgstr ""
 
-#: views/Search.jsx:189
+#: views/Search.jsx:176
 msgid "Height (%(unit)s)"
 msgstr ""
 
-#: views/Search.jsx:215
+#: views/Search.jsx:202
 msgid "Any Source"
 msgstr ""
 
-#: views/Search.jsx:225
+#: views/Search.jsx:212
 msgid "Similarity"
 msgstr ""
 
-#: views/Search.jsx:241
+#: views/Search.jsx:228
 msgid "Sort"
 msgstr ""
 
-#: views/Search.jsx:279
+#: views/Search.jsx:266
 msgid "Show %(count)s more..."
 msgstr ""
 
-#: views/Search.jsx:329
-#: views/Search.jsx:338
+#: views/Search.jsx:316
+#: views/Search.jsx:325
 msgid "Remove %(query)s"
 msgstr ""
 
-#: views/Search.jsx:348
+#: views/Search.jsx:335
 msgid "No results found. Please refine your query."
 msgstr ""
 

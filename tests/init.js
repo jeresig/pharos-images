@@ -83,6 +83,25 @@ for (const file of fs.readdirSync(viewDir)) {
     }
 }
 
+const typeViewFiles = {};
+const typeViewDir = path.resolve(__dirname, "..", "views", "types", "view");
+
+for (const file of fs.readdirSync(typeViewDir)) {
+    if (file.indexOf(".jsx") >= 0) {
+        typeViewFiles[file] = fs.readFileSync(path.resolve(typeViewDir, file));
+    }
+}
+
+const typeFilterFiles = {};
+const typeFilterDir = path.resolve(__dirname, "..", "views", "types", "filter");
+
+for (const file of fs.readdirSync(typeFilterDir)) {
+    if (file.indexOf(".jsx") >= 0) {
+        typeFilterFiles[file] =
+            fs.readFileSync(path.resolve(typeFilterDir, file));
+    }
+}
+
 // Converters used for testing
 const converterFiles = {};
 const converterDir = path.resolve(__dirname, "..", "converters");
@@ -122,6 +141,7 @@ const genData = () => {
         images: ["foo.jpg"],
         title: "Test",
         objectType: "painting",
+        medium: "oil",
         artists: [{
             name: "Test",
             dates: [{
@@ -917,7 +937,12 @@ const init = (done) => {
             "testData": testFiles,
             "converters": converterFiles,
             "public": publicFiles,
-            "views": viewFiles,
+            "views": Object.assign({
+                "types": {
+                    "filter": typeFilterFiles,
+                    "view": typeViewFiles,
+                },
+            }, viewFiles),
         });
 
         done();

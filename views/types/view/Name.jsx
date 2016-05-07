@@ -5,14 +5,14 @@ const React = require("react");
 const NameView = React.createClass({
     propTypes: {
         name: React.PropTypes.string.isRequired,
-        names: React.PropTypes.arrayOf(
+        searchURL: React.PropTypes.func.isRequired,
+        value: React.PropTypes.arrayOf(
             React.PropTypes.shape({
                 _id: React.PropTypes.string.isRequired,
                 name: React.PropTypes.string.isRequired,
                 pseudonym: React.PropTypes.string,
             })
         ).isRequired,
-        searchURL: React.PropTypes.func.isRequired,
     },
 
     renderName(name) {
@@ -28,7 +28,7 @@ const NameView = React.createClass({
 
     render() {
         return <div>
-            {this.prop.names.map((name) => this.renderName(name))}
+            {this.props.value.map((name) => this.renderName(name))}
         </div>;
     },
 });

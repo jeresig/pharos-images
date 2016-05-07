@@ -6,18 +6,21 @@ const FixedStringView = React.createClass({
     propTypes: {
         name: React.PropTypes.string.isRequired,
         searchURL: React.PropTypes.func.isRequired,
+        title: React.PropTypes.string,
         value: React.PropTypes.string.isRequired,
     },
 
     render() {
         if (!this.props.value) {
-            return;
+            return null;
         }
+
+        const title = this.props.title || this.props.value;
 
         return <a href={this.props.searchURL(
             {[this.props.name]: this.props.value})}
         >
-            {this.props.value}
+            {title}
         </a>;
     },
 });

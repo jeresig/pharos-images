@@ -4,6 +4,10 @@ const React = require("react");
 
 const Page = require("./Page.jsx");
 
+const NameFilter = require("./types/filter/Name.jsx");
+const FixedStringFilter = require("./types/filter/FixedString.jsx");
+const LocationFilter = require("./types/filter/Location.jsx");
+
 const buckets = React.PropTypes.arrayOf({
     count: React.PropTypes.number.isRequired,
     text: React.PropTypes.string.isRequired,
@@ -108,42 +112,25 @@ const Search = React.createClass({
                     className="form-control"
                 />
             </div>
-            <div className="form-group">
-                <label htmlFor="artist" className="control-label">
-                    {this.props.gettext("Artist")}
-                </label>
-                <input type="text" name="artist"
-                    placeholder={this.props.gettext("Sample: Andrea del Sarto")}
-                    defaultValue={this.props.query.artist}
-                    className="form-control"
-                />
-            </div>
-            <div className="form-group">
-                <label htmlFor="location" className="control-label">
-                    {this.props.gettext("Location")}
-                </label>
-                <input type="text" name="location"
-                    placeholder={this.props.gettext("Sample: Louvre")}
-                    defaultValue={this.props.query.location}
-                    className="form-control"
-                />
-            </div>
-            <div className="form-group">
-                <label htmlFor="type" className="control-label">
-                    {this.props.gettext("Type")}
-                </label>
-                <select name="type" style={{width: "100%"}}
-                    className="form-control"
-                    defaultValue={this.props.query.type}
-                >
-                    <option value="">{this.props.gettext("Any Type")}</option>
-                    {this.props.types.map((type) =>
-                        <option value={type.id} key={type.id}>
-                            {type.name}
-                        </option>
-                    )}
-                </select>
-            </div>
+            <NameFilter
+                name="artist"
+                placeholder={this.props.gettext("Sample: Andrea del Sarto")}
+                title={this.props.gettext("Artist")}
+                value={this.props.query.artist}
+            />
+            <LocationFilter
+                name="location"
+                placeholder={this.props.gettext("Sample: Louvre")}
+                title={this.props.gettext("Location")}
+                value={this.props.query.location}
+            />
+            <FixedStringFilter
+                name="type"
+                placeholder={this.props.gettext("Any Type")}
+                title={this.props.gettext("Type")}
+                value={this.props.query.types}
+                values={this.props.types}
+            />
             <div className="form-group">
                 <label htmlFor="dateStart" className="control-label">
                     {this.props.gettext("Date")}

@@ -4,6 +4,10 @@ const React = require("react");
 
 const Page = require("./Page.jsx");
 
+const NameView = require("./types/view/Name.jsx");
+const LocationView = require("./types/view/Location.jsx");
+const FixedStringView = require("./types/view/FixedString.jsx");
+
 const artworkType = React.PropTypes.shape({
     artists: React.PropTypes.arrayOf(
         React.PropTypes.shape({
@@ -236,16 +240,11 @@ const Artwork = React.createClass({
 
     renderArtist(artwork) {
         return <td key={artwork._id}>
-            {artwork.artists.map((artist) => <span key={artist._id}>
-                <a href={this.props.searchURL({artist: artist.name})}>
-                    {artist.name}
-                </a>
-                {artist.pseudonym &&
-                    (<a href={this.props.searchURL({artist: artist.pseudonym})}>
-                        {artist.pseudonym}
-                    </a>)}
-                <br/>
-            </span>)}
+            <NameView
+                name="artist"
+                value={artwork.artists}
+                searchURL={this.props.searchURL}
+            />
         </td>;
     },
 
@@ -265,16 +264,23 @@ const Artwork = React.createClass({
 
     renderType(artwork) {
         return <td key={artwork._id}>
-            {artwork.objectType && <a href={this.props.searchURL(
-                {type: artwork.objectType})}
-            >
-                {this.props.getType(artwork)}
-            </a>}
+            <FixedStringView
+                name="type"
+                searchURL={this.props.searchURL}
+                title={this.props.getType(artwork)}
+                value={artwork.objectType}
+            />
         </td>;
     },
 
     renderMedium(artwork) {
-        return <td key={artwork._id}>{artwork.medium}</td>;
+        return <td key={artwork._id}>
+            <FixedStringView
+                name="medium"
+                searchURL={this.props.searchURL}
+                value={artwork.medium}
+            />
+        </td>;
     },
 
     renderDimensions(artwork) {
@@ -298,14 +304,11 @@ const Artwork = React.createClass({
 
     renderLocation(artwork) {
         return <td key={artwork._id}>
-            {artwork.locations.map((location) => <span key={location._id}>
-                {location.name && <span>
-                    <a href={this.props.searchURL({location: location.name})}>
-                        {location.name}
-                    </a><br/>
-                </span>}
-                {location.city && <span>{location.city}<br/></span>}
-            </span>)}
+            <LocationView
+                name="location"
+                searchURL={this.props.searchURL}
+                value={artwork.locations}
+            />
         </td>;
     },
 
