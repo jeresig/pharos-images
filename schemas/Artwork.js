@@ -13,14 +13,20 @@ const db = require("../lib/db");
 const urls = require("../lib/urls");
 const config = require("../lib/config");
 
-const Name = require("./Name");
 const YearRange = require("./YearRange");
 const Dimension = require("./Dimension");
 const Location = require("./Location");
 
 const types = config.types;
+const model = config.model;
 
-const Artwork = new db.schema({
+const modelProps = {};
+
+model.forEach((prop) => {
+    modelProps[prop.modelName()] = prop.schema(db.schema);
+});
+
+const Artwork = new db.schema(Object.assign({
     // UUID of the image (Format: SOURCE/ID)
     _id: {
         type: String,
@@ -98,13 +104,6 @@ const Artwork = new db.schema({
         type: String,
         es_indexed: true,
         recommended: true,
-    },
-
-    // A list of artist names extracted from the page.
-    artists: {
-        type: [Name],
-        convert: (obj) => typeof obj === "string" ?
-            {name: obj} : obj,
     },
 
     // The size of the artwork (e.g. 100mm x 200mm)
@@ -203,7 +202,7 @@ const Artwork = new db.schema({
             min: 1,
         },
     }],
-});
+}, modelProps));
 
 Artwork.virtual("date")
     .get(function() {

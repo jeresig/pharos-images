@@ -821,7 +821,7 @@ tap.test("Artwork.lintData: Validation", {autoend: true}, (t) => {
             dimensions: [{width: 123, unit: "mm"}],
         },
         "warnings": [
-            "`artists`: Dates must have a start or end specified.",
+            "`artists`: Year ranges must have a start or end specified.",
         ],
     }, "dates in artists");
 

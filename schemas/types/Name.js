@@ -5,7 +5,7 @@ const YearRange = require("./YearRange.js");
 const NameFilter = require("../../views/types/filter/Name.jsx");
 const NameDisplay = require("../../views/types/view/Name.jsx");
 
-const Name = (options) => {
+const Name = function(options) {
     this.options = options;
     /*
     name
@@ -140,7 +140,7 @@ Name.prototype = {
         });
 
         // Dynamically generate the _id attribute
-        Name.pre("validate", function(next) {
+        NameSchema.pre("validate", function(next) {
             this._id = this.original || this.name;
             next();
         });

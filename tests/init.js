@@ -19,6 +19,7 @@ iconv.getCodec("utf8");
 // Force babel sub-modules to preload
 require("babel-preset-react");
 require("babel-helper-builder-react-jsx");
+require("babel-register");
 
 const models = require("../lib/models");
 const similarity = require("../lib/similar");
