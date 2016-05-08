@@ -6,8 +6,14 @@ const DimensionView = React.createClass({
     propTypes: {
         getDimension: React.PropTypes.func.isRequired,
         name: React.PropTypes.string.isRequired,
-        searchURL: React.PropTypes.func.isRequired,
-        value: React.PropTypes.string.isRequired,
+        value: React.PropTypes.arrayOf(
+            React.PropTypes.shape({
+                _id: React.PropTypes.string.isRequired,
+                height: React.PropTypes.number,
+                width: React.PropTypes.number,
+                unit: React.PropTypes.string,
+            })
+        ).isRequired,
     },
 
     renderDimension(dimension) {

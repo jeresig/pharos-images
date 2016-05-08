@@ -5,23 +5,46 @@ const React = require("react");
 const FixedStringView = React.createClass({
     propTypes: {
         name: React.PropTypes.string.isRequired,
+        searchField: React.PropTypes.string,
         searchURL: React.PropTypes.func.isRequired,
-        title: React.PropTypes.string,
         value: React.PropTypes.string.isRequired,
+        values: React.PropTypes.arrayOf(
+            React.PropTypes.shape({
+                id: React.PropTypes.string.isRequired,
+                name: React.PropTypes.string.isRequired,
+            })
+        ),
     },
 
-    render() {
-        if (!this.props.value) {
+    getTitle(value) {
+        if (!this.props.values) {
+            return value;
+        }
+
+        for (const map of this.props.values) {
+            if (map.id === value) {
+                return map.name;
+            }
+        }
+
+        return value;
+    },
+
+    renderValue(value) {
+        if (!value) {
             return null;
         }
 
-        const title = this.props.title || this.props.value;
+        const field = this.props.searchField || this.props.name;
+        const title = this.getTitle(value);
 
-        return <a href={this.props.searchURL(
-            {[this.props.name]: this.props.value})}
-        >
+        return <a href={this.props.searchURL({[field]: value})}>
             {title}
         </a>;
+    },
+
+    render() {
+        return this.renderValue(this.props.value);
     },
 });
 

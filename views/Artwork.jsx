@@ -6,6 +6,7 @@ const Page = require("./Page.jsx");
 
 const NameView = require("./types/view/Name.jsx");
 const LocationView = require("./types/view/Location.jsx");
+const DimensionView = require("./types/view/Dimension.jsx");
 const FixedStringView = require("./types/view/FixedString.jsx");
 
 const artworkType = React.PropTypes.shape({
@@ -49,6 +50,7 @@ const Artwork = React.createClass({
         getDimension: React.PropTypes.func.isRequired,
         getTitle: React.PropTypes.func.isRequired,
         getType: React.PropTypes.func.isRequired,
+        getTypes: React.PropTypes.func.isRequired,
         gettext: React.PropTypes.func.isRequired,
         searchURL: React.PropTypes.func.isRequired,
         shortName: React.PropTypes.func.isRequired,
@@ -267,8 +269,8 @@ const Artwork = React.createClass({
             <FixedStringView
                 name="type"
                 searchURL={this.props.searchURL}
-                title={this.props.getType(artwork)}
                 value={artwork.objectType}
+                values={this.props.getTypes()}
             />
         </td>;
     },
@@ -277,6 +279,7 @@ const Artwork = React.createClass({
         return <td key={artwork._id}>
             <FixedStringView
                 name="medium"
+                searchField="filter"
                 searchURL={this.props.searchURL}
                 value={artwork.medium}
             />
@@ -285,9 +288,11 @@ const Artwork = React.createClass({
 
     renderDimensions(artwork) {
         return <td key={artwork._id}>
-            {artwork.dimensions.map((dimension) => <span key={dimension._id}>
-                {this.props.getDimension(dimension)}<br/>
-            </span>)}
+            <DimensionView
+                getDimension={this.props.getDimension}
+                name="dimension"
+                value={artwork.dimensions}
+            />
         </td>;
     },
 
