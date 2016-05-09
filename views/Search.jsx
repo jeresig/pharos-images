@@ -8,11 +8,13 @@ const NameFilter = require("./types/filter/Name.jsx");
 const FixedStringFilter = require("./types/filter/FixedString.jsx");
 const LocationFilter = require("./types/filter/Location.jsx");
 
-const buckets = React.PropTypes.arrayOf({
-    count: React.PropTypes.number.isRequired,
-    text: React.PropTypes.string.isRequired,
-    url: React.PropTypes.string.isRequired,
-});
+const buckets = React.PropTypes.arrayOf(
+    React.PropTypes.shape({
+        count: React.PropTypes.number.isRequired,
+        text: React.PropTypes.string.isRequired,
+        url: React.PropTypes.string.isRequired,
+    })
+);
 
 const Search = React.createClass({
     propTypes: {

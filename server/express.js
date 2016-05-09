@@ -12,8 +12,6 @@ const session = require("express-session");
 const mongoStore = require("connect-mongo")(session);
 const reactViews = require("express-react-views");
 
-require("babel-register");
-
 const pkg = require("../package");
 
 const db = require("../lib/db");

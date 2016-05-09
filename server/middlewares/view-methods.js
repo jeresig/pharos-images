@@ -13,7 +13,7 @@ const types = config.types;
 module.exports = (req, res, next) => {
     const methods = {
         getOtherURL(locale) {
-            return urls.gen(locale, req.path);
+            return urls.gen(locale, req.originalUrl);
         },
 
         URL(path, query) {
