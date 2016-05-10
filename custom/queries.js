@@ -1,9 +1,11 @@
 "use strict";
 
-const escape = require("elasticsearch-sanitize");
+const sanitize = require("elasticsearch-sanitize");
 const pd = require("parse-dimensions");
 
 const types = require("./types");
+
+const escape = (str) => sanitize(str).replace(/\\ /g, " ");
 
 // NOTE(jeresig): There has got to be a better way to handle this.
 const dateMatch = (query) => {

@@ -1,7 +1,5 @@
 "use strict";
 
-const escape = require("elasticsearch-sanitize");
-
 const models = require("../../lib/models");
 const config = require("../../lib/config");
 
@@ -30,7 +28,7 @@ module.exports = Object.assign({
             req.gettext("Query: '%(query)s'"), {query: query.filter}),
         match: (query) => ({
             query_string: {
-                query: escape(query.filter),
+                query: query.filter,
                 default_operator: "and",
             },
         }),

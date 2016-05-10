@@ -8,7 +8,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2016-05-09 16:27+0000\n"
+"POT-Creation-Date: 2016-05-10 23:54+0000\n"
 
 #: logic/admin.js:25
 #: logic/admin.js:63
@@ -280,27 +280,27 @@ msgstr ""
 msgid "Sample: Andrea del Sarto"
 msgstr ""
 
-#: custom/queries.js:96
+#: custom/queries.js:98
 msgid "Dates: %(range)s"
 msgstr ""
 
-#: custom/queries.js:107
+#: custom/queries.js:109
 msgid "Width: %(range)s"
 msgstr ""
 
-#: custom/queries.js:118
+#: custom/queries.js:120
 msgid "Height: %(range)s"
 msgstr ""
 
-#: custom/queries.js:125
+#: custom/queries.js:127
 msgid "Location: '%(query)s'"
 msgstr ""
 
-#: custom/queries.js:155
+#: custom/queries.js:157
 msgid "Artist: %(artist)s"
 msgstr ""
 
-#: custom/queries.js:169
+#: custom/queries.js:171
 msgid "Medium: %(medium)s"
 msgstr ""
 
