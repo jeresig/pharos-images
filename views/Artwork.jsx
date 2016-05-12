@@ -47,7 +47,6 @@ const Artwork = React.createClass({
         format: React.PropTypes.func.isRequired,
         fullName: React.PropTypes.func.isRequired,
         getDate: React.PropTypes.func.isRequired,
-        getDimension: React.PropTypes.func.isRequired,
         getTitle: React.PropTypes.func.isRequired,
         getType: React.PropTypes.func.isRequired,
         getTypes: React.PropTypes.func.isRequired,
@@ -289,9 +288,9 @@ const Artwork = React.createClass({
     renderDimensions(artwork) {
         return <td key={artwork._id}>
             <DimensionView
-                getDimension={this.props.getDimension}
                 name="dimension"
                 value={artwork.dimensions}
+                defaultUnit="cm"
             />
         </td>;
     },

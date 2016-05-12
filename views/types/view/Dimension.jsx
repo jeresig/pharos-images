@@ -1,10 +1,11 @@
 "use strict";
 
 const React = require("react");
+const pd = require("parse-dimensions");
 
 const DimensionView = React.createClass({
     propTypes: {
-        getDimension: React.PropTypes.func.isRequired,
+        defaultUnit: React.PropTypes.string.isRequired,
         name: React.PropTypes.string.isRequired,
         value: React.PropTypes.arrayOf(
             React.PropTypes.shape({
@@ -16,9 +17,17 @@ const DimensionView = React.createClass({
         ).isRequired,
     },
 
+    getDimension(item) {
+        const label = item.label;
+        const dimension = pd.convertDimension(item, this.props.defaultUnit);
+        const unit = dimension.unit;
+        return [dimension.width, unit, " x ", dimension.height, unit,
+            label ? ` (${label})` : ""].join("");
+    },
+
     renderDimension(dimension) {
         return <span key={dimension._id}>
-            {this.props.getDimension(dimension)}<br/>
+            {this.getDimension(dimension)}<br/>
         </span>;
     },
 

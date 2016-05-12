@@ -2,9 +2,22 @@
 
 const React = require("react");
 
+const getDate = (item) => {
+    if (item.original) {
+        return item.original;
+    }
+
+    if (item.start || item.end) {
+        return (item.circa ? "ca. " : "") +
+            item.start + (item.end && item.end !== item.start ?
+            `-${item.end}` : "");
+    }
+
+    return "";
+};
+
 const YearRangeView = React.createClass({
     propTypes: {
-        getDate: React.PropTypes.func.isRequired,
         name: React.PropTypes.string.isRequired,
         searchURL: React.PropTypes.func.isRequired,
         value: React.PropTypes.string.isRequired,
@@ -17,7 +30,7 @@ const YearRangeView = React.createClass({
                 [`${this.props.name}.end`]: date.end,
             })}
             >
-                {this.props.getDate(date)}
+                {getDate(date)}
             </a><br/>
         </span>;
     },
