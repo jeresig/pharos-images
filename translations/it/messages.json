@@ -1,29 +1,213 @@
 {
    "messages": {
       "": {
-         "Project-Id-Version": " Pharos Images\nReport-Msgid-Bugs-To: \nPOT-Creation-Date: 2015-11-29 20:45+0000\nPO-Revision-Date: 2015-11-29 20:47+0000\nLast-Translator: jeresig <jeresig@gmail.com>\nLanguage-Team: Italian (http://www.transifex.com/pharos/pharos-images/language/it/)\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nLanguage: it\nPlural-Forms: nplurals=2; plural=(n != 1);\n"
+         "Project-Id-Version": " Pharos Images\nReport-Msgid-Bugs-To: \nPOT-Creation-Date: 2016-05-13 04:22+0000\nPO-Revision-Date: 2016-05-13 09:31+0000\nLast-Translator: jeresig <jeresig@gmail.com>\nLanguage-Team: Italian (http://www.transifex.com/pharos/pharos-images/language/it/)\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nLanguage: it\nPlural-Forms: nplurals=2; plural=(n != 1);\n"
       },
-      "Artworks by %(artist)s.": [
+      "Import not found.": [
          null,
          ""
       ],
-      "Results for '%(query)s'": [
+      "Error retrieving records.": [
          null,
          ""
       ],
-      "Artist '%(artist)s'": [
+      "Error processing zip file.": [
          null,
          ""
       ],
-      "Artworks matching '%(query)s'.": [
+      "No zip file specified.": [
          null,
          ""
       ],
-      "Artworks at the %(source)s.": [
+      "Error saving zip file.": [
          null,
          ""
       ],
-      "No file specified.": [
+      "Error processing data files.": [
+         null,
+         ""
+      ],
+      "No data files specified.": [
+         null,
+         ""
+      ],
+      "Error saving data file.": [
+         null,
+         ""
+      ],
+      "Authorization required.": [
+         null,
+         ""
+      ],
+      "Not found.": [
+         null,
+         ""
+      ],
+      "Source not found.": [
+         null,
+         ""
+      ],
+      "Error processing image.": [
+         null,
+         ""
+      ],
+      "No image URL specified.": [
+         null,
+         ""
+      ],
+      "Error processing upload.": [
+         null,
+         ""
+      ],
+      "No image specified.": [
+         null,
+         ""
+      ],
+      "Uploaded image not found.": [
+         null,
+         ""
+      ],
+      "IDs can only contain letters, numbers, underscores, and hyphens.": [
+         null,
+         ""
+      ],
+      "`url` must be properly-formatted URL.": [
+         null,
+         ""
+      ],
+      "Images must be a valid image file name. For example: `image.jpg`.": [
+         null,
+         ""
+      ],
+      "Dimensions must have a unit specified and at least a width or height.": [
+         null,
+         ""
+      ],
+      "Dates must have a start or end specified.": [
+         null,
+         ""
+      ],
+      "`objectType` must be one of the following types: %(types)s.": [
+         null,
+         ""
+      ],
+      "Locations must have a name or city specified.": [
+         null,
+         ""
+      ],
+      "Artwork": [
+         null,
+         ""
+      ],
+      "Image file not found: %(fileName)s": [
+         null,
+         ""
+      ],
+      "Error accessing image data.": [
+         null,
+         ""
+      ],
+      "No images found.": [
+         null,
+         ""
+      ],
+      "There was an error with the data format.": [
+         null,
+         ""
+      ],
+      "Unrecognized field `%(field)s`.": [
+         null,
+         ""
+      ],
+      "`%(field)s` is the wrong type. Expected a %(type)s.": [
+         null,
+         ""
+      ],
+      "`%(field)s` value is the wrong type. Expected a %(type)s.": [
+         null,
+         ""
+      ],
+      "Required field `%(field)s` is empty.": [
+         null,
+         ""
+      ],
+      "Recommended field `%(field)s` is empty.": [
+         null,
+         ""
+      ],
+      "Awaiting processing...": [
+         null,
+         ""
+      ],
+      "Processing...": [
+         null,
+         ""
+      ],
+      "Confirmation required.": [
+         null,
+         ""
+      ],
+      "Importing data...": [
+         null,
+         ""
+      ],
+      "Awaiting similarity sync...": [
+         null,
+         ""
+      ],
+      "Syncing similarity...": [
+         null,
+         ""
+      ],
+      "Completed.": [
+         null,
+         ""
+      ],
+      "Data import abandoned.": [
+         null,
+         ""
+      ],
+      "Error reading data from provided data files.": [
+         null,
+         ""
+      ],
+      "Error saving record.": [
+         null,
+         ""
+      ],
+      "Error deleting existing record.": [
+         null,
+         ""
+      ],
+      "Error opening zip file.": [
+         null,
+         ""
+      ],
+      "Zip file has no images in it.": [
+         null,
+         ""
+      ],
+      "There was an error processing the image. Perhaps it is malformed in some way.": [
+         null,
+         ""
+      ],
+      "The image is empty.": [
+         null,
+         ""
+      ],
+      "A new version of the image was uploaded, replacing the old one.": [
+         null,
+         ""
+      ],
+      "The image is too small to work with the image similarity algorithm. It must be at least 150px on each side.": [
+         null,
+         ""
+      ],
+      "Error saving image.": [
+         null,
+         ""
+      ],
+      "Error: %(error)s": [
          null,
          ""
       ],
@@ -31,39 +215,215 @@
          null,
          ""
       ],
-      "Not found": [
+      "Page Not Found": [
          null,
          ""
       ],
-      "Internal error occurred.": [
+      "Type": [
          null,
          ""
       ],
-      "<strong>%(numPrints)s</strong> found.": [
+      "Date": [
          null,
          ""
       ],
-      "Viewing %(start)s to %(end)s.": [
+      "Artist": [
          null,
          ""
       ],
-      "Query:": [
+      "Width": [
          null,
          ""
       ],
-      "Artist:": [
+      "Height": [
          null,
          ""
       ],
-      "Sources:": [
+      "Sample: Andrea del Sarto": [
          null,
          ""
       ],
-      "Search": [
+      "Dates: %(range)s": [
          null,
          ""
       ],
-      "Artists:": [
+      "Width: %(range)s": [
+         null,
+         ""
+      ],
+      "Height: %(range)s": [
+         null,
+         ""
+      ],
+      "Location: '%(query)s'": [
+         null,
+         ""
+      ],
+      "Artist: %(artist)s": [
+         null,
+         ""
+      ],
+      "Medium: %(medium)s": [
+         null,
+         ""
+      ],
+      "Date, earliest first": [
+         null,
+         ""
+      ],
+      "Date, latest first": [
+         null,
+         ""
+      ],
+      "Architecture": [
+         null,
+         ""
+      ],
+      "Decorative Arts": [
+         null,
+         ""
+      ],
+      "Drawing": [
+         null,
+         ""
+      ],
+      "Fresco": [
+         null,
+         ""
+      ],
+      "Medal": [
+         null,
+         ""
+      ],
+      "Miniature": [
+         null,
+         ""
+      ],
+      "Mosaic": [
+         null,
+         ""
+      ],
+      "Painting": [
+         null,
+         ""
+      ],
+      "Photo": [
+         null,
+         ""
+      ],
+      "Print": [
+         null,
+         ""
+      ],
+      "Sculpture": [
+         null,
+         ""
+      ],
+      "Stained Glass": [
+         null,
+         ""
+      ],
+      "Upload Images": [
+         null,
+         ""
+      ],
+      "Upload a Zip file (.zip) of JPG images (.jpg or .jpeg).": [
+         null,
+         ""
+      ],
+      "Names of images should match the names provided in the metadata.": [
+         null,
+         ""
+      ],
+      "After you've uploaded a new batch of images they will be processed immediately but their similarity to other images will be computed in the background over the subsequent hours and days.": [
+         null,
+         ""
+      ],
+      "Upload": [
+         null,
+         ""
+      ],
+      "File Name": [
+         null,
+         ""
+      ],
+      "Last Updated": [
+         null,
+         ""
+      ],
+      "Status": [
+         null,
+         ""
+      ],
+      "Images": [
+         null,
+         ""
+      ],
+      "Errors": [
+         null,
+         ""
+      ],
+      "Warnings": [
+         null,
+         ""
+      ],
+      "Upload Metadata": [
+         null,
+         ""
+      ],
+      "You must upload some images before you can upload any metadata.": [
+         null,
+         ""
+      ],
+      "Unprocessed": [
+         null,
+         ""
+      ],
+      "Created": [
+         null,
+         ""
+      ],
+      "Updated": [
+         null,
+         ""
+      ],
+      "Deleted": [
+         null,
+         ""
+      ],
+      "Finalize Import": [
+         null,
+         ""
+      ],
+      "%(name)s Admin Area": [
+         null,
+         ""
+      ],
+      "End Comparison": [
+         null,
+         ""
+      ],
+      "Medium": [
+         null,
+         ""
+      ],
+      "Dimensions": [
+         null,
+         ""
+      ],
+      "Categories": [
+         null,
+         ""
+      ],
+      "Location": [
+         null,
+         ""
+      ],
+      "Details": [
+         null,
+         ""
+      ],
+      "Source": [
          null,
          ""
       ],
@@ -75,67 +435,31 @@
          null,
          ""
       ],
-      "Title:": [
-         null,
-         ""
-      ],
-      "Date:": [
-         null,
-         ""
-      ],
-      "Dimensions:": [
-         null,
-         ""
-      ],
-      "Medium:": [
-         null,
-         ""
-      ],
-      "Type:": [
-         null,
-         ""
-      ],
-      "Categories:": [
-         null,
-         ""
-      ],
-      "Collection:": [
-         null,
-         ""
-      ],
-      "Details &amp;&nbsp;Prices:": [
-         null,
-         ""
-      ],
-      "Details:": [
-         null,
-         ""
-      ],
-      "Unfortunately the source of this artwork no longer exists.": [
-         null,
-         ""
-      ],
-      "There is no way to link to this artwork on the source site. Please visit the source and search for the artwork there.": [
-         null,
-         ""
-      ],
       "More information...": [
          null,
          ""
       ],
-      "Source:": [
+      "Compare Images": [
          null,
          ""
       ],
-      "Browse all %(count)s artworks...": [
+      "Similar Images": [
          null,
          ""
       ],
-      "Similar Artworks": [
+      "Score: %(score)s": [
          null,
          ""
       ],
-      "Search %(count)s Artworks:": [
+      "Search %(artworkCount)s Artworks and %(imageCount)s Images:": [
+         null,
+         ""
+      ],
+      "Search": [
+         null,
+         ""
+      ],
+      "Browse All": [
          null,
          ""
       ],
@@ -143,7 +467,7 @@
          null,
          ""
       ],
-      "Upload a picture of an artwork to find similar artworks across multiple collections.": [
+      "Upload an image to find similar images across multiple collections.": [
          null,
          ""
       ],
@@ -151,11 +475,11 @@
          null,
          ""
       ],
-      "Paste Image URL": [
+      "Search by Image": [
          null,
          ""
       ],
-      "Search by Image": [
+      "Paste Image URL": [
          null,
          ""
       ],
@@ -163,19 +487,127 @@
          null,
          ""
       ],
-      "%(count)s Artworks": [
+      "%(artworkCount)s Artworks, %(imageCount)s Images": [
          null,
          ""
       ],
-      "Uh oh!": [
+      "Abandon Import": [
+         null,
+         ""
+      ],
+      "Data Import: %(fileName)s": [
+         null,
+         ""
+      ],
+      "Uploaded: %(date)s": [
+         null,
+         ""
+      ],
+      "Last Updated: %(date)s": [
+         null,
+         ""
+      ],
+      "Return to Admin Page": [
+         null,
+         ""
+      ],
+      "To Be Processed": [
+         null,
+         ""
+      ],
+      "Changed": [
+         null,
+         ""
+      ],
+      "Will Be Changed": [
+         null,
+         ""
+      ],
+      "Will Be Created": [
+         null,
+         ""
+      ],
+      "Will Be Deleted": [
+         null,
+         ""
+      ],
+      "Image Import: %(fileName)s": [
+         null,
+         ""
+      ],
+      "Show all %(count)s results...": [
+         null,
+         ""
+      ],
+      "Login": [
+         null,
+         ""
+      ],
+      "Email Address:": [
+         null,
+         ""
+      ],
+      "Password:": [
+         null,
+         ""
+      ],
+      "%(numArtworks)s matches.": [
+         null,
+         ""
+      ],
+      "Viewing %(start)s to %(end)s.": [
+         null,
+         ""
+      ],
+      "Query": [
+         null,
+         ""
+      ],
+      "Sample: christ or cristo": [
+         null,
+         ""
+      ],
+      "Sample: Louvre": [
+         null,
+         ""
+      ],
+      "Any Type": [
+         null,
+         ""
+      ],
+      "Width (%(unit)s)": [
+         null,
+         ""
+      ],
+      "Height (%(unit)s)": [
+         null,
+         ""
+      ],
+      "Any Source": [
+         null,
+         ""
+      ],
+      "Similarity": [
+         null,
+         ""
+      ],
+      "Sort": [
+         null,
+         ""
+      ],
+      "Show %(count)s more...": [
+         null,
+         ""
+      ],
+      "Remove %(query)s": [
+         null,
+         ""
+      ],
+      "No results found. Please refine your query.": [
          null,
          ""
       ],
       "No similar artworks were found.": [
-         null,
-         ""
-      ],
-      "Score:": [
          null,
          ""
       ]
