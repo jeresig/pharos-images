@@ -234,6 +234,7 @@ Artwork.methods = {
             parts.push(types[this.objectType].name(req));
 
         } else {
+            // TODO: Get this name from a generic config
             parts.push(req.gettext("Artwork"));
         }
 

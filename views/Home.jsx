@@ -37,6 +37,7 @@ const Home = React.createClass({
     },
 
     renderSearchForm() {
+        // TODO: Change to use a generic term
         const title = this.props.format(
             this.props.gettext(
                 "Search %(artworkCount)s Artworks and %(imageCount)s Images:"),
@@ -73,8 +74,8 @@ const Home = React.createClass({
     renderImageUploadForms() {
         return <div>
             <h3>{this.props.gettext("Search by Image:")}</h3>
-            <p>{this.props.gettext("Upload a picture of an artwork to find " +
-                "similar artworks across multiple collections.")}</p>
+            <p>{this.props.gettext("Upload an image to find other " +
+                "similar images.")}</p>
 
             <div className="panel panel-default">
                 <div className="panel-heading">
@@ -145,6 +146,7 @@ const Home = React.createClass({
     },
 
     renderSource(source) {
+        // TODO: Switch to use generic term
         const desc = this.props.format(
             this.props.gettext(
                 "%(artworkCount)s Artworks, %(imageCount)s Images"),

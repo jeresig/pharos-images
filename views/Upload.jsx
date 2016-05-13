@@ -49,7 +49,7 @@ const Upload = React.createClass({
     renderResults() {
         return <div className="panel panel-default">
             <div className="panel-heading">
-                <strong>{this.props.gettext("Similar Artworks")}</strong>
+                <strong>{this.props.gettext("Similar Images")}</strong>
             </div>
             <div className="panel-body row">
                 {this.renderSimilar(this.props.similar)}
@@ -60,7 +60,7 @@ const Upload = React.createClass({
     renderSimilar(similar) {
         if (similar.length === 0) {
             return <div className="col-xs-12">
-                <p>{this.props.gettext("No similar artworks were found.")}</p>
+                <p>{this.props.gettext("No similar images were found.")}</p>
             </div>;
         }
 

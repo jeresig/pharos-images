@@ -8,7 +8,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2016-05-12 02:43+0000\n"
+"POT-Creation-Date: 2016-05-13 04:22+0000\n"
 
 #: logic/admin.js:25
 #: logic/admin.js:63
@@ -49,11 +49,8 @@ msgid "Authorization required."
 msgstr ""
 
 #: logic/artworks.js:24
-msgid "Type not found."
-msgstr ""
-
 #: logic/artworks.js:44
-msgid "Artwork not found."
+msgid "Not found."
 msgstr ""
 
 #: logic/artworks.js:98
@@ -109,43 +106,43 @@ msgstr ""
 msgid "Locations must have a name or city specified."
 msgstr ""
 
-#: schemas/Artwork.js:237
+#: schemas/Artwork.js:238
 msgid "Artwork"
 msgstr ""
 
-#: schemas/Artwork.js:434
+#: schemas/Artwork.js:435
 msgid "Image file not found: %(fileName)s"
 msgstr ""
 
-#: schemas/Artwork.js:444
+#: schemas/Artwork.js:445
 msgid "Error accessing image data."
 msgstr ""
 
-#: schemas/Artwork.js:452
+#: schemas/Artwork.js:453
 msgid "No images found."
 msgstr ""
 
-#: schemas/Artwork.js:472
+#: schemas/Artwork.js:473
 msgid "There was an error with the data format."
 msgstr ""
 
-#: schemas/Artwork.js:498
+#: schemas/Artwork.js:499
 msgid "Unrecognized field `%(field)s`."
 msgstr ""
 
-#: schemas/Artwork.js:519
+#: schemas/Artwork.js:520
 msgid "`%(field)s` is the wrong type. Expected a %(type)s."
 msgstr ""
 
-#: schemas/Artwork.js:537
+#: schemas/Artwork.js:538
 msgid "`%(field)s` value is the wrong type. Expected a %(type)s."
 msgstr ""
 
-#: schemas/Artwork.js:590
+#: schemas/Artwork.js:591
 msgid "Required field `%(field)s` is empty."
 msgstr ""
 
-#: schemas/Artwork.js:594
+#: schemas/Artwork.js:595
 msgid "Recommended field `%(field)s` is empty."
 msgstr ""
 
@@ -502,6 +499,7 @@ msgid "Compare Images"
 msgstr ""
 
 #: views/Artwork.jsx:346
+#: views/Upload.jsx:52
 msgid "Similar Images"
 msgstr ""
 
@@ -510,51 +508,49 @@ msgstr ""
 msgid "Score: %(score)s"
 msgstr ""
 
-#: views/Home.jsx:41
+#: views/Home.jsx:42
 msgid "Search %(artworkCount)s Artworks and %(imageCount)s Images:"
 msgstr ""
 
-#: views/Home.jsx:57
-#: views/Home.jsx:62
+#: views/Home.jsx:58
+#: views/Home.jsx:63
 #: views/Page.jsx:118
 #: views/Page.jsx:123
 #: views/Search.jsx:244
 msgid "Search"
 msgstr ""
 
-#: views/Home.jsx:67
+#: views/Home.jsx:68
 #: views/Page.jsx:105
 msgid "Browse All"
 msgstr ""
 
-#: views/Home.jsx:75
+#: views/Home.jsx:76
 msgid "Search by Image:"
 msgstr ""
 
-#: views/Home.jsx:76
-msgid ""
-"Upload a picture of an artwork to find similar artworks across multiple "
-"collections."
+#: views/Home.jsx:77
+msgid "Upload an image to find similar images across multiple collections."
 msgstr ""
 
-#: views/Home.jsx:82
+#: views/Home.jsx:83
 msgid "Upload an Image"
 msgstr ""
 
-#: views/Home.jsx:100
-#: views/Home.jsx:127
+#: views/Home.jsx:101
+#: views/Home.jsx:128
 msgid "Search by Image"
 msgstr ""
 
-#: views/Home.jsx:110
+#: views/Home.jsx:111
 msgid "Paste Image URL"
 msgstr ""
 
-#: views/Home.jsx:139
+#: views/Home.jsx:140
 msgid "Browse by Collection:"
 msgstr ""
 
-#: views/Home.jsx:149
+#: views/Home.jsx:151
 msgid "%(artworkCount)s Artworks, %(imageCount)s Images"
 msgstr ""
 
@@ -677,10 +673,6 @@ msgstr ""
 
 #: views/Search.jsx:337
 msgid "No results found. Please refine your query."
-msgstr ""
-
-#: views/Upload.jsx:52
-msgid "Similar Artworks"
 msgstr ""
 
 #: views/Upload.jsx:63

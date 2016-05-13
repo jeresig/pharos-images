@@ -21,7 +21,7 @@ module.exports = function(app) {
 
             if (!type) {
                 return res.status(404).render("Error", {
-                    title: req.gettext("Type not found."),
+                    title: req.gettext("Not found."),
                 });
             }
 
@@ -41,7 +41,7 @@ module.exports = function(app) {
             Artwork.findById(id, (err, artwork) => {
                 if (err || !artwork) {
                     return res.status(404).render("Error", {
-                        title: req.gettext("Artwork not found."),
+                        title: req.gettext("Not found."),
                     });
                 }
 
