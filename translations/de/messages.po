@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pharos Images\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-05-13 04:22+0000\n"
-"PO-Revision-Date: 2016-05-13 09:31+0000\n"
+"POT-Creation-Date: 2016-05-13 20:08+0000\n"
+"PO-Revision-Date: 2016-05-13 20:17+0000\n"
 "Last-Translator: jeresig <jeresig@gmail.com>\n"
 "Language-Team: German (http://www.transifex.com/pharos/pharos-images/language/de/)\n"
 "MIME-Version: 1.0\n"
@@ -492,7 +492,7 @@ msgid "Search by Image:"
 msgstr ""
 
 #: views/Home.jsx:77
-msgid "Upload an image to find similar images across multiple collections."
+msgid "Upload an image to find other similar images."
 msgstr ""
 
 #: views/Home.jsx:83
@@ -632,5 +632,5 @@ msgid "No results found. Please refine your query."
 msgstr ""
 
 #: views/Upload.jsx:63
-msgid "No similar artworks were found."
+msgid "No similar images were found."
 msgstr ""
