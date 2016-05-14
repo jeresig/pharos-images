@@ -93,10 +93,12 @@ module.exports = (req, res, next) => {
         },
 
         // Format a number using commas
-        // TODO: Handle locale here, as well
         stringNum(num) {
+            // TODO(jeresig): Have a better way to handle this.
+            const separator = req.lang === "en" ? "," : ".";
             const result = (typeof num === "number" ? num : "");
-            return result.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            return result.toString().replace(/\B(?=(\d{3})+(?!\d))/g,
+                separator);
         },
 
         relativeDate(date) {

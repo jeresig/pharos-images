@@ -82,7 +82,7 @@ const Search = React.createClass({
                             {numArtworks: this.props.stringNum(
                                 this.props.total)})}
                     </strong>
-                    {" "}
+                    <br/>
                     {this.props.end && <span>{this.props.format(
                         this.props.gettext("Viewing %(start)s to %(end)s."),
                         {
