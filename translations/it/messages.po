@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pharos Images\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-05-13 20:08+0000\n"
-"PO-Revision-Date: 2016-05-13 22:14+0000\n"
+"POT-Creation-Date: 2016-05-14 02:06+0000\n"
+"PO-Revision-Date: 2016-05-14 03:43+0000\n"
 "Last-Translator: jeresig <jeresig@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/pharos/pharos-images/language/it/)\n"
 "MIME-Version: 1.0\n"
@@ -77,6 +77,34 @@ msgstr "Nessun immagine specificata"
 #: logic/uploads.js:144
 msgid "Uploaded image not found."
 msgstr "Immagine caricata non trovata."
+
+#: logic/shared/facets.js:13 views/Artwork.jsx:157 views/Search.jsx:198
+msgid "Source"
+msgstr "Fonte"
+
+#: logic/shared/queries.js:28
+msgid "Query: '%(query)s'"
+msgstr "Quesito: '%(query)s'"
+
+#: logic/shared/queries.js:56
+msgid "Similar to Any Artwork"
+msgstr "Simile a Qualsiasi Opera d'Arte"
+
+#: logic/shared/queries.js:68
+msgid "Similar to an External Artwork"
+msgstr "Simile ad un'Opera d'Arte Esterna"
+
+#: logic/shared/queries.js:100
+msgid "Similar to an Internal Artwork"
+msgstr "Simile ad un'Opera d'Arte Interna"
+
+#: logic/shared/search.js:121
+msgid "Search Results"
+msgstr "Risultati di Ricerca"
+
+#: logic/shared/search.js:128
+msgid "All Artworks"
+msgstr "Tutte le Opere d'Arte"
 
 #: schemas/Artwork.js:40
 msgid "IDs can only contain letters, numbers, underscores, and hyphens."
@@ -285,6 +313,10 @@ msgstr "Artista: %(artist)s"
 msgid "Medium: %(medium)s"
 msgstr "Mezzo: %(medium)s"
 
+#: custom/sitename.js:9
+msgid "Art Research Database"
+msgstr "Database Ricerca Arte"
+
 #: custom/sorts.js:5
 msgid "Date, earliest first"
 msgstr "Data, la meno recente per prima"
@@ -446,10 +478,6 @@ msgstr "Località"
 msgid "Details"
 msgstr "Dettagli"
 
-#: views/Artwork.jsx:157 views/Search.jsx:198
-msgid "Source"
-msgstr "Fonte"
-
 #: views/Artwork.jsx:225 views/Search.jsx:350
 msgid "Previous"
 msgstr "Precedente"
@@ -474,44 +502,44 @@ msgstr "Immagini simili"
 msgid "Score: %(score)s"
 msgstr "Punteggio: %(score)s"
 
-#: views/Home.jsx:42
+#: views/Home.jsx:47
 msgid "Search %(artworkCount)s Artworks and %(imageCount)s Images:"
 msgstr "Ricerca %(artworkCount)s opere d'arte e %(imageCount)s immagini:"
 
-#: views/Home.jsx:58 views/Home.jsx:63 views/Page.jsx:118 views/Page.jsx:123
+#: views/Home.jsx:63 views/Home.jsx:68 views/Page.jsx:120 views/Page.jsx:125
 #: views/Search.jsx:244
 msgid "Search"
 msgstr "Ricerca"
 
-#: views/Home.jsx:68 views/Page.jsx:105
+#: views/Home.jsx:73 views/Page.jsx:107
 msgid "Browse All"
 msgstr "Visualizza tutti"
 
-#: views/Home.jsx:76
+#: views/Home.jsx:81
 msgid "Search by Image:"
 msgstr "Ricerca per immagini:"
 
-#: views/Home.jsx:77
+#: views/Home.jsx:82
 msgid "Upload an image to find other similar images."
 msgstr "Carica un'immagine per trovarne altre simili."
 
-#: views/Home.jsx:83
+#: views/Home.jsx:88
 msgid "Upload an Image"
 msgstr "Carica un'immagine"
 
-#: views/Home.jsx:101 views/Home.jsx:128
+#: views/Home.jsx:106 views/Home.jsx:133
 msgid "Search by Image"
 msgstr "Ricerca per immagini"
 
-#: views/Home.jsx:111
+#: views/Home.jsx:116
 msgid "Paste Image URL"
 msgstr "Incolla l'URL dell'immagine"
 
-#: views/Home.jsx:140
+#: views/Home.jsx:145
 msgid "Browse by Collection:"
 msgstr "Visualizza per collezione:"
 
-#: views/Home.jsx:151
+#: views/Home.jsx:156
 msgid "%(artworkCount)s Artworks, %(imageCount)s Images"
 msgstr "%(artworkCount)s opera/e d'arte, %(imageCount)s immagine/e"
 

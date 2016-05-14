@@ -1,7 +1,7 @@
 {
    "messages": {
       "": {
-         "Project-Id-Version": " Pharos Images\nReport-Msgid-Bugs-To: \nPOT-Creation-Date: 2016-05-13 20:08+0000\nPO-Revision-Date: 2016-05-13 22:14+0000\nLast-Translator: jeresig <jeresig@gmail.com>\nLanguage-Team: Italian (http://www.transifex.com/pharos/pharos-images/language/it/)\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nLanguage: it\nPlural-Forms: nplurals=2; plural=(n != 1);\n"
+         "Project-Id-Version": " Pharos Images\nReport-Msgid-Bugs-To: \nPOT-Creation-Date: 2016-05-14 02:06+0000\nPO-Revision-Date: 2016-05-14 03:43+0000\nLast-Translator: jeresig <jeresig@gmail.com>\nLanguage-Team: Italian (http://www.transifex.com/pharos/pharos-images/language/it/)\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nLanguage: it\nPlural-Forms: nplurals=2; plural=(n != 1);\n"
       },
       "Import not found.": [
          null,
@@ -66,6 +66,34 @@
       "Uploaded image not found.": [
          null,
          "Immagine caricata non trovata."
+      ],
+      "Source": [
+         null,
+         "Fonte"
+      ],
+      "Query: '%(query)s'": [
+         null,
+         "Quesito: '%(query)s'"
+      ],
+      "Similar to Any Artwork": [
+         null,
+         "Simile a Qualsiasi Opera d'Arte"
+      ],
+      "Similar to an External Artwork": [
+         null,
+         "Simile ad un'Opera d'Arte Esterna"
+      ],
+      "Similar to an Internal Artwork": [
+         null,
+         "Simile ad un'Opera d'Arte Interna"
+      ],
+      "Search Results": [
+         null,
+         "Risultati di Ricerca"
+      ],
+      "All Artworks": [
+         null,
+         "Tutte le Opere d'Arte"
       ],
       "IDs can only contain letters, numbers, underscores, and hyphens.": [
          null,
@@ -267,6 +295,10 @@
          null,
          "Mezzo: %(medium)s"
       ],
+      "Art Research Database": [
+         null,
+         "Database Ricerca Arte"
+      ],
       "Date, earliest first": [
          null,
          "Data, la meno recente per prima"
@@ -422,10 +454,6 @@
       "Details": [
          null,
          "Dettagli"
-      ],
-      "Source": [
-         null,
-         "Fonte"
       ],
       "Previous": [
          null,
