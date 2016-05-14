@@ -11,6 +11,9 @@ const Home = React.createClass({
         URL: React.PropTypes.func.isRequired,
         artworkTotal: React.PropTypes.number.isRequired,
         format: React.PropTypes.func.isRequired,
+        getTitle: React.PropTypes.func.isRequired,
+        getShortTitle: React.PropTypes.func.isRequired,
+        getSubTitle: React.PropTypes.func.isRequired,
         gettext: React.PropTypes.func.isRequired,
         imageTotal: React.PropTypes.number.isRequired,
         lang: React.PropTypes.string.isRequired,
@@ -25,11 +28,13 @@ const Home = React.createClass({
             <div className="home-splash">
                 <div className="splash-contents">
                     <img src={this.props.URL("/images/lighthouse.md.png")}
-                        alt={config.SITE_NAME_SHORT}
+                        alt={this.props.getTitle(config.siteName)}
                         width="200" height="203"
                         className="hidden-xs"
                     />
-                    <h1>{config.SITE_NAME_SHORT}<br/>{config.SITE_NAME}</h1>
+                    <h1>
+                        {this.props.getShortTitle(config.siteName)}<br/>
+                        {this.props.getSubTitle(config.siteName)}</h1>
                 </div>
             </div>
             <div className="home-splash-offset"></div>

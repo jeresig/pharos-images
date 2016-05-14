@@ -50,6 +50,14 @@ module.exports = (req, res, next) => {
             return item.getTitle(req);
         },
 
+        getShortTitle(item) {
+            return item.getShortTitle(req);
+        },
+
+        getSubTitle(item) {
+            return item.getSubTitle(req);
+        },
+
         getDate(item) {
             if (item.original) {
                 return item.original;

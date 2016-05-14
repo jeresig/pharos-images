@@ -9,6 +9,8 @@ const Page = React.createClass({
         URL: React.PropTypes.func.isRequired,
         children: React.PropTypes.any,
         getOtherURL: React.PropTypes.func.isRequired,
+        getShortTitle: React.PropTypes.func.isRequired,
+        getTitle: React.PropTypes.func.isRequired,
         gettext: React.PropTypes.func.isRequired,
         lang: React.PropTypes.string.isRequired,
         noIndex: React.PropTypes.bool,
@@ -25,11 +27,10 @@ const Page = React.createClass({
 
     renderHead() {
         const URL = this.props.URL;
-        let title = `${config.SITE_NAME_SHORT}: ${config.SITE_NAME}`;
+        let title = this.props.getTitle(config.siteName);
 
         if (this.props.title) {
-            title = `${this.props.title} - ${config.SITE_NAME_SHORT}: ` +
-                `${config.SITE_NAME}`;
+            title = `${this.props.title}: ${title}`;
         }
 
         // An option to disable indexing of this page
@@ -59,6 +60,7 @@ const Page = React.createClass({
 
     renderSocialMeta() {
         const social = this.props.social;
+        const siteTitle = this.props.getTitle(config.siteName);
         return [
             <meta key="1" name="twitter:card" content="photo"/>,
             <meta key="2" name="twitter:url" content={social.url}/>,
@@ -68,7 +70,7 @@ const Page = React.createClass({
             <meta key="6" property="og:type" content="article"/>,
             <meta key="7" property="og:url" content={social.url}/>,
             <meta key="8" property="og:image" content={social.imgURL}/>,
-            <meta key="9" property="og:site_name" content={config.SITE_NAME}/>,
+            <meta key="9" property="og:site_name" content={siteTitle}/>,
         ];
     },
 
@@ -89,12 +91,12 @@ const Page = React.createClass({
                         <span className="icon-bar"></span>
                     </button>
                     <a className="navbar-brand" href={URL("/")}>
-                        <img alt={config.SITE_NAME}
+                        <img alt={this.props.getTitle(config.siteName)}
                             src={URL("/images/lighthouse.sm.png")}
                             height="40" width="40"
                         />
                         {" "}
-                        {config.SITE_NAME_SHORT}
+                        {this.props.getShortTitle(config.siteName)}
                     </a>
                 </div>
 
