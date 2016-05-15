@@ -9,7 +9,7 @@ const urls = require("../lib/urls");
 const Artwork = require("./Artwork");
 
 const Upload = new db.schema({
-    // UUID of the image (Format: uploads/imageName)
+    // UUID of the image (Format: uploads/defaultImageHash)
     _id: {
         type: String,
         es_indexed: true,

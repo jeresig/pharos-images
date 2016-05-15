@@ -1,11 +1,12 @@
 # 
 # Translators:
+# jeresig <jeresig@gmail.com>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: Pharos Images\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-05-14 02:06+0000\n"
-"PO-Revision-Date: 2016-05-14 03:43+0000\n"
+"POT-Creation-Date: 2016-05-14 15:15+0000\n"
+"PO-Revision-Date: 2016-05-15 15:05+0000\n"
 "Last-Translator: jeresig <jeresig@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/pharos/pharos-images/language/it/)\n"
 "MIME-Version: 1.0\n"
@@ -541,7 +542,7 @@ msgstr "Visualizza per collezione:"
 
 #: views/Home.jsx:156
 msgid "%(artworkCount)s Artworks, %(imageCount)s Images"
-msgstr "%(artworkCount)s opera/e d'arte, %(imageCount)s immagine/e"
+msgstr "%(artworkCount)s opere d'arte, %(imageCount)s immagini"
 
 #: views/ImportData.jsx:111
 msgid "Abandon Import"

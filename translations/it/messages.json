@@ -1,7 +1,7 @@
 {
    "messages": {
       "": {
-         "Project-Id-Version": " Pharos Images\nReport-Msgid-Bugs-To: \nPOT-Creation-Date: 2016-05-14 02:06+0000\nPO-Revision-Date: 2016-05-14 03:43+0000\nLast-Translator: jeresig <jeresig@gmail.com>\nLanguage-Team: Italian (http://www.transifex.com/pharos/pharos-images/language/it/)\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nLanguage: it\nPlural-Forms: nplurals=2; plural=(n != 1);\n"
+         "Project-Id-Version": " Pharos Images\nReport-Msgid-Bugs-To: \nPOT-Creation-Date: 2016-05-14 15:15+0000\nPO-Revision-Date: 2016-05-15 15:05+0000\nLast-Translator: jeresig <jeresig@gmail.com>\nLanguage-Team: Italian (http://www.transifex.com/pharos/pharos-images/language/it/)\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nLanguage: it\nPlural-Forms: nplurals=2; plural=(n != 1);\n"
       },
       "Import not found.": [
          null,
@@ -517,7 +517,7 @@
       ],
       "%(artworkCount)s Artworks, %(imageCount)s Images": [
          null,
-         "%(artworkCount)s opera/e d'arte, %(imageCount)s immagine/e"
+         "%(artworkCount)s opere d'arte, %(imageCount)s immagini"
       ],
       "Abandon Import": [
          null,
