@@ -2,7 +2,6 @@
 
 const async = require("async");
 const parseDimensions = require("parse-dimensions");
-const yearRange = require("yearrange");
 const validUrl = require("valid-url");
 const jdp = require("jsondiffpatch").create({
     objectHash: (obj) => obj._id,
@@ -13,7 +12,6 @@ const db = require("../lib/db");
 const urls = require("../lib/urls");
 const config = require("../lib/config");
 
-const YearRange = require("./YearRange");
 const Dimension = require("./Dimension");
 const Location = require("./Location");
 
@@ -115,16 +113,6 @@ const Artwork = new db.schema(Object.assign({
         validateArray: (val) => (val.width || val.height) && val.unit,
         validationMsg: (req) => req.gettext("Dimensions must have a " +
             "unit specified and at least a width or height."),
-    },
-
-    // Date ranges when the artwork was created or modified.
-    dates: {
-        type: [YearRange],
-        convert: (obj) => typeof obj === "string" ?
-            yearRange.parse(obj) : obj,
-        validateArray: (val) => val.start || val.end,
-        validationMsg: (req) => req.gettext("Dates must have a start or " +
-            "end specified."),
     },
 
     // The English form of the object type (e.g. painting, print)

@@ -9,7 +9,7 @@ const numRange = (bucket) => bucket.to ?
     `${bucket.from || 0}-${bucket.to}` :
     `${bucket.from}+`;
 
-const YearRange = (options) => {
+const YearRange = function(options) {
     this.options = options;
     /*
     name
@@ -258,7 +258,7 @@ YearRange.prototype = {
                 yearRange.parse(obj) : obj,
             validateArray: (val) => val.start || val.end,
             validationMsg: (i18n) =>
-                i18n.gettext("Year ranges must have a start or end specified."),
+                i18n.gettext("Dates must have a start or end specified."),
         };
     },
 };

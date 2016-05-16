@@ -2,15 +2,17 @@
 
 const React = require("react");
 
+const dateRangeType = React.PropTypes.shape({
+    end: React.PropTypes.number,
+    start: React.PropTypes.number,
+});
+
 const YearRangeFilter = React.createClass({
     propTypes: {
         name: React.PropTypes.string.isRequired,
-        placeholder: React.PropTypes.shape({
-            end: React.PropTypes.number,
-            start: React.PropTypes.number,
-        }),
+        placeholder: dateRangeType,
         title: React.PropTypes.string.isRequired,
-        value: React.PropTypes.string,
+        value: dateRangeType,
     },
 
     render() {
