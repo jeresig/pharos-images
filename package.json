@@ -11,7 +11,7 @@
     "stop": "naught stop",
     "dev": "supervisor -e js,jsx -i node_modules,old,locales,converters,sources,public server.js",
     "dev-test": "NODE_ENV=test supervisor -e js,jsx -i node_modules,old,locales,converters,sources,public tests/server.js",
-    "extract-i18n-js": "jsxgettext --keyword=format --keyword=gettext -L javascript --output-dir=./translations --output=messages.pot logic/*.js logic/*/*.js schemas/*.js server/*.js lib/*.js custom/*.js views/*.jsx views/types/*/*.jsx",
+    "extract-i18n-js": "jsxgettext --keyword=format --keyword=gettext -L javascript --output-dir=./translations --output=messages.pot logic/*.js logic/*/*.js schemas/*.js schemas/*/*.js server/*.js lib/*.js custom/*.js views/*.jsx views/types/*/*.jsx",
     "extract-i18n": "npm run extract-i18n-js && git add translations/messages.pot",
     "update-i18n": "tx pull -a && po2json.js -p translations/de/messages.po > translations/de/messages.json && po2json.js -p translations/it/messages.po > translations/it/messages.json",
     "migrate": "migrate",
