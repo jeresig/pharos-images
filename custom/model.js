@@ -2,6 +2,8 @@
 
 const Name = require("../schemas/types/Name.js");
 const YearRange = require("../schemas/types/YearRange.js");
+const FixedString = require("../schemas/types/FixedString.js");
+const types = require("./types.js");
 
 module.exports = [
     // A list of artist names extracted from the page.
@@ -21,5 +23,15 @@ module.exports = [
             end: 1900,
             start: 1000,
         },
+    }),
+
+    // The English form of the object type (e.g. painting, print)
+    new FixedString({
+        name: "objectType",
+        title: (i18n) => i18n.gettext("Type"),
+        placeholder: (i18n) => i18n.gettext("Any Type"),
+        allowUnknown: false,
+        values: types,
+        recommended: true,
     }),
 ];

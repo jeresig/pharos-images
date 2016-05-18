@@ -115,27 +115,6 @@ const Artwork = new db.schema(Object.assign({
             "unit specified and at least a width or height."),
     },
 
-    // The English form of the object type (e.g. painting, print)
-    // NOTE(jeresig): We could require that the object type be of one of a
-    // the pre-specified types in the types file, but that feels overly
-    // restrictive, better to just warn them instead.
-    objectType: {
-        type: String,
-        es_indexed: true,
-        es_type: "multi_field",
-        // A raw type to use for building aggregations in Elasticsearch
-        es_fields: {
-            name: {type: "string", index: "analyzed"},
-            raw: {type: "string", index: "not_analyzed"},
-        },
-        recommended: true,
-        validate: (val) => Object.keys(types).indexOf(val) >= 0,
-        validationMsg: (req) => req.format(req.gettext("`objectType` " +
-            "must be one of the following types: %(types)s."), {
-                types: Object.keys(types).join(", "),
-            }),
-    },
-
     // The medium of the artwork (e.g. "watercolor")
     medium: {
         type: String,

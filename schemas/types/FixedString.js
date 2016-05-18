@@ -3,7 +3,7 @@
 const FixedStringFilter = require("../../views/types/filter/FixedString.jsx");
 const FixedStringDisplay = require("../../views/types/view/FixedString.jsx");
 
-const FixedString = (options) => {
+const FixedString = function(options) {
     this.options = options;
     /*
     name
@@ -12,6 +12,7 @@ const FixedString = (options) => {
     values: {Key: title(i18n)}
     title(i18n)
     placeholder(i18n)
+    recommended: Bool
     */
 };
 
@@ -95,15 +96,22 @@ FixedString.prototype = {
 
         // Only validate the values if there are values to validate against
         // and if unknown values aren't allowed
+        // NOTE(jeresig): We could require that the value be of one of
+        // the pre-specified values, but that feels overly
+        // restrictive, better to just warn them instead.
         if (values.length > 0 && !this.options.allowUnknown) {
             validate = {
                 validate: (val) => values.indexOf(val) >= 0,
                 validationMsg: (req) => req.format(req.gettext("`%(name)s` " +
-                    "must be one of the following values: %(values)s."), {
+                    "must be one of the following types: %(types)s."), {
                         name: this.options.name,
-                        values: values.join(", "),
+                        types: values.join(", "),
                     }),
             };
+        }
+
+        if (this.options.recommended) {
+            validate.recommended = true;
         }
 
         return Object.assign({
