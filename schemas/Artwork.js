@@ -11,8 +11,6 @@ const db = require("../lib/db");
 const urls = require("../lib/urls");
 const config = require("../lib/config");
 
-const Location = require("./Location");
-
 const types = config.types;
 const model = config.model;
 
@@ -106,14 +104,6 @@ const Artwork = new db.schema(Object.assign({
     medium: {
         type: String,
         es_indexed: true,
-    },
-
-    // Locations where the artwork is stored
-    locations: {
-        type: [Location],
-        validateArray: (val) => val.name || val.city,
-        validationMsg: (req) => req.gettext("Locations must have a name " +
-            "or city specified."),
     },
 
     // Categories classifying the artwork

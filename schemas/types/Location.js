@@ -3,7 +3,7 @@
 const LocationFilter = require("../../views/types/filter/Location.jsx");
 const LocationDisplay = require("../../views/types/view/Location.jsx");
 
-const Location = (options) => {
+const Location = function(options) {
     this.options = options;
     /*
     name

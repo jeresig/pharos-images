@@ -4,6 +4,7 @@ const Name = require("../schemas/types/Name.js");
 const YearRange = require("../schemas/types/YearRange.js");
 const FixedString = require("../schemas/types/FixedString.js");
 const Dimension = require("../schemas/types/Dimension.js");
+const Location = require("../schemas/types/Location.js");
 const types = require("./types.js");
 
 module.exports = [
@@ -41,5 +42,13 @@ module.exports = [
         name: "dimensions",
         heightTitle: (i18n) => i18n.gettext("Height"),
         widthTitle: (i18n) => i18n.gettext("Width"),
+    }),
+
+    // Locations where the artwork is stored
+    new Location({
+        name: "location",
+        modelName: "locations",
+        title: (i18n) => i18n.gettext("Location"),
+        placeholder: (i18n) => i18n.gettext("Sample: Louvre"),
     }),
 ];
