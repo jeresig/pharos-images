@@ -1,7 +1,6 @@
 "use strict";
 
 const async = require("async");
-const parseDimensions = require("parse-dimensions");
 const validUrl = require("valid-url");
 const jdp = require("jsondiffpatch").create({
     objectHash: (obj) => obj._id,
@@ -12,7 +11,6 @@ const db = require("../lib/db");
 const urls = require("../lib/urls");
 const config = require("../lib/config");
 
-const Dimension = require("./Dimension");
 const Location = require("./Location");
 
 const types = config.types;
@@ -102,17 +100,6 @@ const Artwork = new db.schema(Object.assign({
         type: String,
         es_indexed: true,
         recommended: true,
-    },
-
-    // The size of the artwork (e.g. 100mm x 200mm)
-    dimensions: {
-        type: [Dimension],
-        convert: (obj) => typeof obj === "string" ?
-            parseDimensions.parseDimension(obj, true, "mm") :
-            parseDimensions.convertDimension(obj, "mm"),
-        validateArray: (val) => (val.width || val.height) && val.unit,
-        validationMsg: (req) => req.gettext("Dimensions must have a " +
-            "unit specified and at least a width or height."),
     },
 
     // The medium of the artwork (e.g. "watercolor")

@@ -11,7 +11,7 @@ const numRange = (bucket) => bucket.to ?
     `${bucket.from || 0}-${bucket.to}${bucket.unit}` :
     `${bucket.from}${bucket.unit}+`;
 
-const Dimension = (options) => {
+const Dimension = function(options) {
     this.options = options;
     /*
     name

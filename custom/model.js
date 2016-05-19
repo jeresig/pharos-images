@@ -3,6 +3,7 @@
 const Name = require("../schemas/types/Name.js");
 const YearRange = require("../schemas/types/YearRange.js");
 const FixedString = require("../schemas/types/FixedString.js");
+const Dimension = require("../schemas/types/Dimension.js");
 const types = require("./types.js");
 
 module.exports = [
@@ -33,5 +34,12 @@ module.exports = [
         allowUnknown: false,
         values: types,
         recommended: true,
+    }),
+
+    // The size of the artwork (e.g. 100mm x 200mm)
+    new Dimension({
+        name: "dimensions",
+        heightTitle: (i18n) => i18n.gettext("Height"),
+        widthTitle: (i18n) => i18n.gettext("Width"),
     }),
 ];
