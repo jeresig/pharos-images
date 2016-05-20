@@ -100,12 +100,6 @@ const Artwork = new db.schema(Object.assign({
         recommended: true,
     },
 
-    // The medium of the artwork (e.g. "watercolor")
-    medium: {
-        type: String,
-        es_indexed: true,
-    },
-
     // Categories classifying the artwork
     categories: [{
         type: String,

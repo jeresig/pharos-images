@@ -3,6 +3,7 @@
 const Name = require("../schemas/types/Name.js");
 const YearRange = require("../schemas/types/YearRange.js");
 const FixedString = require("../schemas/types/FixedString.js");
+const SimpleString = require("../schemas/types/SimpleString.js");
 const Dimension = require("../schemas/types/Dimension.js");
 const Location = require("../schemas/types/Location.js");
 const types = require("./types.js");
@@ -50,5 +51,11 @@ module.exports = [
         modelName: "locations",
         title: (i18n) => i18n.gettext("Location"),
         placeholder: (i18n) => i18n.gettext("Sample: Louvre"),
+    }),
+
+    // The medium of the artwork (e.g. "watercolor")
+    new SimpleString({
+        name: "medium",
+        title: (i18n) => i18n.gettext("Medium"),
     }),
 ];
