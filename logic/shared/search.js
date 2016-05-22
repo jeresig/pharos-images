@@ -152,7 +152,8 @@ module.exports = (req, res, tmplParams) => {
         res.render("Search", Object.assign({
             title,
             breadcrumbs,
-            sources: models("Source").getSources(),
+            sources: models("Source").getSources()
+                .filter((source) => source.numArtworks > 0),
             types: typeData,
             minDate: config.DEFAULT_START_DATE,
             maxDate: config.DEFAULT_END_DATE,

@@ -194,6 +194,7 @@ Object.assign(ArtworkImport.methods, {
 
     importArtworks(callback) {
         const Artwork = models("Artwork");
+        const Source = models("Source");
 
         async.eachLimit(this.results, 1, (result, callback) => {
             result.state = "import.started";
@@ -246,8 +247,11 @@ Object.assign(ArtworkImport.methods, {
 
             this.markModified("results");
 
-            // Advance to the next state
-            this.saveState("import.completed", callback);
+            // Update the internal source cache
+            Source.cacheSources(() => {
+                // Advance to the next state
+                this.saveState("import.completed", callback);
+            });
         });
     },
 

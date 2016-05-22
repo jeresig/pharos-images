@@ -23,7 +23,8 @@ module.exports = (app) => {
                 }
 
                 res.render("Home", {
-                    sources: Source.getSources(),
+                    sources: Source.getSources()
+                        .filter((source) => source.numArtworks > 0),
                     artworkTotal: results[0],
                     imageTotal: results[1],
                 });
