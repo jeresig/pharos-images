@@ -93,13 +93,6 @@ const Artwork = new db.schema(Object.assign({
         convert: (name, data) => `${data.source}/${name}`,
     },
 
-    // The title of the artwork.
-    title: {
-        type: String,
-        es_indexed: true,
-        recommended: true,
-    },
-
     // Categories classifying the artwork
     categories: [{
         type: String,

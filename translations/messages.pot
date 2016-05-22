@@ -8,7 +8,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2016-05-20 20:42+0000\n"
+"POT-Creation-Date: 2016-05-22 00:30+0000\n"
 
 #: logic/admin.js:25
 #: logic/admin.js:63
@@ -119,43 +119,43 @@ msgstr ""
 msgid "Images must be a valid image file name. For example: `image.jpg`."
 msgstr ""
 
-#: schemas/Artwork.js:176
+#: schemas/Artwork.js:169
 msgid "Artwork"
 msgstr ""
 
-#: schemas/Artwork.js:373
+#: schemas/Artwork.js:366
 msgid "Image file not found: %(fileName)s"
 msgstr ""
 
-#: schemas/Artwork.js:383
+#: schemas/Artwork.js:376
 msgid "Error accessing image data."
 msgstr ""
 
-#: schemas/Artwork.js:391
+#: schemas/Artwork.js:384
 msgid "No images found."
 msgstr ""
 
-#: schemas/Artwork.js:411
+#: schemas/Artwork.js:404
 msgid "There was an error with the data format."
 msgstr ""
 
-#: schemas/Artwork.js:437
+#: schemas/Artwork.js:430
 msgid "Unrecognized field `%(field)s`."
 msgstr ""
 
-#: schemas/Artwork.js:458
+#: schemas/Artwork.js:451
 msgid "`%(field)s` is the wrong type. Expected a %(type)s."
 msgstr ""
 
-#: schemas/Artwork.js:476
+#: schemas/Artwork.js:469
 msgid "`%(field)s` value is the wrong type. Expected a %(type)s."
 msgstr ""
 
-#: schemas/Artwork.js:529
+#: schemas/Artwork.js:522
 msgid "Required field `%(field)s` is empty."
 msgstr ""
 
-#: schemas/Artwork.js:533
+#: schemas/Artwork.js:526
 msgid "Recommended field `%(field)s` is empty."
 msgstr ""
 
@@ -276,60 +276,64 @@ msgid "Page Not Found"
 msgstr ""
 
 #: custom/facets.js:14
-#: custom/model.js:34
+#: custom/model.js:41
 #: views/Artwork.jsx:115
 #: views/Search.jsx:132
 msgid "Type"
 msgstr ""
 
 #: custom/facets.js:55
-#: custom/model.js:24
+#: custom/model.js:31
 #: views/Artwork.jsx:108
 #: views/Search.jsx:138
 msgid "Date"
 msgstr ""
 
 #: custom/facets.js:70
-#: custom/model.js:16
+#: custom/model.js:23
 #: views/Artwork.jsx:101
 #: views/Search.jsx:120
 msgid "Artist"
 msgstr ""
 
 #: custom/facets.js:98
-#: custom/model.js:45
+#: custom/model.js:58
 msgid "Width"
 msgstr ""
 
 #: custom/facets.js:140
-#: custom/model.js:44
+#: custom/model.js:57
 msgid "Height"
 msgstr ""
 
-#: custom/model.js:17
+#: custom/model.js:15
+msgid "Title"
+msgstr ""
+
+#: custom/model.js:24
 #: views/Search.jsx:119
 msgid "Sample: Andrea del Sarto"
 msgstr ""
 
-#: custom/model.js:35
+#: custom/model.js:42
 #: views/Search.jsx:131
 msgid "Any Type"
 msgstr ""
 
-#: custom/model.js:52
+#: custom/model.js:51
+#: views/Artwork.jsx:122
+msgid "Medium"
+msgstr ""
+
+#: custom/model.js:65
 #: views/Artwork.jsx:143
 #: views/Search.jsx:126
 msgid "Location"
 msgstr ""
 
-#: custom/model.js:53
+#: custom/model.js:66
 #: views/Search.jsx:125
 msgid "Sample: Louvre"
-msgstr ""
-
-#: custom/model.js:59
-#: views/Artwork.jsx:122
-msgid "Medium"
 msgstr ""
 
 #: custom/queries.js:98

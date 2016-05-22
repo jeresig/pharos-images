@@ -9,6 +9,13 @@ const Location = require("../schemas/types/Location.js");
 const types = require("./types.js");
 
 module.exports = [
+    // The title of the artwork.
+    new SimpleString({
+        name: "title",
+        title: (i18n) => i18n.gettext("Title"),
+        recommended: true,
+    }),
+
     // A list of artist names extracted from the page.
     new Name({
         name: "artist",
@@ -38,6 +45,12 @@ module.exports = [
         recommended: true,
     }),
 
+    // The medium of the artwork (e.g. "watercolor")
+    new SimpleString({
+        name: "medium",
+        title: (i18n) => i18n.gettext("Medium"),
+    }),
+
     // The size of the artwork (e.g. 100mm x 200mm)
     new Dimension({
         name: "dimensions",
@@ -51,11 +64,5 @@ module.exports = [
         modelName: "locations",
         title: (i18n) => i18n.gettext("Location"),
         placeholder: (i18n) => i18n.gettext("Sample: Louvre"),
-    }),
-
-    // The medium of the artwork (e.g. "watercolor")
-    new SimpleString({
-        name: "medium",
-        title: (i18n) => i18n.gettext("Medium"),
     }),
 ];
