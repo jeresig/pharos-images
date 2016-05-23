@@ -1,5 +1,7 @@
 "use strict";
 
+require("babel-register");
+
 const init = require("../lib/init");
 const models = require("../lib/models");
 

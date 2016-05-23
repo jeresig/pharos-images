@@ -8,6 +8,8 @@
 const fs = require("fs");
 const path = require("path");
 
+require("babel-register");
+
 const init = require("../lib/init");
 const models = require("../lib/models");
 
