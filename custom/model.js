@@ -65,4 +65,12 @@ module.exports = [
         title: (i18n) => i18n.gettext("Location"),
         placeholder: (i18n) => i18n.gettext("Sample: Louvre"),
     }),
+
+    // Categories classifying the artwork
+    // The medium of the artwork (e.g. "watercolor")
+    new SimpleString({
+        name: "categories",
+        title: (i18n) => i18n.gettext("Categories"),
+        multiple: true,
+    }),
 ];

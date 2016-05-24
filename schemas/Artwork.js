@@ -93,12 +93,6 @@ const Artwork = new db.schema(Object.assign({
         convert: (name, data) => `${data.source}/${name}`,
     },
 
-    // Categories classifying the artwork
-    categories: [{
-        type: String,
-        es_indexed: true,
-    }],
-
     // Keep track of if the artwork needs to update its artwork similarity
     needsSimilarUpdate: {
         type: Boolean,
