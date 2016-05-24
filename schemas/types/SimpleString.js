@@ -12,6 +12,7 @@ const SimpleString = function(options) {
     modelName
     title(i18n)
     placeholder(i18n)
+    multiple: Bool
     recommended: Bool
     */
 };
@@ -25,50 +26,7 @@ SimpleString.prototype = {
         return req.query[this.options.name];
     },
 
-    searchTitle(query, i18n) {
-        const value = query[this.options.name];
-        const values = this.options.values || {};
-
-        // If there is a value that has an i18n title mapping
-        if (values && typeof values[value] === "function") {
-            return values[value](i18n);
-        }
-
-        return value;
-    },
-
-    filter(query, sanitize) {
-        return {
-            match: {
-                [`${this.modelName()}.raw`]: {
-                    query: sanitize(query[this.options.name]),
-                    operator: "or",
-                    zero_terms_query: "all",
-                },
-            },
-        };
-    },
-
     /*
-    facet() {
-        return {
-            terms: {
-                field: `${this.modelName()}.raw`,
-            },
-        };
-    },
-
-    formatFacetBucket(bucket, searchURL, i18n) {
-        return {
-            text: (bucket.key in this.options.values ?
-                this.options.values[bucket.key](i18n) :
-                bucket.key),
-            url: searchURL({
-                [this.props.name]: bucket.key,
-            }),
-        };
-    },
-
     renderFilter(query, i18n) {
         return SimpleStringFilter({
             placeholder: this.options.placeholder(i18n),
@@ -91,11 +49,13 @@ SimpleString.prototype = {
     */
 
     schema() {
-        return {
+        const type = {
             type: String,
             es_indexed: true,
             recommended: !!this.options.recommended,
         };
+
+        return this.options.multiple ? [type] : type;
     },
 };
 
