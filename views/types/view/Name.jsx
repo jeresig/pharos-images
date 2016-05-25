@@ -22,7 +22,9 @@ const NameView = React.createClass({
 
         return <span key={name._id}>
             <a href={url}>{name.name}</a>
-            {name.pseudonym && (<a href={pseudoURL}>{name.pseudonym}</a>)}
+            {name.pseudonym && (<span>
+                {" "}(<a href={pseudoURL}>{name.pseudonym}</a>)
+            </span>)}
         </span>;
     },
 
