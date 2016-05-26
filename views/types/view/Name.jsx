@@ -17,8 +17,7 @@ const NameView = React.createClass({
 
     renderName(name) {
         const url = this.props.searchURL({[this.props.name]: name.name});
-        const pseudoURL = this.props.searchURL({[this.props.name]:
-            name.pseudoynm});
+        const pseudoURL = this.props.searchURL({filter: name.pseudonym});
 
         return <span key={name._id}>
             <a href={url}>{name.name}</a>
