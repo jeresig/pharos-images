@@ -121,7 +121,7 @@ Name.prototype = {
             generation: Number,
 
             // A pseudonym for the person
-            pseudonym: String,
+            pseudonym: {type: String, es_indexed: true},
 
             // Is the artist unknown/unattributed
             unknown: Boolean,
