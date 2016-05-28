@@ -78,8 +78,13 @@ Source.methods = {
                 },
             },
         ], (err, results) => {
-            this.numArtworks = results[0].total;
-            this.numImages = results[0].totalImages;
+            if (results && results[0]) {
+                this.numArtworks = results[0].total;
+                this.numImages = results[0].totalImages;
+            } else {
+                this.numArtworks = 0;
+                this.numImages = 0;
+            }
             callback();
         });
     },
