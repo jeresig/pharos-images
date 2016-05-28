@@ -63,26 +63,23 @@ Source.methods = {
         this.getConverter().processFiles(files, callback);
     },
 
-    cacheNumArtworks(callback) {
-        models("Artwork").count({source: this._id}, (err, num) => {
-            /* istanbul ignore if */
-            if (err) {
-                return callback(err);
-            }
-
-            this.numArtworks = num;
-            callback();
-        });
-    },
-
-    cacheNumImages(callback) {
-        models("Image").count({source: this._id}, (err, num) => {
-            /* istanbul ignore if */
-            if (err) {
-                return callback(err);
-            }
-
-            this.numImages = num;
+    cacheTotals(callback) {
+        models("Artwork").aggregate([
+            {
+                $match: {
+                    source: this._id,
+                },
+            },
+            {
+                $group: {
+                    _id: null,
+                    total: {$sum: 1},
+                    totalImages: {$sum: {$size: "$images"}},
+                },
+            },
+        ], (err, results) => {
+            this.numArtworks = results[0].total;
+            this.numImages = results[0].totalImages;
             callback();
         });
     },
@@ -94,10 +91,7 @@ Source.statics = {
             sourceCache = sources;
 
             async.eachLimit(sources, 2, (source, callback) => {
-                async.parallel([
-                    (callback) => source.cacheNumArtworks(callback),
-                    (callback) => source.cacheNumImages(callback),
-                ], callback);
+                source.cacheTotals(callback);
             }, () => {
                 callback(err, sources);
             });

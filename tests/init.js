@@ -684,6 +684,17 @@ const bindStubs = () => {
         process.nextTick(() => callback(null, count));
     });
 
+    sandbox.stub(Artwork, "aggregate", (query, callback) => {
+        const source = query[0].$match.source;
+        const count = Object.keys(artworks).filter((id) =>
+            artworks[id].source === source).length;
+
+        process.nextTick(() => callback(null, [{
+            total: count,
+            totalImages: count,
+        }]));
+    });
+
     const fromData = Artwork.fromData;
 
     sandbox.stub(Artwork, "fromData", (tmpData, req, callback) => {

@@ -44,10 +44,11 @@ tap.test("getExpectedFiles", {autoend: true}, (t) => {
     ]);
 });
 
-tap.test("cacheNumArtworks", (t) => {
+tap.test("cacheTotals", (t) => {
     const source = init.getSource();
-    source.cacheNumArtworks(() => {
+    source.cacheTotals(() => {
         t.equal(source.numArtworks, 4);
+        t.equal(source.numImages, 4);
         t.end();
     });
 });
