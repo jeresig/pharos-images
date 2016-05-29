@@ -71,7 +71,13 @@ const propMap = {
     artists: {
         every: "PARAGRAFO[@etichetta='AUTHOR']/RIPETIZIONE",
         data: {
-            name: "AUTN",
+            name: ["AUTN", (name, getByTagName) => {
+                const connection = getByTagName("AUTS");
+                if (connection) {
+                    return `${name}, ${connection}`;
+                }
+                return name;
+            }],
             pseudonym: "AUTP",
         },
     },
