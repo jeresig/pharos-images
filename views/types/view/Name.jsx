@@ -15,15 +15,24 @@ const NameView = React.createClass({
         ).isRequired,
     },
 
+    renderPseudonym(name) {
+        if (!name.pseudoynm || name.name === name.pseudoynm) {
+            return null;
+        }
+
+        const pseudoURL = this.props.searchURL({filter: name.pseudonym});
+
+        return <span>
+            {" "}(<a href={pseudoURL}>{name.pseudonym}</a>)
+        </span>;
+    },
+
     renderName(name) {
         const url = this.props.searchURL({[this.props.name]: name.name});
-        const pseudoURL = this.props.searchURL({filter: name.pseudonym});
 
         return <span key={name._id}>
             <a href={url}>{name.name}</a>
-            {name.pseudonym && (<span>
-                {" "}(<a href={pseudoURL}>{name.pseudonym}</a>)
-            </span>)}
+            {this.renderPseudonym(name)}
         </span>;
     },
 
