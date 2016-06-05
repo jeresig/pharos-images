@@ -8,16 +8,16 @@ const Dimension = require("../schemas/types/Dimension.js");
 const Location = require("../schemas/types/Location.js");
 const types = require("./types.js");
 
-module.exports = [
+module.exports = {
     // The title of the artwork.
-    new SimpleString({
+    title: new SimpleString({
         name: "title",
         title: (i18n) => i18n.gettext("Title"),
         recommended: true,
     }),
 
     // A list of artist names extracted from the page.
-    new Name({
+    artists: new Name({
         name: "artist",
         modelName: "artists",
         title: (i18n) => i18n.gettext("Artist"),
@@ -25,7 +25,7 @@ module.exports = [
     }),
 
     // Date ranges when the artwork was created or modified.
-    new YearRange({
+    dates: new YearRange({
         name: "date",
         modelName: "dates",
         title: (i18n) => i18n.gettext("Date"),
@@ -36,7 +36,7 @@ module.exports = [
     }),
 
     // The English form of the object type (e.g. painting, print)
-    new FixedString({
+    objectType: new FixedString({
         name: "objectType",
         title: (i18n) => i18n.gettext("Type"),
         placeholder: (i18n) => i18n.gettext("Any Type"),
@@ -46,20 +46,20 @@ module.exports = [
     }),
 
     // The medium of the artwork (e.g. "watercolor")
-    new SimpleString({
+    medium: new SimpleString({
         name: "medium",
         title: (i18n) => i18n.gettext("Medium"),
     }),
 
     // The size of the artwork (e.g. 100mm x 200mm)
-    new Dimension({
+    dimensions: new Dimension({
         name: "dimensions",
         heightTitle: (i18n) => i18n.gettext("Height"),
         widthTitle: (i18n) => i18n.gettext("Width"),
     }),
 
     // Locations where the artwork is stored
-    new Location({
+    locations: new Location({
         name: "location",
         modelName: "locations",
         title: (i18n) => i18n.gettext("Location"),
@@ -68,9 +68,9 @@ module.exports = [
 
     // Categories classifying the artwork
     // The medium of the artwork (e.g. "watercolor")
-    new SimpleString({
+    categories: new SimpleString({
         name: "categories",
         title: (i18n) => i18n.gettext("Categories"),
         multiple: true,
     }),
-];
+};

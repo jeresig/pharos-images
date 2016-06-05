@@ -16,9 +16,9 @@ const model = config.model;
 
 const modelProps = {};
 
-model.forEach((prop) => {
-    modelProps[prop.modelName()] = prop.schema(db.schema);
-});
+for (const modelName in model) {
+    modelProps[modelName] = model[modelName].schema(db.schema);
+}
 
 const Artwork = new db.schema(Object.assign({
     // UUID of the image (Format: SOURCE/ID)
