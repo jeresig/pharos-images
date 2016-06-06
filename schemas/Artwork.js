@@ -10,15 +10,10 @@ const models = require("../lib/models");
 const db = require("../lib/db");
 const urls = require("../lib/urls");
 const config = require("../lib/config");
+const metadata = require("../lib/metadata");
 
 const types = config.types;
-const model = config.model;
-
-const modelProps = {};
-
-for (const modelName in model) {
-    modelProps[modelName] = model[modelName].schema(db.schema);
-}
+const modelProps = metadata.schemas();
 
 const Artwork = new db.schema(Object.assign({
     // UUID of the image (Format: SOURCE/ID)
