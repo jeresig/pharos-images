@@ -297,12 +297,12 @@ const Artwork = React.createClass({
 
     renderCategories(artwork) {
         return <td key={artwork._id}>
-            {artwork.categories.map((category, i) => <span key={category}>
-                <a href={this.props.searchURL({filter: category})}>
-                    {category}
-                </a>
-                {artwork.categories.length - 1 === i ? "" : ", "}
-            </span>)}
+            <FixedStringView
+                name="categories"
+                searchField="filter"
+                searchURL={this.props.searchURL}
+                value={artwork.categories}
+            />
         </td>;
     },
 

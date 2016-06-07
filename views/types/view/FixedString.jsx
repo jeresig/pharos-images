@@ -7,7 +7,12 @@ const FixedStringView = React.createClass({
         name: React.PropTypes.string.isRequired,
         searchField: React.PropTypes.string,
         searchURL: React.PropTypes.func.isRequired,
-        value: React.PropTypes.string.isRequired,
+        value: React.PropTypes.oneOfType([
+            React.PropTypes.string,
+            React.PropTypes.arrayOf(
+                React.PropTypes.string
+            ),
+        ]).isRequired,
         values: React.PropTypes.arrayOf(
             React.PropTypes.shape({
                 id: React.PropTypes.string.isRequired,
@@ -43,8 +48,19 @@ const FixedStringView = React.createClass({
         </a>;
     },
 
+    renderValues(values) {
+        return <span>
+            {values.map((value, i) => <span key={i}>
+                {this.renderValue(value)}
+                {values.length - 1 === i ? "" : ", "}
+            </span>)}
+        </span>;
+    },
+
     render() {
-        return this.renderValue(this.props.value);
+        return Array.isArray(this.props.value) ?
+            this.renderValues(this.props.value) :
+            this.renderValue(this.props.value);
     },
 });
 
