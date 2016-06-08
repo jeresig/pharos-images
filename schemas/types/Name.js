@@ -1,9 +1,13 @@
 "use strict";
 
+const React = require("react");
+
 const YearRange = require("./YearRange.js");
 
-const NameFilter = require("../../views/types/filter/Name.jsx");
-const NameDisplay = require("../../views/types/view/Name.jsx");
+const NameFilter = React.createFactory(
+    require("../../views/types/filter/Name.jsx"));
+const NameDisplay = React.createFactory(
+    require("../../views/types/view/Name.jsx"));
 
 const Name = function(options) {
     this.options = options;
@@ -71,7 +75,7 @@ Name.prototype = {
     renderView(data, searchURL) {
         return NameDisplay({
             name: this.options.name,
-            names: data[this.modelName()],
+            value: data[this.modelName()],
             searchURL,
         });
     },

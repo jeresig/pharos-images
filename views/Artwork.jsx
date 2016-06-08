@@ -6,7 +6,6 @@ const config = require("../lib/config");
 
 const Page = require("./Page.jsx");
 
-const NameView = require("./types/view/Name.jsx");
 const LocationView = require("./types/view/Location.jsx");
 const DimensionView = require("./types/view/Dimension.jsx");
 const FixedStringView = require("./types/view/FixedString.jsx");
@@ -268,11 +267,7 @@ const Artwork = React.createClass({
 
     renderArtist(artwork) {
         return <td key={artwork._id}>
-            <NameView
-                name="artist"
-                value={artwork.artists}
-                searchURL={this.props.searchURL}
-            />
+            {config.model.artists.renderView(artwork, this.props.searchURL)}
         </td>;
     },
 

@@ -8,7 +8,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2016-06-08 04:30+0000\n"
+"POT-Creation-Date: 2016-06-08 23:45+0000\n"
 
 #: logic/admin.js:25
 #: logic/admin.js:63
@@ -78,7 +78,7 @@ msgid "Uploaded image not found."
 msgstr ""
 
 #: logic/shared/facets.js:13
-#: views/Artwork.jsx:159
+#: views/Artwork.jsx:158
 #: views/Search.jsx:198
 msgid "Source"
 msgstr ""
@@ -277,21 +277,21 @@ msgstr ""
 
 #: custom/facets.js:14
 #: custom/model.js:41
-#: views/Artwork.jsx:117
+#: views/Artwork.jsx:116
 #: views/Search.jsx:132
 msgid "Type"
 msgstr ""
 
 #: custom/facets.js:55
 #: custom/model.js:31
-#: views/Artwork.jsx:110
+#: views/Artwork.jsx:109
 #: views/Search.jsx:138
 msgid "Date"
 msgstr ""
 
 #: custom/facets.js:70
 #: custom/model.js:23
-#: views/Artwork.jsx:103
+#: views/Artwork.jsx:102
 #: views/Search.jsx:120
 msgid "Artist"
 msgstr ""
@@ -321,17 +321,17 @@ msgid "Any Type"
 msgstr ""
 
 #: custom/model.js:51
-#: views/Artwork.jsx:124
+#: views/Artwork.jsx:123
 msgid "Medium"
 msgstr ""
 
 #: custom/model.js:57
-#: views/Artwork.jsx:131
+#: views/Artwork.jsx:130
 msgid "Dimensions"
 msgstr ""
 
 #: custom/model.js:66
-#: views/Artwork.jsx:145
+#: views/Artwork.jsx:144
 #: views/Search.jsx:126
 msgid "Location"
 msgstr ""
@@ -342,7 +342,7 @@ msgid "Sample: Louvre"
 msgstr ""
 
 #: custom/model.js:74
-#: views/Artwork.jsx:138
+#: views/Artwork.jsx:137
 msgid "Categories"
 msgstr ""
 
@@ -523,38 +523,38 @@ msgstr ""
 msgid "%(name)s Admin Area"
 msgstr ""
 
-#: views/Artwork.jsx:84
+#: views/Artwork.jsx:83
 msgid "End Comparison"
 msgstr ""
 
-#: views/Artwork.jsx:152
+#: views/Artwork.jsx:151
 msgid "Details"
 msgstr ""
 
-#: views/Artwork.jsx:227
+#: views/Artwork.jsx:226
 #: views/Search.jsx:350
 msgid "Previous"
 msgstr ""
 
-#: views/Artwork.jsx:238
+#: views/Artwork.jsx:237
 #: views/Search.jsx:355
 msgid "Next"
 msgstr ""
 
-#: views/Artwork.jsx:348
+#: views/Artwork.jsx:343
 msgid "More information..."
 msgstr ""
 
-#: views/Artwork.jsx:368
+#: views/Artwork.jsx:363
 msgid "Compare Images"
 msgstr ""
 
-#: views/Artwork.jsx:373
+#: views/Artwork.jsx:368
 #: views/Upload.jsx:52
 msgid "Similar Images"
 msgstr ""
 
-#: views/Artwork.jsx:398
+#: views/Artwork.jsx:393
 #: views/Upload.jsx:89
 msgid "Score: %(score)s"
 msgstr ""
