@@ -16,6 +16,7 @@ const Dimension = function(options) {
     /*
     name
     modelName
+    title(i18n)
     widthTitle(i18n)
     heightTitle(i18n)
     placeholder(i18n)

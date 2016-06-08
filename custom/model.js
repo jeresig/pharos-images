@@ -54,6 +54,7 @@ module.exports = {
     // The size of the artwork (e.g. 100mm x 200mm)
     dimensions: new Dimension({
         name: "dimensions",
+        title: (i18n) => i18n.gettext("Dimensions"),
         heightTitle: (i18n) => i18n.gettext("Height"),
         widthTitle: (i18n) => i18n.gettext("Width"),
     }),

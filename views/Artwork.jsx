@@ -2,6 +2,8 @@
 
 const React = require("react");
 
+const config = require("../lib/config");
+
 const Page = require("./Page.jsx");
 
 const NameView = require("./types/view/Name.jsx");
@@ -237,6 +239,31 @@ const Artwork = React.createClass({
                 </span>
             </a>
         </div>;
+    },
+
+    renderMetadata() {
+        const artworks = this.props.artworks;
+        const artwork = artworks[0];
+        const types = ["artists", "dates", "objectType", "medium",
+            "dimensions", "categories", "locations"];
+
+        return types.map((type) => {
+            const value = artwork[type];
+            const typeSchema = config.model[type];
+
+            if (this.props.compare || value &&
+                    (!Array.isArray(value) || value.length > 0)) {
+                return <tr key={type}>
+                    <th className="text-right">
+                        {typeSchema.options.title(this)}
+                    </th>
+                    {artworks.map((artwork) =>
+                        this.renderArtist(artwork))}
+                </tr>;
+            }
+
+            return null;
+        });
     },
 
     renderArtist(artwork) {
