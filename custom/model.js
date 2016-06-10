@@ -38,6 +38,7 @@ module.exports = {
     // The English form of the object type (e.g. painting, print)
     objectType: new FixedString({
         name: "objectType",
+        searchField: "type",
         title: (i18n) => i18n.gettext("Type"),
         placeholder: (i18n) => i18n.gettext("Any Type"),
         allowUnknown: false,

@@ -85,13 +85,6 @@ module.exports = (req, res, next) => {
             return type ? type.name(req) : item.objectType;
         },
 
-        getTypes() {
-            return Object.keys(types).map((id) => ({
-                id,
-                name: types[id].name(req),
-            }));
-        },
-
         // Format a number using commas
         stringNum(num) {
             // TODO(jeresig): Have a better way to handle this.

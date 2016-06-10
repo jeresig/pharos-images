@@ -1,7 +1,11 @@
 "use strict";
 
-const FixedStringFilter = require("../../views/types/filter/FixedString.jsx");
-const FixedStringDisplay = require("../../views/types/view/FixedString.jsx");
+const React = require("react");
+
+const FixedStringFilter = React.createFactory(
+    require("../../views/types/filter/FixedString.jsx"));
+const FixedStringDisplay = React.createFactory(
+    require("../../views/types/view/FixedString.jsx"));
 
 const FixedString = function(options) {
     this.options = options;
@@ -13,6 +17,7 @@ const FixedString = function(options) {
     title(i18n)
     placeholder(i18n)
     recommended: Bool
+    searchField: String
     */
 };
 
@@ -68,22 +73,28 @@ FixedString.prototype = {
         };
     },
 
+    getValueArray(i18n) {
+        return Object.keys(this.options.values).map((id) => ({
+            id,
+            name: this.options.values[id].name(i18n),
+        }));
+    },
+
     renderFilter(query, i18n) {
         return FixedStringFilter({
             placeholder: this.options.placeholder(i18n),
             title: this.options.title(i18n),
             value: query[this.options.name],
-            values: Object.keys(this.options.values).map((id) => ({
-                id,
-                name: this.options.values[id],
-            })),
+            values: this.getValueArray(i18n),
         });
     },
 
-    renderView(data, searchURL) {
+    renderView(data, searchURL, i18n) {
         return FixedStringDisplay({
-            locations: data[this.modelName()],
+            value: data[this.modelName()],
+            values: this.getValueArray(i18n),
             name: this.options.name,
+            searchField: this.options.searchField,
             searchURL,
         });
     },

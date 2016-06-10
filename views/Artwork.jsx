@@ -50,7 +50,6 @@ const Artwork = React.createClass({
         getDate: React.PropTypes.func.isRequired,
         getTitle: React.PropTypes.func.isRequired,
         getType: React.PropTypes.func.isRequired,
-        getTypes: React.PropTypes.func.isRequired,
         gettext: React.PropTypes.func.isRequired,
         searchURL: React.PropTypes.func.isRequired,
         shortName: React.PropTypes.func.isRequired,
@@ -287,12 +286,8 @@ const Artwork = React.createClass({
 
     renderType(artwork) {
         return <td key={artwork._id}>
-            <FixedStringView
-                name="type"
-                searchURL={this.props.searchURL}
-                value={artwork.objectType}
-                values={this.props.getTypes()}
-            />
+            {config.model.objectType
+                .renderView(artwork, this.props.searchURL, this.props)}
         </td>;
     },
 
