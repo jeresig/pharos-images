@@ -1,9 +1,9 @@
 "use strict";
 
-//const SimpleStringFilter =
-//    require("../../views/types/filter/SimpleString.jsx");
-//const SimpleStringDisplay =
-//    require("../../views/types/view/SimpleString.jsx");
+const React = require("react");
+
+const FixedStringDisplay = React.createFactory(
+    require("../../views/types/view/FixedString.jsx"));
 
 const SimpleString = function(options) {
     this.options = options;
@@ -14,6 +14,7 @@ const SimpleString = function(options) {
     placeholder(i18n)
     multiple: Bool
     recommended: Bool
+    searchField: String
     */
 };
 
@@ -38,15 +39,16 @@ SimpleString.prototype = {
             })),
         });
     },
+    */
 
     renderView(data, searchURL) {
-        return SimpleStringDisplay({
-            locations: data[this.modelName()],
+        return FixedStringDisplay({
+            value: data[this.modelName()],
             name: this.options.name,
+            searchField: this.options.searchField,
             searchURL,
         });
     },
-    */
 
     schema() {
         const type = {

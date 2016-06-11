@@ -8,7 +8,6 @@ const Page = require("./Page.jsx");
 
 const LocationView = require("./types/view/Location.jsx");
 const DimensionView = require("./types/view/Dimension.jsx");
-const FixedStringView = require("./types/view/FixedString.jsx");
 
 const artworkType = React.PropTypes.shape({
     artists: React.PropTypes.arrayOf(
@@ -293,12 +292,7 @@ const Artwork = React.createClass({
 
     renderMedium(artwork) {
         return <td key={artwork._id}>
-            <FixedStringView
-                name="medium"
-                searchField="filter"
-                searchURL={this.props.searchURL}
-                value={artwork.medium}
-            />
+            {config.model.medium.renderView(artwork, this.props.searchURL)}
         </td>;
     },
 
@@ -314,12 +308,7 @@ const Artwork = React.createClass({
 
     renderCategories(artwork) {
         return <td key={artwork._id}>
-            <FixedStringView
-                name="categories"
-                searchField="filter"
-                searchURL={this.props.searchURL}
-                value={artwork.categories}
-            />
+            {config.model.categories.renderView(artwork, this.props.searchURL)}
         </td>;
     },
 

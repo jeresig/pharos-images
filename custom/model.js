@@ -50,6 +50,7 @@ module.exports = {
     medium: new SimpleString({
         name: "medium",
         title: (i18n) => i18n.gettext("Medium"),
+        searchField: "filter",
     }),
 
     // The size of the artwork (e.g. 100mm x 200mm)
@@ -74,5 +75,6 @@ module.exports = {
         name: "categories",
         title: (i18n) => i18n.gettext("Categories"),
         multiple: true,
+        searchField: "filter",
     }),
 };
