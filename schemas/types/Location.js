@@ -1,7 +1,11 @@
 "use strict";
 
-const LocationFilter = require("../../views/types/filter/Location.jsx");
-const LocationDisplay = require("../../views/types/view/Location.jsx");
+const React = require("react");
+
+const LocationFilter = React.createFactory(
+    require("../../views/types/filter/Location.jsx"));
+const LocationDisplay = React.createFactory(
+    require("../../views/types/view/Location.jsx"));
 
 const Location = function(options) {
     this.options = options;
@@ -50,7 +54,7 @@ Location.prototype = {
 
     renderView(data, searchURL) {
         return LocationDisplay({
-            locations: data[this.modelName()],
+            value: data[this.modelName()],
             name: this.options.name,
             searchURL,
         });

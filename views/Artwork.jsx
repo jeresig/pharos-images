@@ -6,8 +6,6 @@ const config = require("../lib/config");
 
 const Page = require("./Page.jsx");
 
-const LocationView = require("./types/view/Location.jsx");
-
 const artworkType = React.PropTypes.shape({
     artists: React.PropTypes.arrayOf(
         React.PropTypes.shape({
@@ -309,11 +307,7 @@ const Artwork = React.createClass({
 
     renderLocation(artwork) {
         return <td key={artwork._id}>
-            <LocationView
-                name="location"
-                searchURL={this.props.searchURL}
-                value={artwork.locations}
-            />
+            {config.model.locations.renderView(artwork, this.props.searchURL)}
         </td>;
     },
 
