@@ -1,11 +1,12 @@
 "use strict";
 
 const pd = require("parse-dimensions");
+const React = require("react");
 
-const config = require("../../lib/config");
-
-const DimensionFilter = require("../../views/types/filter/Dimension.jsx");
-const DimensionDisplay = require("../../views/types/view/Dimension.jsx");
+const DimensionFilter = React.createFactory(
+    require("../../views/types/filter/Dimension.jsx"));
+const DimensionDisplay = React.createFactory(
+    require("../../views/types/view/Dimension.jsx"));
 
 const numRange = (bucket) => bucket.to ?
     `${bucket.from || 0}-${bucket.to}${bucket.unit}` :
@@ -29,6 +30,8 @@ Dimension.prototype = {
     },
 
     value(req) {
+        const config = require("../../lib/config");
+
         const heightMin = req.query[`${this.options.name}.heightMin`];
         const heightMax = req.query[`${this.options.name}.heightMax`];
         const widthMin = req.query[`${this.options.name}.widthMin`];
@@ -83,6 +86,8 @@ Dimension.prototype = {
     },
 
     filter(query) {
+        const config = require("../../lib/config");
+
         const filters = [];
         const value = query[this.options.name];
 
@@ -165,14 +170,19 @@ Dimension.prototype = {
     },
 
     renderView(data, searchURL) {
+        const config = require("../../lib/config");
+
         return DimensionDisplay({
-            locations: data[this.modelName()],
+            value: data[this.modelName()],
             name: this.options.name,
+            defaultUnit: config.DEFAULT_SEARCH_UNIT,
             searchURL,
         });
     },
 
     schema(Schema) {
+        const config = require("../../lib/config");
+
         const DimensionSchema = new Schema({
             // An ID for the dimension, computed from the original +
             // width/height properties before validation.
