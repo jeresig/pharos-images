@@ -2,9 +2,10 @@
 
 const React = require("react");
 
+const config = require("../lib/config");
+
 const Page = require("./Page.jsx");
 
-const NameFilter = require("./types/filter/Name.jsx");
 const FixedStringFilter = require("./types/filter/FixedString.jsx");
 const LocationFilter = require("./types/filter/Location.jsx");
 
@@ -114,12 +115,7 @@ const Search = React.createClass({
                     className="form-control"
                 />
             </div>
-            <NameFilter
-                name="artist"
-                placeholder={this.props.gettext("Sample: Andrea del Sarto")}
-                title={this.props.gettext("Artist")}
-                value={this.props.query.artist}
-            />
+            {config.model.artists.renderFilter(this.props.query, this.props)}
             <LocationFilter
                 name="location"
                 placeholder={this.props.gettext("Sample: Louvre")}
