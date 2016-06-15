@@ -81,10 +81,13 @@ FixedString.prototype = {
     },
 
     renderFilter(query, i18n) {
+        const name = this.options.searchField || this.options.name;
+
         return FixedStringFilter({
+            name,
             placeholder: this.options.placeholder(i18n),
             title: this.options.title(i18n),
-            value: query[this.options.name],
+            value: query[name],
             values: this.getValueArray(i18n),
         });
     },

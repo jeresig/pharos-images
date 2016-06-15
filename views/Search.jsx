@@ -6,9 +6,6 @@ const config = require("../lib/config");
 
 const Page = require("./Page.jsx");
 
-const FixedStringFilter = require("./types/filter/FixedString.jsx");
-const LocationFilter = require("./types/filter/Location.jsx");
-
 const buckets = React.PropTypes.arrayOf(
     React.PropTypes.shape({
         count: React.PropTypes.number.isRequired,
@@ -65,12 +62,6 @@ const Search = React.createClass({
         stringNum: React.PropTypes.func.isRequired,
         title: React.PropTypes.string.isRequired,
         total: React.PropTypes.number.isRequired,
-        types: React.PropTypes.arrayOf(
-            React.PropTypes.shape({
-                id: React.PropTypes.string.isRequired,
-                name: React.PropTypes.string.isRequired,
-            })
-        ),
         url: React.PropTypes.string,
     },
 
@@ -116,19 +107,8 @@ const Search = React.createClass({
                 />
             </div>
             {config.model.artists.renderFilter(this.props.query, this.props)}
-            <LocationFilter
-                name="location"
-                placeholder={this.props.gettext("Sample: Louvre")}
-                title={this.props.gettext("Location")}
-                value={this.props.query.location}
-            />
-            <FixedStringFilter
-                name="type"
-                placeholder={this.props.gettext("Any Type")}
-                title={this.props.gettext("Type")}
-                value={this.props.query.types}
-                values={this.props.types}
-            />
+            {config.model.locations.renderFilter(this.props.query, this.props)}
+            {config.model.objectType.renderFilter(this.props.query, this.props)}
             <div className="form-group">
                 <label htmlFor="dateStart" className="control-label">
                     {this.props.gettext("Date")}
