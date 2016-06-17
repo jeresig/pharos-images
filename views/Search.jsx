@@ -101,7 +101,8 @@ const Search = React.createClass({
                     {this.props.gettext("Query")}
                 </label>
                 <input type="search" name="filter"
-                    placeholder={this.props.gettext("Sample: christ or cristo")}
+                    placeholder={
+                        config.siteName.getSearchPlaceholder(this.props)}
                     defaultValue={this.props.query.filter}
                     className="form-control"
                 />

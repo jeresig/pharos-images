@@ -12,4 +12,8 @@ module.exports = {
     getTitle(req) {
         return `${this.getShortTitle(req)}: ${this.getSubTitle(req)}`;
     },
+
+    getSearchPlaceholder(req) {
+        return req.gettext("Sample: christ or cristo");
+    },
 };
