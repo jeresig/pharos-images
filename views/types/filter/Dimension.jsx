@@ -2,16 +2,31 @@
 
 const React = require("react");
 
+const minMaxType = React.PropTypes.shape({
+    max: React.PropTypes.number,
+    min: React.PropTypes.number,
+});
+
 const DimensionFilter = React.createClass({
     propTypes: {
         heightTitle: React.PropTypes.string.isRequired,
         name: React.PropTypes.string.isRequired,
-        placeholder: React.PropTypes.shape({
-            max: React.PropTypes.number,
-            min: React.PropTypes.number,
+        placeholder: minMaxType,
+        value: React.PropTypes.shape({
+            height: minMaxType,
+            width: minMaxType,
         }),
-        value: React.PropTypes.string,
         widthTitle: React.PropTypes.string.isRequired,
+    },
+
+    getDefaultProps() {
+        return {
+            placeholder: {},
+            value: {
+                height: {},
+                width: {},
+            },
+        };
     },
 
     render() {

@@ -59,6 +59,10 @@ module.exports = {
         title: (i18n) => i18n.gettext("Dimensions"),
         heightTitle: (i18n) => i18n.gettext("Height"),
         widthTitle: (i18n) => i18n.gettext("Width"),
+        placeholder: () => ({
+            max: 200,
+            min: 10,
+        }),
     }),
 
     // Locations where the artwork is stored

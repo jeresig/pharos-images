@@ -163,8 +163,10 @@ Dimension.prototype = {
 
     renderFilter(query, i18n) {
         return DimensionFilter({
+            name: this.options.name,
             placeholder: this.options.placeholder(i18n),
-            title: this.options.title(i18n),
+            heightTitle: this.options.heightTitle(i18n),
+            widthTitle: this.options.widthTitle(i18n),
             value: query[this.options.name],
         });
     },

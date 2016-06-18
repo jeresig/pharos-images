@@ -111,48 +111,7 @@ const Search = React.createClass({
             {config.model.locations.renderFilter(this.props.query, this.props)}
             {config.model.objectType.renderFilter(this.props.query, this.props)}
             {config.model.dates.renderFilter(this.props.query, this.props)}
-            <div className="row">
-                <div className="form-group col-xs-6 col-sm-12 col-lg-6">
-                    <label htmlFor="widthMin" className="control-label">
-                        {this.props.format(
-                            this.props.gettext("Width (%(unit)s)"),
-                                {unit: this.props.getUnit()})}
-                    </label>
-                    <div className="form-inline">
-                        <input type="text" name="widthMin"
-                            defaultValue={this.props.query.widthMin}
-                            placeholder="10"
-                            className="form-control size-control"
-                        />
-                        &mdash;
-                        <input type="text" name="widthMax"
-                            defaultValue={this.props.query.widthMax}
-                            placeholder="200"
-                            className="form-control size-control"
-                        />
-                    </div>
-                </div>
-                <div className="form-group col-xs-6 col-sm-12 col-lg-6">
-                    <label htmlFor="heightMin" className="control-label">
-                        {this.props.format(
-                            this.props.gettext("Height (%(unit)s)"),
-                            {unit: this.props.getUnit()})}
-                    </label>
-                    <div className="form-inline">
-                        <input type="text" name="heightMin"
-                            defaultValue={this.props.query.heightMin}
-                            placeholder="10"
-                            className="form-control size-control"
-                        />
-                        &mdash;
-                        <input type="text" name="heightMax"
-                            defaultValue={this.props.query.heightMax}
-                            placeholder="200"
-                            className="form-control size-control"
-                        />
-                    </div>
-                </div>
-            </div>
+            {config.model.dimensions.renderFilter(this.props.query, this.props)}
             <div className="form-group">
                 <label htmlFor="source" className="control-label">
                     {this.props.gettext("Source")}
