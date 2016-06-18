@@ -268,15 +268,7 @@ const Artwork = React.createClass({
 
     renderDate(artwork) {
         return <td key={artwork._id}>
-            {artwork.dates.map((date) => <span key={date._id}>
-                <a href={this.props.searchURL({
-                    dateStart: date.start,
-                    dateEnd: date.end,
-                })}
-                >
-                    {this.props.getDate(date)}
-                </a><br/>
-            </span>)}
+            {config.model.dates.renderView(artwork, this.props.searchURL)}
         </td>;
     },
 

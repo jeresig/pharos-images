@@ -13,6 +13,11 @@ module.exports = (req, res, next) => {
         const secondary = {};
 
         for (const param in all) {
+            if (!queries[param]) {
+                console.error(`ERROR: Unknown search param: ${param}`);
+                continue;
+            }
+
             if (!all[param] || (queries[param].defaultValue &&
                     all[param] === queries[param].defaultValue(req)) ||
                     !keepSecondary && queries[param].secondary) {

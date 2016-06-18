@@ -110,24 +110,7 @@ const Search = React.createClass({
             {config.model.artists.renderFilter(this.props.query, this.props)}
             {config.model.locations.renderFilter(this.props.query, this.props)}
             {config.model.objectType.renderFilter(this.props.query, this.props)}
-            <div className="form-group">
-                <label htmlFor="dateStart" className="control-label">
-                    {this.props.gettext("Date")}
-                </label>
-                <div className="form-inline">
-                    <input type="text" name="dateStart"
-                        defaultValue={this.props.query.dateStart}
-                        placeholder={this.props.minDate}
-                        className="form-control date-control"
-                    />
-                    &mdash;
-                    <input type="text" name="dateEnd"
-                        defaultValue={this.props.query.dateEnd}
-                        placeholder={this.props.maxDate}
-                        className="form-control date-control"
-                    />
-                </div>
-            </div>
+            {config.model.dates.renderFilter(this.props.query, this.props)}
             <div className="row">
                 <div className="form-group col-xs-6 col-sm-12 col-lg-6">
                     <label htmlFor="widthMin" className="control-label">

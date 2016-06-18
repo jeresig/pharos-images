@@ -1,9 +1,12 @@
 "use strict";
 
+const React = require("react");
 const yearRange = require("yearrange");
 
-const YearRangeFilter = require("../../views/types/filter/YearRange.jsx");
-const YearRangeDisplay = require("../../views/types/view/YearRange.jsx");
+const YearRangeFilter = React.createFactory(
+    require("../../views/types/filter/YearRange.jsx"));
+const YearRangeDisplay = React.createFactory(
+    require("../../views/types/view/YearRange.jsx"));
 
 const numRange = (bucket) => bucket.to ?
     `${bucket.from || 0}-${bucket.to}` :
@@ -175,6 +178,7 @@ YearRange.prototype = {
 
     renderFilter(query, i18n) {
         return YearRangeFilter({
+            name: this.options.name,
             placeholder: this.options.placeholder(i18n),
             title: this.options.title(i18n),
             value: query[this.options.name],
@@ -183,9 +187,9 @@ YearRange.prototype = {
 
     renderView(data, searchURL) {
         return YearRangeDisplay({
-            locations: data[this.modelName()],
             name: this.options.name,
             searchURL,
+            value: data[this.modelName()],
         });
     },
 

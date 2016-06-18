@@ -29,10 +29,10 @@ module.exports = {
         name: "date",
         modelName: "dates",
         title: (i18n) => i18n.gettext("Date"),
-        placeholder: {
+        placeholder: () => ({
             end: 1900,
             start: 1000,
-        },
+        }),
     }),
 
     // The English form of the object type (e.g. painting, print)

@@ -15,6 +15,13 @@ const YearRangeFilter = React.createClass({
         value: dateRangeType,
     },
 
+    getDefaultProps() {
+        return {
+            placeholder: {},
+            value: {},
+        };
+    },
+
     render() {
         return <div className="form-group">
             <label htmlFor={this.props.name} className="control-label">

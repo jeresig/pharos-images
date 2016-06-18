@@ -16,11 +16,18 @@ const getDate = (item) => {
     return "";
 };
 
+const dateRangeType = React.PropTypes.shape({
+    end: React.PropTypes.number,
+    start: React.PropTypes.number,
+});
+
 const YearRangeView = React.createClass({
     propTypes: {
         name: React.PropTypes.string.isRequired,
         searchURL: React.PropTypes.func.isRequired,
-        value: React.PropTypes.string.isRequired,
+        value: React.PropTypes.arrayOf(
+            dateRangeType
+        ).isRequired,
     },
 
     renderDate(date) {
