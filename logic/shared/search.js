@@ -9,16 +9,22 @@ const queries = require("./queries");
 
 const sorts = config.sorts;
 const types = config.types;
+const model = config.model;
 
 module.exports = (req, res, tmplParams) => {
     // Build the query object which will be used to construct
     // the search URL and matches later
-    const query = Object.keys(queries).reduce((obj, name) => {
-        obj[name] = queries[name].value(req) ||
+    const query = {};
+
+    for (const name in queries) {
+        query[name] = queries[name].value(req) ||
             (queries[name].defaultValue &&
                 queries[name].defaultValue(req));
-        return obj;
-    }, {});
+    }
+
+    for (const prop in model) {
+        query[prop] = model[prop].value(req);
+    }
 
     const curURL = urls.gen(req.lang, req.originalUrl);
     const expectedURL = req.searchURL(query, true);
