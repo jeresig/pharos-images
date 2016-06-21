@@ -32,10 +32,10 @@ Dimension.prototype = {
     value(req) {
         const config = require("../../lib/config");
 
-        const heightMin = req.query[`${this.options.name}.heightMin`];
-        const heightMax = req.query[`${this.options.name}.heightMax`];
-        const widthMin = req.query[`${this.options.name}.widthMin`];
-        const widthMax = req.query[`${this.options.name}.widthMax`];
+        const heightMin = req.query[`${this.options.name}.height.min`];
+        const heightMax = req.query[`${this.options.name}.height.max`];
+        const widthMin = req.query[`${this.options.name}.width.min`];
+        const widthMax = req.query[`${this.options.name}.width.max`];
         const unit = req.query[`${this.options.name}.unit`] ||
             config.DEFAULT_SEARCH_UNIT || config.DEFAULT_UNIT;
 
