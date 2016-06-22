@@ -27,19 +27,9 @@ SimpleString.prototype = {
         return req.query[this.options.name];
     },
 
-    /*
-    renderFilter(query, i18n) {
-        return SimpleStringFilter({
-            placeholder: this.options.placeholder(i18n),
-            title: this.options.title(i18n),
-            value: query[this.options.name],
-            values: Object.keys(this.options.values).map((id) => ({
-                id,
-                name: this.options.values[id],
-            })),
-        });
+    fields() {
+        return [this.options.name];
     },
-    */
 
     renderView(data, searchURL) {
         return FixedStringDisplay({

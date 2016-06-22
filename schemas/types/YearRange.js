@@ -36,6 +36,13 @@ YearRange.prototype = {
         }
     },
 
+    fields() {
+        return [
+            `${this.options.name}.start`,
+            `${this.options.name}.end`,
+        ];
+    },
+
     searchTitle(query, i18n) {
         const title = this.options.title(i18n);
         const range = numRange({

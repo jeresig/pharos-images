@@ -44,6 +44,16 @@ Dimension.prototype = {
         }
     },
 
+    fields() {
+        return [
+            `${this.options.name}.height.min`,
+            `${this.options.name}.height.max`,
+            `${this.options.name}.width.min`,
+            `${this.options.name}.width.max`,
+            `${this.options.name}.unit`,
+        ];
+    },
+
     breadcrumb(query, searchURL, i18n) {
         const breadcrumbs = [];
         const value = query[this.options.name];

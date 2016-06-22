@@ -30,6 +30,10 @@ FixedString.prototype = {
         return req.query[this.options.name];
     },
 
+    fields() {
+        return [this.options.name];
+    },
+
     searchTitle(query, i18n) {
         const value = query[this.options.name];
         const values = this.options.values || {};

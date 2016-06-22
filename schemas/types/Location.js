@@ -26,6 +26,10 @@ Location.prototype = {
         return req.query[this.options.name];
     },
 
+    fields() {
+        return [this.options.name];
+    },
+
     searchTitle(query, i18n) {
         const title = this.options.title(i18n);
         return `${title}: ${query[this.options.name]}`;
