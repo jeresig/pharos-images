@@ -6,27 +6,35 @@ const urls = require("../../lib/urls");
 const queries = require("../../logic/shared/queries");
 
 module.exports = (req, res, next) => {
-    req.paramFilter = (options, keepSecondary) => {
-        // TODO: Use something instead of res.locals.query
-        const all = Object.assign({}, res.locals.query, options);
+    req.paramFilter = () => {
+        const all = {};
         const primary = [];
         const secondary = {};
 
-        for (const param in all) {
-            if (!queries[param]) {
-                console.error(`ERROR: Unknown search param: ${param}`);
+        for (const param in queries) {
+            const query = queries[param];
+            const value = query.value(req);
+
+            // Ignore queries that don't have a value
+            if (!value) {
                 continue;
             }
 
-            if (!all[param] || (queries[param].defaultValue &&
-                    all[param] === queries[param].defaultValue(req)) ||
-                    !keepSecondary && queries[param].secondary) {
-                delete all[param];
-            } else if (queries[param].secondary) {
-                secondary[param] = all[param];
-            } else if (!queries[param].pair ||
-                    primary.indexOf(queries[param].pair) < 0) {
-                primary.push(param);
+            // Ignore params which are the same as the default value
+            if (query.defaultValue && query.defaultValue(req) === value) {
+                continue;
+            }
+
+            const fields = query.fields ? query.fields() : param;
+
+            for (const field of fields) {
+                if (query.secondary) {
+                    secondary[field] = req.query[field];
+                } else {
+                    primary.push(field);
+                }
+
+                all[field] = req.query[field];
             }
         }
 
