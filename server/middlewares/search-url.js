@@ -6,7 +6,7 @@ const urls = require("../../lib/urls");
 const queries = require("../../logic/shared/queries");
 
 module.exports = (req, res, next) => {
-    req.paramFilter = () => {
+    req.paramFilter = (keepSecondary) => {
         const all = {};
         const primary = [];
         const secondary = {};
@@ -28,13 +28,17 @@ module.exports = (req, res, next) => {
             const fields = query.fields ? query.fields() : param;
 
             for (const field of fields) {
+                const value = req.query[field];
+
                 if (query.secondary) {
-                    secondary[field] = req.query[field];
+                    secondary[field] = value;
                 } else {
                     primary.push(field);
                 }
 
-                all[field] = req.query[field];
+                if (keepSecondary || !query.secondary) {
+                    all[field] = value;
+                }
             }
         }
 
@@ -46,7 +50,7 @@ module.exports = (req, res, next) => {
     };
 
     res.locals.searchURL = req.searchURL = (options, keepSecondary) => {
-        const params = req.paramFilter(options, keepSecondary);
+        const params = req.paramFilter(keepSecondary);
         let queryString = qs.stringify(params.all);
         let url = urls.gen(req.lang, "/search");
 

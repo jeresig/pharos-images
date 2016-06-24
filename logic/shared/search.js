@@ -125,20 +125,19 @@ module.exports = (req, res, tmplParams) => {
 
         // Figure out the title of the results
         let title = req.gettext("Search Results");
-        const params = req.paramFilter(query);
+        const primary = req.paramFilter().primary;
 
-        if (params.primary.length === 1 &&
-                queries[params.primary[0]].title) {
-            title = queries[params.primary[0]].title(req, query);
-        } else if (params.primary.length === 0) {
+        if (primary.length === 1 && queries[primary[0]].title) {
+            title = queries[primary[0]].title(req, query);
+        } else if (primary.length === 0) {
             title = req.gettext("All Artworks");
         }
 
         // Compute the breadcrumbs
         let breadcrumbs = [];
 
-        if (params.primary.length > 1) {
-            breadcrumbs = params.primary.map((param) => {
+        if (primary.length > 1) {
+            breadcrumbs = primary.map((param) => {
                 const rmQuery = Object.assign({}, query);
                 rmQuery[param] = null;
 
