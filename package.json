@@ -87,7 +87,7 @@
     "mock-fs": "^3.8.0",
     "pre-commit": "^1.1.2",
     "sinon": "^1.17.3",
-    "tap": "https://github.com/jeresig/node-tap#update-nyc"
+    "tap": "^5.8.0"
   },
   "pre-commit": [
     "test",
