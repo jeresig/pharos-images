@@ -6,6 +6,10 @@ const config = require("../../lib/config");
 
 const facets = require("./facets");
 const queries = require("./queries");
+const searchURLMethods = require("./search-url");
+
+const searchURL = searchURLMethods.searchURL;
+const paramFilter = searchURLMethods.paramFilter;
 
 const sorts = config.sorts;
 const types = config.types;
@@ -27,7 +31,7 @@ module.exports = (req, res, tmplParams) => {
     }
 
     const curURL = urls.gen(req.lang, req.originalUrl);
-    const expectedURL = req.searchURL(query, true);
+    const expectedURL = searchURL(req, query, true);
 
     if (expectedURL !== curURL) {
         return res.redirect(expectedURL);
@@ -67,22 +71,18 @@ module.exports = (req, res, tmplParams) => {
             });
         }
 
-        // Expose the query object to the templates and to the
-        // searchURL and paramFilter methods.
-        res.locals.query = query;
-
         // The number of the last item in this result set
         const end = query.start + results.hits.hits.length;
 
         // The link to the previous page of search results
-        const prevLink = (query.start > 0 ? req.searchURL({
+        const prevLink = (query.start > 0 ? searchURL(req, {
             start: (query.start - query.rows > 0 ?
                 (query.start - query.rows) : ""),
         }, true) : "");
 
         // The link to the next page of the search results
         const nextLink = (end < results.hits.total ?
-            req.searchURL({start: query.start + query.rows}, true) : "");
+            searchURL(req, {start: query.start + query.rows}, true) : "");
 
         // Construct a nicer form of the facet data to feed in to
         // the templates
@@ -125,7 +125,7 @@ module.exports = (req, res, tmplParams) => {
 
         // Figure out the title of the results
         let title = req.gettext("Search Results");
-        const primary = req.paramFilter().primary;
+        const primary = paramFilter(req).primary;
 
         if (primary.length === 1 && queries[primary[0]].title) {
             title = queries[primary[0]].title(req, query);
@@ -149,7 +149,7 @@ module.exports = (req, res, tmplParams) => {
                 return {
                     name: queries[param].title &&
                         queries[param].title(req, query),
-                    url: req.searchURL(rmQuery),
+                    url: searchURL(req, rmQuery),
                 };
             }).filter((crumb) => crumb.name);
         }

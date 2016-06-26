@@ -7,6 +7,7 @@ const pd = require("parse-dimensions");
 
 const urls = require("../../lib/urls");
 const config = require("../../lib/config");
+const searchURL = require("../../logic/shared/search-url").searchURL;
 
 const types = config.types;
 
@@ -104,6 +105,10 @@ module.exports = (req, res, next) => {
 
         getUnit() {
             return req.unit();
+        },
+
+        searchURL(options, keepSecondary) {
+            return searchURL(req, options, keepSecondary);
         },
     };
 
