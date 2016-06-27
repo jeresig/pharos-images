@@ -35,7 +35,7 @@ module.exports = Object.assign({
     },
 
     source: {
-        value: (req) => req.query.source || req.params.source || "",
+        value: (req) => req.query.source || "",
         title: (req, query) => models("Source").getSource(query.source)
             .getFullName(req.lang),
         url: (query) => models("Source").getSource(query.source),

@@ -6,13 +6,14 @@ const urls = require("../../lib/urls");
 const queries = require("./queries");
 
 const paramFilter = (req, options, keepSecondary) => {
-    const params = Object.assign({}, req.query, options);
+    const params = Object.assign({}, req.query, req.params, options);
     const all = {};
     const primary = [];
     const secondary = {};
 
     for (const param in queries) {
         const query = queries[param];
+        console.log(param, query, params);
         const value = query.value({query: params});
 
         // Ignore queries that don't have a value

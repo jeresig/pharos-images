@@ -137,7 +137,7 @@ module.exports = {
     },
 
     type: {
-        value: (req) => req.query.type || req.params.type || "",
+        value: (req) => req.query.type || "",
         title: (req, query) => types[query.type].name(req),
         url: (query) => `/type/${encodeURIComponent(query.type)}`,
         match: (query) => ({

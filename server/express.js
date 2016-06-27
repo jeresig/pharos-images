@@ -18,7 +18,6 @@ const db = require("../lib/db");
 const config = require("../lib/config");
 
 const viewMethods = require("./middlewares/view-methods");
-const searchURL = require("./middlewares/search-url");
 
 const rootPath = path.resolve(__dirname, "..");
 
@@ -77,5 +76,4 @@ module.exports = (app) => {
 
     // Bring in the methods that will be available to the views
     app.use(viewMethods);
-    app.use(searchURL);
 };
