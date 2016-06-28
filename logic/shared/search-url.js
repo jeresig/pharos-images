@@ -13,7 +13,6 @@ const paramFilter = (req, options, keepSecondary) => {
 
     for (const param in queries) {
         const query = queries[param];
-        console.log(param, query, params);
         const value = query.value({query: params});
 
         // Ignore queries that don't have a value
@@ -26,7 +25,7 @@ const paramFilter = (req, options, keepSecondary) => {
             continue;
         }
 
-        const fields = query.fields ? query.fields() : param;
+        const fields = query.fields ? query.fields() : [param];
 
         for (const field of fields) {
             const value = req.query[field];

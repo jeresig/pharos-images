@@ -17,5 +17,9 @@ tap.test("paramFilter", {autoend: true}, (t) => {
 
     const results = paramFilter(req);
 
-    t.equal(results, {filter: "text"});
+    t.same(results, {
+        all: {filter: "test"},
+        primary: ["filter"],
+        secondary: {},
+    });
 });
