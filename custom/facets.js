@@ -2,6 +2,8 @@
 
 const pd = require("parse-dimensions");
 
+const searchURL = require("../logic/shared/search-url").searchURL;
+
 const types = require("./types");
 
 module.exports = {
@@ -12,7 +14,7 @@ module.exports = {
             },
         },
         name: (req) => req.gettext("Type"),
-        url: (req, bucket) => req.searchURL({type: bucket.key}),
+        url: (req, bucket) => searchURL(req, {type: bucket.key}),
         text: (req, bucket) => (bucket.key in types ?
             types[bucket.key].name(req) : bucket.key),
     },
@@ -53,7 +55,7 @@ module.exports = {
             };
         },
         name: (req) => req.gettext("Date"),
-        url: (req, bucket) => req.searchURL({
+        url: (req, bucket) => searchURL(req, {
             dateStart: bucket.from,
             dateEnd: bucket.to,
         }),
@@ -68,7 +70,7 @@ module.exports = {
             },
         },
         name: (req) => req.gettext("Artist"),
-        url: (req, bucket) => req.searchURL({artist: bucket.key}),
+        url: (req, bucket) => searchURL(req, {artist: bucket.key}),
         text: (req, bucket) => bucket.key,
     },
 
@@ -98,7 +100,7 @@ module.exports = {
         name: (req) => req.gettext("Width"),
         url: (req, bucket) => {
             const unit = req.unit();
-            return req.searchURL({
+            return searchURL(req, {
                 widthMin: pd.convertNumber(bucket.from, "mm", unit),
                 widthMax: pd.convertNumber(bucket.to, "mm", unit),
                 unit,
@@ -140,7 +142,7 @@ module.exports = {
         name: (req) => req.gettext("Height"),
         url: (req, bucket) => {
             const unit = req.unit();
-            return req.searchURL({
+            return searchURL(req, {
                 heightMin: pd.convertNumber(bucket.from, "mm", unit),
                 heightMax: pd.convertNumber(bucket.to, "mm", unit),
                 unit,
