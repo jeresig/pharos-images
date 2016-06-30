@@ -90,7 +90,7 @@ module.exports = (req, res, tmplParams) => {
             name: facets[name].name(req),
             buckets: results.aggregations[name].buckets.map((bucket) => ({
                 text: facets[name].text(req, bucket),
-                url: facets[name].url(req, bucket),
+                url: searchURL(req, facets[name].url(req, bucket)),
                 count: bucket.doc_count,
             })).filter((bucket) => bucket.count > 0),
         }))

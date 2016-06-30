@@ -2,8 +2,6 @@
 
 const pd = require("parse-dimensions");
 
-const searchURL = require("../logic/shared/search-url").searchURL;
-
 const types = require("./types");
 
 module.exports = {
@@ -14,7 +12,7 @@ module.exports = {
             },
         },
         name: (req) => req.gettext("Type"),
-        url: (req, bucket) => searchURL(req, {type: bucket.key}),
+        url: (req, bucket) => ({type: bucket.key}),
         text: (req, bucket) => (bucket.key in types ?
             types[bucket.key].name(req) : bucket.key),
     },
@@ -55,7 +53,7 @@ module.exports = {
             };
         },
         name: (req) => req.gettext("Date"),
-        url: (req, bucket) => searchURL(req, {
+        url: (req, bucket) => ({
             dateStart: bucket.from,
             dateEnd: bucket.to,
         }),
@@ -70,7 +68,7 @@ module.exports = {
             },
         },
         name: (req) => req.gettext("Artist"),
-        url: (req, bucket) => searchURL(req, {artist: bucket.key}),
+        url: (req, bucket) => ({artist: bucket.key}),
         text: (req, bucket) => bucket.key,
     },
 
@@ -100,11 +98,11 @@ module.exports = {
         name: (req) => req.gettext("Width"),
         url: (req, bucket) => {
             const unit = req.unit();
-            return searchURL(req, {
+            return {
                 widthMin: pd.convertNumber(bucket.from, "mm", unit),
                 widthMax: pd.convertNumber(bucket.to, "mm", unit),
                 unit,
-            });
+            };
         },
         text: (req, bucket) => {
             const unit = req.unit();
@@ -142,11 +140,11 @@ module.exports = {
         name: (req) => req.gettext("Height"),
         url: (req, bucket) => {
             const unit = req.unit();
-            return searchURL(req, {
+            return {
                 heightMin: pd.convertNumber(bucket.from, "mm", unit),
                 heightMax: pd.convertNumber(bucket.to, "mm", unit),
                 unit,
-            });
+            };
         },
         text: (req, bucket) => {
             const unit = req.unit();
