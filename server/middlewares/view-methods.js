@@ -7,7 +7,7 @@ const pd = require("parse-dimensions");
 
 const urls = require("../../lib/urls");
 const config = require("../../lib/config");
-const searchURL = require("../../logic/shared/search-url").searchURL;
+const searchURL = require("../../logic/shared/search-url");
 
 const types = config.types;
 

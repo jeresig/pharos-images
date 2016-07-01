@@ -6,10 +6,8 @@ const config = require("../../lib/config");
 
 const facets = require("./facets");
 const queries = require("./queries");
-const searchURLMethods = require("./search-url");
-
-const searchURL = searchURLMethods.searchURL;
-const paramFilter = searchURLMethods.paramFilter;
+const searchURL = require("./search-url");
+const paramFilter = require("./param-filter");
 
 const sorts = config.sorts;
 const types = config.types;
