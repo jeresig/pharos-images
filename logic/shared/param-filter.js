@@ -2,8 +2,7 @@
 
 const queries = require("./queries");
 
-const paramFilter = (req, options, keepSecondary) => {
-    const params = Object.assign({}, req.query, req.params, options);
+const paramFilter = (params, keepSecondary) => {
     const all = {};
     const primary = [];
     const secondary = {};
@@ -18,7 +17,7 @@ const paramFilter = (req, options, keepSecondary) => {
         }
 
         // Ignore params which are the same as the default value
-        if (query.defaultValue && query.defaultValue(req) === value) {
+        if (query.defaultValue && query.defaultValue() === value) {
             continue;
         }
 

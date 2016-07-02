@@ -5,28 +5,28 @@ const config = require("../../lib/config");
 
 module.exports = Object.assign({
     start: {
-        value: (req) => parseFloat(req.query.start),
+        value: (fields) => parseFloat(fields.start),
         defaultValue: () => 0,
         secondary: true,
     },
 
     rows: {
-        value: (req) => parseFloat(req.query.rows),
+        value: (fields) => parseFloat(fields.rows),
         defaultValue: () => parseFloat(config.DEFAULT_ROWS),
         secondary: true,
     },
 
     sort: {
-        value: (req) => req.query.sort,
+        value: (fields) => fields.sort,
         defaultValue: () => config.DEFAULT_SORT,
         secondary: true,
     },
 
     filter: {
-        value: (req) => req.query.filter,
+        value: (fields) => fields.filter,
         title: (req, query) => req.format(
             req.gettext("Query: '%(query)s'"), {query: query.filter}),
-        match: (query) => ({
+        filter: (query) => ({
             query_string: {
                 query: query.filter,
                 default_operator: "and",
@@ -35,11 +35,11 @@ module.exports = Object.assign({
     },
 
     source: {
-        value: (req) => req.query.source || "",
+        value: (fields) => fields.source || "",
         title: (req, query) => models("Source").getSource(query.source)
             .getFullName(req.lang),
         url: (query) => models("Source").getSource(query.source),
-        match: (query) => ({
+        filter: (query) => ({
             match: {
                 source: {
                     query: escape(query.source),
@@ -125,12 +125,12 @@ module.exports = Object.assign({
                 },
             },
         },
-        value: (req) => req.query.similar || "",
+        value: (fields) => fields.similar || "",
         title(req, query) {
             return this.filters[query.similar].getTitle(req);
         },
-        match(query) {
+        filter(query) {
             return this.filters[query.similar].match(query);
         },
     },
-}, config.queries);
+}, config.model);

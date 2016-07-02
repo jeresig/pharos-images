@@ -11,21 +11,23 @@ const paramFilter = require("./param-filter");
 
 const sorts = config.sorts;
 const types = config.types;
-const model = config.model;
 
 module.exports = (req, res, tmplParams) => {
-    // Build the query object which will be used to construct
+    // Collect all the values from the request to construct
     // the search URL and matches later
     const query = {};
+    const fields = Object.assign({}, req.query, req.params);
 
     for (const name in queries) {
-        query[name] = queries[name].value(req) ||
-            (queries[name].defaultValue &&
-                queries[name].defaultValue(req));
-    }
+        let value = queries[name].value(fields);
 
-    for (const prop in model) {
-        query[prop] = model[prop].value(req);
+        if (!value && queries[name].defaultValue) {
+            value = queries[name].defaultValue();
+        }
+
+        if (value !== undefined) {
+            query[name] = value;
+        }
     }
 
     const curURL = urls.gen(req.lang, req.originalUrl);
@@ -35,11 +37,11 @@ module.exports = (req, res, tmplParams) => {
         return res.redirect(expectedURL);
     }
 
-    // Generate the matches which will be fed in to Elasticsearch
-    // to build the query matching
+    // Generate the filters which will be fed in to Elasticsearch
+    // to build the query filter
     const matches = Object.keys(queries)
-        .map((name) => query[name] && queries[name].match &&
-            queries[name].match(query))
+        .map((name) => query[name] && queries[name].filters &&
+            queries[name].filter(query))
         .filter((match) => match);
 
     // Construct the facets that will be put in to Elasticsearch
@@ -160,6 +162,7 @@ module.exports = (req, res, tmplParams) => {
             types: typeData,
             minDate: config.DEFAULT_START_DATE,
             maxDate: config.DEFAULT_END_DATE,
+            query,
             queries,
             sorts: sortData,
             facets: facetData,
