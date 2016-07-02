@@ -2,17 +2,17 @@
 
 const queries = require("./queries");
 
-const paramFilter = (params, keepSecondary) => {
+const paramFilter = (values, keepSecondary) => {
     const all = {};
     const primary = [];
     const secondary = {};
 
-    for (const param in queries) {
-        const query = queries[param];
-        const value = query.value({query: params});
+    for (const name in values) {
+        const query = queries[name];
+        const value = values[name];
 
         // Ignore queries that don't have a value
-        if (!value) {
+        if (value === undefined) {
             continue;
         }
 
@@ -21,20 +21,20 @@ const paramFilter = (params, keepSecondary) => {
             continue;
         }
 
-        const fields = query.fields ? query.fields() : [param];
+        const fields = query.fields ?
+            query.fields(value) :
+            {[name]: value};
 
-        for (const field of fields) {
-            const value = params[field];
-
-            if (query.secondary) {
-                secondary[field] = value;
-            } else {
+        if (query.secondary) {
+            Object.assign(secondary, fields);
+        } else {
+            for (const field in fields) {
                 primary.push(field);
             }
+        }
 
-            if (keepSecondary || !query.secondary) {
-                all[field] = value;
-            }
+        if (keepSecondary || !query.secondary) {
+            Object.assign(all, fields);
         }
     }
 

@@ -5,13 +5,21 @@ const models = require("../../lib/models");
 
 module.exports = Object.assign({
     source: {
-        agg: {
-            terms: {
-                field: "source",
-            },
+        name: (i18n) => i18n.gettext("Source"),
+
+        formatFacetBucket(bucket, searchURL) {
+            return {
+                text: models("Source").getSource(bucket.key).name,
+                url: searchURL({source: bucket.key}),
+            };
         },
-        name: (req) => req.gettext("Source"),
-        url: (req, bucket) => ({source: bucket.key}),
-        text: (req, bucket) => models("Source").getSource(bucket.key).name,
+
+        facet() {
+            return {
+                terms: {
+                    field: "source",
+                },
+            };
+        },
     },
-}, config.facets);
+}, config.model);

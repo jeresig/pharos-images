@@ -27,10 +27,6 @@ SimpleString.prototype = {
         return req.query[this.options.name];
     },
 
-    fields() {
-        return [this.options.name];
-    },
-
     renderView(data, searchURL) {
         return FixedStringDisplay({
             value: data[this.modelName()],

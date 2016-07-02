@@ -45,7 +45,6 @@ const Search = React.createClass({
         next: React.PropTypes.string,
         prev: React.PropTypes.string,
         queries: React.PropTypes.any.isRequired,
-        query: React.PropTypes.any.isRequired,
         sorts: React.PropTypes.arrayOf(
             React.PropTypes.shape({
                 id: React.PropTypes.string.isRequired,
@@ -63,6 +62,7 @@ const Search = React.createClass({
         title: React.PropTypes.string.isRequired,
         total: React.PropTypes.number.isRequired,
         url: React.PropTypes.string,
+        values: React.PropTypes.any.isRequired,
     },
 
     renderSidebar() {
@@ -103,22 +103,27 @@ const Search = React.createClass({
                 <input type="search" name="filter"
                     placeholder={
                         config.siteName.getSearchPlaceholder(this.props)}
-                    defaultValue={this.props.query.filter}
+                    defaultValue={this.props.values.filter}
                     className="form-control"
                 />
             </div>
-            {config.model.artists.renderFilter(this.props.query, this.props)}
-            {config.model.locations.renderFilter(this.props.query, this.props)}
-            {config.model.objectType.renderFilter(this.props.query, this.props)}
-            {config.model.dates.renderFilter(this.props.query, this.props)}
-            {config.model.dimensions.renderFilter(this.props.query, this.props)}
+            {config.model.artists.renderFilter(this.props.values.artists,
+                this.props)}
+            {config.model.locations.renderFilter(this.props.values.locations,
+                this.props)}
+            {config.model.objectType.renderFilter(this.props.values.objectType,
+                this.props)}
+            {config.model.dates.renderFilter(this.props.values.dates,
+                this.props)}
+            {config.model.dimensions.renderFilter(this.props.values.dimensions,
+                this.props)}
             <div className="form-group">
                 <label htmlFor="source" className="control-label">
                     {this.props.gettext("Source")}
                 </label>
                 <select name="source" style={{width: "100%"}}
                     className="form-control"
-                    defaultValue={this.props.query.source}
+                    defaultValue={this.props.values.source}
                 >
                     <option value="">{this.props.gettext("Any Source")}</option>
                     {this.props.sources.map((source) =>
@@ -134,7 +139,7 @@ const Search = React.createClass({
                 </label>
                 <select name="similar" style={{width: "100%"}}
                     className="form-control"
-                    defaultValue={this.props.query.similar}
+                    defaultValue={this.props.values.similar}
                 >
                     <option value=""></option>
                     {Object.keys(similarity).map((id) =>
@@ -150,7 +155,7 @@ const Search = React.createClass({
                 </label>
                 <select name="sort" style={{width: "100%"}}
                     className="form-control"
-                    defaultValue={this.props.query.sort}
+                    defaultValue={this.props.values.sort}
                 >
                     {this.props.sorts.map((sort) =>
                         <option value={sort.id} key={sort.id}>

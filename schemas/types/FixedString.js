@@ -30,10 +30,6 @@ FixedString.prototype = {
         return req.query[this.options.name];
     },
 
-    fields() {
-        return [this.options.name];
-    },
-
     searchTitle(query, i18n) {
         const value = query[this.options.name];
         const values = this.options.values || {};
@@ -84,14 +80,14 @@ FixedString.prototype = {
         }));
     },
 
-    renderFilter(query, i18n) {
+    renderFilter(value, i18n) {
         const name = this.options.searchField || this.options.name;
 
         return FixedStringFilter({
             name,
             placeholder: this.options.placeholder(i18n),
             title: this.options.title(i18n),
-            value: query[name],
+            value,
             values: this.getValueArray(i18n),
         });
     },

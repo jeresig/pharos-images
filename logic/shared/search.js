@@ -15,7 +15,7 @@ const types = config.types;
 module.exports = (req, res, tmplParams) => {
     // Collect all the values from the request to construct
     // the search URL and matches later
-    const query = {};
+    const values = {};
     const fields = Object.assign({}, req.query, req.params);
 
     for (const name in queries) {
@@ -26,42 +26,46 @@ module.exports = (req, res, tmplParams) => {
         }
 
         if (value !== undefined) {
-            query[name] = value;
+            values[name] = value;
         }
     }
 
     const curURL = urls.gen(req.lang, req.originalUrl);
-    const expectedURL = searchURL(req, query, true);
+    const expectedURL = searchURL(req, values, true);
 
     if (expectedURL !== curURL) {
         return res.redirect(expectedURL);
     }
 
-    // Generate the filters which will be fed in to Elasticsearch
-    // to build the query filter
-    const matches = Object.keys(queries)
-        .map((name) => query[name] && queries[name].filters &&
-            queries[name].filter(query))
-        .filter((match) => match);
+    // Generate the filters and facets which will be fed in to Elasticsearch
+    // to build the query filter and aggregations
+    const filters = [];
+    const aggregations = {};
 
-    // Construct the facets that will be put in to Elasticsearch
-    // (called aggregations)
-    const aggregations = Object.keys(facets).reduce((obj, name) => {
-        const agg = facets[name].agg;
-        obj[name] = (typeof agg === "function" ? agg(query) : agg);
-        return obj;
-    }, {});
+    for (const name in values) {
+        const query = queries[name];
+        const facet = facets[name];
+        const value = values[name];
+
+        if (query.filter) {
+            filters.push(query.filter(value));
+        }
+
+        if (facet && facet.facet) {
+            aggregations[name] = facet.facet(value);
+        }
+    }
 
     // Query for the artworks in Elasticsearch
     models("Artwork").search({
         bool: {
-            must: matches,
+            must: filters,
         },
     }, {
-        size: query.rows,
-        from: query.start,
+        size: values.rows,
+        from: values.start,
         aggs: aggregations,
-        sort: sorts[query.sort].sort,
+        sort: sorts[values.sort].sort,
         hydrate: true,
     }, (err, results) => {
         /* istanbul ignore if */
@@ -72,86 +76,103 @@ module.exports = (req, res, tmplParams) => {
         }
 
         // The number of the last item in this result set
-        const end = query.start + results.hits.hits.length;
+        const end = values.start + results.hits.hits.length;
 
         // The link to the previous page of search results
-        const prevLink = (query.start > 0 ? searchURL(req, {
-            start: (query.start - query.rows > 0 ?
-                (query.start - query.rows) : ""),
+        const prevStart = values.start - values.rows;
+        const prevLink = (values.start > 0 ? searchURL(req, {
+            start: (prevStart > 0 ? prevStart : ""),
         }, true) : "");
 
         // The link to the next page of the search results
-        const nextLink = (end < results.hits.total ?
-            searchURL(req, {start: query.start + query.rows}, true) : "");
+        const nextStart = values.start + values.rows;
+        const nextLink = (end < results.hits.total ? searchURL(req, {
+            start: nextStart,
+        }, true) : "");
 
         // Construct a nicer form of the facet data to feed in to
         // the templates
-        const facetData = Object.keys(facets).map((name) => ({
-            name: facets[name].name(req),
-            buckets: results.aggregations[name].buckets.map((bucket) => ({
-                text: facets[name].text(req, bucket),
-                url: searchURL(req, facets[name].url(req, bucket)),
-                count: bucket.doc_count,
-            })).filter((bucket) => bucket.count > 0),
-        }))
-        .filter((facet) => facet.buckets.length > 1);
+        const facetData = [];
 
-        // Make sure that there aren't too many buckets displaying at
-        // any one time, otherwise it gets too long. We mitigate this
-        // by splitting the extra buckets into a separate container
-        // and then allow the user to toggle its visibility.
-        facetData.forEach((facet) => {
-            if (facet.buckets.length > 10) {
-                facet.extra = facet.buckets.slice(5);
-                facet.buckets = facet.buckets.slice(0, 5);
+        for (const name in aggregations) {
+            const facet = facets[name];
+            const buckets = results.aggregations[name].buckets
+                .map((bucket) => {
+                    const formattedBucket = facet.formatFacetBucket(bucket,
+                        searchURL, req);
+                    formattedBucket.count = bucket.doc_count;
+                    return formattedBucket;
+                })
+                .filter((bucket) => bucket.count > 0);
+
+            // Skip facets that won't filter anything
+            if (buckets.length <= 1) {
+                continue;
             }
-        });
+
+            const result = {
+                name: facet.name(req),
+                buckets,
+            };
+
+            // Make sure that there aren't too many buckets displaying at
+            // any one time, otherwise it gets too long. We mitigate this
+            // by splitting the extra buckets into a separate container
+            // and then allow the user to toggle its visibility.
+            if (result.buckets.length > 10) {
+                result.extra = result.buckets.slice(5);
+                result.buckets = result.buckets.slice(0, 5);
+            }
+
+            facetData.push(result);
+        }
 
         // Construct a list of the possible sorts, their translated
         // names and their selected state, for the template.
+        // TODO: Rewrite this to use the models
         const sortData = Object.keys(sorts).map((id) => ({
             id: id,
             name: sorts[id].name(req),
-            selected: query.sort === id,
+            selected: values.sort === id,
         }));
 
         // Construct a list of the possible types, their translated
         // names and their selected state, for the template.
+        // TODO: Find another way to generate this
         const typeData = Object.keys(types).map((id) => ({
             id: id,
             name: types[id].name(req),
-            selected: query.type === id,
+            selected: values.type === id,
         }));
 
-        // Figure out the title of the results
+        // Figure out the title and breadcrumbs of the results
         let title = req.gettext("Search Results");
         const primary = paramFilter(req).primary;
-
-        if (primary.length === 1 && queries[primary[0]].title) {
-            title = queries[primary[0]].title(req, query);
-        } else if (primary.length === 0) {
-            title = req.gettext("All Artworks");
-        }
-
-        // Compute the breadcrumbs
         let breadcrumbs = [];
 
         if (primary.length > 1) {
-            breadcrumbs = primary.map((param) => {
-                const rmQuery = Object.assign({}, query);
-                rmQuery[param] = null;
-
-                // If the param has a pair, remove that too
-                if (queries[param].pair) {
-                    rmQuery[queries[param].pair] = null;
-                }
+            // TODO: Rewrite breadcrumb handling/generation
+            breadcrumbs = [];
+            /*
+            primary.map((param) => {
+                const rmValues = Object.assign({}, values);
+                delete rmValues[param];
 
                 return {
                     name: queries[param].title &&
                         queries[param].title(req, query),
-                    url: searchURL(req, rmQuery),
+                    url: searchURL(rmValues),
                 };
             }).filter((crumb) => crumb.name);
+            */
+
+        } else if (primary.length === 1) {
+            const name = primary[0];
+            const query = queries[name];
+            title = query.title(req, values[name]);
+
+        } else {
+            title = req.gettext("All Artworks");
         }
 
         res.render("Search", Object.assign({
@@ -162,13 +183,13 @@ module.exports = (req, res, tmplParams) => {
             types: typeData,
             minDate: config.DEFAULT_START_DATE,
             maxDate: config.DEFAULT_END_DATE,
-            query,
+            values,
             queries,
             sorts: sortData,
             facets: facetData,
             artworks: results.hits.hits,
             total: results.hits.total,
-            start: (results.hits.total > 0 ? query.start + 1 : 0),
+            start: (results.hits.total > 0 ? values.start + 1 : 0),
             end,
             prev: prevLink,
             next: nextLink,

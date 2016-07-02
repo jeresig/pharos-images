@@ -26,10 +26,6 @@ Location.prototype = {
         return req.query[this.options.name];
     },
 
-    fields() {
-        return [this.options.name];
-    },
-
     searchTitle(query, i18n) {
         const title = this.options.title(i18n);
         return `${title}: ${query[this.options.name]}`;
@@ -47,12 +43,12 @@ Location.prototype = {
         };
     },
 
-    renderFilter(query, i18n) {
+    renderFilter(value, i18n) {
         return LocationFilter({
             name: this.options.name,
             placeholder: this.options.placeholder(i18n),
             title: this.options.title(i18n),
-            value: query[this.options.name],
+            value,
         });
     },
 

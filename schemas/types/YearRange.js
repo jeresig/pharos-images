@@ -27,20 +27,20 @@ YearRange.prototype = {
         return this.options.modelName || this.options.name;
     },
 
-    value(req) {
-        const start = req.query[`${this.options.name}.start`];
-        const end = req.query[`${this.options.name}.end`];
+    value(query) {
+        const start = query[`${this.options.name}.start`];
+        const end = query[`${this.options.name}.end`];
 
         if (start || end) {
             return {start, end};
         }
     },
 
-    fields() {
-        return [
-            `${this.options.name}.start`,
-            `${this.options.name}.end`,
-        ];
+    fields(value) {
+        return {
+            [`${this.options.name}.start`]: value.start,
+            [`${this.options.name}.end`]: value.end,
+        };
     },
 
     searchTitle(query, i18n) {
@@ -136,8 +136,7 @@ YearRange.prototype = {
         };
     },
 
-    facet(query) {
-        const value = query[this.props.name];
+    facet(value) {
         // TODO: Make these ranges configurable
         let ranges = [
             { to: 999 },
@@ -183,12 +182,12 @@ YearRange.prototype = {
         };
     },
 
-    renderFilter(query, i18n) {
+    renderFilter(value, i18n) {
         return YearRangeFilter({
             name: this.options.name,
             placeholder: this.options.placeholder(i18n),
             title: this.options.title(i18n),
-            value: query[this.options.name],
+            value,
         });
     },
 
