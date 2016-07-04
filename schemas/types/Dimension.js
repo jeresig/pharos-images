@@ -156,90 +156,82 @@ Dimension.prototype = {
         return filters;
     },
 
-    /*
     facet() {
-        return [
-            {
-                name: `${this.options.name}.width`,
-                facet: {
-                    range: {
-                        field: `${this.options.name}.width`,
-                        ranges: [
-                            { to: 99 },
-                            { from: 100, to: 199 },
-                            { from: 200, to: 299 },
-                            { from: 300, to: 399 },
-                            { from: 400, to: 499 },
-                            { from: 500, to: 599 },
-                            { from: 600, to: 699 },
-                            { from: 700, to: 799 },
-                            { from: 800, to: 899 },
-                            { from: 900, to: 999 },
-                            { from: 1000, to: 1249 },
-                            { from: 1250, to: 1599 },
-                            { from: 1500, to: 1749 },
-                            { from: 1750, to: 1999 },
-                            { from: 2000 },
-                        ],
-                    },
-                },
-            },
-            {
-                name: `${this.options.name}.height`,
-                facet: {
-                    range: {
-                        field: `${this.options.name}.height`,
-                        ranges: [
-                            { to: 99 },
-                            { from: 100, to: 199 },
-                            { from: 200, to: 299 },
-                            { from: 300, to: 399 },
-                            { from: 400, to: 499 },
-                            { from: 500, to: 599 },
-                            { from: 600, to: 699 },
-                            { from: 700, to: 799 },
-                            { from: 800, to: 899 },
-                            { from: 900, to: 999 },
-                            { from: 1000, to: 1249 },
-                            { from: 1250, to: 1599 },
-                            { from: 1500, to: 1749 },
-                            { from: 1750, to: 1999 },
-                            { from: 2000 },
-                        ],
-                    },
-                },
-            },
-        ];
-    },
-
-    formatFacetBucket(bucket, req) {
-        const searchURL = require("../../logic/shared/search-url");
         const config = require("../../lib/config");
 
-        const unit = req.query[`${this.searchName()}.unit`] ||
-            config.DEFAULT_SEARCH_UNIT || config.DEFAULT_UNIT;
-        const text = numRange({
-            from: pd.convertNumber(bucket.from, "mm", unit),
-            to: pd.convertNumber(bucket.to, "mm", unit),
-            unit,
-        });
+        const unit = config.DEFAULT_SEARCH_UNIT || config.DEFAULT_UNIT;
+
+        const formatFacetBucket = (bucket) => {
+            const text = numRange({
+                from: pd.convertNumber(bucket.from, "mm", unit),
+                to: pd.convertNumber(bucket.to, "mm", unit),
+                unit,
+            });
+
+            return {
+                text,
+                count: bucket.doc_count,
+                url: {
+                    dimensions: {
+                        widthMin: pd.convertNumber(bucket.from, "mm", unit),
+                        widthMax: pd.convertNumber(bucket.to, "mm", unit),
+                        unit,
+                    },
+                },
+            };
+        };
+
+        const ranges = [
+            { to: 99 },
+            { from: 100, to: 199 },
+            { from: 200, to: 299 },
+            { from: 300, to: 399 },
+            { from: 400, to: 499 },
+            { from: 500, to: 599 },
+            { from: 600, to: 699 },
+            { from: 700, to: 799 },
+            { from: 800, to: 899 },
+            { from: 900, to: 999 },
+            { from: 1000, to: 1249 },
+            { from: 1250, to: 1599 },
+            { from: 1500, to: 1749 },
+            { from: 1750, to: 1999 },
+            { from: 2000 },
+        ];
 
         return {
-            text,
-            url: searchURL({
-                dimensions: {
-                    widthMin: pd.convertNumber(bucket.from, "mm", unit),
-                    widthMax: pd.convertNumber(bucket.to, "mm", unit),
-                    unit,
-                },
-            }),
+            [`${this.options.name}.width`]: {
+                title: (i18n) => this.options.widthTitle(i18n),
+
+                facet: () => ({
+                    range: {
+                        field: `${this.options.name}.width`,
+                        ranges,
+                    },
+                }),
+
+                formatBuckets: (buckets) => buckets.map(formatFacetBucket),
+            },
+
+            [`${this.options.name}.height`]: {
+                title: (i18n) => this.options.heightTitle(i18n),
+
+                facet: () => ({
+                    range: {
+                        field: `${this.options.name}.height`,
+                        ranges,
+                    },
+                }),
+
+                formatBuckets: (buckets) => buckets.map(formatFacetBucket),
+            },
         };
     },
-    */
 
     renderFilter(value, i18n) {
         return DimensionFilter({
             name: this.options.name,
+            searchName: this.options.searchName,
             placeholder: this.options.placeholder(i18n),
             heightTitle: this.options.heightTitle(i18n),
             widthTitle: this.options.widthTitle(i18n),

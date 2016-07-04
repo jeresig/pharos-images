@@ -3,23 +3,30 @@
 const config = require("../../lib/config");
 const models = require("../../lib/models");
 
-module.exports = Object.assign({
+const facets = {
     source: {
-        name: (i18n) => i18n.gettext("Source"),
+        title: (i18n) => i18n.gettext("Source"),
 
-        formatFacetBucket(bucket, searchURL) {
-            return {
-                text: models("Source").getSource(bucket.key).name,
-                url: searchURL({source: bucket.key}),
-            };
-        },
+        facet: () => ({
+            terms: {
+                field: "source",
+            },
+        }),
 
-        facet() {
-            return {
-                terms: {
-                    field: "source",
-                },
-            };
-        },
+        formatBuckets: (buckets) => buckets.map((bucket) => ({
+            text: models("Source").getSource(bucket.key).name,
+            count: bucket.doc_count,
+            url: {source: bucket.key},
+        })),
     },
-}, config.model);
+};
+
+for (const name in config.model) {
+    const model = config.model[name];
+
+    if (model.facet) {
+        Object.assign(facets, model.facet());
+    }
+}
+
+module.exports = facets;

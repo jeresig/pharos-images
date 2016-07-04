@@ -12,16 +12,20 @@ const searchURL = require("./search-url");
 const paramFilter = require("./param-filter");
 
 const sorts = config.sorts;
-const types = config.types;
 
 module.exports = (req, res, tmplParams) => {
     // Collect all the values from the request to construct
     // the search URL and matches later
+    // Generate the filters and facets which will be fed in to Elasticsearch
+    // to build the query filter and aggregations
     const values = {};
+    const filters = [];
+    const aggregations = {};
     const fields = Object.assign({}, req.query, req.params);
 
     for (const name in queries) {
-        let value = queries[name].value(fields);
+        const query = queries[name];
+        let value = query.value(fields);
 
         if (!value && queries[name].defaultValue) {
             value = queries[name].defaultValue();
@@ -29,7 +33,15 @@ module.exports = (req, res, tmplParams) => {
 
         if (value !== undefined) {
             values[name] = value;
+
+            if (query.filter) {
+                filters.push(query.filter(value, sanitize));
+            }
         }
+    }
+
+    for (const name in facets) {
+        aggregations[name] = facets[name].facet();
     }
 
     const curURL = urls.gen(req.lang, req.originalUrl);
@@ -37,25 +49,6 @@ module.exports = (req, res, tmplParams) => {
 
     if (expectedURL !== curURL) {
         return res.redirect(expectedURL);
-    }
-
-    // Generate the filters and facets which will be fed in to Elasticsearch
-    // to build the query filter and aggregations
-    const filters = [];
-    const aggregations = {};
-
-    for (const name in values) {
-        const query = queries[name];
-        const facet = facets[name];
-        const value = values[name];
-
-        if (query.filter) {
-            filters.push(query.filter(value, sanitize));
-        }
-
-        if (facet && facet.facet) {
-            aggregations[name] = facet.facet(value);
-        }
     }
 
     // Query for the artworks in Elasticsearch
@@ -97,15 +90,14 @@ module.exports = (req, res, tmplParams) => {
         const facetData = [];
 
         for (const name in aggregations) {
+            const aggregation = results.aggregations[name];
             const facet = facets[name];
-            const buckets = results.aggregations[name].buckets
-                .map((bucket) => {
-                    const formattedBucket = facet.formatFacetBucket(bucket,
-                        searchURL, req);
-                    formattedBucket.count = bucket.doc_count;
-                    return formattedBucket;
-                })
-                .filter((bucket) => bucket.count > 0);
+            const buckets = facet.formatBuckets(aggregation.buckets, req)
+                .filter((bucket) => {
+                    bucket.url = searchURL(req,
+                        Object.assign({}, values, bucket.url));
+                    return bucket.count > 0;
+                });
 
             // Skip facets that won't filter anything
             if (buckets.length <= 1) {
@@ -113,7 +105,7 @@ module.exports = (req, res, tmplParams) => {
             }
 
             const result = {
-                name: facet.name(req),
+                name: facet.title(req),
                 buckets,
             };
 
@@ -138,18 +130,9 @@ module.exports = (req, res, tmplParams) => {
             selected: values.sort === id,
         }));
 
-        // Construct a list of the possible types, their translated
-        // names and their selected state, for the template.
-        // TODO: Find another way to generate this
-        const typeData = Object.keys(types).map((id) => ({
-            id: id,
-            name: types[id].name(req),
-            selected: values.type === id,
-        }));
-
         // Figure out the title and breadcrumbs of the results
         let title = req.gettext("Search Results");
-        const primary = paramFilter(req).primary;
+        const primary = paramFilter(values).primary;
         let breadcrumbs = [];
 
         if (primary.length > 1) {
@@ -182,7 +165,6 @@ module.exports = (req, res, tmplParams) => {
             breadcrumbs,
             sources: models("Source").getSources()
                 .filter((source) => source.numArtworks > 0),
-            types: typeData,
             minDate: config.DEFAULT_START_DATE,
             maxDate: config.DEFAULT_END_DATE,
             values,

@@ -50,7 +50,7 @@ module.exports = (callback) => {
             });
 
             process.on("uncaughtException", (err) => {
-                console.error("Exception:", err);
+                console.error("Exception:", err.stack);
 
                 if (process.send) {
                     process.send("offline");

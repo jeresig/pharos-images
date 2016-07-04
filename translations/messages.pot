@@ -8,7 +8,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2016-06-14 06:26+0000\n"
+"POT-Creation-Date: 2016-07-04 23:54+0000\n"
 
 #: logic/admin.js:25
 #: logic/admin.js:63
@@ -77,33 +77,33 @@ msgstr ""
 msgid "Uploaded image not found."
 msgstr ""
 
-#: logic/shared/facets.js:13
-#: views/Artwork.jsx:153
-#: views/Search.jsx:198
+#: logic/shared/facets.js:8
+#: views/Artwork.jsx:152
+#: views/Search.jsx:122
 msgid "Source"
 msgstr ""
 
-#: logic/shared/queries.js:28
+#: logic/shared/queries.js:29
 msgid "Query: '%(query)s'"
 msgstr ""
 
-#: logic/shared/queries.js:56
+#: logic/shared/queries.js:58
 msgid "Similar to Any Artwork"
 msgstr ""
 
-#: logic/shared/queries.js:68
+#: logic/shared/queries.js:70
 msgid "Similar to an External Artwork"
 msgstr ""
 
-#: logic/shared/queries.js:100
+#: logic/shared/queries.js:102
 msgid "Similar to an Internal Artwork"
 msgstr ""
 
-#: logic/shared/search.js:121
+#: logic/shared/search.js:134
 msgid "Search Results"
 msgstr ""
 
-#: logic/shared/search.js:128
+#: logic/shared/search.js:160
 msgid "All Artworks"
 msgstr ""
 
@@ -254,19 +254,19 @@ msgstr ""
 msgid "Uploaded Image"
 msgstr ""
 
-#: schemas/types/Dimension.js:227
+#: schemas/types/Dimension.js:296
 msgid "Dimensions must have a unit specified and at least a width or height."
 msgstr ""
 
-#: schemas/types/FixedString.js:116
+#: schemas/types/FixedString.js:120
 msgid "`%(name)s` must be one of the following types: %(types)s."
 msgstr ""
 
-#: schemas/types/Location.js:86
+#: schemas/types/Location.js:95
 msgid "Locations must have a name or city specified."
 msgstr ""
 
-#: schemas/types/YearRange.js:261
+#: schemas/types/YearRange.js:281
 msgid "Dates must have a start or end specified."
 msgstr ""
 
@@ -274,103 +274,71 @@ msgstr ""
 msgid "Page Not Found"
 msgstr ""
 
-#: custom/facets.js:14
-#: custom/model.js:42
-#: views/Artwork.jsx:111
-#: views/Search.jsx:132
-msgid "Type"
-msgstr ""
-
-#: custom/facets.js:55
-#: custom/model.js:31
-#: views/Artwork.jsx:104
-#: views/Search.jsx:138
-msgid "Date"
-msgstr ""
-
-#: custom/facets.js:70
-#: custom/model.js:23
-#: views/Artwork.jsx:97
-#: views/Search.jsx:120
-msgid "Artist"
-msgstr ""
-
-#: custom/facets.js:98
-#: custom/model.js:61
-msgid "Width"
-msgstr ""
-
-#: custom/facets.js:140
-#: custom/model.js:60
-msgid "Height"
-msgstr ""
-
 #: custom/model.js:15
 msgid "Title"
 msgstr ""
 
+#: custom/model.js:23
+#: views/Artwork.jsx:96
+msgid "Artist"
+msgstr ""
+
 #: custom/model.js:24
-#: views/Search.jsx:119
 msgid "Sample: Andrea del Sarto"
 msgstr ""
 
+#: custom/model.js:31
+#: views/Artwork.jsx:103
+msgid "Date"
+msgstr ""
+
+#: custom/model.js:42
+#: views/Artwork.jsx:110
+msgid "Type"
+msgstr ""
+
 #: custom/model.js:43
-#: views/Search.jsx:131
 msgid "Any Type"
 msgstr ""
 
-#: custom/model.js:52
-#: views/Artwork.jsx:118
+#: custom/model.js:53
+#: views/Artwork.jsx:117
 msgid "Medium"
 msgstr ""
 
-#: custom/model.js:59
-#: views/Artwork.jsx:125
+#: custom/model.js:60
+#: views/Artwork.jsx:124
 msgid "Dimensions"
 msgstr ""
 
-#: custom/model.js:68
-#: views/Artwork.jsx:139
-#: views/Search.jsx:126
+#: custom/model.js:61
+msgid "Height"
+msgstr ""
+
+#: custom/model.js:62
+msgid "Width"
+msgstr ""
+
+#: custom/model.js:73
+#: views/Artwork.jsx:138
 msgid "Location"
 msgstr ""
 
-#: custom/model.js:69
-#: views/Search.jsx:125
+#: custom/model.js:74
 msgid "Sample: Louvre"
 msgstr ""
 
-#: custom/model.js:76
-#: views/Artwork.jsx:132
+#: custom/model.js:81
+#: views/Artwork.jsx:131
 msgid "Categories"
-msgstr ""
-
-#: custom/queries.js:98
-msgid "Dates: %(range)s"
-msgstr ""
-
-#: custom/queries.js:109
-msgid "Width: %(range)s"
-msgstr ""
-
-#: custom/queries.js:120
-msgid "Height: %(range)s"
-msgstr ""
-
-#: custom/queries.js:127
-msgid "Location: '%(query)s'"
-msgstr ""
-
-#: custom/queries.js:157
-msgid "Artist: %(artist)s"
-msgstr ""
-
-#: custom/queries.js:171
-msgid "Medium: %(medium)s"
 msgstr ""
 
 #: custom/sitename.js:9
 msgid "Art Research Database"
+msgstr ""
+
+#: custom/sitename.js:17
+msgid "Sample: christ or cristo"
 msgstr ""
 
 #: custom/sorts.js:5
@@ -522,38 +490,38 @@ msgstr ""
 msgid "%(name)s Admin Area"
 msgstr ""
 
-#: views/Artwork.jsx:78
+#: views/Artwork.jsx:77
 msgid "End Comparison"
 msgstr ""
 
-#: views/Artwork.jsx:146
+#: views/Artwork.jsx:145
 msgid "Details"
 msgstr ""
 
-#: views/Artwork.jsx:221
-#: views/Search.jsx:350
+#: views/Artwork.jsx:220
+#: views/Search.jsx:274
 msgid "Previous"
 msgstr ""
 
-#: views/Artwork.jsx:232
-#: views/Search.jsx:355
+#: views/Artwork.jsx:231
+#: views/Search.jsx:279
 msgid "Next"
 msgstr ""
 
-#: views/Artwork.jsx:316
+#: views/Artwork.jsx:307
 msgid "More information..."
 msgstr ""
 
-#: views/Artwork.jsx:336
+#: views/Artwork.jsx:327
 msgid "Compare Images"
 msgstr ""
 
-#: views/Artwork.jsx:341
+#: views/Artwork.jsx:332
 #: views/Upload.jsx:52
 msgid "Similar Images"
 msgstr ""
 
-#: views/Artwork.jsx:366
+#: views/Artwork.jsx:357
 #: views/Upload.jsx:89
 msgid "Score: %(score)s"
 msgstr ""
@@ -566,7 +534,7 @@ msgstr ""
 #: views/Home.jsx:68
 #: views/Page.jsx:120
 #: views/Page.jsx:125
-#: views/Search.jsx:244
+#: views/Search.jsx:168
 msgid "Search"
 msgstr ""
 
@@ -668,52 +636,40 @@ msgstr ""
 msgid "Password:"
 msgstr ""
 
-#: views/Search.jsx:81
+#: views/Search.jsx:73
 msgid "%(numArtworks)s matches."
 msgstr ""
 
-#: views/Search.jsx:87
+#: views/Search.jsx:79
 msgid "Viewing %(start)s to %(end)s."
 msgstr ""
 
-#: views/Search.jsx:109
+#: views/Search.jsx:101
 msgid "Query"
 msgstr ""
 
-#: views/Search.jsx:112
-msgid "Sample: christ or cristo"
-msgstr ""
-
-#: views/Search.jsx:158
-msgid "Width (%(unit)s)"
-msgstr ""
-
-#: views/Search.jsx:178
-msgid "Height (%(unit)s)"
-msgstr ""
-
-#: views/Search.jsx:204
+#: views/Search.jsx:128
 msgid "Any Source"
 msgstr ""
 
-#: views/Search.jsx:214
+#: views/Search.jsx:138
 msgid "Similarity"
 msgstr ""
 
-#: views/Search.jsx:230
+#: views/Search.jsx:154
 msgid "Sort"
 msgstr ""
 
-#: views/Search.jsx:268
+#: views/Search.jsx:192
 msgid "Show %(count)s more..."
 msgstr ""
 
-#: views/Search.jsx:318
-#: views/Search.jsx:327
+#: views/Search.jsx:242
+#: views/Search.jsx:251
 msgid "Remove %(query)s"
 msgstr ""
 
-#: views/Search.jsx:337
+#: views/Search.jsx:261
 msgid "No results found. Please refine your query."
 msgstr ""
 

@@ -644,19 +644,19 @@ const bindStubs = () => {
             source: {
                 buckets: [{key: "test", doc_count: 2}],
             },
-            type: {
+            objectType: {
                 buckets: [{key: "painting", doc_count: 2}],
             },
-            date: {
+            dates: {
                 buckets: [{from: 1100, to: 1199, doc_count: 2}],
             },
-            artist: {
+            artists: {
                 buckets: [{key: "Test", doc_count: 2}],
             },
-            width: {
+            "dimensions.width": {
                 buckets: [{from: 100, to: 199, doc_count: 2}],
             },
-            height: {
+            "dimensions.height": {
                 buckets: [{from: 100, to: 199, doc_count: 2}],
             },
         };

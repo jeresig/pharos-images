@@ -28,8 +28,16 @@ Name.prototype = {
         return query[this.options.searchName];
     },
 
+    defaultValue() {
+        return "";
+    },
+
     fields(value) {
         return {[this.searchName()]: value};
+    },
+
+    title(i18n) {
+        return this.options.title(i18n);
     },
 
     searchTitle(value, i18n) {
@@ -49,29 +57,31 @@ Name.prototype = {
     },
 
     facet() {
-        // TODO: Make the number of facets configurable
         return {
-            terms: {
-                field: `${this.options.name}.name.raw`,
-                size: 50,
+            [this.options.name]: {
+                title: (i18n) => this.options.title(i18n),
+
+                // TODO: Make the number of facets configurable
+                facet: () => ({
+                    terms: {
+                        field: `${this.options.name}.name.raw`,
+                        size: 50,
+                    },
+                }),
+
+                formatBuckets: (buckets) => buckets.map((bucket) => ({
+                    text: bucket.key,
+                    count: bucket.doc_count,
+                    url: {[this.options.name]: bucket.key},
+                })),
             },
-        };
-    },
-
-    formatFacetBucket(bucket) {
-        const searchURL = require("../../logic/shared/search-url");
-
-        return {
-            text: bucket.key,
-            url: searchURL({
-                [this.options.name]: bucket.key,
-            }),
         };
     },
 
     renderFilter(value, i18n) {
         return NameFilter({
             name: this.options.name,
+            searchName: this.options.searchName,
             placeholder: this.options.placeholder(i18n),
             title: this.options.title(i18n),
             value,

@@ -135,59 +135,67 @@ YearRange.prototype = {
         };
     },
 
-    facet(value) {
-        // TODO: Make these ranges configurable
-        let ranges = [
-            { to: 999 },
-            { from: 1000, to: 1099 },
-            { from: 1100, to: 1199 },
-            { from: 1200, to: 1299 },
-            { from: 1300, to: 1399 },
-            { from: 1400, to: 1499 },
-            { from: 1500, to: 1599 },
-            { from: 1600, to: 1699 },
-            { from: 1700, to: 1799 },
-            { from: 1800 },
-        ];
-
-        const start = parseFloat(value.start);
-        const end = parseFloat(value.end);
-
-        if (start && end && end - start < 300) {
-            ranges = [];
-            for (let year = start; year < end; year += 10) {
-                ranges.push({
-                    from: year,
-                    to: year + 9,
-                });
-            }
-        }
-
+    facet() {
         return {
-            range: {
-                field: `${this.options.name}.years`,
-                ranges,
-            },
-        };
-    },
+            [this.options.name]: {
+                title: (i18n) => this.options.title(i18n),
 
-    formatFacetBucket(bucket) {
-        const searchURL = require("../../logic/shared/search-url");
+                facet: (value) => {
+                    // TODO: Make these ranges configurable
+                    let ranges = [
+                        { to: 999 },
+                        { from: 1000, to: 1099 },
+                        { from: 1100, to: 1199 },
+                        { from: 1200, to: 1299 },
+                        { from: 1300, to: 1399 },
+                        { from: 1400, to: 1499 },
+                        { from: 1500, to: 1599 },
+                        { from: 1600, to: 1699 },
+                        { from: 1700, to: 1799 },
+                        { from: 1800 },
+                    ];
 
-        return {
-            text: numRange(bucket),
-            url: searchURL({
-                [this.options.name]: {
-                    start: bucket.from,
-                    end: bucket.to,
+                    if (value) {
+                        const start = parseFloat(value.start);
+                        const end = parseFloat(value.end);
+
+                        if (start && end && end - start < 300) {
+                            ranges = [];
+                            for (let year = start; year < end; year += 10) {
+                                ranges.push({
+                                    from: year,
+                                    to: year + 9,
+                                });
+                            }
+                        }
+                    }
+
+                    return {
+                        range: {
+                            field: `${this.options.name}.years`,
+                            ranges,
+                        },
+                    };
                 },
-            }),
+
+                formatBuckets: (buckets) => buckets.map((bucket) => ({
+                    text: numRange(bucket),
+                    count: bucket.doc_count,
+                    url: {
+                        [this.options.name]: {
+                            start: bucket.from,
+                            end: bucket.to,
+                        },
+                    },
+                })),
+            },
         };
     },
 
     renderFilter(value, i18n) {
         return YearRangeFilter({
             name: this.options.name,
+            searchName: this.options.searchName,
             value,
             placeholder: this.options.placeholder(i18n),
             title: this.options.title(i18n),

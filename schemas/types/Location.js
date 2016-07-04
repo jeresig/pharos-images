@@ -26,6 +26,10 @@ Location.prototype = {
         return query[this.searchName()];
     },
 
+    defaultValue() {
+        return "";
+    },
+
     fields(value) {
         return {[this.searchName()]: value};
     },
@@ -35,11 +39,11 @@ Location.prototype = {
         return `${title}: ${value}`;
     },
 
-    filter(query, sanitize) {
+    filter(value, sanitize) {
         return {
             match: {
                 [`${this.options.name}.name`]: {
-                    query: sanitize(query[this.searchName()]),
+                    query: sanitize(value),
                     operator: "and",
                     zero_terms_query: "all",
                 },
@@ -50,6 +54,7 @@ Location.prototype = {
     renderFilter(value, i18n) {
         return LocationFilter({
             name: this.options.name,
+            searchName: this.options.searchName,
             value,
             placeholder: this.options.placeholder(i18n),
             title: this.options.title(i18n),

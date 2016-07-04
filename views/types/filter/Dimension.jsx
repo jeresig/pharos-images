@@ -10,6 +10,7 @@ const DimensionFilter = React.createClass({
             max: React.PropTypes.number,
             min: React.PropTypes.number,
         }),
+        searchName: React.PropTypes.string,
         value: React.PropTypes.shape({
             heightMin: React.PropTypes.number,
             heightMax: React.PropTypes.number,
@@ -27,21 +28,23 @@ const DimensionFilter = React.createClass({
     },
 
     render() {
+        const searchName = this.props.searchName || this.props.name;
+
         return <div className="row">
             <div className="form-group col-xs-6 col-sm-12 col-lg-6">
-                <label htmlFor={`${this.props.name}.width.min`}
+                <label htmlFor={`${searchName}.widthMin`}
                     className="control-label"
                 >
                     {this.props.widthTitle}
                 </label>
                 <div className="form-inline">
-                    <input type="text" name={`${this.props.name}.width.min`}
+                    <input type="text" name={`${searchName}.widthMin`}
                         defaultValue={this.props.value.widthMin}
                         placeholder={this.props.placeholder.min}
                         className="form-control size-control"
                     />
                     &mdash;
-                    <input type="text" name={`${this.props.name}.height.max`}
+                    <input type="text" name={`${searchName}.widthMax`}
                         defaultValue={this.props.value.widthMax}
                         placeholder={this.props.placeholder.max}
                         className="form-control size-control"
@@ -49,20 +52,20 @@ const DimensionFilter = React.createClass({
                 </div>
             </div>
             <div className="form-group col-xs-6 col-sm-12 col-lg-6">
-                <label htmlFor={`${this.props.name}.height.min`}
+                <label htmlFor={`${searchName}.heightMin`}
                     className="control-label"
                 >
                     {this.props.heightTitle}
                 </label>
                 <div className="form-inline">
-                    <input type="text" name={`${this.props.name}.height.min`}
-                        defaultValue={this.props.value.widthMin}
+                    <input type="text" name={`${searchName}.heightMin`}
+                        defaultValue={this.props.value.heightMin}
                         placeholder={this.props.placeholder.min}
                         className="form-control size-control"
                     />
                     &mdash;
-                    <input type="text" name={`${this.props.name}.height.max`}
-                        defaultValue={this.props.value.widthMax}
+                    <input type="text" name={`${searchName}.heightMax`}
+                        defaultValue={this.props.value.heightMax}
                         placeholder={this.props.placeholder.max}
                         className="form-control size-control"
                     />

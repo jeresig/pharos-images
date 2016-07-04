@@ -6,6 +6,7 @@ const FixedStringFilter = React.createClass({
     propTypes: {
         name: React.PropTypes.string.isRequired,
         placeholder: React.PropTypes.string,
+        searchName: React.PropTypes.string,
         title: React.PropTypes.string.isRequired,
         value: React.PropTypes.string,
         values: React.PropTypes.arrayOf(
@@ -17,11 +18,13 @@ const FixedStringFilter = React.createClass({
     },
 
     render() {
+        const searchName = this.props.searchName || this.props.name;
+
         return <div className="form-group">
-            <label htmlFor={this.props.name} className="control-label">
+            <label htmlFor={searchName} className="control-label">
                 {this.props.title}
             </label>
-            <select name={this.props.name} style={{width: "100%"}}
+            <select name={searchName} style={{width: "100%"}}
                 className="form-control"
                 defaultValue={this.props.value}
             >

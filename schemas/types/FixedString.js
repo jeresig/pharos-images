@@ -38,15 +38,10 @@ FixedString.prototype = {
         return {[this.searchName()]: value};
     },
 
-    searchTitle(value, i18n) {
+    searchTitle(name, i18n) {
         const values = this.options.values || {};
-
-        // If there is a value that has an i18n title mapping
-        if (values && typeof values[value] === "function") {
-            return values[value](i18n);
-        }
-
-        return value;
+        const nameMap = values[name];
+        return nameMap ? nameMap.name(i18n) : name;
     },
 
     filter(value, sanitize) {
@@ -63,22 +58,21 @@ FixedString.prototype = {
 
     facet() {
         return {
-            terms: {
-                field: `${this.options.name}.raw`,
+            [this.options.name]: {
+                title: (i18n) => this.options.title(i18n),
+
+                facet: () => ({
+                    terms: {
+                        field: `${this.options.name}.raw`,
+                    },
+                }),
+
+                formatBuckets: (buckets, i18n) => buckets.map((bucket) => ({
+                    text: this.searchTitle(bucket.key, i18n),
+                    count: bucket.doc_count,
+                    url: {[this.options.name]: bucket.key},
+                })),
             },
-        };
-    },
-
-    formatFacetBucket(bucket, i18n) {
-        const searchURL = require("../../logic/shared/search-url");
-
-        return {
-            text: (bucket.key in this.options.values ?
-                this.options.values[bucket.key](i18n) :
-                bucket.key),
-            url: searchURL({
-                [this.props.name]: bucket.key,
-            }),
         };
     },
 
@@ -92,6 +86,7 @@ FixedString.prototype = {
     renderFilter(value, i18n) {
         return FixedStringFilter({
             name: this.options.name,
+            searchName: this.options.searchName,
             value,
             values: this.getValueArray(i18n),
             placeholder: this.options.placeholder(i18n),

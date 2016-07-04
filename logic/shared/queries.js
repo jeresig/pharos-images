@@ -24,11 +24,12 @@ module.exports = Object.assign({
 
     filter: {
         value: (fields) => fields.filter,
+        defaultValue: () => "",
         searchTitle: (value, i18n) => i18n.format(
             i18n.gettext("Query: '%(query)s'"), {query: value}),
         filter: (value) => ({
             query_string: {
-                query: value,
+                query: value || "*",
                 default_operator: "and",
             },
         }),
