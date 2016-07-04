@@ -11,27 +11,34 @@ const FixedString = function(options) {
     this.options = options;
     /*
     name
-    modelName
+    searchName
     allowUnknown: Bool
     values: {Key: title(i18n)}
     title(i18n)
     placeholder(i18n)
+    url(value)
     recommended: Bool
-    searchField: String
     */
+
+    if (this.options.url) {
+        this.url = this.options.url;
+    }
 };
 
 FixedString.prototype = {
-    modelName() {
-        return this.options.modelName || this.options.name;
+    searchName() {
+        return this.options.searchName || this.options.name;
     },
 
-    value(req) {
-        return req.query[this.options.name];
+    value(query) {
+        return query[this.searchName()];
     },
 
-    searchTitle(query, i18n) {
-        const value = query[this.options.name];
+    fields(value) {
+        return {[this.searchName()]: value};
+    },
+
+    searchTitle(value, i18n) {
         const values = this.options.values || {};
 
         // If there is a value that has an i18n title mapping
@@ -42,11 +49,11 @@ FixedString.prototype = {
         return value;
     },
 
-    filter(query, sanitize) {
+    filter(value, sanitize) {
         return {
             match: {
-                [`${this.modelName()}.raw`]: {
-                    query: sanitize(query[this.options.name]),
+                [`${this.options.name}.raw`]: {
+                    query: sanitize(value),
                     operator: "or",
                     zero_terms_query: "all",
                 },
@@ -57,12 +64,14 @@ FixedString.prototype = {
     facet() {
         return {
             terms: {
-                field: `${this.modelName()}.raw`,
+                field: `${this.options.name}.raw`,
             },
         };
     },
 
-    formatFacetBucket(bucket, searchURL, i18n) {
+    formatFacetBucket(bucket, i18n) {
+        const searchURL = require("../../logic/shared/search-url");
+
         return {
             text: (bucket.key in this.options.values ?
                 this.options.values[bucket.key](i18n) :
@@ -81,24 +90,21 @@ FixedString.prototype = {
     },
 
     renderFilter(value, i18n) {
-        const name = this.options.searchField || this.options.name;
-
         return FixedStringFilter({
-            name,
-            placeholder: this.options.placeholder(i18n),
-            title: this.options.title(i18n),
+            name: this.options.name,
             value,
             values: this.getValueArray(i18n),
+            placeholder: this.options.placeholder(i18n),
+            title: this.options.title(i18n),
         });
     },
 
-    renderView(data, searchURL, i18n) {
+    renderView(value, i18n) {
         return FixedStringDisplay({
-            value: data[this.modelName()],
-            values: this.getValueArray(i18n),
             name: this.options.name,
+            value,
+            values: this.getValueArray(i18n),
             searchField: this.options.searchField,
-            searchURL,
         });
     },
 

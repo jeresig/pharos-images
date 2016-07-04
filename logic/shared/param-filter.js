@@ -11,6 +11,11 @@ const paramFilter = (values, keepSecondary) => {
         const query = queries[name];
         const value = values[name];
 
+        if (!query) {
+            console.error(`ERROR: Unknown field: ${name}.`);
+            continue;
+        }
+
         // Ignore queries that don't have a value
         if (value === undefined) {
             continue;
@@ -28,9 +33,7 @@ const paramFilter = (values, keepSecondary) => {
         if (query.secondary) {
             Object.assign(secondary, fields);
         } else {
-            for (const field in fields) {
-                primary.push(field);
-            }
+            primary.push(name);
         }
 
         if (keepSecondary || !query.secondary) {

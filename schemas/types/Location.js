@@ -11,31 +11,35 @@ const Location = function(options) {
     this.options = options;
     /*
     name
-    modelName
+    searchName
     title(i18n)
     placeholder(i18n)
     */
 };
 
 Location.prototype = {
-    modelName() {
-        return this.options.modelName || this.options.name;
+    searchName() {
+        return this.options.searchName || this.options.name;
     },
 
-    value(req) {
-        return req.query[this.options.name];
+    value(query) {
+        return query[this.searchName()];
     },
 
-    searchTitle(query, i18n) {
+    fields(value) {
+        return {[this.searchName()]: value};
+    },
+
+    searchTitle(value, i18n) {
         const title = this.options.title(i18n);
-        return `${title}: ${query[this.options.name]}`;
+        return `${title}: ${value}`;
     },
 
     filter(query, sanitize) {
         return {
             match: {
-                [`${this.modelName()}.name`]: {
-                    query: sanitize(query[this.options.name]),
+                [`${this.options.name}.name`]: {
+                    query: sanitize(query[this.searchName()]),
                     operator: "and",
                     zero_terms_query: "all",
                 },
@@ -46,16 +50,16 @@ Location.prototype = {
     renderFilter(value, i18n) {
         return LocationFilter({
             name: this.options.name,
+            value,
             placeholder: this.options.placeholder(i18n),
             title: this.options.title(i18n),
-            value,
         });
     },
 
-    renderView(data, searchURL) {
+    renderView(value, searchURL) {
         return LocationDisplay({
-            value: data[this.modelName()],
             name: this.options.name,
+            value,
             searchURL,
         });
     },

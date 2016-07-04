@@ -18,16 +18,16 @@ module.exports = {
 
     // A list of artist names extracted from the page.
     artists: new Name({
-        name: "artist",
-        modelName: "artists",
+        name: "artists",
+        searchName: "artist",
         title: (i18n) => i18n.gettext("Artist"),
         placeholder: (i18n) => i18n.gettext("Sample: Andrea del Sarto"),
     }),
 
     // Date ranges when the artwork was created or modified.
     dates: new YearRange({
-        name: "date",
-        modelName: "dates",
+        name: "dates",
+        searchName: "date",
         title: (i18n) => i18n.gettext("Date"),
         placeholder: () => ({
             end: 1900,
@@ -38,12 +38,13 @@ module.exports = {
     // The English form of the object type (e.g. painting, print)
     objectType: new FixedString({
         name: "objectType",
-        searchField: "type",
+        searchName: "type",
         title: (i18n) => i18n.gettext("Type"),
         placeholder: (i18n) => i18n.gettext("Any Type"),
         allowUnknown: false,
         values: types,
         recommended: true,
+        url: (value) => `/type/${value}`,
     }),
 
     // The medium of the artwork (e.g. "watercolor")
@@ -67,8 +68,8 @@ module.exports = {
 
     // Locations where the artwork is stored
     locations: new Location({
-        name: "location",
-        modelName: "locations",
+        name: "locations",
+        searchName: "location",
         title: (i18n) => i18n.gettext("Location"),
         placeholder: (i18n) => i18n.gettext("Sample: Louvre"),
     }),

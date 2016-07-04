@@ -24,17 +24,20 @@ const dateRangeType = React.PropTypes.shape({
 const YearRangeView = React.createClass({
     propTypes: {
         name: React.PropTypes.string.isRequired,
-        searchURL: React.PropTypes.func.isRequired,
         value: React.PropTypes.arrayOf(
             dateRangeType
         ).isRequired,
     },
 
     renderDate(date) {
+        const searchURL = require("../../../logic/shared/search-url");
+
         return <span key={date._id}>
-            <a href={this.props.searchURL({
-                [`${this.props.name}.start`]: date.start,
-                [`${this.props.name}.end`]: date.end,
+            <a href={searchURL(this.props, {
+                [this.props.name]: {
+                    start: date.start,
+                    end: date.end,
+                },
             })}
             >
                 {getDate(date)}

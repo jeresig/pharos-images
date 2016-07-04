@@ -5,7 +5,6 @@ const React = require("react");
 const NameView = React.createClass({
     propTypes: {
         name: React.PropTypes.string.isRequired,
-        searchURL: React.PropTypes.func.isRequired,
         value: React.PropTypes.arrayOf(
             React.PropTypes.shape({
                 _id: React.PropTypes.string.isRequired,
@@ -20,7 +19,8 @@ const NameView = React.createClass({
             return null;
         }
 
-        const pseudoURL = this.props.searchURL({filter: name.pseudonym});
+        const searchURL = require("../../../logic/shared/search-url");
+        const pseudoURL = searchURL(this.props, {filter: name.pseudonym});
 
         return <span>
             {" "}(<a href={pseudoURL}>{name.pseudonym}</a>)
@@ -28,7 +28,8 @@ const NameView = React.createClass({
     },
 
     renderName(name) {
-        const url = this.props.searchURL({[this.props.name]: name.name});
+        const searchURL = require("../../../logic/shared/search-url");
+        const url = searchURL(this.props, {[this.props.name]: name.name});
 
         return <span key={name._id}>
             <a href={url}>{name.name}</a>

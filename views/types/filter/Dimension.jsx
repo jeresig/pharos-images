@@ -2,19 +2,19 @@
 
 const React = require("react");
 
-const minMaxType = React.PropTypes.shape({
-    max: React.PropTypes.number,
-    min: React.PropTypes.number,
-});
-
 const DimensionFilter = React.createClass({
     propTypes: {
         heightTitle: React.PropTypes.string.isRequired,
         name: React.PropTypes.string.isRequired,
-        placeholder: minMaxType,
+        placeholder: React.PropTypes.shape({
+            max: React.PropTypes.number,
+            min: React.PropTypes.number,
+        }),
         value: React.PropTypes.shape({
-            height: minMaxType,
-            width: minMaxType,
+            heightMin: React.PropTypes.number,
+            heightMax: React.PropTypes.number,
+            widthMax: React.PropTypes.number,
+            widthMin: React.PropTypes.number,
         }),
         widthTitle: React.PropTypes.string.isRequired,
     },
@@ -22,10 +22,7 @@ const DimensionFilter = React.createClass({
     getDefaultProps() {
         return {
             placeholder: {},
-            value: {
-                height: {},
-                width: {},
-            },
+            value: {},
         };
     },
 
@@ -39,13 +36,13 @@ const DimensionFilter = React.createClass({
                 </label>
                 <div className="form-inline">
                     <input type="text" name={`${this.props.name}.width.min`}
-                        defaultValue={this.props.value.width.min}
+                        defaultValue={this.props.value.widthMin}
                         placeholder={this.props.placeholder.min}
                         className="form-control size-control"
                     />
                     &mdash;
                     <input type="text" name={`${this.props.name}.height.max`}
-                        defaultValue={this.props.value.width.max}
+                        defaultValue={this.props.value.widthMax}
                         placeholder={this.props.placeholder.max}
                         className="form-control size-control"
                     />
@@ -59,13 +56,13 @@ const DimensionFilter = React.createClass({
                 </label>
                 <div className="form-inline">
                     <input type="text" name={`${this.props.name}.height.min`}
-                        defaultValue={this.props.value.width.minmin}
+                        defaultValue={this.props.value.widthMin}
                         placeholder={this.props.placeholder.min}
                         className="form-control size-control"
                     />
                     &mdash;
                     <input type="text" name={`${this.props.name}.height.max`}
-                        defaultValue={this.props.value.width.max}
+                        defaultValue={this.props.value.widthMax}
                         placeholder={this.props.placeholder.max}
                         className="form-control size-control"
                     />

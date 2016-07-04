@@ -47,7 +47,6 @@ const Artwork = React.createClass({
         getTitle: React.PropTypes.func.isRequired,
         getType: React.PropTypes.func.isRequired,
         gettext: React.PropTypes.func.isRequired,
-        searchURL: React.PropTypes.func.isRequired,
         shortName: React.PropTypes.func.isRequired,
         similar: React.PropTypes.arrayOf(artworkType),
         stringNum: React.PropTypes.func.isRequired,
@@ -262,44 +261,44 @@ const Artwork = React.createClass({
 
     renderArtist(artwork) {
         return <td key={artwork._id}>
-            {config.model.artists.renderView(artwork, this.props.searchURL)}
+            {config.model.artists.renderView(artwork.artists)}
         </td>;
     },
 
     renderDate(artwork) {
         return <td key={artwork._id}>
-            {config.model.dates.renderView(artwork, this.props.searchURL)}
+            {config.model.dates.renderView(artwork.dates)}
         </td>;
     },
 
     renderType(artwork) {
         return <td key={artwork._id}>
             {config.model.objectType
-                .renderView(artwork, this.props.searchURL, this.props)}
+                .renderView(artwork.objectType, this.props)}
         </td>;
     },
 
     renderMedium(artwork) {
         return <td key={artwork._id}>
-            {config.model.medium.renderView(artwork, this.props.searchURL)}
+            {config.model.medium.renderView(artwork.medium)}
         </td>;
     },
 
     renderDimensions(artwork) {
         return <td key={artwork._id}>
-            {config.model.dimensions.renderView(artwork, this.props.searchURL)}
+            {config.model.dimensions.renderView(artwork.dimensions)}
         </td>;
     },
 
     renderCategories(artwork) {
         return <td key={artwork._id}>
-            {config.model.categories.renderView(artwork, this.props.searchURL)}
+            {config.model.categories.renderView(artwork.categories)}
         </td>;
     },
 
     renderLocation(artwork) {
         return <td key={artwork._id}>
-            {config.model.locations.renderView(artwork, this.props.searchURL)}
+            {config.model.locations.renderView(artwork.locations)}
         </td>;
     },
 

@@ -16,7 +16,7 @@ const Dimension = function(options) {
     this.options = options;
     /*
     name
-    modelName
+    searchName
     title(i18n)
     widthTitle(i18n)
     heightTitle(i18n)
@@ -25,18 +25,18 @@ const Dimension = function(options) {
 };
 
 Dimension.prototype = {
-    modelName() {
-        return this.options.modelName || this.options.name;
+    searchName() {
+        return this.options.searchName || this.options.name;
     },
 
-    value(req) {
+    value(query) {
         const config = require("../../lib/config");
 
-        const heightMin = req.query[`${this.options.name}.height.min`];
-        const heightMax = req.query[`${this.options.name}.height.max`];
-        const widthMin = req.query[`${this.options.name}.width.min`];
-        const widthMax = req.query[`${this.options.name}.width.max`];
-        const unit = req.query[`${this.options.name}.unit`] ||
+        const heightMin = query[`${this.searchName()}.heightMin`];
+        const heightMax = query[`${this.searchName()}.heightMax`];
+        const widthMin = query[`${this.searchName()}.widthMin`];
+        const widthMax = query[`${this.searchName()}.widthMax`];
+        const unit = query[`${this.searchName()}.unit`] ||
             config.DEFAULT_SEARCH_UNIT || config.DEFAULT_UNIT;
 
         if (heightMin || heightMax || widthMin || widthMax) {
@@ -46,15 +46,17 @@ Dimension.prototype = {
 
     fields(value) {
         return {
-            [`${this.options.name}.height.min`]: value.heightMin,
-            [`${this.options.name}.height.max`]: value.heightMax,
-            [`${this.options.name}.width.min`]: value.widthMin,
-            [`${this.options.name}.width.max`]: value.widthMax,
-            [`${this.options.name}.unit`]: value.unit,
+            [`${this.searchName()}.heightMin`]: value.heightMin,
+            [`${this.searchName()}.heightMax`]: value.heightMax,
+            [`${this.searchName()}.widthMin`]: value.widthMin,
+            [`${this.searchName()}.widthMax`]: value.widthMax,
+            [`${this.searchName()}.unit`]: value.unit,
         };
     },
 
-    breadcrumb(value, searchURL, i18n) {
+    breadcrumb(value, i18n) {
+        const searchURL = require("../../logic/shared/search-url");
+
         const breadcrumbs = [];
 
         if (value.heightMin || value.heightMax) {
@@ -106,7 +108,7 @@ Dimension.prototype = {
         if (value.widthMin) {
             filters.push({
                 range: {
-                    [`${this.modelName()}.width`]: {
+                    [`${this.options.name}.width`]: {
                         gte: pd.convertNumber(
                             parseFloat(value.widthMin), value.unit,
                                 config.DEFAULT_UNIT),
@@ -118,7 +120,7 @@ Dimension.prototype = {
         if (value.widthMax) {
             filters.push({
                 range: {
-                    [`${this.modelName()}.width`]: {
+                    [`${this.options.name}.width`]: {
                         lte: pd.convertNumber(
                             parseFloat(value.widthMax), value.unit,
                                 config.DEFAULT_UNIT),
@@ -130,7 +132,7 @@ Dimension.prototype = {
         if (value.heightMin) {
             filters.push({
                 range: {
-                    [`${this.modelName()}.height`]: {
+                    [`${this.options.name}.height`]: {
                         gte: pd.convertNumber(
                             parseFloat(value.heightMin), value.unit,
                                 config.DEFAULT_UNIT),
@@ -142,7 +144,7 @@ Dimension.prototype = {
         if (value.heightMax) {
             filters.push({
                 range: {
-                    [`${this.modelName()}.height`]: {
+                    [`${this.options.name}.height`]: {
                         lte: pd.convertNumber(
                             parseFloat(value.heightMax), value.unit,
                                 config.DEFAULT_UNIT),
@@ -158,10 +160,10 @@ Dimension.prototype = {
     facet() {
         return [
             {
-                name: `${this.modelName()}.width`,
+                name: `${this.options.name}.width`,
                 facet: {
                     range: {
-                        field: `${this.modelName()}.width`,
+                        field: `${this.options.name}.width`,
                         ranges: [
                             { to: 99 },
                             { from: 100, to: 199 },
@@ -183,10 +185,10 @@ Dimension.prototype = {
                 },
             },
             {
-                name: `${this.modelName()}.height`,
+                name: `${this.options.name}.height`,
                 facet: {
                     range: {
-                        field: `${this.modelName()}.height`,
+                        field: `${this.options.name}.height`,
                         ranges: [
                             { to: 99 },
                             { from: 100, to: 199 },
@@ -210,10 +212,11 @@ Dimension.prototype = {
         ];
     },
 
-    formatFacetBucket(bucket, searchURL, req) {
+    formatFacetBucket(bucket, req) {
+        const searchURL = require("../../logic/shared/search-url");
         const config = require("../../lib/config");
 
-        const unit = req.query[`${this.options.name}.unit`] ||
+        const unit = req.query[`${this.searchName()}.unit`] ||
             config.DEFAULT_SEARCH_UNIT || config.DEFAULT_UNIT;
         const text = numRange({
             from: pd.convertNumber(bucket.from, "mm", unit),
@@ -244,14 +247,13 @@ Dimension.prototype = {
         });
     },
 
-    renderView(data, searchURL) {
+    renderView(value) {
         const config = require("../../lib/config");
 
         return DimensionDisplay({
-            value: data[this.modelName()],
             name: this.options.name,
+            value,
             defaultUnit: config.DEFAULT_SEARCH_UNIT,
-            searchURL,
         });
     },
 

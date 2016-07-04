@@ -24,25 +24,26 @@ module.exports = Object.assign({
 
     filter: {
         value: (fields) => fields.filter,
-        title: (req, query) => req.format(
-            req.gettext("Query: '%(query)s'"), {query: query.filter}),
-        filter: (query) => ({
+        searchTitle: (value, i18n) => i18n.format(
+            i18n.gettext("Query: '%(query)s'"), {query: value}),
+        filter: (value) => ({
             query_string: {
-                query: query.filter,
+                query: value,
                 default_operator: "and",
             },
         }),
     },
 
     source: {
-        value: (fields) => fields.source || "",
-        title: (req, query) => models("Source").getSource(query.source)
-            .getFullName(req.lang),
-        url: (query) => models("Source").getSource(query.source),
-        filter: (query) => ({
+        value: (fields) => fields.source,
+        defaultValue: () => undefined,
+        searchTitle: (value, i18n) => models("Source").getSource(value)
+            .getFullName(i18n.lang),
+        url: (value) => models("Source").getSource(value),
+        filter: (value) => ({
             match: {
                 source: {
-                    query: escape(query.source),
+                    query: escape(value),
                     operator: "or",
                     zero_terms_query: "all",
                 },
@@ -53,7 +54,7 @@ module.exports = Object.assign({
     similar: {
         filters: {
             any: {
-                getTitle: (req) => req.gettext("Similar to Any Artwork"),
+                getTitle: (i18n) => i18n.gettext("Similar to Any Artwork"),
                 match: () => ({
                     range: {
                         "similarArtworks.score": {
@@ -64,8 +65,8 @@ module.exports = Object.assign({
             },
 
             external: {
-                getTitle: (req) =>
-                    req.gettext("Similar to an External Artwork"),
+                getTitle: (i18n) =>
+                    i18n.gettext("Similar to an External Artwork"),
                 match: () => {
                     const sourceIDs = models("Source").getSources()
                         .map((source) => source._id);
@@ -96,8 +97,8 @@ module.exports = Object.assign({
             },
 
             internal: {
-                getTitle: (req) =>
-                    req.gettext("Similar to an Internal Artwork"),
+                getTitle: (i18n) =>
+                    i18n.gettext("Similar to an Internal Artwork"),
                 match: () => {
                     const sourceIDs = models("Source").getSources()
                         .map((source) => source._id);
@@ -125,12 +126,13 @@ module.exports = Object.assign({
                 },
             },
         },
-        value: (fields) => fields.similar || "",
-        title(req, query) {
-            return this.filters[query.similar].getTitle(req);
+        value: (fields) => fields.similar,
+        defaultValue: () => undefined,
+        searchTitle(value, i18n) {
+            return this.filters[value].getTitle(i18n);
         },
-        filter(query) {
-            return this.filters[query.similar].match(query);
+        filter(value) {
+            return this.filters[value].match();
         },
     },
 }, config.model);

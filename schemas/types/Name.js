@@ -13,31 +13,35 @@ const Name = function(options) {
     this.options = options;
     /*
     name
-    modelName
+    searchName
     title(i18n)
     placeholder(i18n)
     */
 };
 
 Name.prototype = {
-    modelName() {
-        return this.options.modelName || this.options.name;
+    searchName() {
+        return this.options.searchName || this.options.name;
     },
 
-    value(req) {
-        return req.query[this.options.name];
+    value(query) {
+        return query[this.options.searchName];
     },
 
-    searchTitle(query, i18n) {
+    fields(value) {
+        return {[this.searchName()]: value};
+    },
+
+    searchTitle(value, i18n) {
         const title = this.options.title(i18n);
-        return `${title}: ${query[this.options.name]}`;
+        return `${title}: ${value}`;
     },
 
-    filter(query, sanitize) {
+    filter(value, sanitize) {
         return {
             multi_match: {
-                fields: [`${this.modelName()}.name`],
-                query: sanitize(query[this.options.name]),
+                fields: [`${this.options.name}.name`],
+                query: sanitize(value),
                 operator: "and",
                 zero_terms_query: "all",
             },
@@ -48,17 +52,19 @@ Name.prototype = {
         // TODO: Make the number of facets configurable
         return {
             terms: {
-                field: `${this.modelName()}.name.raw`,
+                field: `${this.options.name}.name.raw`,
                 size: 50,
             },
         };
     },
 
-    formatFacetBucket(bucket, searchURL) {
+    formatFacetBucket(bucket) {
+        const searchURL = require("../../logic/shared/search-url");
+
         return {
             text: bucket.key,
             url: searchURL({
-                [this.props.name]: bucket.key,
+                [this.options.name]: bucket.key,
             }),
         };
     },
@@ -72,11 +78,10 @@ Name.prototype = {
         });
     },
 
-    renderView(data, searchURL) {
+    renderView(value) {
         return NameDisplay({
             name: this.options.name,
-            value: data[this.modelName()],
-            searchURL,
+            value,
         });
     },
 

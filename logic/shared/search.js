@@ -1,5 +1,7 @@
 "use strict";
 
+const sanitize = require("elasticsearch-sanitize");
+
 const models = require("../../lib/models");
 const urls = require("../../lib/urls");
 const config = require("../../lib/config");
@@ -48,7 +50,7 @@ module.exports = (req, res, tmplParams) => {
         const value = values[name];
 
         if (query.filter) {
-            filters.push(query.filter(value));
+            filters.push(query.filter(value, sanitize));
         }
 
         if (facet && facet.facet) {
@@ -169,7 +171,7 @@ module.exports = (req, res, tmplParams) => {
         } else if (primary.length === 1) {
             const name = primary[0];
             const query = queries[name];
-            title = query.title(req, values[name]);
+            title = query.searchTitle(values[name], req);
 
         } else {
             title = req.gettext("All Artworks");

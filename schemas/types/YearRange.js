@@ -16,20 +16,20 @@ const YearRange = function(options) {
     this.options = options;
     /*
     name
-    modelName
+    searchName
     title(i18n)
     placeholder(i18n)
     */
 };
 
 YearRange.prototype = {
-    modelName() {
-        return this.options.modelName || this.options.name;
+    searchName() {
+        return this.options.searchName || this.options.name;
     },
 
     value(query) {
-        const start = query[`${this.options.name}.start`];
-        const end = query[`${this.options.name}.end`];
+        const start = query[`${this.searchName()}.start`];
+        const end = query[`${this.searchName()}.end`];
 
         if (start || end) {
             return {start, end};
@@ -38,33 +38,32 @@ YearRange.prototype = {
 
     fields(value) {
         return {
-            [`${this.options.name}.start`]: value.start,
-            [`${this.options.name}.end`]: value.end,
+            [`${this.searchName()}.start`]: value.start,
+            [`${this.searchName()}.end`]: value.end,
         };
     },
 
-    searchTitle(query, i18n) {
+    searchTitle(value, i18n) {
         const title = this.options.title(i18n);
         const range = numRange({
-            from: query[this.options.name].start,
-            to: query[this.options.name].end,
+            from: value.start,
+            to: value.end,
         });
 
         return `${title}: ${range}`;
     },
 
-    filter(query) {
+    filter(value) {
         // NOTE(jeresig): There has got to be a better way to handle this.
-        const start = query[this.options.name].start || -10000;
-        const end = query[this.options.name].end ||
-            (new Date).getYear() + 1900;
+        const start = value.start || -10000;
+        const end = value.end || (new Date).getYear() + 1900;
 
         const startInside = {
             bool: {
                 must: [
                     {
                         range: {
-                            [`${this.modelName()}.start`]: {
+                            [`${this.options.name}.start`]: {
                                 lte: parseFloat(start),
                             },
                         },
@@ -72,7 +71,7 @@ YearRange.prototype = {
 
                     {
                         range: {
-                            [`${this.modelName()}.end`]: {
+                            [`${this.options.name}.end`]: {
                                 gte: parseFloat(start),
                             },
                         },
@@ -86,7 +85,7 @@ YearRange.prototype = {
                 must: [
                     {
                         range: {
-                            [`${this.modelName()}.start`]: {
+                            [`${this.options.name}.start`]: {
                                 lte: parseFloat(end),
                             },
                         },
@@ -94,7 +93,7 @@ YearRange.prototype = {
 
                     {
                         range: {
-                            [`${this.modelName()}.end`]: {
+                            [`${this.options.name}.end`]: {
                                 gte: parseFloat(end),
                             },
                         },
@@ -108,7 +107,7 @@ YearRange.prototype = {
                 must: [
                     {
                         range: {
-                            [`${this.modelName()}.start`]: {
+                            [`${this.options.name}.start`]: {
                                 gte: parseFloat(start),
                             },
                         },
@@ -116,7 +115,7 @@ YearRange.prototype = {
 
                     {
                         range: {
-                            [`${this.modelName()}.end`]: {
+                            [`${this.options.name}.end`]: {
                                 lte: parseFloat(end),
                             },
                         },
@@ -166,18 +165,22 @@ YearRange.prototype = {
 
         return {
             range: {
-                field: `${this.modelName()}.years`,
+                field: `${this.options.name}.years`,
                 ranges,
             },
         };
     },
 
-    formatFacetBucket(bucket, searchURL) {
+    formatFacetBucket(bucket) {
+        const searchURL = require("../../logic/shared/search-url");
+
         return {
             text: numRange(bucket),
             url: searchURL({
-                [`${this.props.name}.start`]: bucket.from,
-                [`${this.props.name}.end`]: bucket.to,
+                [this.options.name]: {
+                    start: bucket.from,
+                    end: bucket.to,
+                },
             }),
         };
     },
@@ -185,17 +188,16 @@ YearRange.prototype = {
     renderFilter(value, i18n) {
         return YearRangeFilter({
             name: this.options.name,
+            value,
             placeholder: this.options.placeholder(i18n),
             title: this.options.title(i18n),
-            value,
         });
     },
 
-    renderView(data, searchURL) {
+    renderView(value) {
         return YearRangeDisplay({
             name: this.options.name,
-            searchURL,
-            value: data[this.modelName()],
+            value,
         });
     },
 

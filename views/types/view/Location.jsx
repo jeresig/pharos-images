@@ -5,7 +5,6 @@ const React = require("react");
 const LocationView = React.createClass({
     propTypes: {
         name: React.PropTypes.string.isRequired,
-        searchURL: React.PropTypes.func.isRequired,
         value: React.PropTypes.arrayOf(
             React.PropTypes.shape({
                 _id: React.PropTypes.string.isRequired,
@@ -16,7 +15,8 @@ const LocationView = React.createClass({
     },
 
     renderName(location) {
-        const url = this.props.searchURL({[this.props.name]: location.name});
+        const searchURL = require("../../../logic/shared/search-url");
+        const url = searchURL(this.props, {[this.props.name]: location.name});
 
         return <span>
             <a href={url}>{location.name}</a><br/>

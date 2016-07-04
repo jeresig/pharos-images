@@ -9,29 +9,31 @@ const SimpleString = function(options) {
     this.options = options;
     /*
     name
-    modelName
+    searchName
     title(i18n)
     placeholder(i18n)
     multiple: Bool
     recommended: Bool
-    searchField: String
     */
 };
 
 SimpleString.prototype = {
-    modelName() {
-        return this.options.modelName || this.options.name;
+    searchName() {
+        return this.options.searchName || this.options.name;
     },
 
-    value(req) {
-        return req.query[this.options.name];
+    value(query) {
+        return query[this.searchName()];
     },
 
-    renderView(data, searchURL) {
+    fields(value) {
+        return {[this.searchName()]: value};
+    },
+
+    renderView(value, searchURL) {
         return FixedStringDisplay({
-            value: data[this.modelName()],
             name: this.options.name,
-            searchField: this.options.searchField,
+            value,
             searchURL,
         });
     },

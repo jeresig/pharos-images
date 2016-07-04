@@ -14,7 +14,7 @@ const searchURL = (req, query, keepSecondary) => {
 
     if (primary.length === 1 && queries[primary[0]].url) {
         queryString = qs.stringify(params.secondary);
-        url = queries[primary[0]].url(params.all);
+        url = queries[primary[0]].url(query[primary[0]]);
         if (url.getURL) {
             url = url.getURL(req.lang);
         } else {
