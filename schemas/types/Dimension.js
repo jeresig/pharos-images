@@ -55,8 +55,6 @@ Dimension.prototype = {
     },
 
     breadcrumb(value, i18n) {
-        const searchURL = require("../../logic/shared/search-url");
-
         const breadcrumbs = [];
 
         if (value.heightMin || value.heightMax) {
@@ -69,12 +67,12 @@ Dimension.prototype = {
 
             breadcrumbs.push({
                 title: `${title}: ${range}`,
-                url: searchURL({
-                    dimension: {
+                url: {
+                    [this.options.name]: {
                         heightMin: value.heightMin,
                         heightMax: value.heightMax,
                     },
-                }),
+                },
             });
         }
 
@@ -88,12 +86,12 @@ Dimension.prototype = {
 
             breadcrumbs.push({
                 title: `${title}: ${range}`,
-                url: searchURL({
-                    dimension: {
+                url: {
+                    [this.options.name]: {
                         widthMin: value.widthMin,
                         widthMax: value.widthMax,
                     },
-                }),
+                },
             });
         }
 
@@ -172,7 +170,7 @@ Dimension.prototype = {
                 text,
                 count: bucket.doc_count,
                 url: {
-                    dimensions: {
+                    [this.options.name]: {
                         widthMin: pd.convertNumber(bucket.from, "mm", unit),
                         widthMax: pd.convertNumber(bucket.to, "mm", unit),
                         unit,

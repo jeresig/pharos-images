@@ -30,11 +30,10 @@ SimpleString.prototype = {
         return {[this.searchName()]: value};
     },
 
-    renderView(value, searchURL) {
+    renderView(value) {
         return FixedStringDisplay({
             name: this.options.name,
             value,
-            searchURL,
         });
     },
 

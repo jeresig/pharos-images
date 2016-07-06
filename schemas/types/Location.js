@@ -61,11 +61,10 @@ Location.prototype = {
         });
     },
 
-    renderView(value, searchURL) {
+    renderView(value) {
         return LocationDisplay({
             name: this.options.name,
             value,
-            searchURL,
         });
     },
 

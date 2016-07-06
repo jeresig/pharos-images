@@ -137,19 +137,15 @@ module.exports = (req, res, tmplParams) => {
 
         if (primary.length > 1) {
             // TODO: Rewrite breadcrumb handling/generation
-            breadcrumbs = [];
-            /*
-            primary.map((param) => {
+            breadcrumbs = primary.map((param) => {
                 const rmValues = Object.assign({}, values);
                 delete rmValues[param];
 
                 return {
-                    name: queries[param].title &&
-                        queries[param].title(req, query),
-                    url: searchURL(rmValues),
+                    name: queries[param].searchTitle(values[param], req),
+                    url: searchURL(req, rmValues),
                 };
             }).filter((crumb) => crumb.name);
-            */
 
         } else if (primary.length === 1) {
             const name = primary[0];
