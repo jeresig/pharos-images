@@ -44,14 +44,63 @@ Dimension.prototype = {
         }
     },
 
+    searchTitle(value, i18n) {
+        const config = require("../../lib/config");
+
+        const unit = value.unit || config.DEFAULT_SEARCH_UNIT ||
+            config.DEFAULT_UNIT;
+        const title = [];
+
+        if (value.heightMin || value.heightMax) {
+            const name = this.options.heightTitle(i18n);
+            const range = numRange({
+                from: value.heightMin,
+                to: value.heightMax,
+                unit,
+            });
+            title.push(`${name}: ${range}`);
+        }
+
+        if (value.widthMin || value.widthMax) {
+            const name = this.options.widthTitle(i18n);
+            const range = numRange({
+                from: value.widthMin,
+                to: value.widthMax,
+                unit,
+            });
+            title.push(`${name}: ${range}`);
+        }
+
+        return title.join(", ");
+    },
+
     fields(value) {
-        return {
-            [`${this.searchName()}.heightMin`]: value.heightMin,
-            [`${this.searchName()}.heightMax`]: value.heightMax,
-            [`${this.searchName()}.widthMin`]: value.widthMin,
-            [`${this.searchName()}.widthMax`]: value.widthMax,
-            [`${this.searchName()}.unit`]: value.unit,
-        };
+        const config = require("../../lib/config");
+
+        const ret = {};
+        const defaultUnit = config.DEFAULT_SEARCH_UNIT || config.DEFAULT_UNIT;
+
+        if (value.heightMin) {
+            ret[`${this.searchName()}.heightMin`] = value.heightMin;
+        }
+
+        if (value.heightMax) {
+            ret[`${this.searchName()}.heightMax`] = value.heightMax;
+        }
+
+        if (value.widthMin) {
+            ret[`${this.searchName()}.widthMin`] = value.widthMin;
+        }
+
+        if (value.widthMax) {
+            ret[`${this.searchName()}.widthMax`] = value.widthMax;
+        }
+
+        if (value.unit && value.unit !== defaultUnit) {
+            ret[`${this.searchName()}.unit`] = value.unit;
+        }
+
+        return ret;
     },
 
     breadcrumb(value, i18n) {
