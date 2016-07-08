@@ -136,7 +136,6 @@ module.exports = (req, res, tmplParams) => {
         let breadcrumbs = [];
 
         if (primary.length > 1) {
-            // TODO: Rewrite breadcrumb handling/generation
             breadcrumbs = primary.map((param) => {
                 const rmValues = Object.assign({}, values);
                 delete rmValues[param];

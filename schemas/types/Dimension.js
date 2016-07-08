@@ -47,6 +47,7 @@ Dimension.prototype = {
     searchTitle(value, i18n) {
         const config = require("../../lib/config");
 
+        const defaultUnit = config.DEFAULT_UNIT;
         const unit = value.unit || config.DEFAULT_SEARCH_UNIT ||
             config.DEFAULT_UNIT;
         const title = [];
@@ -54,8 +55,8 @@ Dimension.prototype = {
         if (value.heightMin || value.heightMax) {
             const name = this.options.heightTitle(i18n);
             const range = numRange({
-                from: value.heightMin,
-                to: value.heightMax,
+                from: pd.convertNumber(value.heightMin, defaultUnit, unit),
+                to: pd.convertNumber(value.heightMax, defaultUnit, unit),
                 unit,
             });
             title.push(`${name}: ${range}`);
@@ -64,8 +65,8 @@ Dimension.prototype = {
         if (value.widthMin || value.widthMax) {
             const name = this.options.widthTitle(i18n);
             const range = numRange({
-                from: value.widthMin,
-                to: value.widthMax,
+                from: pd.convertNumber(value.widthMin, defaultUnit, unit),
+                to: pd.convertNumber(value.widthMax, defaultUnit, unit),
                 unit,
             });
             title.push(`${name}: ${range}`);
@@ -206,12 +207,13 @@ Dimension.prototype = {
     facet() {
         const config = require("../../lib/config");
 
+        const defaultUnit = config.DEFAULT_UNIT;
         const unit = config.DEFAULT_SEARCH_UNIT || config.DEFAULT_UNIT;
 
         const formatFacetBucket = (bucket) => {
             const text = numRange({
-                from: pd.convertNumber(bucket.from, "mm", unit),
-                to: pd.convertNumber(bucket.to, "mm", unit),
+                from: pd.convertNumber(bucket.from, defaultUnit, unit),
+                to: pd.convertNumber(bucket.to, defaultUnit, unit),
                 unit,
             });
 
@@ -220,8 +222,8 @@ Dimension.prototype = {
                 count: bucket.doc_count,
                 url: {
                     [this.options.name]: {
-                        widthMin: pd.convertNumber(bucket.from, "mm", unit),
-                        widthMax: pd.convertNumber(bucket.to, "mm", unit),
+                        widthMin: bucket.from,
+                        widthMax: bucket.to,
                         unit,
                     },
                 },
