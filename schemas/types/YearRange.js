@@ -192,6 +192,36 @@ YearRange.prototype = {
         };
     },
 
+    sort() {
+        return {
+            asc: [
+                {
+                    [`${this.options.name}.start`]: {
+                        order: "asc",
+                    },
+                },
+                {
+                    [`${this.options.name}.end`]: {
+                        order: "asc",
+                    },
+                },
+            ],
+
+            desc: [
+                {
+                    [`${this.options.name}.end`]: {
+                        order: "desc",
+                    },
+                },
+                {
+                    [`${this.options.name}.start`]: {
+                        order: "desc",
+                    },
+                },
+            ],
+        };
+    },
+
     renderFilter(value, i18n) {
         return YearRangeFilter({
             name: this.options.name,

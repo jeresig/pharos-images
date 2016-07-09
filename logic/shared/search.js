@@ -51,6 +51,9 @@ module.exports = (req, res, tmplParams) => {
         return res.redirect(expectedURL);
     }
 
+    const sortParts = values.sort.split(".");
+    const sort = queries[sortParts[0]].sort()[sortParts[1]];
+
     // Query for the artworks in Elasticsearch
     models("Artwork").search({
         bool: {
@@ -60,7 +63,7 @@ module.exports = (req, res, tmplParams) => {
         size: values.rows,
         from: values.start,
         aggs: aggregations,
-        sort: sorts[values.sort].sort,
+        sort,
         hydrate: true,
     }, (err, results) => {
         /* istanbul ignore if */
@@ -123,10 +126,9 @@ module.exports = (req, res, tmplParams) => {
 
         // Construct a list of the possible sorts, their translated
         // names and their selected state, for the template.
-        // TODO: Rewrite this to use the models
         const sortData = Object.keys(sorts).map((id) => ({
             id: id,
-            name: sorts[id].name(req),
+            name: sorts[id](req),
             selected: values.sort === id,
         }));
 

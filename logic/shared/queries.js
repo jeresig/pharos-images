@@ -3,6 +3,8 @@
 const models = require("../../lib/models");
 const config = require("../../lib/config");
 
+const defaultSort = Object.keys(config.sorts)[0];
+
 module.exports = Object.assign({
     start: {
         value: (fields) => parseFloat(fields.start),
@@ -18,7 +20,7 @@ module.exports = Object.assign({
 
     sort: {
         value: (fields) => fields.sort,
-        defaultValue: () => config.DEFAULT_SORT,
+        defaultValue: () => defaultSort,
         secondary: true,
     },
 
