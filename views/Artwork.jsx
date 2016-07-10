@@ -91,55 +91,7 @@ const Artwork = React.createClass({
                         </tr>
                     </thead>
                     <tbody>
-                        {(compare || artworks[0].artists.length > 0) && <tr>
-                            <th className="text-right">
-                                {this.props.gettext("Artist")}
-                            </th>
-                            {artworks.map((artwork) =>
-                                this.renderArtist(artwork))}
-                        </tr>}
-                        {(compare || artworks[0].dates.length > 0) && <tr>
-                            <th className="text-right">
-                                {this.props.gettext("Date")}
-                            </th>
-                            {artworks.map((artwork) =>
-                                this.renderDate(artwork))}
-                        </tr>}
-                        {(compare || artworks[0].objectType) && <tr>
-                            <th className="text-right">
-                                {this.props.gettext("Type")}
-                            </th>
-                            {artworks.map((artwork) =>
-                                this.renderType(artwork))}
-                        </tr>}
-                        {(compare || artworks[0].medium) && <tr>
-                            <th className="text-right">
-                                {this.props.gettext("Medium")}
-                            </th>
-                            {artworks.map((artwork) =>
-                                this.renderMedium(artwork))}
-                        </tr>}
-                        {(compare || artworks[0].dimensions.length > 0) && <tr>
-                            <th className="text-right">
-                                {this.props.gettext("Dimensions")}
-                            </th>
-                            {artworks.map((artwork) =>
-                                this.renderDimensions(artwork))}
-                        </tr>}
-                        {(compare || artworks[0].categories.length > 0) && <tr>
-                            <th className="text-right">
-                                {this.props.gettext("Categories")}
-                            </th>
-                            {artworks.map((artwork) =>
-                                this.renderCategories(artwork))}
-                        </tr>}
-                        {(compare || artworks[0].locations.length > 0) && <tr>
-                            <th className="text-right">
-                                {this.props.gettext("Location")}
-                            </th>
-                            {artworks.map((artwork) =>
-                                this.renderLocation(artwork))}
-                        </tr>}
+                        {this.renderMetadata()}
                         {(compare || artworks[0].url) && <tr>
                             <th className="text-right">
                                 {this.props.gettext("Details")}
@@ -248,58 +200,16 @@ const Artwork = React.createClass({
                     (!Array.isArray(value) || value.length > 0)) {
                 return <tr key={type}>
                     <th className="text-right">
-                        {typeSchema.options.title(this)}
+                        {typeSchema.options.title(this.props)}
                     </th>
-                    {artworks.map((artwork) =>
-                        this.renderArtist(artwork))}
+                    {artworks.map((artwork) => <td key={artwork._id}>
+                        {typeSchema.renderView(artwork[type], this.props)}
+                    </td>)}
                 </tr>;
             }
 
             return null;
         });
-    },
-
-    renderArtist(artwork) {
-        return <td key={artwork._id}>
-            {config.model.artists.renderView(artwork.artists)}
-        </td>;
-    },
-
-    renderDate(artwork) {
-        return <td key={artwork._id}>
-            {config.model.dates.renderView(artwork.dates)}
-        </td>;
-    },
-
-    renderType(artwork) {
-        return <td key={artwork._id}>
-            {config.model.objectType
-                .renderView(artwork.objectType, this.props)}
-        </td>;
-    },
-
-    renderMedium(artwork) {
-        return <td key={artwork._id}>
-            {config.model.medium.renderView(artwork.medium)}
-        </td>;
-    },
-
-    renderDimensions(artwork) {
-        return <td key={artwork._id}>
-            {config.model.dimensions.renderView(artwork.dimensions)}
-        </td>;
-    },
-
-    renderCategories(artwork) {
-        return <td key={artwork._id}>
-            {config.model.categories.renderView(artwork.categories)}
-        </td>;
-    },
-
-    renderLocation(artwork) {
-        return <td key={artwork._id}>
-            {config.model.locations.renderView(artwork.locations)}
-        </td>;
     },
 
     renderDetails(artwork) {
