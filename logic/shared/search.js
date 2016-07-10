@@ -5,13 +5,14 @@ const sanitize = require("elasticsearch-sanitize");
 const models = require("../../lib/models");
 const urls = require("../../lib/urls");
 const config = require("../../lib/config");
+const options = require("../../options");
 
 const facets = require("./facets");
 const queries = require("./queries");
 const searchURL = require("./search-url");
 const paramFilter = require("./param-filter");
 
-const sorts = config.sorts;
+const sorts = options.sorts;
 
 module.exports = (req, res, tmplParams) => {
     // Collect all the values from the request to construct

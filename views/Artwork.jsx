@@ -3,6 +3,7 @@
 const React = require("react");
 
 const config = require("../lib/config");
+const options = require("../options");
 
 const Page = require("./Page.jsx");
 
@@ -43,13 +44,11 @@ const Artwork = React.createClass({
         compare: React.PropTypes.bool.isRequired,
         format: React.PropTypes.func.isRequired,
         fullName: React.PropTypes.func.isRequired,
-        getDate: React.PropTypes.func.isRequired,
         getTitle: React.PropTypes.func.isRequired,
         getType: React.PropTypes.func.isRequired,
         gettext: React.PropTypes.func.isRequired,
         shortName: React.PropTypes.func.isRequired,
         similar: React.PropTypes.arrayOf(artworkType),
-        stringNum: React.PropTypes.func.isRequired,
     },
 
     getTitle(artwork) {
@@ -188,33 +187,36 @@ const Artwork = React.createClass({
 
     renderMetadata() {
         const artworks = this.props.artworks;
-        const artwork = artworks[0];
-        const types = ["artists", "dates", "objectType", "medium",
-            "dimensions", "categories", "locations"];
 
-        return types.map((type) => {
-            const value = artwork[type];
+        return options.display.map((type) => {
             const typeSchema = config.model[type];
 
-            if (this.props.compare || value &&
-                    (!Array.isArray(value) || value.length > 0)) {
-                return <tr key={type}>
-                    <th className="text-right">
-                        {typeSchema.options.title(this.props)}
-                    </th>
-                    {artworks.map((artwork) => <td key={artwork._id}>
-                        {typeSchema.renderView(artwork[type], this.props)}
-                    </td>)}
-                </tr>;
+            // Determine if at least one artwork has a value for this type
+            // Hide if it there isn't at least one value to display
+            const hasValue = artworks.some((artwork) => {
+                const value = artwork[type];
+                return value && (!Array.isArray(value) || value.length > 0);
+            });
+
+            if (!hasValue) {
+                return null;
             }
 
-            return null;
+            return <tr key={type}>
+                <th className="text-right">
+                    {typeSchema.options.title(this.props)}
+                </th>
+                {artworks.map((artwork) => <td key={artwork._id}>
+                    {typeSchema.renderView(artwork[type], this.props)}
+                </td>)}
+            </tr>;
         });
     },
 
     renderDetails(artwork) {
         const link = <a href={artwork.url}>
-            {this.props.gettext("More information...")}</a>;
+            {this.props.gettext("More information...")}
+        </a>;
 
         return <td key={artwork._id}>{link}</td>;
     },

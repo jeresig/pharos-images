@@ -2,8 +2,9 @@
 
 const models = require("../../lib/models");
 const config = require("../../lib/config");
+const options = require("../../options");
 
-const defaultSort = Object.keys(config.sorts)[0];
+const defaultSort = Object.keys(options.sorts)[0];
 
 module.exports = Object.assign({
     start: {

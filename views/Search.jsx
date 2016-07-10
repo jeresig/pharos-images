@@ -3,6 +3,7 @@
 const React = require("react");
 
 const config = require("../lib/config");
+const options = require("../options");
 
 const Page = require("./Page.jsx");
 
@@ -101,38 +102,13 @@ const Search = React.createClass({
                     {this.props.gettext("Query")}
                 </label>
                 <input type="search" name="filter"
-                    placeholder={
-                        config.siteName.getSearchPlaceholder(this.props)}
+                    placeholder={options.getSearchPlaceholder(this.props)}
                     defaultValue={this.props.values.filter}
                     className="form-control"
                 />
             </div>
-            {config.model.artists.renderFilter(this.props.values.artists,
-                this.props)}
-            {config.model.locations.renderFilter(this.props.values.locations,
-                this.props)}
-            {config.model.objectType.renderFilter(this.props.values.objectType,
-                this.props)}
-            {config.model.dates.renderFilter(this.props.values.dates,
-                this.props)}
-            {config.model.dimensions.renderFilter(this.props.values.dimensions,
-                this.props)}
-            <div className="form-group">
-                <label htmlFor="source" className="control-label">
-                    {this.props.gettext("Source")}
-                </label>
-                <select name="source" style={{width: "100%"}}
-                    className="form-control"
-                    defaultValue={this.props.values.source}
-                >
-                    <option value="">{this.props.gettext("Any Source")}</option>
-                    {this.props.sources.map((source) =>
-                        <option value={source._id} key={source._id}>
-                            {source.name}
-                        </option>
-                    )}
-                </select>
-            </div>
+            {this.renderFilters()}
+            {this.renderSourceFilter()}
             <div className="form-group">
                 <label htmlFor="similar" className="control-label">
                     {this.props.gettext("Similarity")}
@@ -170,6 +146,37 @@ const Search = React.createClass({
                 />
             </div>
         </form>;
+    },
+
+    renderFilters() {
+        return options.filters.map((type) => {
+            const typeSchema = config.model[type];
+            return typeSchema.renderFilter(this.props.values[type], this.props);
+        });
+    },
+
+    renderSourceFilter() {
+        // Don't show the source selection if there isn't more than one source
+        if (this.props.sources.length <= 1) {
+            return null;
+        }
+
+        return <div className="form-group">
+            <label htmlFor="source" className="control-label">
+                {this.props.gettext("Source")}
+            </label>
+            <select name="source" style={{width: "100%"}}
+                className="form-control"
+                defaultValue={this.props.values.source}
+            >
+                <option value="">{this.props.gettext("Any Source")}</option>
+                {this.props.sources.map((source) =>
+                    <option value={source._id} key={source._id}>
+                        {source.name}
+                    </option>
+                )}
+            </select>
+        </div>;
     },
 
     renderFacets() {

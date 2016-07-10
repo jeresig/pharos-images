@@ -31,7 +31,7 @@ FixedString.prototype = {
     },
 
     value(query) {
-        return query[this.searchName()];
+        return query[this.searchName()] || undefined;
     },
 
     fields(value) {

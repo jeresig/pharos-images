@@ -2,7 +2,7 @@
 
 const React = require("react");
 
-const config = require("../lib/config");
+const options = require("../options");
 
 const Page = require("./Page.jsx");
 
@@ -28,13 +28,13 @@ const Home = React.createClass({
             <div className="home-splash">
                 <div className="splash-contents">
                     <img src={this.props.URL("/images/lighthouse.md.png")}
-                        alt={this.props.getTitle(config.siteName)}
+                        alt={this.props.getTitle(options)}
                         width="200" height="203"
                         className="hidden-xs"
                     />
                     <h1>
-                        {this.props.getShortTitle(config.siteName)}<br/>
-                        {this.props.getSubTitle(config.siteName)}</h1>
+                        {this.props.getShortTitle(options)}<br/>
+                        {this.props.getSubTitle(options)}</h1>
                 </div>
             </div>
             <div className="home-splash-offset"></div>
