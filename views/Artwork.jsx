@@ -2,7 +2,7 @@
 
 const React = require("react");
 
-const config = require("../lib/config");
+const metadata = require("../lib/metadata");
 const options = require("../options");
 
 const Page = require("./Page.jsx");
@@ -189,7 +189,7 @@ const Artwork = React.createClass({
         const artworks = this.props.artworks;
 
         return options.display.map((type) => {
-            const typeSchema = config.model[type];
+            const typeSchema = metadata.model[type];
 
             // Determine if at least one artwork has a value for this type
             // Hide if it there isn't at least one value to display

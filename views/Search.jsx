@@ -2,7 +2,7 @@
 
 const React = require("react");
 
-const config = require("../lib/config");
+const metadata = require("../lib/metadata");
 const options = require("../options");
 
 const Page = require("./Page.jsx");
@@ -150,7 +150,7 @@ const Search = React.createClass({
 
     renderFilters() {
         return options.filters.map((type) => {
-            const typeSchema = config.model[type];
+            const typeSchema = metadata.model[type];
             return typeSchema.renderFilter(this.props.values[type], this.props);
         });
     },

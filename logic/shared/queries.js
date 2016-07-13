@@ -1,6 +1,7 @@
 "use strict";
 
 const models = require("../../lib/models");
+const metadata = require("../../lib/metadata");
 const config = require("../../lib/config");
 const options = require("../../options");
 
@@ -139,4 +140,4 @@ module.exports = Object.assign({
             return this.filters[value].match();
         },
     },
-}, config.model);
+}, metadata.model);

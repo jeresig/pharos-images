@@ -1,7 +1,7 @@
 "use strict";
 
-const config = require("../../lib/config");
 const models = require("../../lib/models");
+const metadata = require("../../lib/metadata");
 
 const facets = {
     source: {
@@ -21,8 +21,8 @@ const facets = {
     },
 };
 
-for (const name in config.model) {
-    const model = config.model[name];
+for (const name in metadata.model) {
+    const model = metadata.model[name];
 
     if (model.facet) {
         Object.assign(facets, model.facet());
