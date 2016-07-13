@@ -139,25 +139,25 @@ const Page = React.createClass({
                 data-toggle="dropdown" role="button"
                 aria-expanded="false"
             >
-                <img alt={config.locales[this.props.lang]}
+                <img alt={options.locales[this.props.lang]}
                     src={URL(`/images/${this.props.lang}.png`)}
                     width="16" height="11"
                 />
                 {" "}
-                {config.locales[this.props.lang]}
+                {options.locales[this.props.lang]}
                 <span className="caret"></span>
             </a>
             <ul className="dropdown-menu" role="menu">
-                {Object.keys(config.locales)
+                {Object.keys(options.locales)
                     .filter((locale) => locale !== this.props.lang)
                     .map((locale) => <li key={locale}>
                         <a href={this.props.getOtherURL(locale)}>
                             <img src={URL(`/images/${locale}.png`)}
-                                alt={config.locales[locale]}
+                                alt={options.locales[locale]}
                                 width="16" height="11"
                             />
                             {" "}
-                            {config.locales[locale]}
+                            {options.locales[locale]}
                         </a>
                     </li>)
                 }

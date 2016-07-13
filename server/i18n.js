@@ -3,6 +3,7 @@
 const i18n = require("i18n-abide");
 
 const config = require("../lib/config");
+const options = require("../options");
 
 module.exports = (app) => {
     app.use((req, res, next) => {
@@ -13,8 +14,8 @@ module.exports = (app) => {
     });
 
     app.use(i18n.abide({
-        supported_languages: Object.keys(config.locales),
-        default_lang: config.defaultLocale,
+        supported_languages: Object.keys(options.locales),
+        default_lang: options.defaultLocale,
         translation_directory: "translations",
         translation_type: "po",
     }));
@@ -33,8 +34,8 @@ module.exports = (app) => {
             req.query.lang;
 
         // Fall back to the default locale if one isn't given, or it's invalid
-        if (!config.locales[locale]) {
-            locale = config.defaultLocale;
+        if (!options.locales[locale]) {
+            locale = options.defaultLocale;
         }
 
         res.locals.setLocale(locale);

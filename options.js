@@ -13,6 +13,14 @@ module.exports = {
 
     getSearchPlaceholder: (i18n) => i18n.gettext("Sample: christ or cristo"),
 
+    locales: {
+        "en": "English",
+        "it": "Italiano",
+        "de": "Deutsch",
+    },
+
+    defaultLocale: "en",
+
     filters: ["artists", "locations", "objectType", "dates", "dimensions"],
 
     display: ["artists", "dates", "objectType", "medium", "dimensions",
