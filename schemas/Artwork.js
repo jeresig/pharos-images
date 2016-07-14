@@ -11,8 +11,8 @@ const db = require("../lib/db");
 const urls = require("../lib/urls");
 const config = require("../lib/config");
 const metadata = require("../lib/metadata");
+const options = require("../options");
 
-const types = config.types;
 const modelProps = metadata.schemas();
 
 const Artwork = new db.schema(Object.assign({
@@ -144,23 +144,8 @@ Artwork.methods = {
             `/${this.source}/thumbs/${this.defaultImageHash}.jpg`);
     },
 
-    getTitle(req) {
-        const parts = [];
-
-        if (this.title && /\S/.test(this.title)) {
-            parts.push(this.title);
-
-        } else if (this.objectType) {
-            parts.push(types[this.objectType].name(req));
-
-        } else {
-            // TODO: Get this name from a generic config
-            parts.push(req.gettext("Artwork"));
-        }
-
-        parts.push("-", this.getSource().getFullName());
-
-        return parts.join(" ");
+    getTitle(i18n) {
+        return options.recordTitle(this, i18n);
     },
 
     getSource() {

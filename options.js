@@ -1,6 +1,54 @@
 "use strict";
 
-const types = require("./custom/types");
+const types = {
+    architecture: {
+        name: (i18n) => i18n.gettext("Architecture"),
+    },
+
+    "decorative arts": {
+        name: (i18n) => i18n.gettext("Decorative Arts"),
+    },
+
+    drawing: {
+        name: (i18n) => i18n.gettext("Drawing"),
+    },
+
+    fresco: {
+        name: (i18n) => i18n.gettext("Fresco"),
+    },
+
+    medal: {
+        name: (i18n) => i18n.gettext("Medal"),
+    },
+
+    miniature: {
+        name: (i18n) => i18n.gettext("Miniature"),
+    },
+
+    mosaic: {
+        name: (i18n) => i18n.gettext("Mosaic"),
+    },
+
+    painting: {
+        name: (i18n) => i18n.gettext("Painting"),
+    },
+
+    photo: {
+        name: (i18n) => i18n.gettext("Photo"),
+    },
+
+    print: {
+        name: (i18n) => i18n.gettext("Print"),
+    },
+
+    sculpture: {
+        name: (i18n) => i18n.gettext("Sculpture"),
+    },
+
+    "stained glass": {
+        name: (i18n) => i18n.gettext("Stained Glass"),
+    },
+};
 
 module.exports = {
     getShortTitle: () => "PHAROS",
@@ -12,6 +60,24 @@ module.exports = {
     },
 
     getSearchPlaceholder: (i18n) => i18n.gettext("Sample: christ or cristo"),
+
+    recordTitle(record, i18n) {
+        const parts = [];
+
+        if (record.title && /\S/.test(record.title)) {
+            parts.push(record.title);
+
+        } else if (record.objectType) {
+            parts.push(types[record.objectType].name(i18n));
+
+        } else {
+            parts.push(i18n.gettext("Artwork"));
+        }
+
+        parts.push("-", record.getSource().getFullName());
+
+        return parts.join(" ");
+    },
 
     locales: {
         "en": "English",
@@ -104,6 +170,20 @@ module.exports = {
             title: (i18n) => i18n.gettext("Categories"),
             multiple: true,
             searchField: "filter",
+        },
+    },
+
+    searchURLs: {
+        "/type/:type": (req, res, search) => {
+            const type = types[req.params.type];
+
+            if (!type) {
+                return res.status(404).render("Error", {
+                    title: req.gettext("Not found."),
+                });
+            }
+
+            search(req, res);
         },
     },
 };

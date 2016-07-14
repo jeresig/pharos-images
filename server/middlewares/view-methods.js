@@ -8,8 +8,6 @@ const pd = require("parse-dimensions");
 const urls = require("../../lib/urls");
 const config = require("../../lib/config");
 
-const types = config.types;
-
 module.exports = (req, res, next) => {
     const methods = {
         getOtherURL(locale) {
@@ -78,11 +76,6 @@ module.exports = (req, res, next) => {
             const unit = dimension.unit;
             return [dimension.width, unit, " x ", dimension.height, unit,
                 label ? ` (${label})` : ""].join("");
-        },
-
-        getType(item) {
-            const type = types[item.objectType];
-            return type ? type.name(req) : item.objectType;
         },
 
         // Format a number using commas

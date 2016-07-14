@@ -3,7 +3,7 @@
 const async = require("async");
 
 const models = require("../lib/models");
-const config = require("../lib/config");
+const options = require("../options");
 
 module.exports = function(app) {
     const Artwork = models("Artwork");
@@ -11,22 +11,9 @@ module.exports = function(app) {
 
     const cache = require("../server/middlewares/cache");
     const search = require("./shared/search");
-    const types = config.types;
 
     return {
         search,
-
-        byType(req, res) {
-            const type = types[req.params.type];
-
-            if (!type) {
-                return res.status(404).render("Error", {
-                    title: req.gettext("Not found."),
-                });
-            }
-
-            search(req, res);
-        },
 
         bySource(req, res) {
             search(req, res, {
@@ -83,8 +70,12 @@ module.exports = function(app) {
         routes() {
             app.get("/search", cache(1), this.search);
             app.get("/artworks/:source/:artworkName", this.show);
-            app.get("/type/:type", cache(1), this.byType);
             app.get("/source/:source", cache(1), this.bySource);
+
+            for (const path in options.searchURLs) {
+                app.get(path, cache(1), (req, res) =>
+                    options.searchURLs[path](req, res, search));
+            }
 
             // NOTE(jeresig): This is also used by the source admin pages
             // to extract the source from the URL.

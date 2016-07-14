@@ -45,21 +45,13 @@ const Artwork = React.createClass({
         format: React.PropTypes.func.isRequired,
         fullName: React.PropTypes.func.isRequired,
         getTitle: React.PropTypes.func.isRequired,
-        getType: React.PropTypes.func.isRequired,
         gettext: React.PropTypes.func.isRequired,
         shortName: React.PropTypes.func.isRequired,
         similar: React.PropTypes.arrayOf(artworkType),
     },
 
     getTitle(artwork) {
-        let title = artwork.title || "";
-
-        if (artwork.objectType) {
-            const type = this.props.getType(artwork);
-            title = title ? `${type}: ${title}` : type;
-        }
-
-        return title;
+        return options.recordTitle(artwork, this.props);
     },
 
     renderArtwork() {
