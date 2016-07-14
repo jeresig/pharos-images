@@ -103,22 +103,6 @@ for (const file of fs.readdirSync(typeFilterDir)) {
     }
 }
 
-// Converters used for testing
-const converterFiles = {};
-const converterDir = path.resolve(__dirname, "..", "converters");
-
-for (const file of fs.readdirSync(converterDir)) {
-    const filePath = path.resolve(converterDir, file);
-
-    // Require the file now so that other dependencies are pre-loaded
-    if (file === "default.js") {
-        require(filePath);
-    }
-
-    // However we still need to import the files
-    converterFiles[file] = fs.readFileSync(filePath);
-}
-
 // Public files used to render the site
 const publicFiles = {};
 const publicDir = path.resolve(__dirname, "..", "public");
@@ -947,7 +931,6 @@ const init = (done) => {
                 },
             },
             "testData": testFiles,
-            "converters": converterFiles,
             "public": publicFiles,
             "views": Object.assign({
                 "types": {

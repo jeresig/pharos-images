@@ -1,15 +1,18 @@
 "use strict";
 
-const fs = require("fs");
-const path = require("path");
-
 const async = require("async");
 
 const models = require("../lib/models");
 const db = require("../lib/db");
 const urls = require("../lib/urls");
+const options = require("../options");
+const defaultConverter = require("../lib/default-converter");
 
 let sourceCache = [];
+
+const converters = Object.assign({
+    default: defaultConverter,
+}, options.converters);
 
 const Source = new db.schema({
     _id: String,
@@ -42,17 +45,14 @@ Source.methods = {
 
     getConverter() {
         const converter = this.converter || "default";
-        const converterPath = path.resolve(__dirname,
-            `../converters/${converter}.js`);
 
         /* istanbul ignore if */
-        if (!fs.existsSync(converterPath)) {
-            throw new Error(
-                `Error: Converter file not found: ${converterPath}`);
+        if (!converters[converter]) {
+            throw new Error(`Error: Converter not found: ${converter}`);
         }
 
-        // Import the converter module
-        return require(converterPath);
+        // Return the converter module
+        return converters[converter];
     },
 
     getExpectedFiles() {

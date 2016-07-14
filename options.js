@@ -79,6 +79,13 @@ module.exports = {
         return parts.join(" ");
     },
 
+    converters: {
+        frick: require("./converters/frick.js"),
+        fzeri: require("./converters/fzeri.js"),
+        marburg: require("./converters/marburg.js"),
+        nga: require("./converters/nga.js"),
+    },
+
     locales: {
         "en": "English",
         "it": "Italiano",

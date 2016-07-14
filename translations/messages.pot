@@ -8,7 +8,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2016-07-12 03:11+0000\n"
+"POT-Creation-Date: 2016-07-16 05:43+0000\n"
 
 #: logic/admin.js:25
 #: logic/admin.js:63
@@ -48,12 +48,11 @@ msgstr ""
 msgid "Authorization required."
 msgstr ""
 
-#: logic/artworks.js:24
-#: logic/artworks.js:44
+#: logic/artworks.js:31
 msgid "Not found."
 msgstr ""
 
-#: logic/artworks.js:98
+#: logic/artworks.js:89
 msgid "Source not found."
 msgstr ""
 
@@ -78,24 +77,24 @@ msgid "Uploaded image not found."
 msgstr ""
 
 #: logic/shared/facets.js:8
-#: views/Artwork.jsx:103
+#: views/Artwork.jsx:95
 #: views/Search.jsx:166
 msgid "Source"
 msgstr ""
 
-#: logic/shared/queries.js:32
+#: logic/shared/queries.js:33
 msgid "Query: '%(query)s'"
 msgstr ""
 
-#: logic/shared/queries.js:61
+#: logic/shared/queries.js:62
 msgid "Similar to Any Artwork"
 msgstr ""
 
-#: logic/shared/queries.js:73
+#: logic/shared/queries.js:74
 msgid "Similar to an External Artwork"
 msgstr ""
 
-#: logic/shared/queries.js:105
+#: logic/shared/queries.js:106
 msgid "Similar to an Internal Artwork"
 msgstr ""
 
@@ -119,43 +118,39 @@ msgstr ""
 msgid "Images must be a valid image file name. For example: `image.jpg`."
 msgstr ""
 
-#: schemas/Artwork.js:158
-msgid "Artwork"
-msgstr ""
-
-#: schemas/Artwork.js:355
+#: schemas/Artwork.js:340
 msgid "Image file not found: %(fileName)s"
 msgstr ""
 
-#: schemas/Artwork.js:365
+#: schemas/Artwork.js:350
 msgid "Error accessing image data."
 msgstr ""
 
-#: schemas/Artwork.js:373
+#: schemas/Artwork.js:358
 msgid "No images found."
 msgstr ""
 
-#: schemas/Artwork.js:393
+#: schemas/Artwork.js:378
 msgid "There was an error with the data format."
 msgstr ""
 
-#: schemas/Artwork.js:419
+#: schemas/Artwork.js:404
 msgid "Unrecognized field `%(field)s`."
 msgstr ""
 
-#: schemas/Artwork.js:440
+#: schemas/Artwork.js:425
 msgid "`%(field)s` is the wrong type. Expected a %(type)s."
 msgstr ""
 
-#: schemas/Artwork.js:458
+#: schemas/Artwork.js:443
 msgid "`%(field)s` value is the wrong type. Expected a %(type)s."
 msgstr ""
 
-#: schemas/Artwork.js:511
+#: schemas/Artwork.js:496
 msgid "Required field `%(field)s` is empty."
 msgstr ""
 
-#: schemas/Artwork.js:515
+#: schemas/Artwork.js:500
 msgid "Recommended field `%(field)s` is empty."
 msgstr ""
 
@@ -274,54 +269,6 @@ msgstr ""
 msgid "Page Not Found"
 msgstr ""
 
-#: custom/types.js:5
-msgid "Architecture"
-msgstr ""
-
-#: custom/types.js:9
-msgid "Decorative Arts"
-msgstr ""
-
-#: custom/types.js:13
-msgid "Drawing"
-msgstr ""
-
-#: custom/types.js:17
-msgid "Fresco"
-msgstr ""
-
-#: custom/types.js:21
-msgid "Medal"
-msgstr ""
-
-#: custom/types.js:25
-msgid "Miniature"
-msgstr ""
-
-#: custom/types.js:29
-msgid "Mosaic"
-msgstr ""
-
-#: custom/types.js:33
-msgid "Painting"
-msgstr ""
-
-#: custom/types.js:37
-msgid "Photo"
-msgstr ""
-
-#: custom/types.js:41
-msgid "Print"
-msgstr ""
-
-#: custom/types.js:45
-msgid "Sculpture"
-msgstr ""
-
-#: custom/types.js:49
-msgid "Stained Glass"
-msgstr ""
-
 #: views/Admin.jsx:37
 msgid "Upload Images"
 msgstr ""
@@ -415,38 +362,38 @@ msgstr ""
 msgid "%(name)s Admin Area"
 msgstr ""
 
-#: views/Artwork.jsx:76
+#: views/Artwork.jsx:68
 msgid "End Comparison"
 msgstr ""
 
-#: views/Artwork.jsx:96
+#: views/Artwork.jsx:88
 msgid "Details"
 msgstr ""
 
-#: views/Artwork.jsx:171
+#: views/Artwork.jsx:163
 #: views/Search.jsx:281
 msgid "Previous"
 msgstr ""
 
-#: views/Artwork.jsx:182
+#: views/Artwork.jsx:174
 #: views/Search.jsx:286
 msgid "Next"
 msgstr ""
 
-#: views/Artwork.jsx:218
+#: views/Artwork.jsx:210
 msgid "More information..."
 msgstr ""
 
-#: views/Artwork.jsx:239
+#: views/Artwork.jsx:231
 msgid "Compare Images"
 msgstr ""
 
-#: views/Artwork.jsx:244
+#: views/Artwork.jsx:236
 #: views/Upload.jsx:52
 msgid "Similar Images"
 msgstr ""
 
-#: views/Artwork.jsx:269
+#: views/Artwork.jsx:261
 #: views/Upload.jsx:89
 msgid "Score: %(score)s"
 msgstr ""
