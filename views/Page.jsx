@@ -3,7 +3,7 @@
 const React = require("react");
 
 const config = require("../lib/config");
-const options = require("../options");
+const options = require("../lib/options");
 
 const Page = React.createClass({
     propTypes: {

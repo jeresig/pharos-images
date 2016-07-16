@@ -5,7 +5,7 @@ const async = require("async");
 const models = require("../lib/models");
 const db = require("../lib/db");
 const urls = require("../lib/urls");
-const options = require("../options");
+const options = require("../lib/options");
 const defaultConverter = require("../lib/default-converter");
 
 let sourceCache = [];

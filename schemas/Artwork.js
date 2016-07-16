@@ -11,7 +11,7 @@ const db = require("../lib/db");
 const urls = require("../lib/urls");
 const config = require("../lib/config");
 const metadata = require("../lib/metadata");
-const options = require("../options");
+const options = require("../lib/options");
 
 const modelProps = metadata.schemas();
 

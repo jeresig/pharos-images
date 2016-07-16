@@ -3,7 +3,7 @@
 const async = require("async");
 
 const models = require("../lib/models");
-const options = require("../options");
+const options = require("../lib/options");
 
 module.exports = function(app) {
     const Artwork = models("Artwork");

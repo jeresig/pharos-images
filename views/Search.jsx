@@ -3,7 +3,7 @@
 const React = require("react");
 
 const metadata = require("../lib/metadata");
-const options = require("../options");
+const options = require("../lib/options");
 
 const Page = require("./Page.jsx");
 

@@ -2,7 +2,7 @@
 
 const React = require("react");
 
-const options = require("../options");
+const options = require("../lib/options");
 
 const Page = require("./Page.jsx");
 

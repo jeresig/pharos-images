@@ -3,7 +3,7 @@
 const models = require("../../lib/models");
 const metadata = require("../../lib/metadata");
 const config = require("../../lib/config");
-const options = require("../../options");
+const options = require("../../lib/options");
 
 const defaultSort = Object.keys(options.sorts)[0];
 

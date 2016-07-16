@@ -3,7 +3,7 @@
 const i18n = require("i18n-abide");
 
 const config = require("../lib/config");
-const options = require("../options");
+const options = require("../lib/options");
 
 module.exports = (app) => {
     app.use((req, res, next) => {

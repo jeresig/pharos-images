@@ -5,7 +5,7 @@ const sanitize = require("elasticsearch-sanitize");
 const models = require("../../lib/models");
 const urls = require("../../lib/urls");
 const config = require("../../lib/config");
-const options = require("../../options");
+const options = require("../../lib/options");
 
 const facets = require("./facets");
 const queries = require("./queries");
