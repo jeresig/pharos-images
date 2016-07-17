@@ -81,6 +81,8 @@ module.exports = {
 
     converters: {},
 
+    views: {},
+
     locales: {
         "en": "English",
         "it": "Italiano",

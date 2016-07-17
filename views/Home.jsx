@@ -11,9 +11,6 @@ const Home = React.createClass({
         URL: React.PropTypes.func.isRequired,
         artworkTotal: React.PropTypes.number.isRequired,
         format: React.PropTypes.func.isRequired,
-        getShortTitle: React.PropTypes.func.isRequired,
-        getSubTitle: React.PropTypes.func.isRequired,
-        getTitle: React.PropTypes.func.isRequired,
         gettext: React.PropTypes.func.isRequired,
         imageTotal: React.PropTypes.number.isRequired,
         lang: React.PropTypes.string.isRequired,
@@ -24,21 +21,9 @@ const Home = React.createClass({
     },
 
     renderSplash() {
-        return <div>
-            <div className="home-splash">
-                <div className="splash-contents">
-                    <img src={this.props.URL("/images/lighthouse.md.png")}
-                        alt={this.props.getTitle(options)}
-                        width="200" height="203"
-                        className="hidden-xs"
-                    />
-                    <h1>
-                        {this.props.getShortTitle(options)}<br/>
-                        {this.props.getSubTitle(options)}</h1>
-                </div>
-            </div>
-            <div className="home-splash-offset"></div>
-        </div>;
+        if (options.views.homeSplash) {
+            return <options.views.homeSplash {...this.props} />;
+        }
     },
 
     renderSearchForm() {
@@ -141,6 +126,10 @@ const Home = React.createClass({
     },
 
     renderSources() {
+        if (this.props.sources.length <= 1) {
+            return null;
+        }
+
         return <div>
             <h3>{this.props.gettext("Browse by Collection:")}</h3>
 

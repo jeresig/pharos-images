@@ -1,5 +1,7 @@
 "use strict";
 
+const React = require("React");
+
 const types = {
     architecture: {
         name: (i18n) => i18n.gettext("Architecture"),
@@ -50,7 +52,7 @@ const types = {
     },
 };
 
-module.exports = {
+const options = {
     getShortTitle: () => "PHAROS",
 
     getSubTitle: (i18n) => i18n.gettext("Art Research Database"),
@@ -84,6 +86,26 @@ module.exports = {
         fzeri: require("./converters/fzeri.js"),
         marburg: require("./converters/marburg.js"),
         nga: require("./converters/nga.js"),
+    },
+
+    views: {
+        homeSplash: (props) => {
+            return <div>
+                <div className="home-splash">
+                    <div className="splash-contents">
+                        <img src="/images/lighthouse.md.png"
+                            alt={options.getTitle(props)}
+                            width="200" height="203"
+                            className="hidden-xs"
+                        />
+                        <h1>
+                            {options.getShortTitle(props)}<br/>
+                            {options.getSubTitle(props)}</h1>
+                    </div>
+                </div>
+                <div className="home-splash-offset"></div>
+            </div>;
+        },
     },
 
     locales: {
@@ -194,3 +216,5 @@ module.exports = {
         },
     },
 };
+
+module.exports = options;
