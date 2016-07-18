@@ -24,16 +24,12 @@ tap.test("getThumbURL", {autoend: true}, (t) => {
 
 tap.test("getTitle", {autoend: true}, (t) => {
     const artwork = init.getArtwork();
-    t.equal(artwork.getTitle(req), "Test - Test Source", "Check Title");
+    t.equal(artwork.getTitle(req), "Test", "Check Title");
 
     artwork.title = null;
-    t.equal(artwork.getTitle(req), "Painting - Test Source", "Check Title");
-
-    artwork.objectType = null;
-    t.equal(artwork.getTitle(req), "Artwork - Test Source", "Check Title");
+    t.equal(artwork.getTitle(req), null, "Check Title");
 
     artwork.title = "Test";
-    artwork.objectType = "painting";
 });
 
 tap.test("getSource", {autoend: true}, (t) => {

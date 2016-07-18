@@ -51,32 +51,16 @@ const types = {
 };
 
 module.exports = {
-    getShortTitle: () => "PHAROS",
+    getShortTitle: () => "Mongaku",
 
-    getSubTitle: (i18n) => i18n.gettext("Art Research Database"),
-
-    getTitle(i18n) {
-        return `${this.getShortTitle(i18n)}: ${this.getSubTitle(i18n)}`;
+    getTitle() {
+        return this.getShortTitle();
     },
 
     getSearchPlaceholder: (i18n) => i18n.gettext("Sample: christ or cristo"),
 
-    recordTitle(record, i18n) {
-        const parts = [];
-
-        if (record.title && /\S/.test(record.title)) {
-            parts.push(record.title);
-
-        } else if (record.objectType) {
-            parts.push(types[record.objectType].name(i18n));
-
-        } else {
-            parts.push(i18n.gettext("Artwork"));
-        }
-
-        parts.push("-", record.getSource().getFullName());
-
-        return parts.join(" ");
+    recordTitle(record) {
+        return record.title;
     },
 
     converters: {},
@@ -85,16 +69,13 @@ module.exports = {
 
     locales: {
         "en": "English",
-        "it": "Italiano",
-        "de": "Deutsch",
     },
 
     defaultLocale: "en",
 
-    filters: ["artists", "locations", "objectType", "dates", "dimensions"],
+    filters: [],
 
-    display: ["artists", "dates", "objectType", "medium", "dimensions",
-        "categories", "locations"],
+    display: [],
 
     sorts: {
         "dates.asc": (i18n) => i18n.gettext("Date, earliest first"),

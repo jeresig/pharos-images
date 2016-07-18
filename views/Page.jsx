@@ -132,6 +132,10 @@ const Page = React.createClass({
     },
 
     renderLocaleMenu() {
+        if (Object.keys(options.locales).length <= 1) {
+            return null;
+        }
+
         const URL = this.props.URL;
 
         return <li className="dropdown">
