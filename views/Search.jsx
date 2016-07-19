@@ -36,9 +36,7 @@ const Search = React.createClass({
             })
         ),
         format: React.PropTypes.func.isRequired,
-        getDate: React.PropTypes.func.isRequired,
         getTitle: React.PropTypes.func.isRequired,
-        getUnit: React.PropTypes.func.isRequired,
         gettext: React.PropTypes.func.isRequired,
         lang: React.PropTypes.string.isRequired,
         maxDate: React.PropTypes.string.isRequired,

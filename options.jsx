@@ -77,6 +77,9 @@ const options = {
 
     getSearchPlaceholder: (i18n) => i18n.gettext("Sample: christ or cristo"),
 
+    faviconUrl: "/images/favicon.png",
+    logoUrl: "/images/lighthouse.sm.png",
+
     recordTitle(record, i18n) {
         const parts = [];
 

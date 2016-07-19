@@ -26,6 +26,16 @@ const Page = React.createClass({
         title: React.PropTypes.string,
     },
 
+    renderFavicon() {
+        if (!options.faviconUrl) {
+            return null;
+        }
+
+        return <link rel="icon" type="image/x-icon"
+            href={URL(options.faviconUrl)}
+        />;
+    },
+
     renderHead() {
         const URL = this.props.URL;
         let title = this.props.getTitle(options);
@@ -45,9 +55,7 @@ const Page = React.createClass({
                 content="width=device-width, initial-scale=1.0"
             />
             {noIndex && <meta name="robots" content="noindex"/>}
-            <link rel="icon" type="image/x-icon"
-                href={URL("/images/favicon.png")}
-            />
+            {this.renderFavicon()}
             <title>{title}</title>
             {this.props.social && this.renderSocialMeta()}
             <link rel="stylesheet" href={URL("/css/bootstrap.min.css")}/>
@@ -75,6 +83,20 @@ const Page = React.createClass({
         ];
     },
 
+    renderLogo() {
+        if (!options.logoUrl) {
+            return null;
+        }
+
+        return <span>
+            <img alt={this.props.getTitle(options)}
+                src={URL(options.logoUrl)}
+                height="40" width="40"
+            />
+            {" "}
+        </span>;
+    },
+
     renderHeader() {
         const gettext = this.props.gettext;
         const URL = this.props.URL;
@@ -92,11 +114,7 @@ const Page = React.createClass({
                         <span className="icon-bar"></span>
                     </button>
                     <a className="navbar-brand" href={URL("/")}>
-                        <img alt={this.props.getTitle(options)}
-                            src={URL("/images/lighthouse.sm.png")}
-                            height="40" width="40"
-                        />
-                        {" "}
+                        {this.renderLogo()}
                         {this.props.getShortTitle(options)}
                     </a>
                 </div>
