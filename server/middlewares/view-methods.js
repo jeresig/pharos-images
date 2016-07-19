@@ -3,10 +3,8 @@
 const qs = require("querystring");
 
 const moment = require("moment");
-const pd = require("parse-dimensions");
 
 const urls = require("../../lib/urls");
-const config = require("../../lib/config");
 
 module.exports = (req, res, next) => {
     const methods = {
@@ -52,28 +50,6 @@ module.exports = (req, res, next) => {
             return item.getShortTitle(req);
         },
 
-        getDate(item) {
-            if (item.original) {
-                return item.original;
-            }
-
-            if (item.start || item.end) {
-                return (item.circa ? "ca. " : "") +
-                    item.start + (item.end && item.end !== item.start ?
-                    `-${item.end}` : "");
-            }
-
-            return "";
-        },
-
-        getDimension(item) {
-            const label = item.label;
-            const dimension = pd.convertDimension(item, req.unit());
-            const unit = dimension.unit;
-            return [dimension.width, unit, " x ", dimension.height, unit,
-                label ? ` (${label})` : ""].join("");
-        },
-
         // Format a number using commas
         stringNum(num) {
             // TODO(jeresig): Have a better way to handle this.
@@ -90,20 +66,9 @@ module.exports = (req, res, next) => {
         fixedDate(date) {
             return moment(date).locale(req.lang).format("LLL");
         },
-
-        getUnit() {
-            return req.unit();
-        },
     };
 
     Object.assign(res.locals, methods);
-
-    req.numRange = (bucket) => bucket.to ?
-        `${bucket.from || 0}-${bucket.to}${bucket.unit || ""}` :
-        `${bucket.from}${bucket.unit || ""}+`;
-
-    req.defaultUnit = () => config.DEFAULT_UNIT;
-    req.unit = () => req.query.unit || req.defaultUnit();
 
     next();
 };

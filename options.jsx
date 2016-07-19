@@ -52,6 +52,20 @@ const types = {
     },
 };
 
+const getDate = (item) => {
+    if (item.original) {
+        return item.original;
+    }
+
+    if (item.start || item.end) {
+        return (item.circa ? "ca. " : "") +
+            item.start + (item.end && item.end !== item.start ?
+            `-${item.end}` : "");
+    }
+
+    return "";
+};
+
 const options = {
     getShortTitle: () => "PHAROS",
 
@@ -89,22 +103,37 @@ const options = {
     },
 
     views: {
-        homeSplash: (props) => {
+        homeSplash: (options) => {
             return <div>
                 <div className="home-splash">
                     <div className="splash-contents">
                         <img src="/images/lighthouse.md.png"
-                            alt={options.getTitle(props)}
+                            alt={options.getTitle(options)}
                             width="200" height="203"
                             className="hidden-xs"
                         />
                         <h1>
-                            {options.getShortTitle(props)}<br/>
-                            {options.getSubTitle(props)}</h1>
+                            {options.getShortTitle(options)}<br/>
+                            {options.getSubTitle(options)}</h1>
                     </div>
                 </div>
                 <div className="home-splash-offset"></div>
             </div>;
+        },
+
+        resultFooter: (options) => {
+            const artwork = options.artwork;
+
+            return <span>
+                {artwork.date && <span>{getDate(artwork.date)}</span>}
+
+                <a className="pull-right"
+                    href={options.URL(artwork.getSource())}
+                    title={artwork.getSource().getFullName(options.lang)}
+                >
+                    {artwork.getSource().getShortName(options.lang)}
+                </a>
+            </span>;
         },
     },
 

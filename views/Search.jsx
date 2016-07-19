@@ -291,6 +291,21 @@ const Search = React.createClass({
         </nav>;
     },
 
+    renderResultFooter(artwork) {
+        if (options.views.resultFooter) {
+            return <options.views.resultFooter {...this.props} />;
+        }
+
+        return <span>
+            <a className="pull-right"
+                href={this.props.URL(artwork.getSource())}
+                title={artwork.getSource().getFullName(this.props.lang)}
+            >
+                {artwork.getSource().getShortName(this.props.lang)}
+            </a>
+        </span>;
+    },
+
     renderResult(artwork) {
         return <div className="img col-xs-6 col-sm-4 col-md-3"
             key={artwork._id}
@@ -308,15 +323,7 @@ const Search = React.createClass({
             </div>
             <div className="details">
                 <div className="wrap">
-                    {artwork.date &&
-                        <span>{this.props.getDate(artwork.date)}</span>}
-
-                    <a className="pull-right"
-                        href={this.props.URL(artwork.getSource())}
-                        title={artwork.getSource().getFullName(this.props.lang)}
-                    >
-                        {artwork.getSource().getShortName(this.props.lang)}
-                    </a>
+                    {this.renderResultFooter(artwork)}
                 </div>
             </div>
         </div>;
