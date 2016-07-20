@@ -57,7 +57,7 @@ module.exports = {
         return this.getShortTitle();
     },
 
-    getSearchPlaceholder: (i18n) => i18n.gettext("Sample: christ or cristo"),
+    getSearchPlaceholder: () => "",
 
     recordTitle(record) {
         return record.title;

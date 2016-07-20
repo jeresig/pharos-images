@@ -8,7 +8,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2016-07-18 03:54+0000\n"
+"POT-Creation-Date: 2016-07-20 20:11+0000\n"
 
 #: logic/admin.js:25
 #: logic/admin.js:63
@@ -78,7 +78,7 @@ msgstr ""
 
 #: logic/shared/facets.js:8
 #: views/Artwork.jsx:95
-#: views/Search.jsx:166
+#: views/Search.jsx:162
 msgid "Source"
 msgstr ""
 
@@ -371,12 +371,12 @@ msgid "Details"
 msgstr ""
 
 #: views/Artwork.jsx:163
-#: views/Search.jsx:281
+#: views/Search.jsx:277
 msgid "Previous"
 msgstr ""
 
 #: views/Artwork.jsx:174
-#: views/Search.jsx:286
+#: views/Search.jsx:282
 msgid "Next"
 msgstr ""
 
@@ -404,14 +404,14 @@ msgstr ""
 
 #: views/Home.jsx:48
 #: views/Home.jsx:53
-#: views/Page.jsx:121
-#: views/Page.jsx:126
-#: views/Search.jsx:144
+#: views/Page.jsx:139
+#: views/Page.jsx:144
+#: views/Search.jsx:140
 msgid "Search"
 msgstr ""
 
 #: views/Home.jsx:58
-#: views/Page.jsx:108
+#: views/Page.jsx:126
 msgid "Browse All"
 msgstr ""
 
@@ -508,40 +508,40 @@ msgstr ""
 msgid "Password:"
 msgstr ""
 
-#: views/Search.jsx:74
+#: views/Search.jsx:70
 msgid "%(numArtworks)s matches."
 msgstr ""
 
-#: views/Search.jsx:80
+#: views/Search.jsx:76
 msgid "Viewing %(start)s to %(end)s."
 msgstr ""
 
-#: views/Search.jsx:102
+#: views/Search.jsx:98
 msgid "Query"
 msgstr ""
 
-#: views/Search.jsx:114
+#: views/Search.jsx:110
 msgid "Similarity"
 msgstr ""
 
-#: views/Search.jsx:130
+#: views/Search.jsx:126
 msgid "Sort"
 msgstr ""
 
-#: views/Search.jsx:172
+#: views/Search.jsx:168
 msgid "Any Source"
 msgstr ""
 
-#: views/Search.jsx:199
+#: views/Search.jsx:195
 msgid "Show %(count)s more..."
 msgstr ""
 
-#: views/Search.jsx:249
-#: views/Search.jsx:258
+#: views/Search.jsx:245
+#: views/Search.jsx:254
 msgid "Remove %(query)s"
 msgstr ""
 
-#: views/Search.jsx:268
+#: views/Search.jsx:264
 msgid "No results found. Please refine your query."
 msgstr ""
 

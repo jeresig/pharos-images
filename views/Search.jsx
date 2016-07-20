@@ -39,8 +39,6 @@ const Search = React.createClass({
         getTitle: React.PropTypes.func.isRequired,
         gettext: React.PropTypes.func.isRequired,
         lang: React.PropTypes.string.isRequired,
-        maxDate: React.PropTypes.string.isRequired,
-        minDate: React.PropTypes.string.isRequired,
         next: React.PropTypes.string,
         prev: React.PropTypes.string,
         queries: React.PropTypes.any.isRequired,
@@ -291,17 +289,30 @@ const Search = React.createClass({
 
     renderResultFooter(artwork) {
         if (options.views.resultFooter) {
-            return <options.views.resultFooter {...this.props} />;
+            return <div className="details">
+                <div className="wrap">
+                    <options.views.resultFooter {...this.props} />
+                </div>
+            </div>;
         }
 
-        return <span>
-            <a className="pull-right"
-                href={this.props.URL(artwork.getSource())}
-                title={artwork.getSource().getFullName(this.props.lang)}
-            >
-                {artwork.getSource().getShortName(this.props.lang)}
-            </a>
-        </span>;
+        // Don't show the source selection if there isn't more than one source
+        if (this.props.sources.length <= 1) {
+            return null;
+        }
+
+        return <div className="details">
+            <div className="wrap">
+                <span>
+                    <a className="pull-right"
+                        href={this.props.URL(artwork.getSource())}
+                        title={artwork.getSource().getFullName(this.props.lang)}
+                    >
+                        {artwork.getSource().getShortName(this.props.lang)}
+                    </a>
+                </span>
+            </div>
+        </div>;
     },
 
     renderResult(artwork) {
@@ -319,11 +330,7 @@ const Search = React.createClass({
                     />
                 </a>
             </div>
-            <div className="details">
-                <div className="wrap">
-                    {this.renderResultFooter(artwork)}
-                </div>
-            </div>
+            {this.renderResultFooter(artwork)}
         </div>;
     },
 
