@@ -77,10 +77,7 @@ module.exports = {
 
     display: [],
 
-    sorts: {
-        "dates.asc": (i18n) => i18n.gettext("Date, earliest first"),
-        "dates.desc": (i18n) => i18n.gettext("Date, latest first"),
-    },
+    sorts: {},
 
     model: {
         // The title of the artwork.

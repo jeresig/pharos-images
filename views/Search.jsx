@@ -88,6 +88,28 @@ const Search = React.createClass({
         </div>;
     },
 
+    renderSorts() {
+        if (this.props.sorts.length === 0) {
+            return null;
+        }
+
+        return <div className="form-group">
+            <label htmlFor="source" className="control-label">
+                {this.props.gettext("Sort")}
+            </label>
+            <select name="sort" style={{width: "100%"}}
+                className="form-control"
+                defaultValue={this.props.values.sort}
+            >
+                {this.props.sorts.map((sort) =>
+                    <option value={sort.id} key={sort.id}>
+                        {sort.name}
+                    </option>
+                )}
+            </select>
+        </div>;
+    },
+
     renderSearchForm() {
         const similarity = this.props.queries.similar.filters;
 
@@ -121,21 +143,7 @@ const Search = React.createClass({
                     )}
                 </select>
             </div>
-            <div className="form-group">
-                <label htmlFor="source" className="control-label">
-                    {this.props.gettext("Sort")}
-                </label>
-                <select name="sort" style={{width: "100%"}}
-                    className="form-control"
-                    defaultValue={this.props.values.sort}
-                >
-                    {this.props.sorts.map((sort) =>
-                        <option value={sort.id} key={sort.id}>
-                            {sort.name}
-                        </option>
-                    )}
-                </select>
-            </div>
+            {this.renderSorts()}
             <div className="form-group">
                 <input type="submit" value={this.props.gettext("Search")}
                     className="btn btn-primary"

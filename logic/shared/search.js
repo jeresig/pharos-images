@@ -52,8 +52,12 @@ module.exports = (req, res, tmplParams) => {
         return res.redirect(expectedURL);
     }
 
-    const sortParts = values.sort.split(".");
-    const sort = queries[sortParts[0]].sort()[sortParts[1]];
+    let sort = null;
+
+    if (values.sort) {
+        const sortParts = values.sort.split(".");
+        sort = queries[sortParts[0]].sort()[sortParts[1]];
+    }
 
     // Query for the artworks in Elasticsearch
     models("Artwork").search({
