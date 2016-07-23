@@ -146,8 +146,6 @@ const options = {
         "de": "Deutsch",
     },
 
-    defaultLocale: "en",
-
     filters: ["artists", "locations", "objectType", "dates", "dimensions"],
 
     display: ["artists", "dates", "objectType", "medium", "dimensions",

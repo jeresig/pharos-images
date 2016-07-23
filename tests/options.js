@@ -67,11 +67,7 @@ module.exports = {
 
     views: {},
 
-    locales: {
-        "en": "English",
-    },
-
-    defaultLocale: "en",
+    locales: {},
 
     filters: [],
 

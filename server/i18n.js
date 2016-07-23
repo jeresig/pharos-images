@@ -5,6 +5,8 @@ const i18n = require("i18n-abide");
 const config = require("../lib/config");
 const options = require("../lib/options");
 
+const defaultLocale = Object.keys(options.locales)[0] || "en";
+
 module.exports = (app) => {
     app.use((req, res, next) => {
         // i18n-abide overwrites all the locals, so we need to save them
@@ -15,7 +17,7 @@ module.exports = (app) => {
 
     app.use(i18n.abide({
         supported_languages: Object.keys(options.locales),
-        default_lang: options.defaultLocale,
+        default_lang: defaultLocale,
         translation_directory: "translations",
         translation_type: "po",
     }));
@@ -35,7 +37,7 @@ module.exports = (app) => {
 
         // Fall back to the default locale if one isn't given, or it's invalid
         if (!options.locales[locale]) {
-            locale = options.defaultLocale;
+            locale = defaultLocale;
         }
 
         res.locals.setLocale(locale);
