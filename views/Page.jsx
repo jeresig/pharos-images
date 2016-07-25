@@ -32,7 +32,7 @@ const Page = React.createClass({
         }
 
         return <link rel="icon" type="image/x-icon"
-            href={URL(options.faviconUrl)}
+            href={this.props.URL(options.faviconUrl)}
         />;
     },
 
@@ -90,7 +90,7 @@ const Page = React.createClass({
 
         return <span>
             <img alt={this.props.getTitle(options)}
-                src={URL(options.logoUrl)}
+                src={this.props.URL(options.logoUrl)}
                 height="40" width="40"
             />
             {" "}

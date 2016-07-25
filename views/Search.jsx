@@ -299,7 +299,10 @@ const Search = React.createClass({
         if (options.views.resultFooter) {
             return <div className="details">
                 <div className="wrap">
-                    <options.views.resultFooter {...this.props} />
+                    <options.views.resultFooter
+                        {...this.props}
+                        artwork={artwork}
+                    />
                 </div>
             </div>;
         }

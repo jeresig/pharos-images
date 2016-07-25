@@ -66,6 +66,43 @@ const getDate = (item) => {
     return "";
 };
 
+const homeSplash = (props) => <div>
+    <div className="home-splash">
+        <div className="splash-contents">
+            <img src="/images/lighthouse.md.png"
+                alt={options.getTitle(props)}
+                width="200" height="203"
+                className="hidden-xs"
+            />
+            <h1>
+                {options.getShortTitle(props)}<br/>
+                {options.getSubTitle(props)}</h1>
+        </div>
+    </div>
+    <div className="home-splash-offset"></div>
+</div>;
+
+const resultFooter = (props) => {
+    const artwork = props.artwork;
+
+    return <span>
+        {artwork.date && <span>{getDate(artwork.date)}</span>}
+
+        <a className="pull-right"
+            href={props.URL(artwork.getSource())}
+            title={artwork.getSource().getFullName(props.lang)}
+        >
+            {artwork.getSource().getShortName(props.lang)}
+        </a>
+    </span>;
+};
+
+resultFooter.propTypes = {
+    URL: React.PropTypes.func.isRequired,
+    artwork: React.PropTypes.any.isRequired,
+    lang: React.PropTypes.string.isRequired,
+};
+
 const options = {
     getShortTitle: () => "PHAROS",
 
@@ -106,38 +143,8 @@ const options = {
     },
 
     views: {
-        homeSplash: (options) => {
-            return <div>
-                <div className="home-splash">
-                    <div className="splash-contents">
-                        <img src="/images/lighthouse.md.png"
-                            alt={options.getTitle(options)}
-                            width="200" height="203"
-                            className="hidden-xs"
-                        />
-                        <h1>
-                            {options.getShortTitle(options)}<br/>
-                            {options.getSubTitle(options)}</h1>
-                    </div>
-                </div>
-                <div className="home-splash-offset"></div>
-            </div>;
-        },
-
-        resultFooter: (options) => {
-            const artwork = options.artwork;
-
-            return <span>
-                {artwork.date && <span>{getDate(artwork.date)}</span>}
-
-                <a className="pull-right"
-                    href={options.URL(artwork.getSource())}
-                    title={artwork.getSource().getFullName(options.lang)}
-                >
-                    {artwork.getSource().getShortName(options.lang)}
-                </a>
-            </span>;
-        },
+        homeSplash,
+        resultFooter,
     },
 
     locales: {
