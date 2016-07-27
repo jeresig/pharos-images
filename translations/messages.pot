@@ -8,7 +8,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2016-07-20 20:11+0000\n"
+"POT-Creation-Date: 2016-07-28 00:01+0000\n"
 
 #: logic/admin.js:25
 #: logic/admin.js:63
@@ -78,7 +78,7 @@ msgstr ""
 
 #: logic/shared/facets.js:8
 #: views/Artwork.jsx:95
-#: views/Search.jsx:162
+#: views/Search.jsx:172
 msgid "Source"
 msgstr ""
 
@@ -98,11 +98,11 @@ msgstr ""
 msgid "Similar to an Internal Artwork"
 msgstr ""
 
-#: logic/shared/search.js:137
+#: logic/shared/search.js:141
 msgid "Search Results"
 msgstr ""
 
-#: logic/shared/search.js:158
+#: logic/shared/search.js:162
 msgid "All Artworks"
 msgstr ""
 
@@ -371,12 +371,12 @@ msgid "Details"
 msgstr ""
 
 #: views/Artwork.jsx:163
-#: views/Search.jsx:277
+#: views/Search.jsx:287
 msgid "Previous"
 msgstr ""
 
 #: views/Artwork.jsx:174
-#: views/Search.jsx:282
+#: views/Search.jsx:292
 msgid "Next"
 msgstr ""
 
@@ -406,7 +406,7 @@ msgstr ""
 #: views/Home.jsx:53
 #: views/Page.jsx:139
 #: views/Page.jsx:144
-#: views/Search.jsx:140
+#: views/Search.jsx:148
 msgid "Search"
 msgstr ""
 
@@ -517,31 +517,31 @@ msgid "Viewing %(start)s to %(end)s."
 msgstr ""
 
 #: views/Search.jsx:98
-msgid "Query"
-msgstr ""
-
-#: views/Search.jsx:110
-msgid "Similarity"
-msgstr ""
-
-#: views/Search.jsx:126
 msgid "Sort"
 msgstr ""
 
-#: views/Search.jsx:168
+#: views/Search.jsx:120
+msgid "Query"
+msgstr ""
+
+#: views/Search.jsx:132
+msgid "Similarity"
+msgstr ""
+
+#: views/Search.jsx:178
 msgid "Any Source"
 msgstr ""
 
-#: views/Search.jsx:195
+#: views/Search.jsx:205
 msgid "Show %(count)s more..."
 msgstr ""
 
-#: views/Search.jsx:245
-#: views/Search.jsx:254
+#: views/Search.jsx:255
+#: views/Search.jsx:264
 msgid "Remove %(query)s"
 msgstr ""
 
-#: views/Search.jsx:264
+#: views/Search.jsx:274
 msgid "No results found. Please refine your query."
 msgstr ""
 

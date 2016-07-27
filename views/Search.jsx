@@ -155,7 +155,9 @@ const Search = React.createClass({
     renderFilters() {
         return options.filters.map((type) => {
             const typeSchema = metadata.model[type];
-            return typeSchema.renderFilter(this.props.values[type], this.props);
+            return <div key={type}>
+                {typeSchema.renderFilter(this.props.values[type], this.props)}
+            </div>;
         });
     },
 

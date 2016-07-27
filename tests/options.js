@@ -51,6 +51,16 @@ const types = {
 };
 
 module.exports = {
+    filters: ["artists", "locations", "objectType", "dates", "dimensions"],
+
+    display: ["artists", "dates", "objectType", "medium", "dimensions",
+        "categories", "locations"],
+
+    sorts: {
+        "dates.asc": (i18n) => i18n.gettext("Date, earliest first"),
+        "dates.desc": (i18n) => i18n.gettext("Date, latest first"),
+    },
+
     model: {
         // The title of the artwork.
         title: {
