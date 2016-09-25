@@ -2,8 +2,6 @@
 
 const React = require("react");
 
-const config = require("../lib/config");
-
 const Page = require("./Page.jsx");
 
 const Home = React.createClass({
@@ -21,24 +19,6 @@ const Home = React.createClass({
             React.PropTypes.any
         ).isRequired,
         stringNum: React.PropTypes.func.isRequired,
-    },
-
-    renderSplash() {
-        return <div>
-            <div className="home-splash">
-                <div className="splash-contents">
-                    <img src={this.props.URL("/images/lighthouse.md.png")}
-                        alt={this.props.getTitle(config.siteName)}
-                        width="200" height="203"
-                        className="hidden-xs"
-                    />
-                    <h1>
-                        {this.props.getShortTitle(config.siteName)}<br/>
-                        {this.props.getSubTitle(config.siteName)}</h1>
-                </div>
-            </div>
-            <div className="home-splash-offset"></div>
-        </div>;
     },
 
     renderSearchForm() {
@@ -172,7 +152,6 @@ const Home = React.createClass({
     render() {
         return <Page
             {...this.props}
-            splash={this.renderSplash()}
         >
             <div className="col-sm-8 col-sm-offset-2 upload-box">
                 {this.renderSearchForm()}
