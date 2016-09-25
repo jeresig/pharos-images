@@ -4,6 +4,9 @@ const React = require("react");
 
 const config = require("../lib/config");
 
+const faviconUrl = "http://pharosartresearch.org/sites/default/files/pharos/files/favicon.ico";
+const logoUrl = "http://pharosartresearch.org/sites/default/files/styles/os_files_large/public/pharos/files/pharos_logo.png";
+
 const Page = React.createClass({
     propTypes: {
         URL: React.PropTypes.func.isRequired,
@@ -45,14 +48,11 @@ const Page = React.createClass({
             />
             {noIndex && <meta name="robots" content="noindex"/>}
             <link rel="icon" type="image/x-icon"
-                href={URL("/images/favicon.png")}
+                href={faviconUrl}
             />
             <title>{title}</title>
             {this.props.social && this.renderSocialMeta()}
             <link rel="stylesheet" href={URL("/css/bootstrap.min.css")}/>
-            <link rel="stylesheet"
-                href={URL("/css/bootstrap-theme.min.css")}
-            />
             <link rel="stylesheet" href={URL("/css/style.css")}/>
             {this.props.style}
         </head>;
@@ -74,6 +74,50 @@ const Page = React.createClass({
         ];
     },
 
+    renderPharosHeader() {
+        return <header role="banner">
+            <link
+                rel="stylesheet"
+                href="https://fonts.googleapis.com/css?family=Montserrat"
+            />
+            <div className="header-inner-wrap container">
+                <a href="http://pharosartresearch.org/">
+                    <img
+                        height="114"
+                        width="421"
+                        alt={this.props.getShortTitle(config.siteName)}
+                        title={this.props.getShortTitle(config.siteName)}
+                        src={logoUrl}
+                    />
+                </a>
+
+                <a
+                    href="http://pharosartresearch.org/contact"
+                    className="header-contact-link"
+                >
+                    {this.props.gettext("Contact")}
+                </a>
+            </div>
+          </header>;
+    },
+
+    renderPharosMenu() {
+        const gettext = this.props.gettext;
+
+        return <nav className="header-nav">
+            <ul className="container">
+                <li><a href="http://pharosartresearch.org/">{gettext("Home")}</a></li>
+                <li><a href="http://pharosartresearch.org/about">{gettext("About")}</a></li>
+                <li><a href="http://pharosartresearch.org/institutions">{gettext("Institutions")}</a></li>
+                <li><a href="http://pharosartresearch.org/initiatives">{gettext("Initiatives")}</a></li>
+                <li><a href="/" className="active">
+                    {gettext("Visual Search")}
+                </a></li>
+                <li><a href="http://pharosartresearch.org/news">{gettext("News")}</a></li>
+            </ul>
+        </nav>;
+    },
+
     renderHeader() {
         const gettext = this.props.gettext;
         const URL = this.props.URL;
@@ -92,16 +136,52 @@ const Page = React.createClass({
                     </button>
                     <a className="navbar-brand" href={URL("/")}>
                         <img alt={this.props.getTitle(config.siteName)}
-                            src={URL("/images/lighthouse.sm.png")}
-                            height="40" width="40"
+                            src={logoUrl}
+                            height="40"
                         />
                         {" "}
-                        {this.props.getShortTitle(config.siteName)}
+                        <span className="short-title">
+                            {this.props.getShortTitle(config.siteName)}
+                        </span>
                     </a>
                 </div>
 
                 <div id="header-navbar" className="collapse navbar-collapse">
                     <ul className="nav navbar-nav">
+                        <li className="visible-xs">
+                            <a href="http://pharosartresearch.org/">
+                                {gettext("Home")}
+                            </a>
+                        </li>
+                        <li className="visible-xs">
+                            <a href="http://pharosartresearch.org/about">
+                                {gettext("About")}
+                            </a>
+                        </li>
+                        <li className="visible-xs">
+                            <a href="http://pharosartresearch.org/institutions">
+                                {gettext("Institutions")}
+                            </a>
+                        </li>
+                        <li className="visible-xs">
+                            <a href="http://pharosartresearch.org/initiatives">
+                                {gettext("Initiatives")}
+                            </a>
+                        </li>
+                        <li className="visible-xs active">
+                            <a href="/">
+                                {gettext("Visual Search")}
+                            </a>
+                        </li>
+                        <li className="visible-xs">
+                            <a href="http://pharosartresearch.org/news">
+                                {gettext("News")}
+                            </a>
+                        </li>
+                        <li
+                            role="separator"
+                            className="visible-xs nav-divider"
+                        />
                         <li>
                             <a href={URL("/search")}>
                                 {gettext("Browse All")}
@@ -164,6 +244,26 @@ const Page = React.createClass({
         </li>;
     },
 
+    renderFooter() {
+        const curYear = (new Date()).getYear() + 1900;
+
+        return <footer>
+            <div className="footer-inner-wrap container">
+                <span className="copyright">
+                    <a href="http://pharosartresearch.org/">
+                        © {curYear} Pharos consortium
+                    </a>
+                </span>
+
+                <span className="contact">
+                    <a href="http://pharosartresearch.org/contact">
+                        {this.props.gettext("Contact")}
+                    </a>
+                </span>
+            </div>
+        </footer>;
+    },
+
     renderScripts() {
         const URL = this.props.URL;
 
@@ -179,11 +279,14 @@ const Page = React.createClass({
         return <html lang={this.props.lang}>
             {this.renderHead()}
             <body>
+                {this.renderPharosHeader()}
+                {this.renderPharosMenu()}
                 {this.renderHeader()}
                 {this.props.splash}
                 <div className="container">
                     {this.props.children}
                 </div>
+                {this.renderFooter()}
                 {this.renderScripts()}
             </body>
         </html>;
