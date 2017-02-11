@@ -82,7 +82,7 @@ const Artwork = new db.schema(Object.assign({
     images: {
         type: [{type: String, ref: "Image"}],
         required: true,
-        validateArray: (v) => /^\w+\/[a-z0-9_-]+\.jpe?g$/i.test(v),
+        validateArray: (v) => /^[\w-]+\/[a-z0-9_-]+\.jpe?g$/i.test(v),
         validationMsg: (req) => req.gettext("Images must be a valid " +
             "image file name. For example: `image.jpg`."),
         convert: (name, data) => `${data.source}/${name}`,
