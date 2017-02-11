@@ -54,6 +54,12 @@ const Artwork = new db.schema(Object.assign({
         type: String,
         es_indexed: true,
         required: true,
+        es_type: "multi_field",
+        // A raw name to use for building aggregations in Elasticsearch
+        es_fields: {
+            name: {type: "string", index: "analyzed"},
+            raw: {type: "string", index: "not_analyzed"},
+        },
     },
 
     // The language of the page from where the data is being extracted. This

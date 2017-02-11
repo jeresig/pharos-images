@@ -41,7 +41,7 @@ module.exports = Object.assign({
         url: (query) => models("Source").getSource(query.source),
         match: (query) => ({
             match: {
-                source: {
+                "source.raw": {
                     query: escape(query.source),
                     operator: "or",
                     zero_terms_query: "all",

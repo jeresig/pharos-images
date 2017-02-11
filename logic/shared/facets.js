@@ -7,7 +7,7 @@ module.exports = Object.assign({
     source: {
         agg: {
             terms: {
-                field: "source",
+                field: "source.raw",
             },
         },
         name: (req) => req.gettext("Source"),
