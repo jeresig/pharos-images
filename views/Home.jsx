@@ -150,10 +150,31 @@ const Home = React.createClass({
     },
 
     render() {
+        const {imageTotal, sources} = this.props;
+        const imageCount = this.props.stringNum(imageTotal);
+        const numSources = sources.length;
         return <Page
             {...this.props}
         >
             <div className="col-sm-8 col-sm-offset-2 upload-box">
+                <div className="panel panel-default">
+                    <div className="panel-heading">
+                        <h3 className="panel-title">
+                            {this.props.gettext("Overview")}
+                        </h3>
+                    </div>
+                    <div className="panel-body">
+                        <p>
+                            {this.props.format(this.props.gettext(
+                                "Using a group of %(imageCount)s images of " +
+                                "Italian works of art represented in " +
+                                "%(numSources)s of the PHAROS photoarchives, " +
+                                "this tool examines the potential of " +
+                                "visual searching in the pursuit of research."),
+                                {imageCount, numSources})}
+                        </p>
+                    </div>
+                </div>
                 {this.renderSearchForm()}
                 {this.renderImageUploadForms()}
                 {this.renderSources()}
